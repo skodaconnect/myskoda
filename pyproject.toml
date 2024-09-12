@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "myskoda"
-version = "0.1.4"
+version = "0.1.5"
 description = "Library for interaction with the MySkoda APIs."
 authors = ["Frederick Gnodtke <frederick@gnodtke.net>"]
 readme = "README.md"
@@ -11,7 +11,7 @@ beautifulsoup4 = "^4"
 aiohttp = "^3"
 pyjwt = "^2"
 pyyaml = "^6"
-pydantic = "^2"
+pydantic = "^1"
 asyncio = "^3"
 
 [tool.poetry.group.dev.dependencies]
