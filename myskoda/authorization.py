@@ -16,8 +16,6 @@ from bs4 import BeautifulSoup
 import jwt
 import yaml
 
-from homeassistant.exceptions import HomeAssistantError
-
 from .const import BASE_URL_IDENT, BASE_URL_SKODA, CLIENT_ID
 
 _LOGGER = logging.getLogger(__name__)
@@ -143,7 +141,7 @@ def _extract_states_from_website(html) -> dict[str, str]:
         data = yaml.safe_load(result)
 
     if data is None:
-        raise InternalAuthorizationError
+        raise AuthorizationError
 
     return data
 
@@ -298,5 +296,5 @@ async def idk_authorize(
     )
 
 
-class InternalAuthorizationError(HomeAssistantError):
+class AuthorizationError(Exception):
     """Error to indicate that something unexpected happened during authorization."""
