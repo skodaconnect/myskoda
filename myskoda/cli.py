@@ -43,8 +43,9 @@ async def list_vehicles():
     async with ClientSession() as session:
         hub = RestApi(session)
         await hub.authenticate(username, password)
+        print(f"{colored("vehicles:", "blue")}")
         for vehicle in await hub.list_vehicles():
-            print(vehicle)
+            print(f"- {vehicle}")
 
 
 @cli.command()

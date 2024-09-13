@@ -77,7 +77,6 @@ class RestApi:
             headers=await self._headers(),
         ) as response:
             _LOGGER.debug("vin %s: Received basic info", vin)
-            print(await response.text())
             return Info(**await response.json())
 
     async def get_charging(self, vin):
@@ -148,7 +147,6 @@ class RestApi:
             f"{BASE_URL_SKODA}/api/v1/vehicle-health-report/warning-lights/{vin}",
             headers=await self._headers(),
         ) as response:
-            print(await response.json())
             _LOGGER.debug("vin %s: Received health")
             return Health(**await response.json())
 
@@ -159,7 +157,6 @@ class RestApi:
             headers=await self._headers(),
         ) as response:
             json = await response.json()
-            print(json)
             return [vehicle["vin"] for vehicle in json["vehicles"]]
 
     async def get_vehicle(self, vin) -> Vehicle:
