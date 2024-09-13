@@ -1,82 +1,19 @@
 """Contains API representation for the MySkoda REST API."""
 
 from asyncio import gather
-from datetime import datetime
 import logging
 
 from aiohttp import ClientSession
 
 from .authorization import IDKSession, idk_authorize
 from .const import BASE_URL_SKODA
+from .models.air_conditioning import AirConditioning
 from .models.charging import Charging
 from .models.health import Health
 from .models.info import Info
+from .models.status import Status
 
 _LOGGER = logging.getLogger(__name__)
-
-
-class Status:
-    """Current status information for a vehicle."""
-
-    doors_open: bool
-    bonnet_open: bool
-    trunk_open: bool
-    doors_locked: bool
-    lights_on: bool
-    locked: bool
-    windows_open: bool
-    car_captured: datetime
-
-    def __init__(self, dict):  # noqa: D107
-        self.bonnet_open = dict.get("detail", {}).get("bonnet") == "OPEN"
-        self.doors_open = dict.get("overall", {}).get("doors") == "OPEN"
-        self.trunk_open = dict.get("detail", {}).get("trunk") == "OPEN"
-        self.doors_locked = dict.get("overall", {}).get("doorsLocked") == "YES"
-        self.lights_on = dict.get("overall", {}).get("lights") == "ON"
-        self.locked = dict.get("overall", {}).get("locked") == "YES"
-        self.windows_open = dict.get("overall", {}).get("windows") == "OPEN"
-        self.car_captured = datetime.fromisoformat(dict.get("carCapturedTimestamp"))
-
-
-class AirConditioning:
-    """Information related to air conditioning."""
-
-    window_heating_enabled: bool
-    window_heating_front_on: bool
-    window_heating_rear_on: bool
-    target_temperature_celsius: float
-    steering_wheel_position: str
-    air_conditioning_on: bool
-    state: str
-    charger_connected: bool
-    charger_locked: bool
-    time_to_reach_target_temperature: str
-
-    def __init__(self, dict):  # noqa: D107
-        self.window_heating_enabled = dict.get("windowHeatingEnabled")
-        self.window_heating_front_on = (
-            dict.get("windowHeatingState", {}).get("front") == "ON"
-        )
-        self.window_heating_rear_on = (
-            dict.get("windowHeatingState", {}).get("rear") == "ON"
-        )
-        self.target_temperature_celsius = dict.get("targetTemperature", {}).get(
-            "temperatureValue"
-        )
-        self.steering_wheel_position = dict.get("steeringWheelPosition")
-        self.air_conditioning_on = (
-            dict.get("state") == "ON"
-            or dict.get("state") == "COOLING"
-            or dict.get("state") == "HEATING"
-        )
-        # COOLING, HEATING, OFF, ON
-        self.state = dict.get("state")
-
-        self.charger_connected = dict.get("chargerConnectionState") == "CONNECTED"
-        self.charger_locked = dict.get("chargerLockState") == "LOCKED"
-        self.time_to_reach_target_temperature = dict.get(
-            "estimatedDateTimeToReachTargetTemperature"
-        )
 
 
 class Position:
@@ -175,7 +112,7 @@ class MySkodaHub:
             headers=await self._headers(),
         ) as response:
             _LOGGER.debug("vin %s: Received status")
-            return Status(await response.json())
+            return Status(**await response.json())
 
     async def get_air_conditioning(self, vin):
         """Retrieve the current air conditioning status for the specified vehicle."""
@@ -184,7 +121,7 @@ class MySkodaHub:
             headers=await self._headers(),
         ) as response:
             _LOGGER.debug("vin %s: Received air conditioning")
-            return AirConditioning(await response.json())
+            return AirConditioning(**await response.json())
 
     async def get_position(self, vin):
         """Retrieve the current position for the specified vehicle."""
