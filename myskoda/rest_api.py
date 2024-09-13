@@ -14,7 +14,7 @@ from .models.driving_range import DrivingRange
 from .models.health import Health
 from .models.info import Info
 from .models.maintenance import Maintenance
-from .models.position import Positions, Type
+from .models.position import Positions, PositionType
 from .models.status import Status
 from .models.trip_statistics import TripStatistics
 
@@ -298,7 +298,9 @@ class RestApi:
     async def honk_flash(self, vin, honk=False):
         """Honk and/or flash."""
         positions = await self.get_positions(vin)
-        position = next(pos for pos in positions.positions if pos.type == Type.VEHICLE)
+        position = next(
+            pos for pos in positions.positions if pos.type == PositionType.VEHICLE
+        )
         json_data = {
             "mode": "HONK_AND_FLASH" if honk else "FLASH",
             "vehiclePosition": {

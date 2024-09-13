@@ -147,6 +147,12 @@ async def positions(vin):
             print(f"     {position.address.zip_code} {position.address.city}")
             print(f"     {position.address.country} ({position.address.country_code})")
 
+        if positions.errors:
+            print(f"{colored("Error:", "red")}")
+        for error in positions.errors:
+            print(f"- {colored("type:", "blue")} {error.type}")
+            print(f"  {colored("description:", "blue")} {error.description}")
+
 
 @cli.command()
 @click.argument("vin")
@@ -326,3 +332,7 @@ def charger_locked(cond: ChargerLockedState) -> str:
         if cond == ChargerLockedState.LOCKED
         else colored("unlocked", "red")
     )
+
+
+if __name__ == '__main__':
+    cli()

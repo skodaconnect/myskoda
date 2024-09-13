@@ -5,6 +5,7 @@ from pydantic import BaseModel, Field
 
 class EngineType(StrEnum):
     DIESEL = "diesel"
+    ELECTRIC = "electric"
 
 
 class EngineRange(BaseModel):

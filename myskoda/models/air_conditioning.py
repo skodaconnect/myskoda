@@ -12,6 +12,7 @@ class TemperatureUnit(StrEnum):
 
 class TimerMode(StrEnum):
     ONE_OFF = "ONE_OFF"
+    RECURRING = "RECURRING"
 
 
 class Timer(BaseModel):
