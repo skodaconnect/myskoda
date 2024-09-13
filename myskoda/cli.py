@@ -2,6 +2,8 @@ from aiohttp import ClientSession
 from termcolor import colored
 import asyncclick as click
 
+from myskoda.models.charging import MaxChargeCurrent
+from myskoda.models.common import OnOffState
 from myskoda.myskoda import MySkodaHub
 from . import idk_authorize
 
@@ -149,23 +151,23 @@ async def charging(vin):
         await hub.authenticate(username, password)
         charging = await hub.get_charging(vin)
 
-        print(f"{colored("battery charge:", "blue")} {charging.battery_percent}%")
-        print(f"{colored("target:", "blue")} {charging.target_percent}%")
+        print(f"{colored("battery charge:", "blue")} {charging.status.battery.state_of_charge_in_percent}%")
+        print(f"{colored("target:", "blue")} {charging.settings.target_state_of_charge_in_percent}%")
         print(
-            f"{colored("remaining distance:", "blue")} {charging.remaining_distance_m / 1000}km"
+            f"{colored("remaining distance:", "blue")} {charging.status.battery.remaining_cruising_range_in_meters / 1000}km"
         )
-        print(f"{colored("charging power:", "blue")} {charging.charging_power_kw}kw")
+        print(f"{colored("charging power:", "blue")} {charging.charge_power_in_kw}kw")
         print(f"{colored("charger type:", "blue")} {charging.charge_type}")
         print(
-            f"{colored("charging rate:", "blue")} {charging.charging_rate_in_km_h}km/h"
+            f"{colored("charging rate:", "blue")} {charging.charging_rate_in_kilometers_per_hour}km/h"
         )
-        print(f"{colored("remaining time:", "blue")} {charging.remaining_time_min}min")
-        print(f"{colored("state:", "blue")} {charging.state}")
+        print(f"{colored("remaining time:", "blue")} {charging.remaining_time_to_fully_charged_in_minutes}min")
+        print(f"{colored("state:", "blue")} {charging.status.state}")
         print(
-            f"{colored("battery care mode:", "blue")} {on(charging.charging_care_mode)}"
+            f"{colored("battery care mode:", "blue")} {on(charging.settings.charging_care_mode is OnOffState.ON)}"
         )
         print(
-            f"{colored("reduced current:", "blue")} {on(charging.use_reduced_current)}"
+            f"{colored("reduced current:", "blue")} {on(charging.settings.max_charge_current_ac is MaxChargeCurrent.REDUCED)}"
         )
 
 

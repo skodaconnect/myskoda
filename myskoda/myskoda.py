@@ -8,54 +8,10 @@ from aiohttp import ClientSession
 
 from .authorization import IDKSession, idk_authorize
 from .const import BASE_URL_SKODA
+from .models.charging import Charging
 from .models.info import Info
 
 _LOGGER = logging.getLogger(__name__)
-
-
-class Charging:
-    """Information related to charging an EV."""
-
-    remaining_distance_m: int
-    battery_percent: int
-    charging_care_mode: bool
-    charging_power_kw: float
-    charge_type: str
-    charging_rate_in_km_h: float
-    remaining_time_min: str
-    state: str
-    target_percent: int
-    use_reduced_current: bool
-
-    def __init__(self, data):  # noqa: D107
-        self.target_percent = data.get("settings", {}).get(
-            "targetStateOfChargeInPercent"
-        )
-        self.charging_care_mode = (
-            data.get("settings", {}).get("chargingCareMode") == "ACTIVATED"
-        )
-        self.use_reduced_current = (
-            data.get("settings", {}).get("maxChargeCurrentAc") == "REDUCED"
-        )
-
-        data = data.get("status")
-        self.remaining_distance_m = data.get("battery", {}).get(
-            "remainingCruisingRangeInMeters"
-        )
-        self.battery_percent = data.get("battery", {}).get("stateOfChargeInPercent")
-        self.charging_power_kw = data.get("chargePowerInKw")
-
-        # "AC"
-        self.charge_type = data.get("chargeType")
-
-        self.charging_rate_in_km_h = data.get("chargingRateInKilometersPerHour")
-        self.remaining_time_min = data.get("remainingTimeToFullyChargedInMinutes")
-
-        # "CONNECT_CABLE": Not connected
-        # "READY_FOR_CHARGING": Connected, but full
-        # "CONSERVING": Connected, but full
-        # "CHARGING": Connected and charging
-        self.state = data.get("state")
 
 
 class Status:
@@ -210,8 +166,7 @@ class MySkodaHub:
             headers=await self._headers(),
         ) as response:
             _LOGGER.debug("vin %s: Received basic info", vin)
-            data = await response.json()
-            return Info(**data)
+            return Info(**await response.json())
 
     async def get_charging(self, vin):
         """Retrieve information related to charging for the specified vehicle."""
@@ -219,7 +174,7 @@ class MySkodaHub:
             f"{BASE_URL_SKODA}/api/v1/charging/{vin}", headers=await self._headers()
         ) as response:
             _LOGGER.debug("Received charging info")
-            return Charging(await response.json())
+            return Charging(**await response.json())
 
     async def get_status(self, vin):
         """Retrieve the current status for the specified vehicle."""
