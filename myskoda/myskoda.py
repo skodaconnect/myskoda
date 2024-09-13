@@ -9,6 +9,7 @@ from aiohttp import ClientSession
 from .authorization import IDKSession, idk_authorize
 from .const import BASE_URL_SKODA
 from .models.charging import Charging
+from .models.health import Health
 from .models.info import Info
 
 _LOGGER = logging.getLogger(__name__)
@@ -100,15 +101,6 @@ class Position:
         self.zip_code = data.get("address", {}).get("zipCode")
         self.lat = data.get("gpsCoordinates", {}).get("latitude")
         self.lng = data.get("gpsCoordinates", {}).get("longitude")
-
-
-class Health:
-    """Information about the car's health (currently only mileage)."""
-
-    mileage_km: int
-
-    def __init__(self, dict):  # noqa: D107
-        self.mileage_km = dict.get("mileageInKm")
 
 
 class Vehicle:
@@ -210,7 +202,7 @@ class MySkodaHub:
             headers=await self._headers(),
         ) as response:
             _LOGGER.debug("vin %s: Received health")
-            return Health(await response.json())
+            return Health(**await response.json())
 
     async def list_vehicles(self):
         """List all vehicles by their vins."""

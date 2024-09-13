@@ -139,7 +139,8 @@ async def health(vin):
         await hub.authenticate(username, password)
         health = await hub.get_health(vin)
 
-        print(f"{colored("mileage:", "blue")} {health.mileage_km}km")
+        print(f"{colored("mileage:", "blue")} {health.mileage_in_km}km")
+        print(f"{colored("last updated:", "blue")} {health.captured_at}")
 
 
 @cli.command()
@@ -151,8 +152,12 @@ async def charging(vin):
         await hub.authenticate(username, password)
         charging = await hub.get_charging(vin)
 
-        print(f"{colored("battery charge:", "blue")} {charging.status.battery.state_of_charge_in_percent}%")
-        print(f"{colored("target:", "blue")} {charging.settings.target_state_of_charge_in_percent}%")
+        print(
+            f"{colored("battery charge:", "blue")} {charging.status.battery.state_of_charge_in_percent}%"
+        )
+        print(
+            f"{colored("target:", "blue")} {charging.settings.target_state_of_charge_in_percent}%"
+        )
         print(
             f"{colored("remaining distance:", "blue")} {charging.status.battery.remaining_cruising_range_in_meters / 1000}km"
         )
@@ -161,7 +166,9 @@ async def charging(vin):
         print(
             f"{colored("charging rate:", "blue")} {charging.charging_rate_in_kilometers_per_hour}km/h"
         )
-        print(f"{colored("remaining time:", "blue")} {charging.remaining_time_to_fully_charged_in_minutes}min")
+        print(
+            f"{colored("remaining time:", "blue")} {charging.remaining_time_to_fully_charged_in_minutes}min"
+        )
         print(f"{colored("state:", "blue")} {charging.status.state}")
         print(
             f"{colored("battery care mode:", "blue")} {on(charging.settings.charging_care_mode is OnOffState.ON)}"
