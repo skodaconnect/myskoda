@@ -2,8 +2,8 @@ from aiohttp import ClientSession
 from termcolor import colored
 import asyncclick as click
 
-from myskoda.models.charging import MaxChargeCurrent
-from myskoda.models.common import (
+from .models.charging import MaxChargeCurrent
+from .models.common import (
     ActiveState,
     ChargerLockedState,
     ConnectionState,
@@ -11,7 +11,7 @@ from myskoda.models.common import (
     OnOffState,
     OpenState,
 )
-from myskoda.myskoda import MySkodaHub
+from .rest_api import RestApi
 from . import idk_authorize
 
 username: str
@@ -41,7 +41,7 @@ async def auth():
 async def list_vehicles():
     """Print a list of all vehicle identification numbers associated with the account."""
     async with ClientSession() as session:
-        hub = MySkodaHub(session)
+        hub = RestApi(session)
         await hub.authenticate(username, password)
         for vehicle in await hub.list_vehicles():
             print(vehicle)
@@ -52,7 +52,7 @@ async def list_vehicles():
 async def info(vin):
     """Print info for the specified vin."""
     async with ClientSession() as session:
-        hub = MySkodaHub(session)
+        hub = RestApi(session)
         await hub.authenticate(username, password)
         info = await hub.get_info(vin)
 
@@ -74,7 +74,7 @@ async def info(vin):
 async def status(vin):
     """Print current status for the specified vin."""
     async with ClientSession() as session:
-        hub = MySkodaHub(session)
+        hub = RestApi(session)
         await hub.authenticate(username, password)
         status = await hub.get_status(vin)
 
@@ -93,7 +93,7 @@ async def status(vin):
 async def air_conditioning(vin):
     """Print current status about air conditioning."""
     async with ClientSession() as session:
-        hub = MySkodaHub(session)
+        hub = RestApi(session)
         await hub.authenticate(username, password)
         ac = await hub.get_air_conditioning(vin)
 
@@ -124,19 +124,25 @@ async def air_conditioning(vin):
 
 @cli.command()
 @click.argument("vin")
-async def position(vin):
+async def positions(vin):
     """Print the vehicle's current position."""
     async with ClientSession() as session:
-        hub = MySkodaHub(session)
+        hub = RestApi(session)
         await hub.authenticate(username, password)
-        position = await hub.get_position(vin)
+        positions = await hub.get_positions(vin)
 
-        print(f"{colored("latitude:", "blue")} {position.lat}")
-        print(f"{colored("longitude:", "blue")} {position.lng}")
-        print(f"{colored("address:", "blue")}")
-        print(f"    {position.street} {position.house_number}")
-        print(f"    {position.zip_code} {position.city}")
-        print(f"    {position.country} ({position.country_code})")
+        for position in positions.positions:
+            print(f"- {colored("type:", "blue")} {position.type}")
+            print(
+                f"  {colored("latitude:", "blue")} {position.gps_coordinates.latitude}"
+            )
+            print(
+                f"  {colored("longitude:", "blue")} {position.gps_coordinates.longitude}"
+            )
+            print(f"  {colored("address:", "blue")}")
+            print(f"     {position.address.street} {position.address.house_number}")
+            print(f"     {position.address.zip_code} {position.address.city}")
+            print(f"     {position.address.country} ({position.address.country_code})")
 
 
 @cli.command()
@@ -144,7 +150,7 @@ async def position(vin):
 async def health(vin):
     """Print the vehicle's mileage."""
     async with ClientSession() as session:
-        hub = MySkodaHub(session)
+        hub = RestApi(session)
         await hub.authenticate(username, password)
         health = await hub.get_health(vin)
 
@@ -157,7 +163,7 @@ async def health(vin):
 async def charging(vin):
     """Print the vehicle's current charging state."""
     async with ClientSession() as session:
-        hub = MySkodaHub(session)
+        hub = RestApi(session)
         await hub.authenticate(username, password)
         charging = await hub.get_charging(vin)
 

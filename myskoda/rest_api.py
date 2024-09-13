@@ -11,33 +11,10 @@ from .models.air_conditioning import AirConditioning
 from .models.charging import Charging
 from .models.health import Health
 from .models.info import Info
+from .models.position import Positions
 from .models.status import Status
 
 _LOGGER = logging.getLogger(__name__)
-
-
-class Position:
-    """Positional information (GPS) for the vehicle."""
-
-    city: str
-    country: str
-    country_code: str
-    house_number: str
-    street: str
-    zip_code: str
-    lat: float
-    lng: float
-
-    def __init__(self, data):  # noqa: D107
-        data = data.get("positions")[0]
-        self.city = data.get("address", {}).get("city")
-        self.country = data.get("address", {}).get("country")
-        self.country_code = data.get("address", {}).get("countryCode")
-        self.house_number = data.get("address", {}).get("houseNumber")
-        self.street = data.get("address", {}).get("street")
-        self.zip_code = data.get("address", {}).get("zipCode")
-        self.lat = data.get("gpsCoordinates", {}).get("latitude")
-        self.lng = data.get("gpsCoordinates", {}).get("longitude")
 
 
 class Vehicle:
@@ -47,7 +24,7 @@ class Vehicle:
     charging: Charging
     status: Status
     air_conditioning: AirConditioning
-    position: Position
+    position: Positions
     health: Health
 
     def __init__(  # noqa: D107
@@ -56,7 +33,7 @@ class Vehicle:
         charging: Charging,
         status: Status,
         air_conditioning: AirConditioning,
-        position: Position,
+        position: Positions,
         health: Health,
     ):
         self.info = info
@@ -67,7 +44,7 @@ class Vehicle:
         self.health = health
 
 
-class MySkodaHub:
+class RestApi:
     """API hub class that can perform all calls to the MySkoda API."""
 
     session: ClientSession
@@ -123,14 +100,14 @@ class MySkodaHub:
             _LOGGER.debug("vin %s: Received air conditioning")
             return AirConditioning(**await response.json())
 
-    async def get_position(self, vin):
+    async def get_positions(self, vin):
         """Retrieve the current position for the specified vehicle."""
         async with self.session.get(
             f"{BASE_URL_SKODA}/api/v1/maps/positions?vin={vin}",
             headers=await self._headers(),
         ) as response:
             _LOGGER.debug("vin %s: Received position")
-            return Position(await response.json())
+            return Positions(**await response.json())
 
     async def get_health(self, vin):
         """Retrieve health information for the specified vehicle."""
@@ -157,7 +134,7 @@ class MySkodaHub:
                 self.get_charging(vin),
                 self.get_status(vin),
                 self.get_air_conditioning(vin),
-                self.get_position(vin),
+                self.get_positions(vin),
                 self.get_health(vin),
             ]
         )

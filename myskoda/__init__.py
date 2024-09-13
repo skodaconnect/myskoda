@@ -5,13 +5,14 @@ from .authorization import (
     idk_authorize as idk_authorize,
     AuthorizationError as AuthorizationError,
 )
-from .myskoda import (
-    Info as Info,
-    Charging as Charging,
-    Status as Status,
-    AirConditioning as AirConditioning,
-    Position as Position,
-    Health as Health,
-    Vehicle as Vehicle,
-    MySkodaHub as MySkodaHub,
+from .rest_api import (
+    RestApi as RestApi,
 )
+
+from .models import air_conditioning as air_conditioning
+from .models import charging as charging
+from .models import common as common
+from .models import health as health
+from .models import info as info
+from .models import position as position
+from .models import status as status
