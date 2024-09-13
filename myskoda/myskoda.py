@@ -116,7 +116,7 @@ class AirConditioning:
     target_temperature_celsius: float
     steering_wheel_position: str
     air_conditioning_on: bool
-    state: bool
+    state: str
     charger_connected: bool
     charger_locked: bool
     time_to_reach_target_temperature: str

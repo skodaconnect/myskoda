@@ -13,10 +13,18 @@ pyjwt = "^2"
 pyyaml = "^6"
 pydantic = "^1"
 asyncio = "^3"
+asyncclick = {version = "^8.1.7.2", optional = true}
+termcolor = {version = "^2.4.0", optional = true}
 
 [tool.poetry.group.dev.dependencies]
 ruff = "^0.6.4"
 pyright = "^1.1.379"
+
+[tool.poetry.scripts]
+myskoda = "myskoda.cli:cli"
+
+[tool.poetry.extras]
+cli = ["asyncclick", "termcolor"]
 
 [build-system]
 requires = ["poetry-core"]
