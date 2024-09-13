@@ -1,16 +1,16 @@
 from datetime import datetime, time
-from enum import Enum
+from enum import StrEnum
 from pydantic import BaseModel, Field
 from typing import Any
 
 from .common import ChargerLockedState, ConnectionState, OnOffState, Side, Weekday
 
 
-class TemperatureUnit(str, Enum):
+class TemperatureUnit(StrEnum):
     CELSIUS = "CELSIUS"
 
 
-class TimerMode(str, Enum):
+class TimerMode(StrEnum):
     ONE_OFF = "ONE_OFF"
 
 
@@ -54,7 +54,9 @@ class AirConditioning(BaseModel):
     seat_heating_activated: SeatHeating = Field(None, alias="seatHeatingActivated")
     state: OnOffState
     steering_wheel_position: Side = Field(None, alias="steeringWheelPosition")
-    target_temperature: TargetTemperature = Field(None, alias="targetTemperature")
+    target_temperature: TargetTemperature | None = Field(
+        None, alias="targetTemperature"
+    )
     timers: list[Timer]
     window_heating_enabled: bool = Field(None, alias="windowHeatingEnabled")
     window_heating_state: WindowHeatingState = Field(None, alias="windowHeatingState")

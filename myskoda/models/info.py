@@ -1,10 +1,10 @@
 from datetime import date
-from enum import Enum
+from enum import StrEnum
 from pydantic import BaseModel, Field
 from typing import Any
 
 
-class CapabilityId(str, Enum):
+class CapabilityId(StrEnum):
     AIR_CONDITIONING = "AIR_CONDITIONING"
     AIR_CONDITIONING_SAVE_AND_ACTIVATE = "AIR_CONDITIONING_SAVE_AND_ACTIVATE"
     AIR_CONDITIONING_SMART_SETTINGS = "AIR_CONDITIONING_SMART_SETTINGS"
@@ -76,12 +76,12 @@ class Battery(BaseModel):
     capacity: int = Field(None, alias="capacityInKWh")
 
 
-class BodyType(str, Enum):
+class BodyType(StrEnum):
     SUV = "SUV"
     COMBI = "Combi"
 
 
-class VehicleState(str, Enum):
+class VehicleState(StrEnum):
     ACTIVATED = "ACTIVATED"
 
 
@@ -96,7 +96,7 @@ class Gearbox(BaseModel):
 
 
 class Specification(BaseModel):
-    battery: Battery
+    battery: Battery | None
     body: BodyType
     engine: Engine
     manufacturing_date: date = Field(None, alias="manufacturingDate")
@@ -113,7 +113,7 @@ class ServicePartner(BaseModel):
     id: str = Field(None, alias="servicePartnerId")
 
 
-class ErrorType(str, Enum):
+class ErrorType(StrEnum):
     MISSING_RENDER = "MISSING_RENDER"
 
 

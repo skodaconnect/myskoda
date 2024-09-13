@@ -1,11 +1,11 @@
-from enum import Enum
+from enum import StrEnum
 from pydantic import BaseModel, Field
 from typing import Any
 
 from .common import Address, Coordinates
 
 
-class Type(str, Enum):
+class Type(StrEnum):
     VEHICLE = "VEHICLE"
 
 

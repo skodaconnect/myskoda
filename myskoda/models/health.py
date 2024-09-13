@@ -1,14 +1,15 @@
 from datetime import datetime
-from enum import Enum
+from enum import StrEnum
 from pydantic import BaseModel, Field
 from typing import Any
 
 
-class WarningLightCategory(str, Enum):
+class WarningLightCategory(StrEnum):
     ASSISTANCE = "ASSISTANCE"
     COMFORT = "COMFORT"
     BRAKE = "BRAKE"
     ELECTRIC_ENGINE = "ELECTRIC_ENGINE"
+    ENGINE = "ENGINE"
     LIGHTING = "LIGHTING"
     TIRE = "TIRE"
     OTHER = "OTHER"

@@ -1,9 +1,9 @@
 from datetime import date
-from enum import Enum
+from enum import StrEnum
 from pydantic import BaseModel, Field
 
 
-class VehicleType(str, Enum):
+class VehicleType(StrEnum):
     FUEL = "FUEL"
 
 

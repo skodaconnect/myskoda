@@ -1,32 +1,32 @@
 from datetime import datetime
-from enum import Enum
+from enum import StrEnum
 from pydantic import BaseModel, Field
 from typing import Any
 
 from .common import ActiveState, EnabledState
 
 
-class ChargeMode(str, Enum):
+class ChargeMode(StrEnum):
     MANUAL = "MANUAL"
 
 
-class MaxChargeCurrent(str, Enum):
+class MaxChargeCurrent(StrEnum):
     MAXIMUM = "MAXIMUM"
     REDUCED = "REDUCED"
 
 
-class ChargingState(str, Enum):
+class ChargingState(StrEnum):
     READY_FOR_CHARGING = "READY_FOR_CHARGING"
     CONNECT_CABLE = "CONNECT_CABLE"
     CONSERVING = "CONSERVING"
     CHARGING = "CHARGING"
 
 
-class ChargeType(str, Enum):
+class ChargeType(StrEnum):
     AC = "AC"
 
 
-class PlugUnlockMode(str, Enum):
+class PlugUnlockMode(StrEnum):
     PERMANENT = "PERMANENT"
     ON = "ON"
     OFF = "OFF"
@@ -72,7 +72,7 @@ class Charging(BaseModel):
     errors: list[Any]
     is_vehicle_in_saved_location: bool = Field(None, alias="isVehicleInSavedLocation")
     settings: Settings
-    status: Status
+    status: Status | None
     charging_rate_in_kilometers_per_hour: float | None = Field(
         None, alias="chargingRateInKilometersPerHour"
     )

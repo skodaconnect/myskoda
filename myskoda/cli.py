@@ -56,9 +56,10 @@ async def info(vin):
         await hub.authenticate(username, password)
         info = await hub.get_info(vin)
 
-        print(
-            f"{colored("battery capacity:", "blue")} {info.specification.battery.capacity}kwh"
-        )
+        if info.specification.battery is not None:
+            print(
+                f"{colored("battery capacity:", "blue")} {info.specification.battery.capacity}kwh"
+            )
         print(f"{colored("power:", "blue")} {info.specification.engine.power}kw")
         print(f"{colored("engine:", "blue")} {info.specification.engine.type}")
         print(f"{colored("model:", "blue")} {info.specification.model}")
@@ -106,9 +107,10 @@ async def air_conditioning(vin):
         print(
             f"{colored("window heating (back):", "blue")} {on(ac.window_heating_state.rear)}"
         )
-        print(
-            f"{colored("target temperature:", "blue")} {ac.target_temperature.temperature_value}°C"
-        )
+        if ac.target_temperature is not None:
+            print(
+                f"{colored("target temperature:", "blue")} {ac.target_temperature.temperature_value}°C"
+            )
         print(
             f"{colored("steering wheel position:", "blue")} {ac.steering_wheel_position}"
         )
@@ -167,14 +169,16 @@ async def charging(vin):
         await hub.authenticate(username, password)
         charging = await hub.get_charging(vin)
 
-        print(
-            f"{colored("battery charge:", "blue")} {charging.status.battery.state_of_charge_in_percent}%"
-        )
+        if charging.status is not None:
+            print(
+                f"{colored("battery charge:", "blue")} {charging.status.battery.state_of_charge_in_percent}%"
+            )
+            print(
+                f"{colored("remaining distance:", "blue")} {charging.status.battery.remaining_cruising_range_in_meters / 1000}km"
+            )
+            print(f"{colored("state:", "blue")} {charging.status.state}")
         print(
             f"{colored("target:", "blue")} {charging.settings.target_state_of_charge_in_percent}%"
-        )
-        print(
-            f"{colored("remaining distance:", "blue")} {charging.status.battery.remaining_cruising_range_in_meters / 1000}km"
         )
         print(f"{colored("charging power:", "blue")} {charging.charge_power_in_kw}kw")
         print(f"{colored("charger type:", "blue")} {charging.charge_type}")
@@ -184,7 +188,6 @@ async def charging(vin):
         print(
             f"{colored("remaining time:", "blue")} {charging.remaining_time_to_fully_charged_in_minutes}min"
         )
-        print(f"{colored("state:", "blue")} {charging.status.state}")
         print(
             f"{colored("battery care mode:", "blue")} {active(charging.settings.charging_care_mode)}"
         )

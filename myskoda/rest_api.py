@@ -73,10 +73,11 @@ class RestApi:
     async def get_info(self, vin):
         """Retrieve the basic vehicle information for the specified vehicle."""
         async with self.session.get(
-            f"{BASE_URL_SKODA}/api/v2/garage/vehicles/{vin}",
+            f"{BASE_URL_SKODA}/api/v2/garage/vehicles/{vin}?connectivityGenerations=MOD1&connectivityGenerations=MOD2&connectivityGenerations=MOD3&connectivityGenerations=MOD4",
             headers=await self._headers(),
         ) as response:
             _LOGGER.debug("vin %s: Received basic info", vin)
+            print(await response.text())
             return Info(**await response.json())
 
     async def get_charging(self, vin):
@@ -147,13 +148,15 @@ class RestApi:
             f"{BASE_URL_SKODA}/api/v1/vehicle-health-report/warning-lights/{vin}",
             headers=await self._headers(),
         ) as response:
+            print(await response.json())
             _LOGGER.debug("vin %s: Received health")
             return Health(**await response.json())
 
     async def list_vehicles(self):
         """List all vehicles by their vins."""
         async with self.session.get(
-            f"{BASE_URL_SKODA}/api/v2/garage", headers=await self._headers()
+            f"{BASE_URL_SKODA}/api/v2/garage?connectivityGenerations=MOD1&connectivityGenerations=MOD2&connectivityGenerations=MOD3&connectivityGenerations=MOD4",
+            headers=await self._headers(),
         ) as response:
             json = await response.json()
             print(json)

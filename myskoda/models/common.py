@@ -1,44 +1,45 @@
-from enum import Enum
+from enum import StrEnum
 from pydantic import BaseModel, Field
 
 
-class OnOffState(str, Enum):
+class OnOffState(StrEnum):
     ON = "ON"
     OFF = "OFF"
+    INVALID = "INVALID"
 
 
-class EnabledState(str, Enum):
+class EnabledState(StrEnum):
     ENABLED = "ENABLED"
     DISABLED = "DISABLED"
 
 
-class ActiveState(str, Enum):
+class ActiveState(StrEnum):
     ACTIVATED = "ACTIVATED"
     DEACTIVATED = "DEACTIVATED"
 
 
-class OpenState(str, Enum):
+class OpenState(StrEnum):
     OPEN = "OPEN"
     CLOSED = "CLOSED"
     UNSUPPORTED = "UNSUPPORTED"
 
 
-class DoorLockedState(str, Enum):
+class DoorLockedState(StrEnum):
     LOCKED = "YES"
     UNLOCKED = "NO"
 
 
-class ChargerLockedState(str, Enum):
+class ChargerLockedState(StrEnum):
     LOCKED = "LOCKED"
     UNLOCKED = "UNLOCKED"
 
 
-class ConnectionState(str, Enum):
+class ConnectionState(StrEnum):
     CONNECTED = "CONNECTED"
     DISCONNECTED = "DISCONNECTED"
 
 
-class Side(str, Enum):
+class Side(StrEnum):
     LEFT = "LEFT"
     RIGHT = "RIGHT"
 
@@ -57,7 +58,7 @@ class Address(BaseModel):
     zip_code: str = Field(None, alias="zipCode")
 
 
-class Weekday(str, Enum):
+class Weekday(StrEnum):
     MONDAY = "MONDAY"
     TUESDAY = "TUESDAY"
     WEDNESDAY = "WEDNESDAY"
