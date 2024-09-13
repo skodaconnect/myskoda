@@ -8,35 +8,9 @@ from aiohttp import ClientSession
 
 from .authorization import IDKSession, idk_authorize
 from .const import BASE_URL_SKODA
+from .models.info import Info
 
 _LOGGER = logging.getLogger(__name__)
-
-
-class Info:
-    """Basic vehicle information."""
-
-    battery_capacity_kwh: int
-    engine_power_kw: int
-    engine_type: str
-    model: str
-    model_id: str
-    model_year: str
-    title: str
-    vin: str
-    software_version: str
-
-    def __init__(self, data):  # noqa: D107
-        self.vin = data.get("vin")
-        self.software_version = data.get("softwareVersion")
-
-        data = data.get("specification")
-        self.battery_capacity_kwh = data.get("battery", {}).get("capacityInKWh")
-        self.engine_power_kw = data.get("engine", {}).get("powerInKW")
-        self.engine_type = data.get("engine", {}).get("type")
-        self.model = data.get("model")
-        self.model_year = data.get("modelYear")
-        self.model_id = data.get("systemModelId")
-        self.title = data.get("title")
 
 
 class Charging:
@@ -236,7 +210,8 @@ class MySkodaHub:
             headers=await self._headers(),
         ) as response:
             _LOGGER.debug("vin %s: Received basic info", vin)
-            return Info(await response.json())
+            data = await response.json()
+            return Info(**data)
 
     async def get_charging(self, vin):
         """Retrieve information related to charging for the specified vehicle."""
