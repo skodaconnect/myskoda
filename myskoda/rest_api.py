@@ -5,14 +5,19 @@ import logging
 
 from aiohttp import ClientSession
 
+
 from .authorization import IDKSession, idk_authorize
 from .const import BASE_URL_SKODA
 from .models.air_conditioning import AirConditioning
 from .models.charging import Charging
+from .models.driving_range import DrivingRange
 from .models.health import Health
 from .models.info import Info
-from .models.position import Positions
+from .models.maintenance import Maintenance
+from .models.position import Positions, Type
 from .models.status import Status
+from .models.trip_statistics import TripStatistics
+
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -109,6 +114,33 @@ class RestApi:
             _LOGGER.debug("vin %s: Received position")
             return Positions(**await response.json())
 
+    async def get_driving_range(self, vin):
+        """Retrieve estimated driving range for combustion vehicles."""
+        async with self.session.get(
+            f"{BASE_URL_SKODA}/api/v2/vehicle-status/{vin}/driving-range",
+            headers=await self._headers(),
+        ) as response:
+            _LOGGER.debug("vin %s: Received driving range")
+            return DrivingRange(**await response.json())
+
+    async def get_trip_statistics(self, vin):
+        """Retrieve statistics about past trips."""
+        async with self.session.get(
+            f"{BASE_URL_SKODA}/api/v1/trip-statistics/{vin}?offsetType=week&offset=0&timezone=Europe%2FBerlin",
+            headers=await self._headers(),
+        ) as response:
+            _LOGGER.debug("vin %s: Received trip statistics")
+            return TripStatistics(**await response.json())
+
+    async def get_maintenance(self, vin):
+        """Retrieve maintenance report."""
+        async with self.session.get(
+            f"{BASE_URL_SKODA}/api/v3/vehicle-maintenance/vehicles/{vin}",
+            headers=await self._headers(),
+        ) as response:
+            _LOGGER.debug("vin %s: Received maintenance report")
+            return Maintenance(**await response.json())
+
     async def get_health(self, vin):
         """Retrieve health information for the specified vehicle."""
         async with self.session.get(
@@ -124,6 +156,7 @@ class RestApi:
             f"{BASE_URL_SKODA}/api/v2/garage", headers=await self._headers()
         ) as response:
             json = await response.json()
+            print(json)
             return [vehicle["vin"] for vehicle in json["vehicles"]]
 
     async def get_vehicle(self, vin) -> Vehicle:
@@ -259,5 +292,23 @@ class RestApi:
         async with self.session.post(
             f"{BASE_URL_SKODA}/api/v1/vehicle-wakeup/{vin}?applyRequestLimiter=true",
             headers=await self._headers(),
+        ) as response:
+            await response.text()
+
+    async def honk_flash(self, vin, honk=False):
+        """Honk and/or flash."""
+        positions = await self.get_positions(vin)
+        position = next(pos for pos in positions.positions if pos.type == Type.VEHICLE)
+        json_data = {
+            "mode": "HONK_AND_FLASH" if honk else "FLASH",
+            "vehiclePosition": {
+                "lat": position.gps_coordinates.latitude,
+                "lng": position.gps_coordinates.longitude,
+            },
+        }
+        async with self.session.post(
+            f"{BASE_URL_SKODA}/api/v1/vehicle-access/{vin}/honk-and-flash",
+            headers=await self._headers(),
+            json=json_data,
         ) as response:
             await response.text()

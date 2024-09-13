@@ -78,6 +78,7 @@ class Battery(BaseModel):
 
 class BodyType(str, Enum):
     SUV = "SUV"
+    COMBI = "Combi"
 
 
 class VehicleState(str, Enum):
@@ -86,6 +87,7 @@ class VehicleState(str, Enum):
 
 class Engine(BaseModel):
     power: int = Field(None, alias="powerInKW")
+    capacity_in_liters: float | None = Field(None, alias="capacityInLiters")
     type: str
 
 
@@ -111,6 +113,15 @@ class ServicePartner(BaseModel):
     id: str = Field(None, alias="servicePartnerId")
 
 
+class ErrorType(str, Enum):
+    MISSING_RENDER = "MISSING_RENDER"
+
+
+class Error(BaseModel):
+    description: str
+    type: ErrorType
+
+
 class Info(BaseModel):
     """Basic vehicle information."""
 
@@ -123,3 +134,5 @@ class Info(BaseModel):
     service_partner: ServicePartner = Field(None, alias="servicePartner")
     workshop_mode_enabled: bool = Field(None, alias="workshopModeEnabled")
     capabilities: Capabilities
+    errors: list[Error] | None
+    license_plate: str = Field(None, alias="licensePlate")

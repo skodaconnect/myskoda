@@ -193,6 +193,83 @@ async def charging(vin):
         )
 
 
+@cli.command()
+@click.argument("vin")
+async def maintenance(vin):
+    """Print the vehicle's maintenance information."""
+    async with ClientSession() as session:
+        hub = RestApi(session)
+        await hub.authenticate(username, password)
+        maintenance = await hub.get_maintenance(vin)
+
+        print(
+            f"{colored("mileage:", "blue")} {maintenance.maintenance_report.mileage_in_km}km"
+        )
+        print(
+            f"{colored("inspection due in:", "blue")} {maintenance.maintenance_report.inspection_due_in_days}d / {maintenance.maintenance_report.inspection_due_in_km}km"
+        )
+        print(
+            f"{colored("oil service due in:", "blue")} {maintenance.maintenance_report.oil_service_due_in_days}d / {maintenance.maintenance_report.oil_service_due_in_km}km"
+        )
+        print(
+            f"{colored("email:", "blue")} {maintenance.predictive_maintenance.setting.email}"
+        )
+        print(
+            f"{colored("phone:", "blue")} {maintenance.predictive_maintenance.setting.phone}"
+        )
+        print(
+            f"{colored("service partner:", "blue")} {maintenance.preferred_service_partner.name}"
+        )
+        address = maintenance.preferred_service_partner.address
+        print(f"     {address.street} {address.house_number}")
+        print(f"     {address.zip_code} {address.city}")
+        print(f"     {address.country} ({address.country_code})")
+
+
+@cli.command()
+@click.argument("vin")
+async def driving_range(vin):
+    """Print the vehicle's estimated driving range information."""
+    async with ClientSession() as session:
+        hub = RestApi(session)
+        await hub.authenticate(username, password)
+        driving_range = await hub.get_driving_range(vin)
+
+        print(f"{colored("range:", "blue")} {driving_range.total_range_in_km}km")
+        print(f"{colored("car type:", "blue")} {driving_range.car_type}")
+        print(
+            f"{colored("last update:", "blue")} {driving_range.car_captured_timestamp}"
+        )
+        print(
+            f"{colored("fuel level:", "blue")} {driving_range.primary_engine_range.current_fuel_level_in_percent}%"
+        )
+
+
+@cli.command()
+@click.argument("vin")
+async def trip_statistics(vin):
+    """Print the last trip statics."""
+    async with ClientSession() as session:
+        hub = RestApi(session)
+        await hub.authenticate(username, password)
+        stats = await hub.get_trip_statistics(vin)
+
+        print(
+            f"{colored("overall fuel consumption:", "blue")} {stats.overall_average_fuel_consumption}l/100km"
+        )
+        print(f"{colored("mileage:", "blue")} {stats.overall_mileage_in_km}km")
+        print(f"{colored("entries:", "blue")}")
+        for entry in stats.detailed_statistics:
+            print(f"- {colored("date:", "blue")} {entry.date}")
+            print(
+                f"  {colored("average fuel consumption:", "blue")} {entry.average_fuel_consumption}l/100km"
+            )
+            print(
+                f"  {colored("average speed:", "blue")} {entry.average_speed_in_kmph}km/h"
+            )
+            print(f"  {colored("mileage:", "blue")} {entry.mileage_in_km}km")
+
+
 def open(cond: OpenState) -> str:
     return (
         colored("open", "red") if cond == OpenState.OPEN else colored("closed", "green")

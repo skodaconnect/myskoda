@@ -3,17 +3,7 @@ from enum import Enum
 from pydantic import BaseModel, Field
 from typing import Any
 
-from myskoda.models.common import ChargerLockedState, ConnectionState, OnOffState, Side
-
-
-class Weekday(str, Enum):
-    MONDAY = "MONDAY"
-    TUESDAY = "TUESDAY"
-    WEDNESDAY = "WEDNESDAY"
-    THURSDAY = "THURSDAY"
-    FRIDAY = "FRIDAY"
-    SATURDAY = "SATURDAY"
-    SUNDAY = "SUNDAY"
+from .common import ChargerLockedState, ConnectionState, OnOffState, Side, Weekday
 
 
 class TemperatureUnit(str, Enum):
