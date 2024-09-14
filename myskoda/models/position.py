@@ -1,6 +1,5 @@
 from enum import StrEnum
 from pydantic import BaseModel, Field
-from typing import Any
 
 from .common import Address, Coordinates
 
