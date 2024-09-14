@@ -1,5 +1,8 @@
+"""Models for responses of api/v2/vehicle-status/{vin}."""
+
 from datetime import date
 from enum import StrEnum
+
 from pydantic import BaseModel, Field
 
 
@@ -17,14 +20,10 @@ class StatisticsEntry(BaseModel):
 
 
 class TripStatistics(BaseModel):
-    overall_average_fuel_consumption: float = Field(
-        None, alias="overallAverageFuelConsumption"
-    )
+    overall_average_fuel_consumption: float = Field(None, alias="overallAverageFuelConsumption")
     overall_average_mileage_in_km: int = Field(None, alias="overallAverageMileageInKm")
     overall_average_speed_in_kmph: int = Field(None, alias="overallAverageSpeedInKmph")
-    overall_average_travel_time_in_min: int = Field(
-        None, alias="overallAverageTravelTimeInMin"
-    )
+    overall_average_travel_time_in_min: int = Field(None, alias="overallAverageTravelTimeInMin")
     overall_mileage_in_km: int = Field(None, alias="overallMileageInKm")
     overall_travel_time_in_min: int = Field(None, alias="overallTravelTimeInMin")
     vehicle_type: VehicleType = Field(None, alias="vehicleType")

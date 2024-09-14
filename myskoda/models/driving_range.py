@@ -1,5 +1,8 @@
+"""Models for responses of api/v2/vehicle-status/{vin}/driving-range endpoint."""
+
 from datetime import datetime
 from enum import StrEnum
+
 from pydantic import BaseModel, Field
 
 

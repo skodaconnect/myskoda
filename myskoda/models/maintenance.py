@@ -1,8 +1,11 @@
-from datetime import time, datetime
+"""Models for responses of api/v3/vehicle-maintenance/vehicles/{vin} endpoint."""
+
+from datetime import datetime, time
 from enum import StrEnum
+
 from pydantic import BaseModel, Field
 
-from .common import Weekday, Address, Coordinates
+from .common import Address, Coordinates, Weekday
 
 
 class MaintenanceReport(BaseModel):
@@ -59,9 +62,5 @@ class ServicePartner(BaseModel):
 
 class Maintenance(BaseModel):
     maintenance_report: MaintenanceReport = Field(None, alias="maintenanceReport")
-    predictive_maintenance: PredictiveMaintenance = Field(
-        None, alias="predictiveMaintenance"
-    )
-    preferred_service_partner: ServicePartner = Field(
-        None, alias="preferredServicePartner"
-    )
+    predictive_maintenance: PredictiveMaintenance = Field(None, alias="predictiveMaintenance")
+    preferred_service_partner: ServicePartner = Field(None, alias="preferredServicePartner")

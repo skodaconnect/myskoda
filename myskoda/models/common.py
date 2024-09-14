@@ -1,4 +1,7 @@
+"""Common models used in multiple responses."""
+
 from enum import StrEnum
+
 from pydantic import BaseModel, Field
 
 

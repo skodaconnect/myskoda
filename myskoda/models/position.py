@@ -1,4 +1,7 @@
+"""Models for responses of api/v2/vehicle-status/{vin}/driving-range."""
+
 from enum import StrEnum
+
 from pydantic import BaseModel, Field
 
 from .common import Address, Coordinates

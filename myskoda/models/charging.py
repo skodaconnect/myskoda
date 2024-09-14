@@ -1,7 +1,10 @@
+"""Models for responses of api/v1/charging endpoint."""
+
 from datetime import datetime
 from enum import StrEnum
-from pydantic import BaseModel, Field
 from typing import Any
+
+from pydantic import BaseModel, Field
 
 from .common import ActiveState, EnabledState
 
@@ -38,18 +41,12 @@ class Settings(BaseModel):
     charging_care_mode: ActiveState = Field(None, alias="chargingCareMode")
     max_charge_current_ac: MaxChargeCurrent = Field(None, alias="maxChargeCurrentAc")
     preferred_charge_mode: ChargeMode = Field(None, alias="preferredChargeMode")
-    target_state_of_charge_in_percent: int = Field(
-        None, alias="targetStateOfChargeInPercent"
-    )
-    auto_unlock_plug_when_charged: PlugUnlockMode = Field(
-        None, alias="autoUnlockPlugWhenCharged"
-    )
+    target_state_of_charge_in_percent: int = Field(None, alias="targetStateOfChargeInPercent")
+    auto_unlock_plug_when_charged: PlugUnlockMode = Field(None, alias="autoUnlockPlugWhenCharged")
 
 
 class Battery(BaseModel):
-    remaining_cruising_range_in_meters: int = Field(
-        None, alias="remainingCruisingRangeInMeters"
-    )
+    remaining_cruising_range_in_meters: int = Field(None, alias="remainingCruisingRangeInMeters")
     state_of_charge_in_percent: int = Field(None, alias="stateOfChargeInPercent")
 
 

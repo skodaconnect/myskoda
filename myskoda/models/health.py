@@ -1,7 +1,10 @@
+"""Models for responses of api/v1/vehicle-health-report/warning-lights endpoint."""
+
 from datetime import datetime
 from enum import StrEnum
-from pydantic import BaseModel, Field
 from typing import Any
+
+from pydantic import BaseModel, Field
 
 
 class WarningLightCategory(StrEnum):

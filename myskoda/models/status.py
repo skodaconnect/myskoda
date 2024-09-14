@@ -1,4 +1,7 @@
+"""Models for responses of api/v2/vehicle-status/{vin}."""
+
 from datetime import datetime
+
 from pydantic import BaseModel, Field
 
 from myskoda.models.common import DoorLockedState, OnOffState, OpenState

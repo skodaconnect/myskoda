@@ -1,7 +1,10 @@
+"""Models for responses of api/v2/garage/vehicles/{vin}."""
+
 from datetime import date
 from enum import StrEnum
-from pydantic import BaseModel, Field
 from typing import Any
+
+from pydantic import BaseModel, Field
 
 
 class CapabilityId(StrEnum):
