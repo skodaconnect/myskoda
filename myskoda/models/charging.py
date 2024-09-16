@@ -27,6 +27,7 @@ class ChargingState(StrEnum):
 
 class ChargeType(StrEnum):
     AC = "AC"
+    DC = "DC"
 
 
 class PlugUnlockMode(StrEnum):
