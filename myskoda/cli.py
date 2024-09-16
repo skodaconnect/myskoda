@@ -9,6 +9,8 @@ from aiohttp import ClientSession
 from asyncclick.core import Context
 from termcolor import colored
 
+from myskoda.mqtt import MQTT
+
 from . import idk_authorize
 from .models.charging import MaxChargeCurrent
 from .models.common import (
@@ -302,6 +304,19 @@ async def trip_statistics(ctx: Context, vin: str) -> None:
             )
             print(f"  {colored("average speed:", "blue")} {entry.average_speed_in_kmph}km/h")
             print(f"  {colored("mileage:", "blue")} {entry.mileage_in_km}km")
+
+
+@cli.command()
+@click.pass_context
+async def mqtt(ctx: Context) -> None:
+    """Connect to the MQTT broker and listen for messages."""
+    async with ClientSession() as session:
+        hub = RestApi(session)
+        await hub.authenticate(ctx.obj["username"], ctx.obj["password"])
+
+        mqtt = MQTT(hub)
+        await mqtt.connect()
+        mqtt.loop_forever()
 
 
 def c_open(cond: OpenState) -> str:

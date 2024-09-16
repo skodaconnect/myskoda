@@ -15,6 +15,7 @@ pydantic = "^1"
 asyncio = "^3"
 asyncclick = { version = "^8.1.7.2", optional = true }
 termcolor = { version = "^2.4.0", optional = true }
+paho-mqtt = "^1"
 
 [tool.poetry.group.dev.dependencies]
 ruff = "^0.6.4"
