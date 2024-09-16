@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "myskoda"
-version = "0.2.1"
+version = "0.2.2"
 description = "Library for interaction with the MySkoda APIs."
 authors = ["Frederick Gnodtke <frederick@gnodtke.net>"]
 readme = "README.md"
