@@ -27,9 +27,15 @@ For example, if a `start-stop-air-conditioning` message is sent, the MQTT server
 | **version**   | Protocol version.                                                      | `1`                                      |
 | **traceId**   | This id stays the same across a request. Unsure what this is used for. | `"7620dfdabcf14fc5a3c832dccfb2510a"`     |
 | **requestId** | This id stays the same across a request. Unsure what this is used for. | `"df538725-66ff-4644-9a5d-7f3eac8838fb"` |
-| **operation** | Timestamp from when the message originated in ISO format.              | `"start-flash"`                          |
-| **status**    | Probably the origin of the message.                                    | `"IN_PROGRESS"`                          |
+| **operation** | The operation that is being performed / was requested.                 | `"start-flash"`                          |
+| **status**    | Status of the message.                                                 | `"IN_PROGRESS"`                          |
 | **errorCode** | Only present in error messages. Describes the type of error.           | `timeout`                                |
+
+##### Status
+
+* `"IN_PROGRESS"`: Operation is currently being executed by the car.
+* `"COMPLETED_SUCCESS"`: Operation completed.
+* `"ERROR"`: An error occurred. Additional information in field `"errorCode"`.
 
 ### /service-event
 
@@ -94,6 +100,17 @@ Published when the user requests that the temperature of the air conditioning is
   "status": "IN_PROGRESS",
   "traceId": "c94de7d5a966c79c7666328b005b55ee",
   "requestId": "e8f6fd16-d6c1-44fa-8b5e-2c7ddaae2cc2"
+}
+```
+
+```json
+{
+  "version":1,
+  "operation":"start-air-conditioning",
+  "status":"ERROR",
+  "errorCode":"timeout",
+  "traceId":"0b1e16a2b5070e19842656f7691c52c9",
+  "requestId":"e379d91d-1b6b-442f-82ee-99b6f8c9c0af"
 }
 ```
 
