@@ -16,6 +16,7 @@ from .models.maintenance import Maintenance
 from .models.position import Positions, PositionType
 from .models.status import Status
 from .models.trip_statistics import TripStatistics
+from .models.user import User
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -146,6 +147,15 @@ class RestApi:
         ) as response:
             _LOGGER.debug("vin %s: Received health")
             return Health(**await response.json())
+
+    async def get_user(self) -> User:
+        """Retrieve user information about logged in user."""
+        async with self.session.get(
+            f"{BASE_URL_SKODA}/api/v1/users",
+            headers=await self._headers(),
+        ) as response:
+            _LOGGER.debug("vin %s: Received user")
+            return User(**await response.json())
 
     async def list_vehicles(self) -> list[str]:
         """List all vehicles by their vins."""

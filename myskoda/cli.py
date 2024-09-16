@@ -265,6 +265,20 @@ async def driving_range(ctx: Context, vin: str) -> None:
 
 
 @cli.command()
+@click.pass_context
+async def user(ctx: Context) -> None:
+    """Print information about currently logged in user."""
+    async with ClientSession() as session:
+        hub = RestApi(session)
+        await hub.authenticate(ctx.obj["username"], ctx.obj["password"])
+        user = await hub.get_user()
+
+        print(f"{colored("id:", "blue")} {user.id}")
+        print(f"{colored("name:", "blue")} {user.first_name} {user.last_name}")
+        print(f"{colored("email:", "blue")} {user.email}")
+
+
+@cli.command()
 @click.argument("vin")
 @click.pass_context
 async def trip_statistics(ctx: Context, vin: str) -> None:
