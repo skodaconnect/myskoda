@@ -154,7 +154,7 @@ class RestApi:
             f"{BASE_URL_SKODA}/api/v1/users",
             headers=await self._headers(),
         ) as response:
-            _LOGGER.debug("vin %s: Received user")
+            _LOGGER.debug("Received user")
             return User(**await response.json())
 
     async def list_vehicles(self) -> list[str]:

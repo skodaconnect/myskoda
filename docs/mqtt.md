@@ -36,6 +36,7 @@ For example, if a `start-stop-air-conditioning` message is sent, the MQTT server
 * `"IN_PROGRESS"`: Operation is currently being executed by the car.
 * `"COMPLETED_SUCCESS"`: Operation completed.
 * `"ERROR"`: An error occurred. Additional information in field `"errorCode"`.
+* `"COMPLETED_WARNING"`: Extracted from analysing the smali files. We don't know the implications.
 
 ### /service-event
 

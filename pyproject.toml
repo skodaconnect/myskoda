@@ -16,6 +16,7 @@ asyncio = "^3"
 asyncclick = { version = "^8.1.7.2", optional = true }
 termcolor = { version = "^2.4.0", optional = true }
 paho-mqtt = "^1"
+coloredlogs = {version = "^15.0.1", optional = true}
 
 [tool.poetry.group.dev.dependencies]
 ruff = "^0.6.4"
@@ -25,7 +26,7 @@ pyright = "^1.1.379"
 myskoda = "myskoda.cli:cli"
 
 [tool.poetry.extras]
-cli = ["asyncclick", "termcolor"]
+cli = ["asyncclick", "coloredlogs", "termcolor"]
 
 [build-system]
 requires = ["poetry-core"]

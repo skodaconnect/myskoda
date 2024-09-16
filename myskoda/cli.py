@@ -4,7 +4,10 @@ Execute with:
 poetry run python3 -m myskoda.cli
 """
 
+from logging import DEBUG, INFO
+
 import asyncclick as click
+import coloredlogs
 from aiohttp import ClientSession
 from asyncclick.core import Context
 from termcolor import colored
@@ -28,9 +31,11 @@ from .rest_api import RestApi
 @click.version_option()
 @click.option("username", "--user", help="Username used for login.", required=True)
 @click.option("password", "--password", help="Password used for login.", required=True)
+@click.option("verbose", "--verbose", help="Enable verbose logging.", is_flag=True)
 @click.pass_context
-def cli(ctx: Context, username: str, password: str) -> None:
+def cli(ctx: Context, username: str, password: str, verbose: bool) -> None:  # noqa: FBT001
     """Interact with the MySkoda API."""
+    coloredlogs.install(level=DEBUG if verbose else INFO)
     ctx.ensure_object(dict)
     ctx.obj["username"] = username
     ctx.obj["password"] = password
