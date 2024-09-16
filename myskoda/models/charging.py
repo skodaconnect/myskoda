@@ -60,6 +60,7 @@ class Status(BaseModel):
     remaining_time_to_fully_charged_in_minutes: int = Field(
         None, alias="remainingTimeToFullyChargedInMinutes"
     )
+    charge_type: ChargeType | None = Field(None, alias="chargeType")
     state: ChargingState
 
 
@@ -71,11 +72,3 @@ class Charging(BaseModel):
     is_vehicle_in_saved_location: bool = Field(None, alias="isVehicleInSavedLocation")
     settings: Settings
     status: Status | None
-    charging_rate_in_kilometers_per_hour: float | None = Field(
-        None, alias="chargingRateInKilometersPerHour"
-    )
-    remaining_time_to_fully_charged_in_minutes: int | None = Field(
-        None, alias="remainingTimeToFullyChargedInMinutes"
-    )
-    charge_type: ChargeType | None = Field(None, alias="chargeType")
-    charge_power_in_kw: float | None = Field(None, alias="chargePowerInKw")

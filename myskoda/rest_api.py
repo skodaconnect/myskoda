@@ -82,6 +82,7 @@ class RestApi:
             f"{BASE_URL_SKODA}/api/v1/charging/{vin}", headers=await self._headers()
         ) as response:
             _LOGGER.debug("Received charging info")
+            print(await response.json())
             return Charging(**await response.json())
 
     async def get_status(self, vin: str) -> Status:

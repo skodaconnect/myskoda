@@ -191,18 +191,18 @@ async def charging(ctx: Context, vin: str) -> None:
                 f"{charging.status.battery.remaining_cruising_range_in_meters / 1000}km"
             )
             print(f"{colored("state:", "blue")} {charging.status.state}")
+            print(f"{colored("charger type:", "blue")} {charging.status.charge_type}")
+            print(
+                f"{colored("charging rate:", "blue")} "
+                f"{charging.status.charging_rate_in_kilometers_per_hour}km/h"
+            )
+            print(
+                f"{colored("remaining time:", "blue")} "
+                f"{charging.status.remaining_time_to_fully_charged_in_minutes}min"
+            )
+            print(f"{colored("charging power:", "blue")} {charging.status.charge_power_in_kw}kw")
         print(
             f"{colored("target:", "blue")} {charging.settings.target_state_of_charge_in_percent}%"
-        )
-        print(f"{colored("charging power:", "blue")} {charging.charge_power_in_kw}kw")
-        print(f"{colored("charger type:", "blue")} {charging.charge_type}")
-        print(
-            f"{colored("charging rate:", "blue")} "
-            f"{charging.charging_rate_in_kilometers_per_hour}km/h"
-        )
-        print(
-            f"{colored("remaining time:", "blue")} "
-            f"{charging.remaining_time_to_fully_charged_in_minutes}min"
         )
         print(
             f"{colored("battery care mode:", "blue")} "
@@ -235,13 +235,14 @@ async def maintenance(ctx: Context, vin: str) -> None:
             f"{maintenance.maintenance_report.oil_service_due_in_days}d / "
             f"{maintenance.maintenance_report.oil_service_due_in_km}km"
         )
-        print(f"{colored("email:", "blue")} {maintenance.predictive_maintenance.setting.email}")
-        print(f"{colored("phone:", "blue")} {maintenance.predictive_maintenance.setting.phone}")
         print(f"{colored("service partner:", "blue")} {maintenance.preferred_service_partner.name}")
         address = maintenance.preferred_service_partner.address
         print(f"     {address.street} {address.house_number}")
         print(f"     {address.zip_code} {address.city}")
         print(f"     {address.country} ({address.country_code})")
+        if maintenance.predictive_maintenance:
+            print(f"{colored("email:", "blue")} {maintenance.predictive_maintenance.setting.email}")
+            print(f"{colored("phone:", "blue")} {maintenance.predictive_maintenance.setting.phone}")
 
 
 @cli.command()

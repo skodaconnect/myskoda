@@ -8,7 +8,7 @@ from .authorization import (
     idk_authorize,
 )
 from .models import air_conditioning, charging, common, health, info, position, status
-from .rest_api import RestApi
+from .rest_api import RestApi, Vehicle
 
 __all__ = [
     "AuthorizationError",
@@ -24,4 +24,5 @@ __all__ = [
     "position",
     "status",
     "RestApi",
+    "Vehicle",
 ]

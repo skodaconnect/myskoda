@@ -62,5 +62,7 @@ class ServicePartner(BaseModel):
 
 class Maintenance(BaseModel):
     maintenance_report: MaintenanceReport = Field(None, alias="maintenanceReport")
-    predictive_maintenance: PredictiveMaintenance = Field(None, alias="predictiveMaintenance")
+    predictive_maintenance: PredictiveMaintenance | None = Field(
+        None, alias="predictiveMaintenance"
+    )
     preferred_service_partner: ServicePartner = Field(None, alias="preferredServicePartner")
