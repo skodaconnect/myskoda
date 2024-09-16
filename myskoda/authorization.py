@@ -15,6 +15,7 @@ import jwt
 import yaml
 from aiohttp import ClientSession, FormData
 from bs4 import BeautifulSoup
+from pydantic import BaseModel, Field
 
 from .const import BASE_URL_IDENT, BASE_URL_SKODA, CLIENT_ID
 
@@ -46,7 +47,7 @@ class IDKCredentials:
         self.relay_state = data.get("templateModel", {}).get("relayState")
 
 
-class IDKAuthorizationCode:
+class IDKAuthorizationCode(BaseModel):
     """One-time authorization code that can be obtained by logging in.
 
     This authorization code can later be exchanged for a set of JWT tokens.
@@ -56,29 +57,16 @@ class IDKAuthorizationCode:
     token_type: str
     id_token: str
 
-    def __init__(self, data: dict[str, str]) -> None:
-        """Parse a new authorization code from the dict extracted from the website."""
-        self.code = data.get("code")
-        self.token_type = data.get("token_type")
-        self.id_token = data.get("id_token")
-        self.relay_state = data.get("templateModel", {}).get("relayState")
 
-
-class IDKSession:
+class IDKSession(BaseModel):
     """Stores the JWT tokens relevant for a session at the IDK server.
 
     Can be used to authorized and refresh the authorization token.
     """
 
-    access_token: str
-    refresh_token: str
-    id_token: str
-
-    def __init__(self, data: dict[str, str]) -> None:
-        """Parse access tokens from the dict that the server returns."""
-        self.access_token = data.get("accessToken")
-        self.refresh_token = data.get("refreshToken")
-        self.id_token = data.get("idToken")
+    access_token: str = Field(None, alias="accessToken")
+    refresh_token: str = Field(None, refreshToken="accessToken")
+    id_token: str = Field(None, idToken="accessToken")
 
     async def perform_refresh(self, session: ClientSession) -> None:
         """Refresh the authorization token.
@@ -238,7 +226,7 @@ async def _enter_password(
             [key, value] = code.split("=")
             data[key] = value
 
-        return IDKAuthorizationCode(data)
+        return IDKAuthorizationCode(**data)
 
 
 async def _exchange_auth_code_for_idk_session(
@@ -259,8 +247,7 @@ async def _exchange_auth_code_for_idk_session(
         json=json_data,
         allow_redirects=False,
     ) as response:
-        login_data = json.loads(await response.text())
-        return IDKSession(login_data)
+        return IDKSession(**await response.json())
 
 
 async def idk_authorize(session: ClientSession, email: str, password: str) -> IDKSession:
