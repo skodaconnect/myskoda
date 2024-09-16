@@ -25,6 +25,7 @@ class CapabilityId(StrEnum):
     DEALER_APPOINTMENT = "DEALER_APPOINTMENT"
     DESTINATIONS = "DESTINATIONS"
     DESTINATION_IMPORT = "DESTINATION_IMPORT"
+    DESTINATION_IMPORT_UPGRADABLE = "DESTINATION_IMPORT_UPGRADABLE"
     DIGICERT = "DIGICERT"
     EMERGENCY_CALLING = "EMERGENCY_CALLING"
     EV_ROUTE_PLANNING = "EV_ROUTE_PLANNING"
@@ -67,9 +68,13 @@ class CapabilityId(StrEnum):
     WINDOW_HEATING = "WINDOW_HEATING"
 
 
+class CapabilityStatus(StrEnum):
+    DEACTIVATED_BY_ACTIVE_VEHICLE_USER = "DEACTIVATED_BY_ACTIVE_VEHICLE_USER"
+
+
 class Capability(BaseModel):
     id: CapabilityId
-    statuses: list[Any]
+    statuses: list[CapabilityStatus]
 
 
 class Capabilities(BaseModel):
