@@ -67,6 +67,14 @@ class MQTT:
         """Make the MQTT client process new messages until the current process is cancelled."""
         self.client.loop_forever()
 
+    def loop_start(self) -> None:
+        """Make the MQTT client process new messages in a thread in the background."""
+        self.client.loop_start()
+
+    def loop_stop(self) -> None:
+        """Stop the thread for processing MQTT messages."""
+        self.client.loop_stop()
+
     def _on_connect(self, client: Client, _data: None, _flags: dict, _reason: int) -> None:
         _LOGGER.info("MQTT Connected.")
         user_id = self.user.id
