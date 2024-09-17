@@ -69,4 +69,5 @@ class ServiceEventChargingData(ServiceEventData):
         return int(value)
 
 
-ServiceEventCharging = ServiceEvent[ServiceEventChargingData]
+class ServiceEventCharging(ServiceEvent):
+    data: ServiceEventChargingData
