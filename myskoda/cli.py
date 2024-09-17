@@ -15,7 +15,7 @@ from termcolor import colored
 from myskoda.models.mqtt import OperationStatus
 
 from . import idk_authorize
-from .event import Event, EventName
+from .event import Event, EventType, ServiceEventTopic
 from .models.charging import MaxChargeCurrent
 from .models.common import (
     ActiveState,
@@ -314,8 +314,28 @@ async def trip_statistics(ctx: Context, vin: str) -> None:
 
 
 @cli.command()
+@click.argument("trace_id")
 @click.pass_context
-async def mqtt(ctx: Context) -> None:
+async def wait_for_operation(ctx: Context, trace_id: str) -> None:
+    """Wait for the operation with the specified trace id to complete."""
+    async with ClientSession() as session:
+        hub = RestApi(session)
+        await hub.authenticate(ctx.obj["username"], ctx.obj["password"])
+
+        mqtt = MQTT(hub)
+        await mqtt.connect()
+
+        mqtt.loop_start()
+
+        await mqtt.wait_for_operation(trace_id)
+        print("Completed.")
+
+        mqtt.loop_stop()
+
+
+@cli.command()
+@click.pass_context
+async def subscribe(ctx: Context) -> None:
     """Connect to the MQTT broker and listen for messages."""
     async with ClientSession() as session:
         hub = RestApi(session)
@@ -325,54 +345,35 @@ async def mqtt(ctx: Context) -> None:
         await mqtt.connect()
 
         def on_event(event: Event) -> None:
-            print(f"{colored("- name:", "blue")} {event.name}")
+            print(f"{colored("- type:", "blue")} {event.type}")
             print(f"{colored("  vin:", "blue")} {event.vin}")
-            print(f"{colored("  payload:", "blue")}")
-            match event.name:
-                case (
-                    EventName.UPDATE_BATTERY_SUPPORT
-                    | EventName.LOCK_VEHICLE
-                    | EventName.WAKEUP
-                    | EventName.SET_TARGET_TEMPERATURE
-                    | EventName.START_STOP_AIR_CONDITIONING
-                    | EventName.START_STOP_WINDOW_HEATING
-                    | EventName.START_STOP_CHARGING
-                    | EventName.HONK_AND_FLASH
-                    | EventName.APPLY_BACKUP
-                ):
-                    payload = event.payload
-                    print(f"      {colored("version:", "blue")} {payload.version}")
-                    print(f"      {colored("trace id:", "blue")} {payload.trace_id}")
-                    print(f"      {colored("request id:", "blue")} {payload.request_id}")
-                    print(f"      {colored("operation:", "blue")} {payload.operation}")
-                    print(f"      {colored("status:", "blue")} {payload.status}")
-                    if status == OperationStatus.ERROR:
-                        print(f"      {colored("error code:", "blue")} {payload.error_code}")
-                case (
-                    EventName.AIR_CONDITIONING
-                    | EventName.ACCESS
-                    | EventName.LIGHTS
-                    | EventName.CHARGING
-                ):
-                    payload = event.payload
-                    data = payload.data
-                    print(f"      {colored("version:", "blue")} {payload.version}")
-                    print(f"      {colored("trace id:", "blue")} {payload.trace_id}")
-                    print(f"      {colored("timestamp:", "blue")} {payload.timestamp}")
-                    print(f"      {colored("producer:", "blue")} {payload.producer}")
-                    print(f"      {colored("name:", "blue")} {payload.name}")
-                    print(f"      {colored("vin:", "blue")} {data.vin}")
-                    print(f"      {colored("user id:", "blue")} {data.user_id}")
-
-                    if event.name == EventName.CHARGING:
-                        data = event.payload.data
-                        print(f"      {colored("mode:", "blue")} {data.mode}")
-                        print(f"      {colored("state:", "blue")} {data.state}")
-                        print(f"      {colored("soc:", "blue")} {data.soc}%")
-                        print(f"      {colored("charged range:", "blue")} {data.charged_range}km")
-                        print(
-                            f"      {colored("time to finish:", "blue")} {data.time_to_finish}min"
-                        )
+            if event.type == EventType.OPERATION:
+                operation = event.operation
+                print(f"  {colored("version:", "blue")} {operation.version}")
+                print(f"  {colored("trace id:", "blue")} {operation.trace_id}")
+                print(f"  {colored("request id:", "blue")} {operation.request_id}")
+                print(f"  {colored("operation:", "blue")} {operation.operation}")
+                print(f"  {colored("status:", "blue")} {operation.status}")
+                if status == OperationStatus.ERROR:
+                    print(f"  {colored("error code:", "blue")} {operation.error_code}")
+            elif event.type == EventType.SERVICE_EVENT:
+                data = event.event.data
+                print(f"  {colored("version:", "blue")} {event.event.version}")
+                print(f"  {colored("trace id:", "blue")} {event.event.trace_id}")
+                print(f"  {colored("timestamp:", "blue")} {event.event.timestamp}")
+                print(f"  {colored("producer:", "blue")} {event.event.producer}")
+                print(f"  {colored("name:", "blue")} {event.event.name}")
+                print(f"  {colored("vin:", "blue")} {data.vin}")
+                print(f"  {colored("user id:", "blue")} {data.user_id}")
+                if event.topic == ServiceEventTopic.CHARGING:
+                    data = event.payload.data
+                    print(f"  {colored("mode:", "blue")} {data.mode}")
+                    print(f"  {colored("state:", "blue")} {data.state}")
+                    print(f"  {colored("soc:", "blue")} {data.soc}%")
+                    print(f"  {colored("charged range:", "blue")} {data.charged_range}km")
+                    print(
+                        f"  {colored("time to finish:", "blue")} {data.time_to_finish}min"
+                    )
 
         mqtt.subscribe(on_event)
         print(f"{colored("Listening for MQTT events:", "blue")}")

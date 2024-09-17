@@ -4,34 +4,35 @@ import json
 import logging
 import re
 import ssl
+from asyncio import Future, get_running_loop
 from collections.abc import Callable
 from typing import cast
 
 from paho.mqtt.client import Client, MQTTMessage
 
-from .const import MQTT_BROKER_HOST, MQTT_BROKER_PORT
+from .const import (
+    MQTT_ACCOUNT_EVENT_TOPICS,
+    MQTT_BROKER_HOST,
+    MQTT_BROKER_PORT,
+    MQTT_OPERATION_TOPICS,
+    MQTT_SERVICE_EVENT_TOPICS,
+)
 from .event import (
     Event,
     EventAccess,
     EventAccountPrivacy,
     EventAirConditioning,
-    EventApplyBackup,
     EventCharging,
-    EventHonkAndFlash,
     EventLights,
-    EventLockVehicle,
-    EventSetTargetTemperature,
-    EventStartStopAirConditioning,
-    EventStartStopCharging,
-    EventStartStopWindowHeating,
-    EventUpdateBatterySupport,
-    EventWakeup,
+    EventOperation,
+    EventType,
 )
+from .models.mqtt import OperationRequest, OperationStatus
 from .models.user import User
 from .rest_api import RestApi
 
 _LOGGER = logging.getLogger(__name__)
-TOPIC_RE = re.compile("^(.*?)/(.*?)/(.*?)$")
+TOPIC_RE = re.compile("^(.*?)/(.*?)/(.*?)/(.*?)$")
 
 
 class MQTT:
@@ -39,14 +40,16 @@ class MQTT:
     user: User
     vehicles: list[str]
     _callbacks: list[Callable[[Event], None]]
+    _trace_callbacks: dict[str, list[Future[OperationRequest]]]
 
     def __init__(self, api: RestApi) -> None:  # noqa: D107
         self.api = api
-        self.callbacks = []
+        self._callbacks = []
+        self._trace_callbacks = {}
 
     def subscribe(self, callback: Callable[[Event], None]) -> None:
         """Listen for events emitted by MySkoda's MQTT broker."""
-        self.callbacks.append(callback)
+        self._callbacks.append(callback)
 
     async def connect(self) -> None:
         """Connect to the MQTT broker and listen for messages."""
@@ -75,42 +78,80 @@ class MQTT:
         """Stop the thread for processing MQTT messages."""
         self.client.loop_stop()
 
-    def _on_connect(self, client: Client, _data: None, _flags: dict, _reason: int) -> None:
+    def _add_trace_future(
+        self, trace_id: str, future: Future[OperationRequest]
+    ) -> None:
+        if trace_id not in self._trace_callbacks:
+            self._trace_callbacks[trace_id] = []
+        self._trace_callbacks[trace_id].append(future)
+
+    async def wait_for_operation(self, trace_id: str) -> None:
+        """Wait until the operation with the specified trace id completes."""
+        future: Future[OperationRequest] = get_running_loop().create_future()
+        self._add_trace_future(trace_id, future)
+
+        operation = await future
+
+        if operation.status == OperationStatus.ERROR:
+            raise OperationFailedError(operation)
+
+        if operation.status == OperationStatus.COMPLETED_WARNING:
+            _LOGGER.warning(
+                "Operation %s for trace %s completed with warnings.",
+                operation.operation,
+                operation.trace_id,
+            )
+
+    def _on_connect(
+        self, client: Client, _data: None, _flags: dict, _reason: int
+    ) -> None:
         _LOGGER.info("MQTT Connected.")
         user_id = self.user.id
 
         for vin in self.vehicles:
-            client.subscribe(f"{user_id}/{vin}/account-event/privacy")
-            client.subscribe(f"{user_id}/{vin}/operation-request/charging/update-battery-support")
-            client.subscribe(f"{user_id}/{vin}/operation-request/vehicle-access/lock-vehicle")
-            client.subscribe(f"{user_id}/{vin}/operation-request/vehicle-wakeup/wakeup")
-            client.subscribe(f"{user_id}/{vin}/service-event/vehicle-status/access")
-            client.subscribe(f"{user_id}/{vin}/service-event/vehicle-status/lights")
-            client.subscribe(
-                f"{user_id}/{vin}/operation-request/air-conditioning/set-target-temperature"
-            )
-            client.subscribe(
-                f"{user_id}/{vin}/operation-request/air-conditioning/start-stop-air-conditioning"
-            )
-            client.subscribe(
-                f"{user_id}/{vin}/operation-request/air-conditioning/start-stop-window-heating"
-            )
-            client.subscribe(f"{user_id}/{vin}/operation-request/charging/start-stop-charging")
-            client.subscribe(
-                f"{user_id}/{vin}/operation-request/vehicle-services-backup/apply-backup"
-            )
-            client.subscribe(f"{user_id}/{vin}/service-event/air-conditioning")
-            client.subscribe(f"{user_id}/{vin}/service-event/charging")
-            client.subscribe(f"{user_id}/{vin}/operation-request/vehicle-access/honk-and-flash")
-            client.subscribe(
-                f"{user_id}/{vin}/operation-request/vehicle-services-backup/apply-backup"
-            )
+            for topic in MQTT_OPERATION_TOPICS:
+                client.subscribe(f"{user_id}/{vin}/operation-request/{topic}")
+            for topic in MQTT_SERVICE_EVENT_TOPICS:
+                client.subscribe(f"{user_id}/{vin}/service-event/{topic}")
+            for topic in MQTT_ACCOUNT_EVENT_TOPICS:
+                client.subscribe(f"{user_id}/{vin}/account-event/{topic}")
 
     def _emit(self, event: Event) -> None:
-        for callback in self.callbacks:
+        for callback in self._callbacks:
             callback(event)
 
-    def _on_message(self, _client: Client, _data: None, msg: MQTTMessage) -> None:  # noqa: C901, PLR0912
+        self._handle_operation(event)
+
+    def _handle_operation(self, event: Event) -> None:
+        if event.type != EventType.OPERATION:
+            return
+
+        if event.operation.status == OperationStatus.IN_PROGRESS:
+            return
+
+        _LOGGER.debug(
+            "Operation '%s' for trace id '%s' completed.",
+            event.operation.operation,
+            event.operation.trace_id,
+        )
+
+        if event.operation.trace_id not in self._trace_callbacks:
+            return
+
+        futures = self._trace_callbacks[event.operation.trace_id]
+
+        _LOGGER.debug(
+            "Resolving %d listener(s) for trace id '%s' with status '%s'.",
+            len(futures),
+            event.operation.trace_id,
+            event.operation.status,
+        )
+        for future in futures:
+            future.set_result(event.operation)
+
+        del self._trace_callbacks[event.operation.trace_id]
+
+    def _on_message(self, _client: Client, _data: None, msg: MQTTMessage) -> None:
         # Extract the topic, user id and vin from the topic's name.
         # Internally, the topic will always look like this:
         # `/{user_id}/{vin}/path/to/topic`
@@ -119,7 +160,8 @@ class MQTT:
             _LOGGER.warning("Unexpected MQTT topic encountered: %s", topic_match)
             return
 
-        [user_id, vin, topic] = topic_match.groups()
+        [user_id, vin, event_type, topic] = topic_match.groups()
+        event_type = EventType(event_type)
 
         # Cast the data from binary string, ignoring empty messages.
         data = cast(str, msg.payload)
@@ -131,32 +173,26 @@ class MQTT:
         # Messages will contain payload as JSON.
         data = json.loads(msg.payload)
 
-        match topic:
-            case "account-event/privacy":
+        match event_type:
+            case EventType.OPERATION:
+                self._emit(EventOperation(vin, user_id, data))
+            case EventType.ACCOUNT_EVENT:
                 self._emit(EventAccountPrivacy(vin, user_id, data))
-            case "operation-request/charging/update-battery-support":
-                self._emit(EventUpdateBatterySupport(vin, user_id, data))
-            case "operation-request/vehicle-access/lock-vehicle":
-                self._emit(EventLockVehicle(vin, user_id, data))
-            case "operation-request/vehicle-wakeup/wakeup":
-                self._emit(EventWakeup(vin, user_id, data))
-            case "operation-request/air-conditioning/set-target-temperature":
-                self._emit(EventSetTargetTemperature(vin, user_id, data))
-            case "operation-request/air-conditioning/start-stop-air-conditioning":
-                self._emit(EventStartStopAirConditioning(vin, user_id, data))
-            case "operation-request/air-conditioning/start-stop-window-heating":
-                self._emit(EventStartStopWindowHeating(vin, user_id, data))
-            case "operation-request/charging/start-stop-charging":
-                self._emit(EventStartStopCharging(vin, user_id, data))
-            case "operation-request/vehicle-services-backup/apply-backup":
-                self._emit(EventApplyBackup(vin, user_id, data))
-            case "operation-request/vehicle-access/honk-and-flash":
-                self._emit(EventHonkAndFlash(vin, user_id, data))
-            case "service-event/air-conditioning":
-                self._emit(EventAirConditioning(vin, user_id, data))
-            case "service-event/charging":
-                self._emit(EventCharging(vin, user_id, data))
-            case "service-event/vehicle-status/access":
-                self._emit(EventAccess(vin, user_id, data))
-            case "service-event/vehicle-status/lights":
-                self._emit(EventLights(vin, user_id, data))
+            case EventType.SERVICE_EVENT:
+                match topic:
+                    case "service-event/air-conditioning":
+                        self._emit(EventAirConditioning(vin, user_id, data))
+                    case "service-event/charging":
+                        self._emit(EventCharging(vin, user_id, data))
+                    case "service-event/vehicle-status/access":
+                        self._emit(EventAccess(vin, user_id, data))
+                    case "service-event/vehicle-status/lights":
+                        self._emit(EventLights(vin, user_id, data))
+
+
+class OperationFailedError(Exception):
+    def __init__(self, operation: OperationRequest) -> None:  # noqa: D107
+        op = operation.operation
+        error = operation.error_code
+        trace = operation.trace_id
+        super().__init__(f"Operation {op} with trace {trace} failed: {error}")
