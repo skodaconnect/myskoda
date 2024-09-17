@@ -21,9 +21,7 @@ class OperationName(StrEnum):
     SET_AIR_CONDITIONING_SEATS_HEATING = "set-air-conditioning-seats-heating"
     SET_AIR_CONDITIONING_TARGET_TEMPERATURE = "set-air-conditioning-target-temperature"
     SET_AIR_CONDITIONING_TIMERS = "set-air-conditioning-timers"
-    SET_AIR_CONDITIONING_WITHOUT_EXTERNAL_POWER = (
-        "set-air-conditioning-without-external-power"
-    )
+    SET_AIR_CONDITIONING_WITHOUT_EXTERNAL_POWER = "set-air-conditioning-without-external-power"
     SET_CLIMATE_PLANS = "set-climate-plans"
     START_ACTIVE_VENTILATION = "start-active-ventilation"
     START_AIR_CONDITIONING = "start-air-conditioning"

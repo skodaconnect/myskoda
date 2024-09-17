@@ -185,6 +185,20 @@ files = [
 ]
 
 [[package]]
+name = "asyncio-paho"
+version = "0.6.0"
+description = "A Paho MQTT client supporting asyncio loop without additional setup."
+optional = false
+python-versions = ">=3.8"
+files = [
+    {file = "asyncio_paho-0.6.0-py3-none-any.whl", hash = "sha256:7239dc5ec17afef1c1ea162e6c32c477c6cc728ce64740ca433b984bded122e7"},
+    {file = "asyncio_paho-0.6.0.tar.gz", hash = "sha256:19fffd4758bfcf704393acf8b540d06a9def27270b2cf55826f956660a8f1496"},
+]
+
+[package.dependencies]
+paho-mqtt = ">=1.6,<2.0"
+
+[[package]]
 name = "attrs"
 version = "24.2.0"
 description = "Classes Without Boilerplate"
@@ -846,4 +860,4 @@ cli = ["asyncclick", "coloredlogs", "termcolor"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.12.0"
-content-hash = "65ca303518fe7c6680dd2cef4c3e5a1e243ea54ef05ff62fef0c38a296573285"
+content-hash = "168bb6daa51cd3bc2d8f7940e05f8efac0e85a4be682ea3fa01ef16a78ae8d15"

@@ -69,6 +69,7 @@ class CapabilityId(StrEnum):
 
 class CapabilityStatus(StrEnum):
     DEACTIVATED_BY_ACTIVE_VEHICLE_USER = "DEACTIVATED_BY_ACTIVE_VEHICLE_USER"
+    INSUFFICIENT_BATTERY_LEVEL = "INSUFFICIENT_BATTERY_LEVEL"
 
 
 class Capability(BaseModel):

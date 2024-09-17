@@ -51,7 +51,7 @@ class EventAirConditioning(BaseEvent):
 
     def __init__(self, vin: str, user_id: str, payload: dict) -> None:  # noqa: D107
         super().__init__(vin, user_id)
-        self.payload = ServiceEvent(**payload)
+        self.event = ServiceEvent(**payload)
 
 
 class EventCharging(BaseEvent):
@@ -61,7 +61,7 @@ class EventCharging(BaseEvent):
 
     def __init__(self, vin: str, user_id: str, payload: dict) -> None:  # noqa: D107
         super().__init__(vin, user_id)
-        self.payload = ServiceEventCharging(**payload)
+        self.event = ServiceEventCharging(**payload)
 
 
 class EventAccess(BaseEvent):
@@ -71,7 +71,7 @@ class EventAccess(BaseEvent):
 
     def __init__(self, vin: str, user_id: str, payload: dict) -> None:  # noqa: D107
         super().__init__(vin, user_id)
-        self.payload = ServiceEvent(**payload)
+        self.event = ServiceEvent(**payload)
 
 
 class EventLights(BaseEvent):
@@ -81,7 +81,7 @@ class EventLights(BaseEvent):
 
     def __init__(self, vin: str, user_id: str, payload: dict) -> None:  # noqa: D107
         super().__init__(vin, user_id)
-        self.payload = ServiceEvent(**payload)
+        self.event = ServiceEvent(**payload)
 
 
 class EventAccountPrivacy(BaseEvent):

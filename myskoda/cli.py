@@ -4,6 +4,7 @@ Execute with:
 poetry run python3 -m myskoda.cli
 """
 
+import asyncio
 from logging import DEBUG, INFO
 
 import asyncclick as click
@@ -12,7 +13,7 @@ from aiohttp import ClientSession
 from asyncclick.core import Context
 from termcolor import colored
 
-from myskoda.models.mqtt import OperationStatus
+from myskoda.models.mqtt import OperationName, OperationStatus
 
 from . import idk_authorize
 from .event import Event, EventType, ServiceEventTopic
@@ -314,10 +315,10 @@ async def trip_statistics(ctx: Context, vin: str) -> None:
 
 
 @cli.command()
-@click.argument("trace_id")
+@click.argument("operation", type=click.Choice(OperationName))  # pyright: ignore [reportArgumentType]
 @click.pass_context
-async def wait_for_operation(ctx: Context, trace_id: str) -> None:
-    """Wait for the operation with the specified trace id to complete."""
+async def wait_for_operation(ctx: Context, operation: OperationName) -> None:
+    """Wait for the operation with the specified name to complete."""
     async with ClientSession() as session:
         hub = RestApi(session)
         await hub.authenticate(ctx.obj["username"], ctx.obj["password"])
@@ -325,12 +326,12 @@ async def wait_for_operation(ctx: Context, trace_id: str) -> None:
         mqtt = MQTT(hub)
         await mqtt.connect()
 
-        mqtt.loop_start()
+        print(f"Waiting for an operation {colored(operation,"green")} to start and complete...")
 
-        await mqtt.wait_for_operation(trace_id)
+        await mqtt.async_wait_for_next_operation(operation)
         print("Completed.")
 
-        mqtt.loop_stop()
+        mqtt.disconnect()
 
 
 @cli.command()
@@ -366,18 +367,16 @@ async def subscribe(ctx: Context) -> None:
                 print(f"  {colored("vin:", "blue")} {data.vin}")
                 print(f"  {colored("user id:", "blue")} {data.user_id}")
                 if event.topic == ServiceEventTopic.CHARGING:
-                    data = event.payload.data
+                    data = event.event.data
                     print(f"  {colored("mode:", "blue")} {data.mode}")
                     print(f"  {colored("state:", "blue")} {data.state}")
                     print(f"  {colored("soc:", "blue")} {data.soc}%")
                     print(f"  {colored("charged range:", "blue")} {data.charged_range}km")
-                    print(
-                        f"  {colored("time to finish:", "blue")} {data.time_to_finish}min"
-                    )
+                    print(f"  {colored("time to finish:", "blue")} {data.time_to_finish}min")
 
         mqtt.subscribe(on_event)
         print(f"{colored("Listening for MQTT events:", "blue")}")
-        mqtt.loop_forever()
+        await asyncio.Event().wait()
 
 
 def c_open(cond: OpenState) -> str:
