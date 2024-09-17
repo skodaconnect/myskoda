@@ -74,16 +74,18 @@ class RestApi:
             f"{BASE_URL_SKODA}/api/v2/garage/vehicles/{vin}?connectivityGenerations=MOD1&connectivityGenerations=MOD2&connectivityGenerations=MOD3&connectivityGenerations=MOD4",
             headers=await self._headers(),
         ) as response:
-            _LOGGER.debug("vin %s: Received basic info", vin)
-            return Info(**await response.json())
+            aresp = await response.json()
+            _LOGGER.debug(f"vin {vin}: Received basic info {aresp}")
+            return Info(**aresp)
 
     async def get_charging(self, vin: str) -> Charging:
         """Retrieve information related to charging for the specified vehicle."""
         async with self.session.get(
             f"{BASE_URL_SKODA}/api/v1/charging/{vin}", headers=await self._headers()
         ) as response:
-            _LOGGER.debug("Received charging info")
-            return Charging(**await response.json())
+            aresp = await response.json()
+            _LOGGER.debug(f"vin {vin}: Received charging info {aresp}")
+            return Charging(**aresp)
 
     async def get_status(self, vin: str) -> Status:
         """Retrieve the current status for the specified vehicle."""
@@ -91,8 +93,9 @@ class RestApi:
             f"{BASE_URL_SKODA}/api/v2/vehicle-status/{vin}",
             headers=await self._headers(),
         ) as response:
-            _LOGGER.debug("vin %s: Received status")
-            return Status(**await response.json())
+            aresp = await response.json()
+            _LOGGER.debug(f"vin {vin}: Received status {aresp}")
+            return Status(**aresp)
 
     async def get_air_conditioning(self, vin: str) -> AirConditioning:
         """Retrieve the current air conditioning status for the specified vehicle."""
@@ -100,8 +103,9 @@ class RestApi:
             f"{BASE_URL_SKODA}/api/v2/air-conditioning/{vin}",
             headers=await self._headers(),
         ) as response:
-            _LOGGER.debug("vin %s: Received air conditioning")
-            return AirConditioning(**await response.json())
+            aresp = await response.json()
+            _LOGGER.debug(f"vin {vin}: Received air conditioning {aresp}")
+            return AirConditioning(**aresp)
 
     async def get_positions(self, vin: str) -> Positions:
         """Retrieve the current position for the specified vehicle."""
@@ -109,8 +113,9 @@ class RestApi:
             f"{BASE_URL_SKODA}/api/v1/maps/positions?vin={vin}",
             headers=await self._headers(),
         ) as response:
-            _LOGGER.debug("vin %s: Received position")
-            return Positions(**await response.json())
+            aresp = await response.json()
+            _LOGGER.debug(f"vin {vin}: Received position {aresp}")
+            return Positions(**aresp)
 
     async def get_driving_range(self, vin: str) -> DrivingRange:
         """Retrieve estimated driving range for combustion vehicles."""
@@ -118,8 +123,9 @@ class RestApi:
             f"{BASE_URL_SKODA}/api/v2/vehicle-status/{vin}/driving-range",
             headers=await self._headers(),
         ) as response:
-            _LOGGER.debug("vin %s: Received driving range")
-            return DrivingRange(**await response.json())
+            aresp = await response.json()
+            _LOGGER.debug(f"vin {vin}: Received driving range {aresp}")
+            return DrivingRange(**aresp)
 
     async def get_trip_statistics(self, vin: str) -> TripStatistics:
         """Retrieve statistics about past trips."""
@@ -127,8 +133,9 @@ class RestApi:
             f"{BASE_URL_SKODA}/api/v1/trip-statistics/{vin}?offsetType=week&offset=0&timezone=Europe%2FBerlin",
             headers=await self._headers(),
         ) as response:
-            _LOGGER.debug("vin %s: Received trip statistics")
-            return TripStatistics(**await response.json())
+            aresp = await response.json()
+            _LOGGER.debug(f"vin {vin}: Received trip statistics {aresp}")
+            return TripStatistics(**aresp)
 
     async def get_maintenance(self, vin: str) -> Maintenance:
         """Retrieve maintenance report."""
@@ -136,8 +143,9 @@ class RestApi:
             f"{BASE_URL_SKODA}/api/v3/vehicle-maintenance/vehicles/{vin}",
             headers=await self._headers(),
         ) as response:
-            _LOGGER.debug("vin %s: Received maintenance report")
-            return Maintenance(**await response.json())
+            aresp = await response.json()
+            _LOGGER.debug(f"vin {vin}: Received maintenance report {aresp}")
+            return Maintenance(**aresp)
 
     async def get_health(self, vin: str) -> Health:
         """Retrieve health information for the specified vehicle."""
@@ -145,8 +153,9 @@ class RestApi:
             f"{BASE_URL_SKODA}/api/v1/vehicle-health-report/warning-lights/{vin}",
             headers=await self._headers(),
         ) as response:
-            _LOGGER.debug("vin %s: Received health")
-            return Health(**await response.json())
+            aresp = await response.json()
+            _LOGGER.debug(f"vin {vin}: Received health {aresp}")
+            return Health(**aresp)
 
     async def get_user(self) -> User:
         """Retrieve user information about logged in user."""
