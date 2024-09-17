@@ -92,8 +92,18 @@ class ServiceEventChargingState(StrEnum):
     READY = "readyForCharging"
 
 
+class ChargeMode(StrEnum):
+    HOME_STORAGE_CHARGING = "homeStorageCharging"
+    IMMEDIATE_DISCHARGING = "immediateDischarging"
+    ONLY_OWN_CURRENT = "onlyOwnCurrent"
+    PREFERRED_CHARGING_TIMES = "preferredChargingTimes"
+    TIMER_CHARGING_WITH_CLIMATISATION = "timerChargingWithClimatisation"
+    TIMER = "timer"
+    MANUAL = "manual"
+
+
 class ServiceEventChargingData(ServiceEventData):
-    mode: str
+    mode: ChargeMode
     state: ServiceEventChargingState
     soc: int
     charged_range: str = Field(None, alias="chargedRange")
