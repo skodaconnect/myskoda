@@ -92,7 +92,7 @@ class ServiceEventChargingState(StrEnum):
     READY = "readyForCharging"
 
 
-class ChargeMode(StrEnum):
+class ServiceEventChargeMode(StrEnum):
     HOME_STORAGE_CHARGING = "homeStorageCharging"
     IMMEDIATE_DISCHARGING = "immediateDischarging"
     ONLY_OWN_CURRENT = "onlyOwnCurrent"
@@ -103,7 +103,7 @@ class ChargeMode(StrEnum):
 
 
 class ServiceEventChargingData(ServiceEventData):
-    mode: ChargeMode
+    mode: ServiceEventChargeMode
     state: ServiceEventChargingState
     soc: int
     charged_range: str = Field(None, alias="chargedRange")
