@@ -4,7 +4,7 @@ from datetime import datetime
 from enum import StrEnum
 from typing import Generic, TypeVar
 
-from pydantic import BaseModel, Field, validator
+from pydantic import BaseModel, Field
 
 
 class OperationStatus(StrEnum):
@@ -108,22 +108,8 @@ class ServiceEventChargingData(ServiceEventData):
     mode: ServiceEventChargeMode
     state: ServiceEventChargingState
     soc: int
-    charged_range: str = Field(None, alias="chargedRange")
-    time_to_finish: str | None = Field(None, alias="timeToFinish")
-
-    @validator("soc")
-    def _parse_soc(cls, value: str) -> int:  # noqa: N805
-        return int(value)
-
-    @validator("charged_range")
-    def _parse_charged_range(cls, value: str) -> int:  # noqa: N805
-        return int(value)
-
-    @validator("time_to_finish")
-    def _parse_time_to_finish(cls, value: str) -> int | None:  # noqa: N805
-        if value == "null":
-            return None
-        return int(value)
+    charged_range: int = Field(None, alias="chargedRange")
+    time_to_finish: int | None = Field(None, alias="timeToFinish")
 
 
 class ServiceEventCharging(ServiceEvent):
