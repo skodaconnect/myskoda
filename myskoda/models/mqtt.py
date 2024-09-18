@@ -29,6 +29,7 @@ class OperationName(StrEnum):
     START_CHARGING = "start-charging"
     START_FLASH = "start-flash"
     START_HONK = "start-honk"
+    START_WINDOW_HEATING = "start-window-heating"
     START_STOP_CHARGING = "start-stop-charging"
     STOP_ACTIVE_VENTILATION = "stop-active-ventilation"
     STOP_AIR_CONDITIONING = "stop-air-conditioning"
@@ -100,6 +101,7 @@ class ServiceEventChargeMode(StrEnum):
     TIMER_CHARGING_WITH_CLIMATISATION = "timerChargingWithClimatisation"
     TIMER = "timer"
     MANUAL = "manual"
+    OFF = "off"
 
 
 class ServiceEventChargingData(ServiceEventData):

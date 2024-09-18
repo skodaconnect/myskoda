@@ -14,8 +14,8 @@ from asyncclick.core import Context
 from termcolor import colored
 
 from myskoda.models.mqtt import OperationName, OperationStatus
+from myskoda.myskoda import MySkoda
 
-from . import idk_authorize
 from .event import Event, EventType, ServiceEventTopic
 from .models.charging import MaxChargeCurrent
 from .models.common import (
@@ -26,8 +26,6 @@ from .models.common import (
     OnOffState,
     OpenState,
 )
-from .mqtt import MQTT
-from .rest_api import RestApi
 
 
 @click.group()
@@ -36,33 +34,54 @@ from .rest_api import RestApi
 @click.option("password", "--password", help="Password used for login.", required=True)
 @click.option("verbose", "--verbose", help="Enable verbose logging.", is_flag=True)
 @click.pass_context
-def cli(ctx: Context, username: str, password: str, verbose: bool) -> None:  # noqa: FBT001
+async def cli(ctx: Context, username: str, password: str, verbose: bool) -> None:
     """Interact with the MySkoda API."""
     coloredlogs.install(level=DEBUG if verbose else INFO)
     ctx.ensure_object(dict)
     ctx.obj["username"] = username
     ctx.obj["password"] = password
 
+    session = ClientSession()
+    myskoda = MySkoda(session)
+    await myskoda.connect(username, password)
+
+    ctx.obj["myskoda"] = myskoda
+    ctx.obj["session"] = session
+
+
+@cli.result_callback()
+@click.pass_context
+async def disconnect(
+    ctx: Context,
+    result: None,  # noqa: ARG001
+    username: str,  # noqa: ARG001
+    password: str,  # noqa: ARG001
+    verbose: bool,  # noqa: ARG001
+) -> None:
+    myskoda: MySkoda = ctx.obj["myskoda"]
+    session: ClientSession = ctx.obj["session"]
+
+    myskoda.disconnect()
+    await session.close()
+
 
 @cli.command()
 @click.pass_context
 async def auth(ctx: Context) -> None:
     """Extract the auth token."""
-    async with ClientSession() as session:
-        auth_codes = await idk_authorize(session, ctx.obj["username"], ctx.obj["password"])
-        print(auth_codes.access_token)
+    myskoda: MySkoda = ctx.obj["myskoda"]
+    print(myskoda.get_auth_token())
 
 
 @cli.command()
 @click.pass_context
 async def list_vehicles(ctx: Context) -> None:
     """Print a list of all vehicle identification numbers associated with the account."""
-    async with ClientSession() as session:
-        hub = RestApi(session)
-        await hub.authenticate(ctx.obj["username"], ctx.obj["password"])
-        print(f"{colored("vehicles:", "blue")}")
-        for vehicle in await hub.list_vehicles():
-            print(f"- {vehicle}")
+    myskoda: MySkoda = ctx.obj["myskoda"]
+
+    print(f"{colored("vehicles:", "blue")}")
+    for vehicle in await myskoda.rest_api.list_vehicles():
+        print(f"- {vehicle}")
 
 
 @cli.command()
@@ -70,23 +89,19 @@ async def list_vehicles(ctx: Context) -> None:
 @click.pass_context
 async def info(ctx: Context, vin: str) -> None:
     """Print info for the specified vin."""
-    async with ClientSession() as session:
-        hub = RestApi(session)
-        await hub.authenticate(ctx.obj["username"], ctx.obj["password"])
-        info = await hub.get_info(vin)
+    myskoda: MySkoda = ctx.obj["myskoda"]
+    info = await myskoda.rest_api.get_info(vin)
 
-        if info.specification.battery is not None:
-            print(
-                f"{colored("battery capacity:", "blue")} {info.specification.battery.capacity}kwh"
-            )
-        print(f"{colored("power:", "blue")} {info.specification.engine.power}kw")
-        print(f"{colored("engine:", "blue")} {info.specification.engine.type}")
-        print(f"{colored("model:", "blue")} {info.specification.model}")
-        print(f"{colored("model id:", "blue")} {info.specification.system_model_id}")
-        print(f"{colored("model year:", "blue")} {info.specification.model_year}")
-        print(f"{colored("title:", "blue")} {info.specification.title}")
-        print(f"{colored("vin:", "blue")} {info.vin}")
-        print(f"{colored("software:", "blue")} {info.software_version}")
+    if info.specification.battery is not None:
+        print(f"{colored("battery capacity:", "blue")} {info.specification.battery.capacity}kwh")
+    print(f"{colored("power:", "blue")} {info.specification.engine.power}kw")
+    print(f"{colored("engine:", "blue")} {info.specification.engine.type}")
+    print(f"{colored("model:", "blue")} {info.specification.model}")
+    print(f"{colored("model id:", "blue")} {info.specification.system_model_id}")
+    print(f"{colored("model year:", "blue")} {info.specification.model_year}")
+    print(f"{colored("title:", "blue")} {info.specification.title}")
+    print(f"{colored("vin:", "blue")} {info.vin}")
+    print(f"{colored("software:", "blue")} {info.software_version}")
 
 
 @cli.command()
@@ -94,20 +109,18 @@ async def info(ctx: Context, vin: str) -> None:
 @click.pass_context
 async def status(ctx: Context, vin: str) -> None:
     """Print current status for the specified vin."""
-    async with ClientSession() as session:
-        hub = RestApi(session)
-        await hub.authenticate(ctx.obj["username"], ctx.obj["password"])
-        status = await hub.get_status(vin)
+    myskoda: MySkoda = ctx.obj["myskoda"]
+    status = await myskoda.rest_api.get_status(vin)
 
-        print(
-            f"{colored("doors:", "blue")} {c_open(status.overall.doors)}, "
-            f"{locked(status.overall.doors_locked)}"
-        )
-        print(f"{colored("bonnet:", "blue")} {c_open(status.detail.bonnet)}")
-        print(f"{colored("trunk:", "blue")} {c_open(status.detail.trunk)}")
-        print(f"{colored("windows:", "blue")} {c_open(status.overall.windows)}")
-        print(f"{colored("lights:", "blue")} {on(status.overall.lights)}")
-        print(f"{colored("last update:", "blue")} {status.car_captured_timestamp}")
+    print(
+        f"{colored("doors:", "blue")} {c_open(status.overall.doors)}, "
+        f"{locked(status.overall.doors_locked)}"
+    )
+    print(f"{colored("bonnet:", "blue")} {c_open(status.detail.bonnet)}")
+    print(f"{colored("trunk:", "blue")} {c_open(status.detail.trunk)}")
+    print(f"{colored("windows:", "blue")} {c_open(status.overall.windows)}")
+    print(f"{colored("lights:", "blue")} {on(status.overall.lights)}")
+    print(f"{colored("last update:", "blue")} {status.car_captured_timestamp}")
 
 
 @cli.command()
@@ -115,30 +128,28 @@ async def status(ctx: Context, vin: str) -> None:
 @click.pass_context
 async def air_conditioning(ctx: Context, vin: str) -> None:
     """Print current status about air conditioning."""
-    async with ClientSession() as session:
-        hub = RestApi(session)
-        await hub.authenticate(ctx.obj["username"], ctx.obj["password"])
-        ac = await hub.get_air_conditioning(vin)
+    myskoda: MySkoda = ctx.obj["myskoda"]
+    ac = await myskoda.rest_api.get_air_conditioning(vin)
 
-        print(f"{colored("window heating:", "blue")} {bool_state(ac.window_heating_enabled)}")
-        print(f"{colored("window heating (front):", "blue")} {on(ac.window_heating_state.front)}")
-        print(f"{colored("window heating (back):", "blue")} {on(ac.window_heating_state.rear)}")
-        if ac.target_temperature is not None:
-            print(
-                f"{colored("target temperature:", "blue")} "
-                f"{ac.target_temperature.temperature_value}°C"
-            )
-        print(f"{colored("steering wheel position:", "blue")} {ac.steering_wheel_position}")
-        print(f"{colored("air conditioning:", "blue")} {on(ac.state)}")
-        print(f"{colored("state:", "blue")} {ac.state}")
+    print(f"{colored("window heating:", "blue")} {bool_state(ac.window_heating_enabled)}")
+    print(f"{colored("window heating (front):", "blue")} {on(ac.window_heating_state.front)}")
+    print(f"{colored("window heating (back):", "blue")} {on(ac.window_heating_state.rear)}")
+    if ac.target_temperature is not None:
         print(
-            f"{colored("charger:", "blue")} {connected(ac.charger_connection_state)}, "
-            f"{charger_locked(ac.charger_lock_state)}"
+            f"{colored("target temperature:", "blue")} "
+            f"{ac.target_temperature.temperature_value}°C"
         )
-        print(
-            f"{colored("temperature reached:", "blue")} "
-            f"{ac.estimated_date_time_to_reach_target_temperature}"
-        )
+    print(f"{colored("steering wheel position:", "blue")} {ac.steering_wheel_position}")
+    print(f"{colored("air conditioning:", "blue")} {on(ac.state)}")
+    print(f"{colored("state:", "blue")} {ac.state}")
+    print(
+        f"{colored("charger:", "blue")} {connected(ac.charger_connection_state)}, "
+        f"{charger_locked(ac.charger_lock_state)}"
+    )
+    print(
+        f"{colored("temperature reached:", "blue")} "
+        f"{ac.estimated_date_time_to_reach_target_temperature}"
+    )
 
 
 @cli.command()
@@ -146,25 +157,23 @@ async def air_conditioning(ctx: Context, vin: str) -> None:
 @click.pass_context
 async def positions(ctx: Context, vin: str) -> None:
     """Print the vehicle's current position."""
-    async with ClientSession() as session:
-        hub = RestApi(session)
-        await hub.authenticate(ctx.obj["username"], ctx.obj["password"])
-        positions = await hub.get_positions(vin)
+    myskoda: MySkoda = ctx.obj["myskoda"]
+    positions = await myskoda.rest_api.get_positions(vin)
 
-        for position in positions.positions:
-            print(f"- {colored("type:", "blue")} {position.type}")
-            print(f"  {colored("latitude:", "blue")} {position.gps_coordinates.latitude}")
-            print(f"  {colored("longitude:", "blue")} {position.gps_coordinates.longitude}")
-            print(f"  {colored("address:", "blue")}")
-            print(f"     {position.address.street} {position.address.house_number}")
-            print(f"     {position.address.zip_code} {position.address.city}")
-            print(f"     {position.address.country} ({position.address.country_code})")
+    for position in positions.positions:
+        print(f"- {colored("type:", "blue")} {position.type}")
+        print(f"  {colored("latitude:", "blue")} {position.gps_coordinates.latitude}")
+        print(f"  {colored("longitude:", "blue")} {position.gps_coordinates.longitude}")
+        print(f"  {colored("address:", "blue")}")
+        print(f"     {position.address.street} {position.address.house_number}")
+        print(f"     {position.address.zip_code} {position.address.city}")
+        print(f"     {position.address.country} ({position.address.country_code})")
 
-        if positions.errors:
-            print(f"{colored("Error:", "red")}")
-        for error in positions.errors:
-            print(f"- {colored("type:", "blue")} {error.type}")
-            print(f"  {colored("description:", "blue")} {error.description}")
+    if positions.errors:
+        print(f"{colored("Error:", "red")}")
+    for error in positions.errors:
+        print(f"- {colored("type:", "blue")} {error.type}")
+        print(f"  {colored("description:", "blue")} {error.description}")
 
 
 @cli.command()
@@ -172,13 +181,11 @@ async def positions(ctx: Context, vin: str) -> None:
 @click.pass_context
 async def health(ctx: Context, vin: str) -> None:
     """Print the vehicle's mileage."""
-    async with ClientSession() as session:
-        hub = RestApi(session)
-        await hub.authenticate(ctx.obj["username"], ctx.obj["password"])
-        health = await hub.get_health(vin)
+    myskoda: MySkoda = ctx.obj["myskoda"]
+    health = await myskoda.rest_api.get_health(vin)
 
-        print(f"{colored("mileage:", "blue")} {health.mileage_in_km}km")
-        print(f"{colored("last updated:", "blue")} {health.captured_at}")
+    print(f"{colored("mileage:", "blue")} {health.mileage_in_km}km")
+    print(f"{colored("last updated:", "blue")} {health.captured_at}")
 
 
 @cli.command()
@@ -186,42 +193,38 @@ async def health(ctx: Context, vin: str) -> None:
 @click.pass_context
 async def charging(ctx: Context, vin: str) -> None:
     """Print the vehicle's current charging state."""
-    async with ClientSession() as session:
-        hub = RestApi(session)
-        await hub.authenticate(ctx.obj["username"], ctx.obj["password"])
-        charging = await hub.get_charging(vin)
+    myskoda: MySkoda = ctx.obj["myskoda"]
+    charging = await myskoda.rest_api.get_charging(vin)
 
-        if charging.status is not None:
-            print(
-                f"{colored("battery charge:", "blue")} "
-                f"{charging.status.battery.state_of_charge_in_percent}%"
-            )
-            print(
-                f"{colored("remaining distance:", "blue")} "
-                f"{charging.status.battery.remaining_cruising_range_in_meters / 1000}km"
-            )
-            print(f"{colored("state:", "blue")} {charging.status.state}")
-            print(f"{colored("charger type:", "blue")} {charging.status.charge_type}")
-            print(
-                f"{colored("charging rate:", "blue")} "
-                f"{charging.status.charging_rate_in_kilometers_per_hour}km/h"
-            )
-            print(
-                f"{colored("remaining time:", "blue")} "
-                f"{charging.status.remaining_time_to_fully_charged_in_minutes}min"
-            )
-            print(f"{colored("charging power:", "blue")} {charging.status.charge_power_in_kw}kw")
+    if charging.status is not None:
         print(
-            f"{colored("target:", "blue")} {charging.settings.target_state_of_charge_in_percent}%"
+            f"{colored("battery charge:", "blue")} "
+            f"{charging.status.battery.state_of_charge_in_percent}%"
         )
         print(
-            f"{colored("battery care mode:", "blue")} "
-            f"{active(charging.settings.charging_care_mode)}"
+            f"{colored("remaining distance:", "blue")} "
+            f"{charging.status.battery.remaining_cruising_range_in_meters / 1000}km"
+        )
+        print(f"{colored("state:", "blue")} {charging.status.state}")
+        print(f"{colored("charger type:", "blue")} {charging.status.charge_type}")
+        print(
+            f"{colored("charging rate:", "blue")} "
+            f"{charging.status.charging_rate_in_kilometers_per_hour}km/h"
         )
         print(
-            f"{colored("current:", "blue")} "
-            f"{charge_current(charging.settings.max_charge_current_ac)}"
+            f"{colored("remaining time:", "blue")} "
+            f"{charging.status.remaining_time_to_fully_charged_in_minutes}min"
         )
+        print(f"{colored("charging power:", "blue")} {charging.status.charge_power_in_kw}kw")
+    print(f"{colored("target:", "blue")} {charging.settings.target_state_of_charge_in_percent}%")
+    print(
+        f"{colored("battery care mode:", "blue")} "
+        f"{active(charging.settings.charging_care_mode)}"
+    )
+    print(
+        f"{colored("current:", "blue")} "
+        f"{charge_current(charging.settings.max_charge_current_ac)}"
+    )
 
 
 @cli.command()
@@ -229,30 +232,28 @@ async def charging(ctx: Context, vin: str) -> None:
 @click.pass_context
 async def maintenance(ctx: Context, vin: str) -> None:
     """Print the vehicle's maintenance information."""
-    async with ClientSession() as session:
-        hub = RestApi(session)
-        await hub.authenticate(ctx.obj["username"], ctx.obj["password"])
-        maintenance = await hub.get_maintenance(vin)
+    myskoda: MySkoda = ctx.obj["myskoda"]
+    maintenance = await myskoda.rest_api.get_maintenance(vin)
 
-        print(f"{colored("mileage:", "blue")} {maintenance.maintenance_report.mileage_in_km}km")
-        print(
-            f"{colored("inspection due in:", "blue")} "
-            f"{maintenance.maintenance_report.inspection_due_in_days}d / "
-            f"{maintenance.maintenance_report.inspection_due_in_km}km"
-        )
-        print(
-            f"{colored("oil service due in:", "blue")} "
-            f"{maintenance.maintenance_report.oil_service_due_in_days}d / "
-            f"{maintenance.maintenance_report.oil_service_due_in_km}km"
-        )
-        print(f"{colored("service partner:", "blue")} {maintenance.preferred_service_partner.name}")
-        address = maintenance.preferred_service_partner.address
-        print(f"     {address.street} {address.house_number}")
-        print(f"     {address.zip_code} {address.city}")
-        print(f"     {address.country} ({address.country_code})")
-        if maintenance.predictive_maintenance:
-            print(f"{colored("email:", "blue")} {maintenance.predictive_maintenance.setting.email}")
-            print(f"{colored("phone:", "blue")} {maintenance.predictive_maintenance.setting.phone}")
+    print(f"{colored("mileage:", "blue")} {maintenance.maintenance_report.mileage_in_km}km")
+    print(
+        f"{colored("inspection due in:", "blue")} "
+        f"{maintenance.maintenance_report.inspection_due_in_days}d / "
+        f"{maintenance.maintenance_report.inspection_due_in_km}km"
+    )
+    print(
+        f"{colored("oil service due in:", "blue")} "
+        f"{maintenance.maintenance_report.oil_service_due_in_days}d / "
+        f"{maintenance.maintenance_report.oil_service_due_in_km}km"
+    )
+    print(f"{colored("service partner:", "blue")} {maintenance.preferred_service_partner.name}")
+    address = maintenance.preferred_service_partner.address
+    print(f"     {address.street} {address.house_number}")
+    print(f"     {address.zip_code} {address.city}")
+    print(f"     {address.country} ({address.country_code})")
+    if maintenance.predictive_maintenance:
+        print(f"{colored("email:", "blue")} {maintenance.predictive_maintenance.setting.email}")
+        print(f"{colored("phone:", "blue")} {maintenance.predictive_maintenance.setting.phone}")
 
 
 @cli.command()
@@ -260,32 +261,28 @@ async def maintenance(ctx: Context, vin: str) -> None:
 @click.pass_context
 async def driving_range(ctx: Context, vin: str) -> None:
     """Print the vehicle's estimated driving range information."""
-    async with ClientSession() as session:
-        hub = RestApi(session)
-        await hub.authenticate(ctx.obj["username"], ctx.obj["password"])
-        driving_range = await hub.get_driving_range(vin)
+    myskoda: MySkoda = ctx.obj["myskoda"]
+    driving_range = await myskoda.rest_api.get_driving_range(vin)
 
-        print(f"{colored("range:", "blue")} {driving_range.total_range_in_km}km")
-        print(f"{colored("car type:", "blue")} {driving_range.car_type}")
-        print(f"{colored("last update:", "blue")} {driving_range.car_captured_timestamp}")
-        print(
-            f"{colored("fuel level:", "blue")} "
-            f"{driving_range.primary_engine_range.current_fuel_level_in_percent}%"
-        )
+    print(f"{colored("range:", "blue")} {driving_range.total_range_in_km}km")
+    print(f"{colored("car type:", "blue")} {driving_range.car_type}")
+    print(f"{colored("last update:", "blue")} {driving_range.car_captured_timestamp}")
+    print(
+        f"{colored("fuel level:", "blue")} "
+        f"{driving_range.primary_engine_range.current_fuel_level_in_percent}%"
+    )
 
 
 @cli.command()
 @click.pass_context
 async def user(ctx: Context) -> None:
     """Print information about currently logged in user."""
-    async with ClientSession() as session:
-        hub = RestApi(session)
-        await hub.authenticate(ctx.obj["username"], ctx.obj["password"])
-        user = await hub.get_user()
+    myskoda: MySkoda = ctx.obj["myskoda"]
+    user = await myskoda.rest_api.get_user()
 
-        print(f"{colored("id:", "blue")} {user.id}")
-        print(f"{colored("name:", "blue")} {user.first_name} {user.last_name}")
-        print(f"{colored("email:", "blue")} {user.email}")
+    print(f"{colored("id:", "blue")} {user.id}")
+    print(f"{colored("name:", "blue")} {user.first_name} {user.last_name}")
+    print(f"{colored("email:", "blue")} {user.email}")
 
 
 @cli.command()
@@ -293,25 +290,23 @@ async def user(ctx: Context) -> None:
 @click.pass_context
 async def trip_statistics(ctx: Context, vin: str) -> None:
     """Print the last trip statics."""
-    async with ClientSession() as session:
-        hub = RestApi(session)
-        await hub.authenticate(ctx.obj["username"], ctx.obj["password"])
-        stats = await hub.get_trip_statistics(vin)
+    myskoda: MySkoda = ctx.obj["myskoda"]
+    stats = await myskoda.rest_api.get_trip_statistics(vin)
 
+    print(
+        f"{colored("overall fuel consumption:", "blue")} "
+        f"{stats.overall_average_fuel_consumption}l/100km"
+    )
+    print(f"{colored("mileage:", "blue")} {stats.overall_mileage_in_km}km")
+    print(f"{colored("entries:", "blue")}")
+    for entry in stats.detailed_statistics:
+        print(f"- {colored("date:", "blue")} {entry.date}")
         print(
-            f"{colored("overall fuel consumption:", "blue")} "
-            f"{stats.overall_average_fuel_consumption}l/100km"
+            f"  {colored("average fuel consumption:", "blue")} "
+            f"{entry.average_fuel_consumption}l/100km"
         )
-        print(f"{colored("mileage:", "blue")} {stats.overall_mileage_in_km}km")
-        print(f"{colored("entries:", "blue")}")
-        for entry in stats.detailed_statistics:
-            print(f"- {colored("date:", "blue")} {entry.date}")
-            print(
-                f"  {colored("average fuel consumption:", "blue")} "
-                f"{entry.average_fuel_consumption}l/100km"
-            )
-            print(f"  {colored("average speed:", "blue")} {entry.average_speed_in_kmph}km/h")
-            print(f"  {colored("mileage:", "blue")} {entry.mileage_in_km}km")
+        print(f"  {colored("average speed:", "blue")} {entry.average_speed_in_kmph}km/h")
+        print(f"  {colored("mileage:", "blue")} {entry.mileage_in_km}km")
 
 
 @cli.command()
@@ -319,64 +314,71 @@ async def trip_statistics(ctx: Context, vin: str) -> None:
 @click.pass_context
 async def wait_for_operation(ctx: Context, operation: OperationName) -> None:
     """Wait for the operation with the specified name to complete."""
-    async with ClientSession() as session:
-        hub = RestApi(session)
-        await hub.authenticate(ctx.obj["username"], ctx.obj["password"])
+    myskoda: MySkoda = ctx.obj["myskoda"]
 
-        mqtt = MQTT(hub)
-        await mqtt.connect()
+    print(f"Waiting for an operation {colored(operation,"green")} to start and complete...")
 
-        print(f"Waiting for an operation {colored(operation,"green")} to start and complete...")
-
-        await mqtt.async_wait_for_next_operation(operation)
-        print("Completed.")
-
-        mqtt.disconnect()
+    await myskoda.mqtt.wait_for_operation(operation)
+    print("Completed.")
 
 
 @cli.command()
 @click.pass_context
 async def subscribe(ctx: Context) -> None:
     """Connect to the MQTT broker and listen for messages."""
-    async with ClientSession() as session:
-        hub = RestApi(session)
-        await hub.authenticate(ctx.obj["username"], ctx.obj["password"])
+    myskoda: MySkoda = ctx.obj["myskoda"]
 
-        mqtt = MQTT(hub)
-        await mqtt.connect()
-
-        def on_event(event: Event) -> None:
-            print(f"{colored("- type:", "blue")} {event.type}")
-            print(f"{colored("  vin:", "blue")} {event.vin}")
-            if event.type == EventType.OPERATION:
-                operation = event.operation
-                print(f"  {colored("version:", "blue")} {operation.version}")
-                print(f"  {colored("trace id:", "blue")} {operation.trace_id}")
-                print(f"  {colored("request id:", "blue")} {operation.request_id}")
-                print(f"  {colored("operation:", "blue")} {operation.operation}")
-                print(f"  {colored("status:", "blue")} {operation.status}")
-                if status == OperationStatus.ERROR:
-                    print(f"  {colored("error code:", "blue")} {operation.error_code}")
-            elif event.type == EventType.SERVICE_EVENT:
+    def on_event(event: Event) -> None:
+        print(f"{colored("- type:", "blue")} {event.type}")
+        print(f"{colored("  vin:", "blue")} {event.vin}")
+        if event.type == EventType.OPERATION:
+            operation = event.operation
+            print(f"  {colored("version:", "blue")} {operation.version}")
+            print(f"  {colored("trace id:", "blue")} {operation.trace_id}")
+            print(f"  {colored("request id:", "blue")} {operation.request_id}")
+            print(f"  {colored("operation:", "blue")} {operation.operation}")
+            print(f"  {colored("status:", "blue")} {operation.status}")
+            if status == OperationStatus.ERROR:
+                print(f"  {colored("error code:", "blue")} {operation.error_code}")
+        elif event.type == EventType.SERVICE_EVENT:
+            data = event.event.data
+            print(f"  {colored("version:", "blue")} {event.event.version}")
+            print(f"  {colored("trace id:", "blue")} {event.event.trace_id}")
+            print(f"  {colored("timestamp:", "blue")} {event.event.timestamp}")
+            print(f"  {colored("producer:", "blue")} {event.event.producer}")
+            print(f"  {colored("name:", "blue")} {event.event.name}")
+            print(f"  {colored("vin:", "blue")} {data.vin}")
+            print(f"  {colored("user id:", "blue")} {data.user_id}")
+            if event.topic == ServiceEventTopic.CHARGING:
                 data = event.event.data
-                print(f"  {colored("version:", "blue")} {event.event.version}")
-                print(f"  {colored("trace id:", "blue")} {event.event.trace_id}")
-                print(f"  {colored("timestamp:", "blue")} {event.event.timestamp}")
-                print(f"  {colored("producer:", "blue")} {event.event.producer}")
-                print(f"  {colored("name:", "blue")} {event.event.name}")
-                print(f"  {colored("vin:", "blue")} {data.vin}")
-                print(f"  {colored("user id:", "blue")} {data.user_id}")
-                if event.topic == ServiceEventTopic.CHARGING:
-                    data = event.event.data
-                    print(f"  {colored("mode:", "blue")} {data.mode}")
-                    print(f"  {colored("state:", "blue")} {data.state}")
-                    print(f"  {colored("soc:", "blue")} {data.soc}%")
-                    print(f"  {colored("charged range:", "blue")} {data.charged_range}km")
-                    print(f"  {colored("time to finish:", "blue")} {data.time_to_finish}min")
+                print(f"  {colored("mode:", "blue")} {data.mode}")
+                print(f"  {colored("state:", "blue")} {data.state}")
+                print(f"  {colored("soc:", "blue")} {data.soc}%")
+                print(f"  {colored("charged range:", "blue")} {data.charged_range}km")
+                print(f"  {colored("time to finish:", "blue")} {data.time_to_finish}min")
 
-        mqtt.subscribe(on_event)
-        print(f"{colored("Listening for MQTT events:", "blue")}")
-        await asyncio.Event().wait()
+    myskoda.subscribe(on_event)
+    print(f"{colored("Listening for Mqtt events:", "blue")}")
+    await asyncio.Event().wait()
+
+
+@cli.command()
+@click.option("temperature", "--temperature", type=float, required=True)
+@click.argument("vin")
+@click.pass_context
+async def start_air_conditioning(ctx: Context, temperature: float, vin: str) -> None:
+    """Start the air conditioning with the provided target temperature in °C."""
+    myskoda: MySkoda = ctx.obj["myskoda"]
+    await myskoda.start_air_conditioning(vin, temperature)
+
+
+@cli.command()
+@click.argument("vin")
+@click.pass_context
+async def stop_air_conditioning(ctx: Context, vin: str) -> None:
+    """Stop the air conditioning."""
+    myskoda: MySkoda = ctx.obj["myskoda"]
+    await myskoda.stop_air_conditioning(vin)
 
 
 def c_open(cond: OpenState) -> str:
@@ -415,7 +417,7 @@ def charge_current(cond: MaxChargeCurrent) -> str:
     )
 
 
-def bool_state(cond: bool) -> str:  # noqa: FBT001
+def bool_state(cond: bool) -> str:
     return colored("true", "green") if cond else colored("false", "red")
 
 

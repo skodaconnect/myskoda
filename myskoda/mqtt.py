@@ -67,18 +67,20 @@ class OperationListenerForTraceId:
 OperationListener = OperationListenerForTraceId | OperationListenerForName
 
 
-class MQTT:
+class Mqtt:
     api: RestApi
     user: User
     vehicles: list[str]
+    client: AsyncioPahoClient
     _callbacks: list[Callable[[Event], None]]
     _operation_listeners: list[OperationListener]
-    client: AsyncioPahoClient
+    _connected_listeners: list[Future[None]]
 
     def __init__(self, api: RestApi) -> None:  # noqa: D107
         self.api = api
         self._callbacks = []
         self._operation_listeners = []
+        self._connected_listeners = []
 
     def subscribe(self, callback: Callable[[Event], None]) -> None:
         """Listen for events emitted by MySkoda's MQTT broker."""
@@ -86,9 +88,9 @@ class MQTT:
 
     async def connect(self) -> None:
         """Connect to the MQTT broker and listen for messages."""
-        _LOGGER.info(f"Connecting to MQTT on {MQTT_BROKER_HOST}:{MQTT_BROKER_PORT}...")
+        _LOGGER.debug(f"Connecting to MQTT on {MQTT_BROKER_HOST}:{MQTT_BROKER_PORT}...")
         self.user = await self.api.get_user()
-        _LOGGER.info(f"Using user id {self.user.id}...")
+        _LOGGER.debug(f"Using user id {self.user.id}...")
         self.vehicles = await self.api.list_vehicles()
         self.client = AsyncioPahoClient()
         self.client.on_connect = self._on_connect
@@ -98,15 +100,23 @@ class MQTT:
             self.user.id, await self.api.idk_session.get_access_token(self.api.session)
         )
         self.client.connect_async(MQTT_BROKER_HOST, MQTT_BROKER_PORT, 60)
+        await self._wait_for_connection()
 
     def disconnect(self) -> None:
         """Stop the thread for processing MQTT messages."""
         self.client.disconnect()  # pyright: ignore [reportArgumentType]
 
-    def async_wait_for_next_operation(
-        self, operation_name: OperationName
-    ) -> Future[OperationRequest]:
+    def _wait_for_connection(self) -> Future[None]:
+        """Wait until MQTT is connected and setup."""
+        future: Future[None] = get_event_loop().create_future()
+
+        self._connected_listeners.append(future)
+
+        return future
+
+    def wait_for_operation(self, operation_name: OperationName) -> Future[OperationRequest]:
         """Wait until the next operation of the specified type completes."""
+        _LOGGER.debug("Waiting for operation %s to start and complete", operation_name)
         future: Future[OperationRequest] = get_event_loop().create_future()
 
         self._operation_listeners.append(OperationListenerForName(operation_name, future))
@@ -114,18 +124,26 @@ class MQTT:
         return future
 
     def _on_connect(
-        self, client: AsyncioPahoClient, _data: None, _flags: dict, _reason: int
+        self, _client: AsyncioPahoClient, _data: None, _flags: dict, _reason: int
     ) -> None:
         _LOGGER.info("MQTT Connected.")
         user_id = self.user.id
 
         for vin in self.vehicles:
             for topic in MQTT_OPERATION_TOPICS:
-                client.subscribe(f"{user_id}/{vin}/operation-request/{topic}")
+                self._subscribe_to_topic(f"{user_id}/{vin}/operation-request/{topic}")
             for topic in MQTT_SERVICE_EVENT_TOPICS:
-                client.subscribe(f"{user_id}/{vin}/service-event/{topic}")
+                self._subscribe_to_topic(f"{user_id}/{vin}/service-event/{topic}")
             for topic in MQTT_ACCOUNT_EVENT_TOPICS:
-                client.subscribe(f"{user_id}/{vin}/account-event/{topic}")
+                self._subscribe_to_topic(f"{user_id}/{vin}/account-event/{topic}")
+
+        for future in self._connected_listeners:
+            future.set_result(None)
+        self._connected_listeners = []
+
+    def _subscribe_to_topic(self, topic: str) -> None:
+        _LOGGER.debug("Subscribing to topic: %s", topic)
+        self.client.subscribe(topic)
 
     def _emit(self, event: Event) -> None:
         for callback in self._callbacks:

@@ -17,6 +17,7 @@ class ChargeMode(StrEnum):
     TIMER_CHARGING_WITH_CLIMATISATION = "TIMER_CHARGING_WITH_CLIMATISATION"
     TIMER = "TIMER"
     MANUAL = "MANUAL"
+    OFF = "OFF"
 
 
 class MaxChargeCurrent(StrEnum):

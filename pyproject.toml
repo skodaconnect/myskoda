@@ -51,4 +51,5 @@ ignore = [
     "ISC001", # single-line-implicit-string-concatenation
     "T201",   # print
     "TD003",  # missing-todo-link
+    "FBT001", # boolean-type-hint-positional-argument
 ]
