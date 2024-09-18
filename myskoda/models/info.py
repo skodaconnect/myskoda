@@ -1,9 +1,12 @@
 """Models for responses of api/v2/garage/vehicles/{vin}."""
 
+import logging
 from datetime import date
 from enum import StrEnum
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, validator
+
+_LOGGER = logging.getLogger(__name__)
 
 
 class CapabilityId(StrEnum):
@@ -79,6 +82,14 @@ class Capability(BaseModel):
 
 class Capabilities(BaseModel):
     capabilities: list[Capability]
+
+    @validator("capabilities", pre=True, always=True)
+    def drop_unknown_capabilities(cls, value: list[dict]) -> list[dict]:  # noqa: N805
+        """Drop any unknown capabilities and log a message."""
+        unknown_capabilities = [c for c in value if c["id"] not in CapabilityId]
+        if unknown_capabilities:
+            _LOGGER.info(f"Dropping unknown capabilities: {unknown_capabilities}")
+        return [c for c in value if c["id"] in CapabilityId]
 
 
 class Battery(BaseModel):
