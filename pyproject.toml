@@ -6,22 +6,24 @@ authors = ["Frederick Gnodtke <frederick@gnodtke.net>"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = ">=3.12.0"
-beautifulsoup4 = "^4"
 aiohttp = "^3"
-pyjwt = "^2"
-pyyaml = "^6"
-pydantic = "^1"
-asyncio = "^3"
 asyncclick = { version = "^8.1.7.2", optional = true }
-termcolor = { version = "^2.4.0", optional = true }
-paho-mqtt = "^1"
-coloredlogs = {version = "^15.0.1", optional = true}
+asyncio = "^3"
 asyncio-paho = "^0.6.0"
+beautifulsoup4 = "^4"
+coloredlogs = { version = "^15.0.1", optional = true }
+paho-mqtt = "^1"
+pydantic = "^1"
+pyjwt = "^2"
+python = ">=3.12.0"
+pyyaml = "^6"
+termcolor = { version = "^2.4.0", optional = true }
 
 [tool.poetry.group.dev.dependencies]
-ruff = "^0.6.4"
 pyright = "^1.1.379"
+pytest = "^8"
+pytest-asyncio = "^0"
+ruff = "^0.6.4"
 
 [tool.poetry.scripts]
 myskoda = "myskoda.cli:cli"
@@ -30,15 +32,14 @@ myskoda = "myskoda.cli:cli"
 cli = ["asyncclick", "coloredlogs", "termcolor"]
 
 [build-system]
-requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
+requires = ["poetry-core"]
 
 [tool.ruff]
-target-version = "py312"
 line-length = 100
+target-version = "py312"
 
 [tool.ruff.lint]
-select = ["ALL"]
 ignore = [
     "COM812", # missing-trailing-comma
     "D101",   # undocumented-public-class
@@ -46,10 +47,12 @@ ignore = [
     "D203",   # one-blank-line-before-class
     "D211",   # blank-line-before-class
     "D213",   # multi-line-summary-second-line
+    "FBT001", # boolean-type-hint-positional-argument
     "FIX002", # line-contains-todo
     "G004",   # logging-f-string
     "ISC001", # single-line-implicit-string-concatenation
+    "S101",   # assert (used in tests)
     "T201",   # print
     "TD003",  # missing-todo-link
-    "FBT001", # boolean-type-hint-positional-argument
 ]
+select = ["ALL"]
