@@ -9,7 +9,7 @@ from collections.abc import Callable
 from aiohttp import ClientSession
 
 from .event import Event
-from .models.mqtt import OperationName
+from .models.operation_request import OperationName
 from .mqtt import Mqtt
 from .rest_api import RestApi
 

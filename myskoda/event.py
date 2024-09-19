@@ -4,7 +4,8 @@ from datetime import UTC, datetime
 from enum import StrEnum
 from typing import Literal
 
-from .models.mqtt import OperationRequest, ServiceEvent, ServiceEventCharging
+from .models.operation_request import OperationRequest
+from .models.service_event import ServiceEvent, ServiceEventCharging
 
 
 class ServiceEventTopic(StrEnum):

@@ -28,7 +28,7 @@ from .event import (
     EventOperation,
     EventType,
 )
-from .models.mqtt import OperationName, OperationRequest, OperationStatus
+from .models.operation_request import OperationName, OperationRequest, OperationStatus
 from .models.user import User
 from .rest_api import RestApi
 

@@ -13,9 +13,6 @@ from aiohttp import ClientSession
 from asyncclick.core import Context
 from termcolor import colored
 
-from myskoda.models.mqtt import OperationName, OperationStatus
-from myskoda.myskoda import MySkoda
-
 from .event import Event, EventType, ServiceEventTopic
 from .models.charging import MaxChargeCurrent
 from .models.common import (
@@ -26,6 +23,8 @@ from .models.common import (
     OnOffState,
     OpenState,
 )
+from .models.operation_request import OperationName, OperationStatus
+from .myskoda import MySkoda
 
 
 @click.group()
