@@ -4,7 +4,9 @@ This class provides all methods to operate on the API and MQTT broker.
 """
 
 import logging
-from collections.abc import Callable
+from asyncio import gather
+from collections.abc import Awaitable, Callable
+from ssl import SSLContext
 
 from aiohttp import ClientSession
 
@@ -13,7 +15,7 @@ from .models.air_conditioning import AirConditioning
 from .models.charging import Charging
 from .models.driving_range import DrivingRange
 from .models.health import Health
-from .models.info import Info
+from .models.info import CapabilityId, Info
 from .models.maintenance import Maintenance
 from .models.operation_request import OperationName
 from .models.position import Positions
@@ -22,6 +24,7 @@ from .models.trip_statistics import TripStatistics
 from .models.user import User
 from .mqtt import Mqtt
 from .rest_api import RestApi
+from .vehicle import Vehicle
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -36,13 +39,15 @@ class MySkoda:
         self.rest_api = RestApi(self.session)
         self.mqtt = Mqtt(self.rest_api)
 
-    async def connect(self, email: str, password: str) -> None:
+    async def connect(
+        self, email: str, password: str, ssl_context: SSLContext | None = None
+    ) -> None:
         """Authenticate on the rest api and connect to the MQTT broker."""
         await self.rest_api.authenticate(email, password)
-        await self.mqtt.connect()
+        await self.mqtt.connect(ssl_context=ssl_context)
         _LOGGER.debug("Myskoda ready.")
 
-    def subscribe(self, callback: Callable[[Event], None]) -> None:
+    def subscribe(self, callback: Callable[[Event], None | Awaitable[None]]) -> None:
         """Listen for events emitted by MySkoda's MQTT broker."""
         self.mqtt.subscribe(callback)
 
@@ -166,6 +171,39 @@ class MySkoda:
         """Retrieve user information about logged in user."""
         return await self.rest_api.get_user()
 
-    async def list_vehicles(self) -> list[str]:
+    async def list_vehicle_vins(self) -> list[str]:
         """List all vehicles by their vins."""
         return await self.rest_api.list_vehicles()
+
+    async def get_vehicle(self, vin: str) -> Vehicle:
+        """Load a full vehicle based on its capabilities."""
+        info = await self.get_info(vin)
+        maintenance = await self.get_maintenance(vin)
+
+        vehicle = Vehicle(info, maintenance)
+
+        if info.is_capability_available(CapabilityId.STATE):
+            vehicle.status = await self.get_status(vin)
+            vehicle.driving_range = await self.get_driving_range(vin)
+
+        if info.is_capability_available(CapabilityId.AIR_CONDITIONING):
+            vehicle.air_conditioning = await self.get_air_conditioning(vin)
+
+        if info.is_capability_available(CapabilityId.PARKING_POSITION):
+            vehicle.positions = await self.get_positions(vin)
+
+        if info.is_capability_available(CapabilityId.TRIP_STATISTICS):
+            vehicle.trip_statistics = await self.get_trip_statistics(vin)
+
+        if info.is_capability_available(CapabilityId.TRIP_STATISTICS):
+            vehicle.trip_statistics = await self.get_trip_statistics(vin)
+
+        if info.is_capability_available(CapabilityId.VEHICLE_HEALTH_INSPECTION):
+            vehicle.health = await self.get_health(vin)
+
+        return vehicle
+
+    async def get_all_vehicles(self) -> list[Vehicle]:
+        """Load all vehicles based on their capabilities."""
+        vins = await self.list_vehicle_vins()
+        return await gather(*(self.get_vehicle(vin) for vin in vins))

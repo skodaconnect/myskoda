@@ -79,6 +79,13 @@ class Capability(BaseModel):
     id: CapabilityId
     statuses: list[CapabilityStatus]
 
+    def is_available(self) -> bool:
+        """Check whether the capability can currently be used."""
+        return (
+            CapabilityStatus.DEACTIVATED_BY_ACTIVE_VEHICLE_USER not in self.statuses
+            and CapabilityStatus.INSUFFICIENT_BATTERY_LEVEL not in self.statuses
+        )
+
 
 class Capabilities(BaseModel):
     capabilities: list[Capability]
@@ -156,3 +163,23 @@ class Info(BaseModel):
     capabilities: Capabilities
     errors: list[Error] | None
     license_plate: str = Field(None, alias="licensePlate")
+
+    def has_capability(self, cap: CapabilityId) -> bool:
+        """Check for a capability.
+
+        Checks whether a vehicle generally has a capability.
+        Does not check whether it's actually available.
+        """
+        return any(capability.id == cap for capability in self.capabilities.capabilities)
+
+    def is_capability_available(self, cap: CapabilityId) -> bool:
+        """Check for capability availability.
+
+        Checks whether the vehicle has the capability and whether it is currently
+        available. A capability can be unavailable for example if it's deactivated
+        by the currently active user.
+        """
+        return any(
+            capability.id == cap and capability.is_available()
+            for capability in self.capabilities.capabilities
+        )

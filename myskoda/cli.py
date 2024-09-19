@@ -79,7 +79,7 @@ async def list_vehicles(ctx: Context) -> None:
     myskoda: MySkoda = ctx.obj["myskoda"]
 
     print(f"{colored("vehicles:", "blue")}")
-    for vehicle in await myskoda.list_vehicles():
+    for vehicle in await myskoda.list_vehicle_vins():
         print(f"- {vehicle}")
 
 
@@ -101,6 +101,9 @@ async def info(ctx: Context, vin: str) -> None:
     print(f"{colored("title:", "blue")} {info.specification.title}")
     print(f"{colored("vin:", "blue")} {info.vin}")
     print(f"{colored("software:", "blue")} {info.software_version}")
+    print(f"{colored("capabilities:", "blue")}")
+    for capability in info.capabilities.capabilities:
+        print(f"- {capability.id}")
 
 
 @cli.command()
@@ -245,11 +248,12 @@ async def maintenance(ctx: Context, vin: str) -> None:
         f"{maintenance.maintenance_report.oil_service_due_in_days}d / "
         f"{maintenance.maintenance_report.oil_service_due_in_km}km"
     )
-    print(f"{colored("service partner:", "blue")} {maintenance.preferred_service_partner.name}")
-    address = maintenance.preferred_service_partner.address
-    print(f"     {address.street} {address.house_number}")
-    print(f"     {address.zip_code} {address.city}")
-    print(f"     {address.country} ({address.country_code})")
+    if maintenance.preferred_service_partner:
+        print(f"{colored("service partner:", "blue")} {maintenance.preferred_service_partner.name}")
+        address = maintenance.preferred_service_partner.address
+        print(f"     {address.street} {address.house_number}")
+        print(f"     {address.zip_code} {address.city}")
+        print(f"     {address.country} ({address.country_code})")
     if maintenance.predictive_maintenance:
         print(f"{colored("email:", "blue")} {maintenance.predictive_maintenance.setting.email}")
         print(f"{colored("phone:", "blue")} {maintenance.predictive_maintenance.setting.phone}")

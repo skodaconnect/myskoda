@@ -5,7 +5,7 @@ import logging
 import re
 import ssl
 from asyncio import Future, get_event_loop
-from collections.abc import Callable
+from collections.abc import Awaitable, Callable
 from typing import cast
 
 from asyncio_paho.client import AsyncioPahoClient
@@ -52,7 +52,7 @@ class Mqtt:
     user: User
     vehicles: list[str]
     client: AsyncioPahoClient
-    _callbacks: list[Callable[[Event], None]]
+    _callbacks: list[Callable[[Event], None | Awaitable[None]]]
     _operation_listeners: list[OperationListener]
     _connected_listeners: list[Future[None]]
 
@@ -62,11 +62,11 @@ class Mqtt:
         self._operation_listeners = []
         self._connected_listeners = []
 
-    def subscribe(self, callback: Callable[[Event], None]) -> None:
+    def subscribe(self, callback: Callable[[Event], None | Awaitable[None]]) -> None:
         """Listen for events emitted by MySkoda's MQTT broker."""
         self._callbacks.append(callback)
 
-    async def connect(self) -> None:
+    async def connect(self, ssl_context: ssl.SSLContext | None = None) -> None:
         """Connect to the MQTT broker and listen for messages."""
         _LOGGER.debug(f"Connecting to MQTT on {MQTT_BROKER_HOST}:{MQTT_BROKER_PORT}...")
         self.user = await self.api.get_user()
@@ -75,7 +75,10 @@ class Mqtt:
         self.client = AsyncioPahoClient()
         self.client.on_connect = self._on_connect
         self.client.on_message = self._on_message
-        self.client.tls_set_context(context=ssl.create_default_context())
+        if ssl_context is not None:
+            self.client.tls_set_context(context=ssl_context)
+        else:
+            self.client.tls_set_context(context=ssl.create_default_context())
         self.client.username_pw_set(
             self.user.id, await self.api.idk_session.get_access_token(self.api.session)
         )
@@ -125,9 +128,11 @@ class Mqtt:
         _LOGGER.debug("Subscribing to topic: %s", topic)
         self.client.subscribe(topic)
 
-    def _emit(self, event: Event) -> None:
+    async def _emit(self, event: Event) -> None:
         for callback in self._callbacks:
-            callback(event)
+            result = callback(event)
+            if result is not None:
+                await result
 
         self._handle_operation(event)
 
@@ -172,7 +177,7 @@ class Mqtt:
         )
         self._handle_operation_completed(event.operation)
 
-    def _on_message(self, _client: AsyncioPahoClient, _data: None, msg: MQTTMessage) -> None:
+    async def _on_message(self, _client: AsyncioPahoClient, _data: None, msg: MQTTMessage) -> None:
         # Extract the topic, user id and vin from the topic's name.
         # Internally, the topic will always look like this:
         # `/{user_id}/{vin}/path/to/topic`
@@ -196,19 +201,19 @@ class Mqtt:
 
         match event_type:
             case EventType.OPERATION:
-                self._emit(EventOperation(vin, user_id, data))
+                await self._emit(EventOperation(vin, user_id, data))
             case EventType.ACCOUNT_EVENT:
-                self._emit(EventAccountPrivacy(vin, user_id, data))
+                await self._emit(EventAccountPrivacy(vin, user_id, data))
             case EventType.SERVICE_EVENT:
                 match topic:
                     case "air-conditioning":
-                        self._emit(EventAirConditioning(vin, user_id, data))
+                        await self._emit(EventAirConditioning(vin, user_id, data))
                     case "charging":
-                        self._emit(EventCharging(vin, user_id, data))
+                        await self._emit(EventCharging(vin, user_id, data))
                     case "vehicle-status/access":
-                        self._emit(EventAccess(vin, user_id, data))
+                        await self._emit(EventAccess(vin, user_id, data))
                     case "vehicle-status/lights":
-                        self._emit(EventLights(vin, user_id, data))
+                        await self._emit(EventLights(vin, user_id, data))
 
 
 class OperationFailedError(Exception):

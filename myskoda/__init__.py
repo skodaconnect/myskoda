@@ -17,10 +17,12 @@ from .models import (
     position,
     service_event,
     status,
+    user,
 )
 from .mqtt import Mqtt
 from .myskoda import MySkoda
 from .rest_api import RestApi
+from .vehicle import Vehicle
 
 __all__ = [
     "AuthorizationError",
@@ -40,4 +42,6 @@ __all__ = [
     "operation_request",
     "service_event",
     "Mqtt",
+    "Vehicle",
+    "user",
 ]
