@@ -278,7 +278,7 @@ class RestApi:
     # TODO @dvx76: Maybe refactor for FBT001
     async def set_battery_care_mode(self, vin: str, enabled: bool) -> None:
         """Enable or disable the battery care mode."""
-        _LOGGER.debug("Setting battery care mode for vehicle %s to %b", vin, enabled)
+        _LOGGER.debug("Setting battery care mode for vehicle %s to %r", vin, enabled)
         json_data = {"chargingCareMode": "ACTIVATED" if enabled else "DEACTIVATED"}
         async with self.session.put(
             f"{BASE_URL_SKODA}/api/v1/charging/{vin}/set-care-mode",
@@ -290,7 +290,7 @@ class RestApi:
     # TODO @dvx76: Maybe refactor for FBT001
     async def set_reduced_current_limit(self, vin: str, reduced: bool) -> None:
         """Enable reducing the current limit by which the car is charged."""
-        _LOGGER.debug("Setting reduced charging for vehicle %s to %b", vin, reduced)
+        _LOGGER.debug("Setting reduced charging for vehicle %s to %r", vin, reduced)
         json_data = {"chargingCurrent": "REDUCED" if reduced else "MAXIMUM"}
         async with self.session.put(
             f"{BASE_URL_SKODA}/api/v1/charging/{vin}/set-charging-current",

@@ -96,7 +96,7 @@ class MySkoda:
 
     async def set_target_temperature(self, vin: str, temperature: float) -> None:
         """Set the air conditioning's target temperature in °C."""
-        future = self.mqtt.wait_for_operation(OperationName.UPDATE_TARGET_TEMPERATURE)
+        future = self.mqtt.wait_for_operation(OperationName.SET_AIR_CONDITIONING_TARGET_TEMPERATURE)
         await self.rest_api.set_target_temperature(vin, temperature)
         await future
 

@@ -6,8 +6,7 @@ import re
 import ssl
 from asyncio import Future, get_event_loop
 from collections.abc import Callable
-from enum import StrEnum
-from typing import Literal, cast
+from typing import cast
 
 from asyncio_paho.client import AsyncioPahoClient
 from paho.mqtt.client import MQTTMessage
@@ -37,13 +36,7 @@ _LOGGER = logging.getLogger(__name__)
 TOPIC_RE = re.compile("^(.*?)/(.*?)/(.*?)/(.*?)$")
 
 
-class OperationListenerType(StrEnum):
-    OPERATION_NAME = "OPERATION_NAME"
-    TRACE_ID = "TRACE_ID"
-
-
-class OperationListenerForName:
-    type: Literal[OperationListenerType.OPERATION_NAME] = OperationListenerType.OPERATION_NAME
+class OperationListener:
     operation_name: OperationName
     future: Future[OperationRequest]
 
@@ -52,19 +45,6 @@ class OperationListenerForName:
     ) -> None:
         self.operation_name = operation_name
         self.future = future
-
-
-class OperationListenerForTraceId:
-    type: Literal[OperationListenerType.TRACE_ID] = OperationListenerType.TRACE_ID
-    trace_id: str
-    future: Future[OperationRequest]
-
-    def __init__(self, trace_id: str, future: Future[OperationRequest]) -> None:  # noqa: D107
-        self.trace_id = trace_id
-        self.future = future
-
-
-OperationListener = OperationListenerForTraceId | OperationListenerForName
 
 
 class Mqtt:
@@ -116,10 +96,10 @@ class Mqtt:
 
     def wait_for_operation(self, operation_name: OperationName) -> Future[OperationRequest]:
         """Wait until the next operation of the specified type completes."""
-        _LOGGER.debug("Waiting for operation %s to start and complete", operation_name)
+        _LOGGER.debug("Waiting for operation %s complete.", operation_name)
         future: Future[OperationRequest] = get_event_loop().create_future()
 
-        self._operation_listeners.append(OperationListenerForName(operation_name, future))
+        self._operation_listeners.append(OperationListener(operation_name, future))
 
         return future
 
@@ -151,37 +131,27 @@ class Mqtt:
 
         self._handle_operation(event)
 
-    def _handle_operation_in_progress(self, operation: OperationRequest) -> None:
-        listeners = self._operation_listeners
-        self._operation_listeners = []
-        for listener in listeners:
-            if (
-                listener.type != OperationListenerType.OPERATION_NAME
-                or listener.operation_name != operation.operation
-            ):
-                self._operation_listeners.append(listener)
-                continue
-            _LOGGER.debug(
-                "Converting listener for operation name '%s' to trace '%s'.",
-                operation.operation,
-                operation.trace_id,
-            )
-            self._operation_listeners.append(
-                OperationListenerForTraceId(operation.trace_id, listener.future)
-            )
-
     def _handle_operation_completed(self, operation: OperationRequest) -> None:
         listeners = self._operation_listeners
         self._operation_listeners = []
         for listener in listeners:
-            if (
-                listener.type != OperationListenerType.TRACE_ID
-                or listener.trace_id != operation.trace_id
-            ):
+            if listener.operation_name != operation.operation:
                 self._operation_listeners.append(listener)
                 continue
-            _LOGGER.debug("Resolving listener for trace id '%s'.", operation.trace_id)
-            listener.future.set_result(operation)
+
+            if operation.status == OperationStatus.ERROR:
+                _LOGGER.error(
+                    "Resolving listener for operation '%s' with error '%s'.",
+                    operation.operation,
+                    operation.error_code,
+                )
+                listener.future.set_exception(OperationFailedError(operation))
+            else:
+                if operation.status == OperationStatus.COMPLETED_WARNING:
+                    _LOGGER.warning("Operation '%s' completed with warnings.", operation.operation)
+
+                _LOGGER.debug("Resolving listener for operation '%s'.", operation.operation)
+                listener.future.set_result(operation)
 
     def _handle_operation(self, event: Event) -> None:
         if event.type != EventType.OPERATION:
@@ -193,7 +163,6 @@ class Mqtt:
                 event.operation.operation,
                 event.operation.trace_id,
             )
-            self._handle_operation_in_progress(event.operation)
             return
 
         _LOGGER.debug(
