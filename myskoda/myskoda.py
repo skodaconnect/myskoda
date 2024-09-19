@@ -9,7 +9,17 @@ from collections.abc import Callable
 from aiohttp import ClientSession
 
 from .event import Event
+from .models.air_conditioning import AirConditioning
+from .models.charging import Charging
+from .models.driving_range import DrivingRange
+from .models.health import Health
+from .models.info import Info
+from .models.maintenance import Maintenance
 from .models.operation_request import OperationName
+from .models.position import Positions
+from .models.status import Status
+from .models.trip_statistics import TripStatistics
+from .models.user import User
 from .mqtt import Mqtt
 from .rest_api import RestApi
 
@@ -115,3 +125,47 @@ class MySkoda:
     def get_auth_token(self) -> str:
         """Retrieve the main access token for the IDK session."""
         return self.rest_api.idk_session.access_token
+
+    async def get_info(self, vin: str) -> Info:
+        """Retrieve the basic vehicle information for the specified vehicle."""
+        return await self.rest_api.get_info(vin)
+
+    async def get_charging(self, vin: str) -> Charging:
+        """Retrieve information related to charging for the specified vehicle."""
+        return await self.rest_api.get_charging(vin)
+
+    async def get_status(self, vin: str) -> Status:
+        """Retrieve the current status for the specified vehicle."""
+        return await self.rest_api.get_status(vin)
+
+    async def get_air_conditioning(self, vin: str) -> AirConditioning:
+        """Retrieve the current air conditioning status for the specified vehicle."""
+        return await self.rest_api.get_air_conditioning(vin)
+
+    async def get_positions(self, vin: str) -> Positions:
+        """Retrieve the current position for the specified vehicle."""
+        return await self.rest_api.get_positions(vin)
+
+    async def get_driving_range(self, vin: str) -> DrivingRange:
+        """Retrieve estimated driving range for combustion vehicles."""
+        return await self.rest_api.get_driving_range(vin)
+
+    async def get_trip_statistics(self, vin: str) -> TripStatistics:
+        """Retrieve statistics about past trips."""
+        return await self.rest_api.get_trip_statistics(vin)
+
+    async def get_maintenance(self, vin: str) -> Maintenance:
+        """Retrieve maintenance report."""
+        return await self.rest_api.get_maintenance(vin)
+
+    async def get_health(self, vin: str) -> Health:
+        """Retrieve health information for the specified vehicle."""
+        return await self.rest_api.get_health(vin)
+
+    async def get_user(self) -> User:
+        """Retrieve user information about logged in user."""
+        return await self.rest_api.get_user()
+
+    async def list_vehicles(self) -> list[str]:
+        """List all vehicles by their vins."""
+        return await self.rest_api.list_vehicles()

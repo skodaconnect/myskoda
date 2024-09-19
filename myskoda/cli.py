@@ -79,7 +79,7 @@ async def list_vehicles(ctx: Context) -> None:
     myskoda: MySkoda = ctx.obj["myskoda"]
 
     print(f"{colored("vehicles:", "blue")}")
-    for vehicle in await myskoda.rest_api.list_vehicles():
+    for vehicle in await myskoda.list_vehicles():
         print(f"- {vehicle}")
 
 
@@ -89,7 +89,7 @@ async def list_vehicles(ctx: Context) -> None:
 async def info(ctx: Context, vin: str) -> None:
     """Print info for the specified vin."""
     myskoda: MySkoda = ctx.obj["myskoda"]
-    info = await myskoda.rest_api.get_info(vin)
+    info = await myskoda.get_info(vin)
 
     if info.specification.battery is not None:
         print(f"{colored("battery capacity:", "blue")} {info.specification.battery.capacity}kwh")
@@ -109,7 +109,7 @@ async def info(ctx: Context, vin: str) -> None:
 async def status(ctx: Context, vin: str) -> None:
     """Print current status for the specified vin."""
     myskoda: MySkoda = ctx.obj["myskoda"]
-    status = await myskoda.rest_api.get_status(vin)
+    status = await myskoda.get_status(vin)
 
     print(
         f"{colored("doors:", "blue")} {c_open(status.overall.doors)}, "
@@ -128,7 +128,7 @@ async def status(ctx: Context, vin: str) -> None:
 async def air_conditioning(ctx: Context, vin: str) -> None:
     """Print current status about air conditioning."""
     myskoda: MySkoda = ctx.obj["myskoda"]
-    ac = await myskoda.rest_api.get_air_conditioning(vin)
+    ac = await myskoda.get_air_conditioning(vin)
 
     print(f"{colored("window heating:", "blue")} {bool_state(ac.window_heating_enabled)}")
     print(f"{colored("window heating (front):", "blue")} {on(ac.window_heating_state.front)}")
@@ -157,7 +157,7 @@ async def air_conditioning(ctx: Context, vin: str) -> None:
 async def positions(ctx: Context, vin: str) -> None:
     """Print the vehicle's current position."""
     myskoda: MySkoda = ctx.obj["myskoda"]
-    positions = await myskoda.rest_api.get_positions(vin)
+    positions = await myskoda.get_positions(vin)
 
     for position in positions.positions:
         print(f"- {colored("type:", "blue")} {position.type}")
@@ -181,7 +181,7 @@ async def positions(ctx: Context, vin: str) -> None:
 async def health(ctx: Context, vin: str) -> None:
     """Print the vehicle's mileage."""
     myskoda: MySkoda = ctx.obj["myskoda"]
-    health = await myskoda.rest_api.get_health(vin)
+    health = await myskoda.get_health(vin)
 
     print(f"{colored("mileage:", "blue")} {health.mileage_in_km}km")
     print(f"{colored("last updated:", "blue")} {health.captured_at}")
@@ -193,7 +193,7 @@ async def health(ctx: Context, vin: str) -> None:
 async def charging(ctx: Context, vin: str) -> None:
     """Print the vehicle's current charging state."""
     myskoda: MySkoda = ctx.obj["myskoda"]
-    charging = await myskoda.rest_api.get_charging(vin)
+    charging = await myskoda.get_charging(vin)
 
     if charging.status is not None:
         print(
@@ -232,7 +232,7 @@ async def charging(ctx: Context, vin: str) -> None:
 async def maintenance(ctx: Context, vin: str) -> None:
     """Print the vehicle's maintenance information."""
     myskoda: MySkoda = ctx.obj["myskoda"]
-    maintenance = await myskoda.rest_api.get_maintenance(vin)
+    maintenance = await myskoda.get_maintenance(vin)
 
     print(f"{colored("mileage:", "blue")} {maintenance.maintenance_report.mileage_in_km}km")
     print(
@@ -261,7 +261,7 @@ async def maintenance(ctx: Context, vin: str) -> None:
 async def driving_range(ctx: Context, vin: str) -> None:
     """Print the vehicle's estimated driving range information."""
     myskoda: MySkoda = ctx.obj["myskoda"]
-    driving_range = await myskoda.rest_api.get_driving_range(vin)
+    driving_range = await myskoda.get_driving_range(vin)
 
     print(f"{colored("range:", "blue")} {driving_range.total_range_in_km}km")
     print(f"{colored("car type:", "blue")} {driving_range.car_type}")
@@ -277,7 +277,7 @@ async def driving_range(ctx: Context, vin: str) -> None:
 async def user(ctx: Context) -> None:
     """Print information about currently logged in user."""
     myskoda: MySkoda = ctx.obj["myskoda"]
-    user = await myskoda.rest_api.get_user()
+    user = await myskoda.get_user()
 
     print(f"{colored("id:", "blue")} {user.id}")
     print(f"{colored("name:", "blue")} {user.first_name} {user.last_name}")
@@ -290,7 +290,7 @@ async def user(ctx: Context) -> None:
 async def trip_statistics(ctx: Context, vin: str) -> None:
     """Print the last trip statics."""
     myskoda: MySkoda = ctx.obj["myskoda"]
-    stats = await myskoda.rest_api.get_trip_statistics(vin)
+    stats = await myskoda.get_trip_statistics(vin)
 
     print(
         f"{colored("overall fuel consumption:", "blue")} "

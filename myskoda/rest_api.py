@@ -1,7 +1,6 @@
 """Contains API representation for the MySkoda REST API."""
 
 import logging
-from asyncio import gather
 
 from aiohttp import ClientSession
 
@@ -19,33 +18,6 @@ from .models.trip_statistics import TripStatistics
 from .models.user import User
 
 _LOGGER = logging.getLogger(__name__)
-
-
-class Vehicle:
-    """Wrapper class for all information from all endpoints."""
-
-    info: Info
-    charging: Charging
-    status: Status
-    air_conditioning: AirConditioning
-    position: Positions
-    health: Health
-
-    def __init__(  # noqa: D107, PLR0913
-        self,
-        info: Info,
-        charging: Charging,
-        status: Status,
-        air_conditioning: AirConditioning,
-        position: Positions,
-        health: Health,
-    ) -> None:
-        self.info = info
-        self.charging = charging
-        self.status = status
-        self.air_conditioning = air_conditioning
-        self.position = position
-        self.health = health
 
 
 class RestApi:
@@ -176,31 +148,6 @@ class RestApi:
         ) as response:
             json = await response.json()
             return [vehicle["vin"] for vehicle in json["vehicles"]]
-
-    async def get_vehicle(self, vin: str) -> Vehicle:
-        """Retrieve all information about a given vehicle by calling all endpoints."""
-        [info, charging, status, air_conditioning, position, health] = await gather(
-            *[
-                self.get_info(vin),
-                self.get_charging(vin),
-                self.get_status(vin),
-                self.get_air_conditioning(vin),
-                self.get_positions(vin),
-                self.get_health(vin),
-            ]
-        )
-        return Vehicle(
-            info=info,
-            charging=charging,
-            status=status,
-            air_conditioning=air_conditioning,
-            position=position,
-            health=health,
-        )
-
-    async def get_all_vehicles(self) -> list[Vehicle]:
-        """Call all endpoints for all vehicles in the user's garage."""
-        return await gather(*[self.get_vehicle(vehicle) for vehicle in await self.list_vehicles()])
 
     async def _headers(self) -> dict[str, str]:
         return {"authorization": f"Bearer {await self.idk_session.get_access_token(self.session)}"}

@@ -7,8 +7,20 @@ from .authorization import (
     IDKSession,
     idk_authorize,
 )
-from .models import air_conditioning, charging, common, health, info, position, status
-from .rest_api import RestApi, Vehicle
+from .models import (
+    air_conditioning,
+    charging,
+    common,
+    health,
+    info,
+    operation_request,
+    position,
+    service_event,
+    status,
+)
+from .mqtt import Mqtt
+from .myskoda import MySkoda
+from .rest_api import RestApi
 
 __all__ = [
     "AuthorizationError",
@@ -24,5 +36,8 @@ __all__ = [
     "position",
     "status",
     "RestApi",
-    "Vehicle",
+    "MySkoda",
+    "operation_request",
+    "service_event",
+    "Mqtt",
 ]
