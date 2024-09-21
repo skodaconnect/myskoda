@@ -52,17 +52,17 @@ class MySkoda:
     rest_api: RestApi
     mqtt: Mqtt
 
-    def __init__(self, session: ClientSession) -> None:  # noqa: D107
+    def __init__(  # noqa: D107
+        self, session: ClientSession, ssl_context: SSLContext | None = None
+    ) -> None:
         self.session = session
         self.rest_api = RestApi(self.session)
-        self.mqtt = Mqtt(self.rest_api)
+        self.mqtt = Mqtt(self.rest_api, ssl_context=ssl_context)
 
-    async def connect(
-        self, email: str, password: str, ssl_context: SSLContext | None = None
-    ) -> None:
+    async def connect(self, email: str, password: str) -> None:
         """Authenticate on the rest api and connect to the MQTT broker."""
         await self.rest_api.authenticate(email, password)
-        await self.mqtt.connect(ssl_context=ssl_context)
+        await self.mqtt.connect()
         _LOGGER.debug("Myskoda ready.")
 
     def subscribe(self, callback: Callable[[Event], None | Awaitable[None]]) -> None:
