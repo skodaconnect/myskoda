@@ -2,11 +2,24 @@
 
 from datetime import datetime
 from enum import StrEnum
-from typing import Any
 
 from pydantic import BaseModel, Field
 
 from .common import ActiveState, EnabledState
+
+
+class ChargingErrorType(StrEnum):
+    CARE_MODE_IS_NOT_AVAILABLE = "CARE_MODE_IS_NOT_AVAILABLE"
+    AUTO_UNLOCK_IS_NOT_AVAILABLE = "AUTO_UNLOCK_IS_NOT_AVAILABLE"
+    MAX_CHARGE_CURRENT_IS_NOT_AVAILABLE = "MAX_CHARGE_CURRENT_IS_NOT_AVAILABLE"
+    CHARGE_LIMIT_IS_NOT_AVAILABLE = "CHARGE_LIMIT_IS_NOT_AVAILABLE"
+    STATUS_OF_CHARGING_NOT_AVAILABLE = "STATUS_OF_CHARGING_NOT_AVAILABLE"
+    STATUS_OF_CONNECTION_NOT_AVAILABLE = "STATUS_OF_CONNECTION_NOT_AVAILABLE"
+
+
+class ChargingError(BaseModel):
+    type: ChargingErrorType
+    description: str
 
 
 class ChargeMode(StrEnum):
@@ -58,7 +71,7 @@ class Battery(BaseModel):
     state_of_charge_in_percent: int = Field(None, alias="stateOfChargeInPercent")
 
 
-class Status(BaseModel):
+class ChargingStatus(BaseModel):
     battery: Battery
     charge_power_in_kw: float | None = Field(None, alias="chargePowerInKw")
     charging_rate_in_kilometers_per_hour: float = Field(
@@ -75,7 +88,7 @@ class Charging(BaseModel):
     """Information related to charging an EV."""
 
     car_captured_timestamp: datetime = Field(None, alias="carCapturedTimestamp")
-    errors: list[Any]
+    errors: list[ChargingError]
     is_vehicle_in_saved_location: bool = Field(None, alias="isVehicleInSavedLocation")
     settings: Settings
-    status: Status | None
+    status: ChargingStatus | None

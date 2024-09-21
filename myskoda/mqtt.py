@@ -4,9 +4,9 @@ import json
 import logging
 import re
 import ssl
-from asyncio import Future, get_event_loop
+from asyncio import Future, create_task, get_event_loop
 from collections.abc import Awaitable, Callable
-from typing import cast
+from typing import Any, cast
 
 from asyncio_paho.client import AsyncioPahoClient
 from paho.mqtt.client import MQTTMessage
@@ -34,6 +34,8 @@ from .rest_api import RestApi
 
 _LOGGER = logging.getLogger(__name__)
 TOPIC_RE = re.compile("^(.*?)/(.*?)/(.*?)/(.*?)$")
+
+background_tasks = set()
 
 
 class OperationListener:
@@ -128,11 +130,13 @@ class Mqtt:
         _LOGGER.debug("Subscribing to topic: %s", topic)
         self.client.subscribe(topic)
 
-    async def _emit(self, event: Event) -> None:
+    def _emit(self, event: Event) -> None:
         for callback in self._callbacks:
             result = callback(event)
             if result is not None:
-                await result
+                task = create_task(cast(Any, result))
+                background_tasks.add(task)
+                task.add_done_callback(background_tasks.discard)
 
         self._handle_operation(event)
 
@@ -177,7 +181,7 @@ class Mqtt:
         )
         self._handle_operation_completed(event.operation)
 
-    async def _on_message(self, _client: AsyncioPahoClient, _data: None, msg: MQTTMessage) -> None:
+    def _on_message(self, _client: AsyncioPahoClient, _data: None, msg: MQTTMessage) -> None:
         # Extract the topic, user id and vin from the topic's name.
         # Internally, the topic will always look like this:
         # `/{user_id}/{vin}/path/to/topic`
@@ -201,19 +205,19 @@ class Mqtt:
 
         match event_type:
             case EventType.OPERATION:
-                await self._emit(EventOperation(vin, user_id, data))
+                self._emit(EventOperation(vin, user_id, data))
             case EventType.ACCOUNT_EVENT:
-                await self._emit(EventAccountPrivacy(vin, user_id, data))
+                self._emit(EventAccountPrivacy(vin, user_id, data))
             case EventType.SERVICE_EVENT:
                 match topic:
                     case "air-conditioning":
-                        await self._emit(EventAirConditioning(vin, user_id, data))
+                        self._emit(EventAirConditioning(vin, user_id, data))
                     case "charging":
-                        await self._emit(EventCharging(vin, user_id, data))
+                        self._emit(EventCharging(vin, user_id, data))
                     case "vehicle-status/access":
-                        await self._emit(EventAccess(vin, user_id, data))
+                        self._emit(EventAccess(vin, user_id, data))
                     case "vehicle-status/lights":
-                        await self._emit(EventLights(vin, user_id, data))
+                        self._emit(EventLights(vin, user_id, data))
 
 
 class OperationFailedError(Exception):

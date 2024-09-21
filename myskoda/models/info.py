@@ -183,3 +183,11 @@ class Info(BaseModel):
             capability.id == cap and capability.is_available()
             for capability in self.capabilities.capabilities
         )
+
+    def get_model_name(self) -> str:
+        """Return the name of the vehicle's model."""
+        model = self.specification.model
+        engine = self.specification.engine
+        model_year = self.specification.model_year
+        system_model_id = self.specification.system_model_id
+        return f"{model} {engine} {model_year} ({system_model_id})"

@@ -64,7 +64,7 @@ class MySkoda:
     async def start_charging(self, vin: str) -> None:
         """Start charging the car."""
         future = self.mqtt.wait_for_operation(OperationName.START_CHARGING)
-        await self.rest_api.stop_charging(vin)
+        await self.rest_api.start_charging(vin)
         await future
 
     async def honk_flash(self, vin: str, honk: bool = False) -> None:  # noqa: FBT002
@@ -195,8 +195,8 @@ class MySkoda:
         if info.is_capability_available(CapabilityId.TRIP_STATISTICS):
             vehicle.trip_statistics = await self.get_trip_statistics(vin)
 
-        if info.is_capability_available(CapabilityId.TRIP_STATISTICS):
-            vehicle.trip_statistics = await self.get_trip_statistics(vin)
+        if info.is_capability_available(CapabilityId.CHARGING):
+            vehicle.charging = await self.get_charging(vin)
 
         if info.is_capability_available(CapabilityId.VEHICLE_HEALTH_INSPECTION):
             vehicle.health = await self.get_health(vin)
