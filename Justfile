@@ -5,3 +5,6 @@ lint:
 
 format:
     poetry run ruff format .
+
+test:
+    poetry run pytest tests

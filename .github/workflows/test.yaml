@@ -1,4 +1,4 @@
-name: Lint
+name: Lint and test
 
 on:
   push:
@@ -38,3 +38,7 @@ jobs:
       - name: Lint
         run: |
           just lint
+
+      - name: Test
+        run: |
+          just test
