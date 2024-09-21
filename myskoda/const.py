@@ -44,3 +44,5 @@ MQTT_SERVICE_EVENT_TOPICS = [
 MQTT_ACCOUNT_EVENT_TOPICS = [
     "account-event/privacy",
 ]
+
+MAX_RETRIES = 5
