@@ -17,7 +17,7 @@ from aiohttp import ClientSession, FormData
 from bs4 import BeautifulSoup
 from pydantic import BaseModel, Field
 
-from .const import BASE_URL_IDENT, BASE_URL_SKODA, CLIENT_ID
+from .const import BASE_URL_IDENT, BASE_URL_SKODA, CLIENT_ID, MAX_RETRIES
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -68,7 +68,7 @@ class IDKSession(BaseModel):
     refresh_token: str = Field(None, refreshToken="accessToken")
     id_token: str = Field(None, idToken="accessToken")
 
-    async def perform_refresh(self, session: ClientSession) -> None:
+    async def perform_refresh(self, session: ClientSession, attempt: int = 0) -> None:
         """Refresh the authorization token.
 
         This will consume the `refresh_token` and exchange it for a new set of tokens.
@@ -78,10 +78,18 @@ class IDKSession(BaseModel):
             f"{BASE_URL_SKODA}/api/v1/authentication/refresh-token?tokenType=CONNECT",
             json=json_data,
         ) as response:
-            data = json.loads(await response.text())
-            self.access_token = data.get("accessToken")
-            self.refresh_token = data.get("refreshToken")
-            self.id_token = data.get("idToken")
+            try:
+                if not response.ok:
+                    raise InvalidStatusError(response.status)  # noqa: TRY301
+                data = json.loads(await response.text())
+                self.access_token = data.get("accessToken")
+                self.refresh_token = data.get("refreshToken")
+                self.id_token = data.get("idToken")
+            except Exception:
+                if attempt >= MAX_RETRIES:
+                    raise
+                _LOGGER.warning("Retrying failed request to refresh token.")
+                await self.perform_refresh(session, attempt=attempt + 1)
 
     async def get_access_token(self, session: ClientSession) -> str:
         """Get the access token.
@@ -278,3 +286,10 @@ async def idk_authorize(session: ClientSession, email: str, password: str) -> ID
 
 class AuthorizationError(Exception):
     """Error to indicate that something unexpected happened during authorization."""
+
+
+class InvalidStatusError(Exception):
+    """An invalid HTTP status code was received."""
+
+    def __init__(self, status: int) -> None:  # noqa: D107
+        super().__init__(f"Received invalid HTTP status code {status}.")
