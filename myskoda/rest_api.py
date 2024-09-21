@@ -57,7 +57,6 @@ class RestApi:
         ) as response:
             response_text = await response.text()
             _LOGGER.debug(f"vin {vin}: received charging info: {response_text}")
-            print(await response.json())
             return Charging.parse_raw(response_text)
 
     async def get_status(self, vin: str) -> Status:
