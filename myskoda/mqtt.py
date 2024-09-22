@@ -65,7 +65,9 @@ class Mqtt:
     should_reconnect: bool
     is_connected: bool
 
-    def __init__(self, api: RestApi, ssl_context: ssl.SSLContext | None = None) -> None:  # noqa: D107
+    def __init__(
+        self, api: RestApi, ssl_context: ssl.SSLContext | None = None
+    ) -> None:  # noqa: D107
         self.api = api
         self._callbacks = []
         self._operation_listeners = []
@@ -87,7 +89,9 @@ class Mqtt:
                 if self.is_connected:
                     return True
 
-                _LOGGER.debug(f"Connecting to MQTT on {MQTT_BROKER_HOST}:{MQTT_BROKER_PORT}...")
+                _LOGGER.debug(
+                    f"Connecting to MQTT on {MQTT_BROKER_HOST}:{MQTT_BROKER_PORT}..."
+                )
 
                 if not self.user:
                     self.user = await self.api.get_user()
@@ -109,9 +113,13 @@ class Mqtt:
                     self.client.tls_set_context(context=ssl.create_default_context())
                 self.client.username_pw_set(
                     self.user.id,
-                    await self.api.idk_session.get_access_token(self.api.session),
+                    await self.api.idk_session.get_access_token(
+                        self.api.session, self.api.email, self.api.password
+                    ),
                 )
-                self.client.connect_async(MQTT_BROKER_HOST, MQTT_BROKER_PORT, MQTT_KEEPALIVE)
+                self.client.connect_async(
+                    MQTT_BROKER_HOST, MQTT_BROKER_PORT, MQTT_KEEPALIVE
+                )
 
                 await self._wait_for_connection()
             except FailedToConnectError:
@@ -147,7 +155,9 @@ class Mqtt:
 
         return future
 
-    def wait_for_operation(self, operation_name: OperationName) -> Future[OperationRequest]:
+    def wait_for_operation(
+        self, operation_name: OperationName
+    ) -> Future[OperationRequest]:
         """Wait until the next operation of the specified type completes."""
         _LOGGER.debug("Waiting for operation %s complete.", operation_name)
         future: Future[OperationRequest] = get_event_loop().create_future()
@@ -156,7 +166,9 @@ class Mqtt:
 
         return future
 
-    def _on_socket_close(self, client: AsyncioPahoClient, _data: None, _socket: None) -> None:
+    def _on_socket_close(
+        self, client: AsyncioPahoClient, _data: None, _socket: None
+    ) -> None:
         if client is not self.client:
             return
         _LOGGER.info("Socket to MQTT broker closed.")
@@ -241,9 +253,13 @@ class Mqtt:
                 listener.future.set_exception(OperationFailedError(operation))
             else:
                 if operation.status == OperationStatus.COMPLETED_WARNING:
-                    _LOGGER.warning("Operation '%s' completed with warnings.", operation.operation)
+                    _LOGGER.warning(
+                        "Operation '%s' completed with warnings.", operation.operation
+                    )
 
-                _LOGGER.debug("Resolving listener for operation '%s'.", operation.operation)
+                _LOGGER.debug(
+                    "Resolving listener for operation '%s'.", operation.operation
+                )
                 listener.future.set_result(operation)
 
     def _handle_operation(self, event: Event) -> None:
@@ -287,7 +303,9 @@ class Mqtt:
         if len(data) == 0:
             return
 
-        _LOGGER.debug("Message (%s) received for %s on topic %s: %s", event_type, vin, topic, data)
+        _LOGGER.debug(
+            "Message (%s) received for %s on topic %s: %s", event_type, vin, topic, data
+        )
 
         # Messages will contain payload as JSON.
         data = json.loads(msg.payload)

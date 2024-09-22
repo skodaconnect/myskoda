@@ -1,5 +1,6 @@
 """Handles authorization to the MySkoda API."""
 
+from asyncio import Lock
 import base64
 import hashlib
 import json
@@ -58,6 +59,9 @@ class IDKAuthorizationCode(BaseModel):
     id_token: str
 
 
+refresh_token_lock = Lock()
+
+
 class IDKSession(BaseModel):
     """Stores the JWT tokens relevant for a session at the IDK server.
 
@@ -68,30 +72,58 @@ class IDKSession(BaseModel):
     refresh_token: str = Field(None, refreshToken="accessToken")
     id_token: str = Field(None, idToken="accessToken")
 
-    async def perform_refresh(self, session: ClientSession, attempt: int = 0) -> None:
+    async def perform_refresh(self, session: ClientSession, username: str, password: str) -> None:
         """Refresh the authorization token.
 
         This will consume the `refresh_token` and exchange it for a new set of tokens.
         """
         json_data = {"token": self.refresh_token}
-        async with session.post(
-            f"{BASE_URL_SKODA}/api/v1/authentication/refresh-token?tokenType=CONNECT",
-            json=json_data,
-        ) as response:
-            try:
-                if not response.ok:
-                    raise InvalidStatusError(response.status)  # noqa: TRY301
-                data = json.loads(await response.text())
-                self.access_token = data.get("accessToken")
-                self.refresh_token = data.get("refreshToken")
-                self.id_token = data.get("idToken")
-            except Exception:
-                if attempt >= MAX_RETRIES:
-                    raise
-                _LOGGER.warning("Retrying failed request to refresh token.")
-                await self.perform_refresh(session, attempt=attempt + 1)
 
-    async def get_access_token(self, session: ClientSession) -> str:
+        async def perform_request() -> bool:
+            meta = jwt.decode(
+                self.access_token, options={"verify_signature": False}
+            )
+            expiry = datetime.fromtimestamp(cast(float, meta.get("exp")), tz=UTC)
+            if datetime.now(tz=UTC) + timedelta(minutes=10) < expiry:
+                return True
+            async with session.post(
+                f"{BASE_URL_SKODA}/api/v1/authentication/refresh-token?tokenType=CONNECT",
+                json=json_data,
+            ) as response:
+                try:
+                    if not response.ok:
+                        raise InvalidStatusError(response.status)  # noqa: TRY301
+                    data = json.loads(await response.text())
+                except Exception:
+                    return False
+                else:
+                    self.access_token = data.get("accessToken")
+                    self.refresh_token = data.get("refreshToken")
+                    self.id_token = data.get("idToken")
+                    return True
+
+        async with refresh_token_lock:
+            attempts = 0
+            while not await perform_request():
+                if attempts >= MAX_RETRIES:
+                    _LOGGER.error(
+                        "Refreshing token failed after %d attempts.", MAX_RETRIES
+                    )
+                    _LOGGER.info("Trying to recover by logging in again...")
+                    try:
+                        tokens = await idk_authorize(session, username, password)
+                    except Exception:
+                        _LOGGER.exception("Failed to login.")
+                    else:
+                        self.access_token = tokens.access_token
+                        self.refresh_token = tokens.refresh_token
+                        self.id_token = tokens.id_token
+                        _LOGGER.info("Successfully recovered by logging in.")
+                        return
+                _LOGGER.warning("Retrying failed request to refresh token. Retrying...")
+                attempts = attempts + 1
+
+    async def get_access_token(self, session: ClientSession, username: str, password: str) -> str:
         """Get the access token.
 
         Use this method instead of using `access_token` directly. It will automatically
@@ -101,7 +133,7 @@ class IDKSession(BaseModel):
         expiry = datetime.fromtimestamp(cast(float, meta.get("exp")), tz=UTC)
         if datetime.now(tz=UTC) + timedelta(minutes=10) > expiry:
             _LOGGER.info("Refreshing IDK access token")
-            await self.perform_refresh(session)
+            await self.perform_refresh(session, username, password)
         return self.access_token
 
 
@@ -168,7 +200,9 @@ async def _initial_oidc_authorize(
         "code_challenge_method": "s256",
         "prompt": "login",
     }
-    async with session.get(f"{BASE_URL_IDENT}/oidc/v1/authorize", params=params) as response:
+    async with session.get(
+        f"{BASE_URL_IDENT}/oidc/v1/authorize", params=params
+    ) as response:
         data = _extract_states_from_website(await response.text())
         return IDKCredentials(data, email, password)
 
@@ -258,14 +292,18 @@ async def _exchange_auth_code_for_idk_session(
         return IDKSession(**await response.json())
 
 
-async def idk_authorize(session: ClientSession, email: str, password: str) -> IDKSession:
+async def idk_authorize(
+    session: ClientSession, email: str, password: str
+) -> IDKSession:
     """Perform the full login process.
 
     Must be called before any other methods on the class can be called.
     """
     # Generate a random string for the OAUTH2 PKCE challenge.
     # (https://www.oauth.com/oauth2-servers/pkce/authorization-request/)
-    verifier = "".join(random.choices(string.ascii_uppercase + string.digits, k=16))  # noqa: S311
+    verifier = "".join(
+        random.choices(string.ascii_uppercase + string.digits, k=16)
+    )  # noqa: S311
 
     # Call the initial OIDC (OpenID Connect) authorization, giving us the initial SSO information.
     # The full flow is explain a little bit here:
@@ -281,7 +319,9 @@ async def idk_authorize(session: ClientSession, email: str, password: str) -> ID
     authentication = await _enter_password(session, login_meta)
 
     # Exchange the token for access and refresh tokens (JWT format).
-    return await _exchange_auth_code_for_idk_session(session, authentication.code, verifier)
+    return await _exchange_auth_code_for_idk_session(
+        session, authentication.code, verifier
+    )
 
 
 class AuthorizationError(Exception):
