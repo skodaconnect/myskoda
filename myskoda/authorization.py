@@ -65,8 +65,8 @@ class IDKSession(BaseModel):
     """
 
     access_token: str = Field(None, alias="accessToken")
-    refresh_token: str = Field(None, refreshToken="accessToken")
-    id_token: str = Field(None, idToken="accessToken")
+    refresh_token: str = Field(None, alias="refreshToken")
+    id_token: str = Field(None, alias="idToken")
 
     async def perform_refresh(self, session: ClientSession, attempt: int = 0) -> None:
         """Refresh the authorization token.
