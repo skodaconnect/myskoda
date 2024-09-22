@@ -7,8 +7,9 @@ import logging
 from asyncio import gather
 from collections.abc import Awaitable, Callable
 from ssl import SSLContext
+from types import SimpleNamespace
 
-from aiohttp import ClientSession
+from aiohttp import ClientSession, TraceConfig, TraceRequestEndParams
 
 from .event import Event
 from .models.air_conditioning import AirConditioning
@@ -27,6 +28,23 @@ from .rest_api import RestApi
 from .vehicle import Vehicle
 
 _LOGGER = logging.getLogger(__name__)
+
+
+async def trace_response(
+    _session: ClientSession,
+    _trace_config_ctx: SimpleNamespace,
+    params: TraceRequestEndParams,
+) -> None:
+    """Log response details. Used in aiohttp.TraceConfig."""
+    _LOGGER.debug(
+        f"Trace: {params.method} {str(params.url)[:60]} - "
+        f"response: {params.response.status} ({params.response.content_length} bytes) "
+        f"{(await params.response.text())[:5000]}"
+    )
+
+
+TRACE_CONFIG = TraceConfig()
+TRACE_CONFIG.on_request_end.append(trace_response)
 
 
 class MySkoda:

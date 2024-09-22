@@ -20,7 +20,7 @@ from .models import (
     user,
 )
 from .mqtt import Mqtt
-from .myskoda import MySkoda
+from .myskoda import TRACE_CONFIG, MySkoda
 from .rest_api import RestApi
 from .vehicle import Vehicle
 
@@ -44,4 +44,5 @@ __all__ = [
     "Mqtt",
     "Vehicle",
     "user",
+    "TRACE_CONFIG",
 ]

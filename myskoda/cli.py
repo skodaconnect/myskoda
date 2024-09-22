@@ -24,7 +24,7 @@ from .models.common import (
     OpenState,
 )
 from .models.operation_request import OperationName, OperationStatus
-from .myskoda import MySkoda
+from .myskoda import TRACE_CONFIG, MySkoda
 
 
 @click.group()
@@ -40,7 +40,10 @@ async def cli(ctx: Context, username: str, password: str, verbose: bool) -> None
     ctx.obj["username"] = username
     ctx.obj["password"] = password
 
-    session = ClientSession()
+    trace_configs = []
+    if verbose:
+        trace_configs.append(TRACE_CONFIG)
+    session = ClientSession(trace_configs=trace_configs)
     myskoda = MySkoda(session)
     await myskoda.connect(username, password)
 
