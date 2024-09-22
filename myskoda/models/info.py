@@ -105,6 +105,7 @@ class Battery(BaseModel):
 
 class BodyType(StrEnum):
     SUV = "SUV"
+    SUV_COUPE = "SUV Coupe"
     COMBI = "Combi"
 
 
