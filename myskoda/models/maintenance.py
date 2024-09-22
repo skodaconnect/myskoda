@@ -18,9 +18,9 @@ class MaintenanceReport(BaseModel):
 
 
 class Contact(BaseModel):
-    email: str
-    phone: str
-    url: str
+    email: str | None
+    phone: str | None
+    url: str | None
 
 
 class TimeRange(BaseModel):
