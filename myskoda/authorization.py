@@ -81,14 +81,18 @@ class IDKSession(BaseModel):
             try:
                 if not response.ok:
                     raise InvalidStatusError(response.status)  # noqa: TRY301
-                data = json.loads(await response.text())
+                response_text = await response.text()
+                data = json.loads(response_text)
                 self.access_token = data.get("accessToken")
                 self.refresh_token = data.get("refreshToken")
                 self.id_token = data.get("idToken")
             except Exception:
                 if attempt >= MAX_RETRIES:
                     raise
-                _LOGGER.warning("Retrying failed request to refresh token.")
+                _LOGGER.warning(
+                    "Retrying failed request to refresh token. "
+                    f"Response was {response.status}: {response_text}"
+                )
                 await self.perform_refresh(session, attempt=attempt + 1)
 
     async def get_access_token(self, session: ClientSession) -> str:
