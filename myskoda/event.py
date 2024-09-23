@@ -42,7 +42,7 @@ class EventOperation(BaseEvent):
 
     def __init__(self, vin: str, user_id: str, operation: dict) -> None:  # noqa: D107
         super().__init__(vin, user_id)
-        self.operation = OperationRequest(**operation)
+        self.operation = OperationRequest.from_dict(operation)
 
 
 class EventAirConditioning(BaseEvent):
@@ -52,7 +52,7 @@ class EventAirConditioning(BaseEvent):
 
     def __init__(self, vin: str, user_id: str, payload: dict) -> None:  # noqa: D107
         super().__init__(vin, user_id)
-        self.event = ServiceEvent(**payload)
+        self.event = ServiceEvent.from_dict(payload)
 
 
 class EventCharging(BaseEvent):
@@ -62,7 +62,7 @@ class EventCharging(BaseEvent):
 
     def __init__(self, vin: str, user_id: str, payload: dict) -> None:  # noqa: D107
         super().__init__(vin, user_id)
-        self.event = ServiceEventCharging(**payload)
+        self.event = ServiceEventCharging.from_dict(payload)
 
 
 class EventAccess(BaseEvent):
@@ -72,7 +72,7 @@ class EventAccess(BaseEvent):
 
     def __init__(self, vin: str, user_id: str, payload: dict) -> None:  # noqa: D107
         super().__init__(vin, user_id)
-        self.event = ServiceEvent(**payload)
+        self.event = ServiceEvent.from_dict(payload)
 
 
 class EventLights(BaseEvent):
@@ -82,7 +82,7 @@ class EventLights(BaseEvent):
 
     def __init__(self, vin: str, user_id: str, payload: dict) -> None:  # noqa: D107
         super().__init__(vin, user_id)
-        self.event = ServiceEvent(**payload)
+        self.event = ServiceEvent.from_dict(payload)
 
 
 class EventAccountPrivacy(BaseEvent):

@@ -1,8 +1,10 @@
 """Common models used in multiple responses."""
 
+from dataclasses import dataclass, field
 from enum import StrEnum
 
-from pydantic import BaseModel, Field
+from mashumaro import field_options
+from mashumaro.mixins.json import DataClassJSONMixin
 
 
 class OnOffState(StrEnum):
@@ -49,18 +51,20 @@ class Side(StrEnum):
     RIGHT = "RIGHT"
 
 
-class Coordinates(BaseModel):
+@dataclass
+class Coordinates(DataClassJSONMixin):
     latitude: float
     longitude: float
 
 
-class Address(BaseModel):
+@dataclass
+class Address(DataClassJSONMixin):
     city: str
-    country: str | None
-    country_code: str = Field(None, alias="countryCode")
-    house_number: str | None = Field(None, alias="houseNumber")
     street: str
-    zip_code: str = Field(None, alias="zipCode")
+    country_code: str = field(metadata=field_options(alias="countryCode"))
+    zip_code: str = field(metadata=field_options(alias="zipCode"))
+    house_number: str | None = field(default=None, metadata=field_options(alias="houseNumber"))
+    country: str | None = field(default=None)
 
 
 class Weekday(StrEnum):
