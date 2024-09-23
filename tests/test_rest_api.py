@@ -7,6 +7,7 @@ from unittest.mock import ANY, AsyncMock, MagicMock
 import pytest
 
 from myskoda import RestApi
+from myskoda.auth.authorization import Authorization
 
 FIXTURES_DIR = Path(__file__).parent.joinpath("fixtures")
 
@@ -38,8 +39,9 @@ async def test_get_info(vehicle_infos: list[str]) -> None:
         session_mock = MagicMock()
         session_mock.get.return_value.__aenter__.return_value = response_mock
 
-        api = RestApi(session=session_mock)
-        api.idk_session = AsyncMock()
+        authorization = Authorization(session_mock)
+        api = RestApi(session_mock, authorization)
+        api.authorization.get_access_token = AsyncMock()
         get_info_result = await api.get_info(vehicle_info_json["vin"])
 
         # Should probabaly assert the whole thing. Just an example.

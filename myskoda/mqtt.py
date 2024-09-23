@@ -11,6 +11,8 @@ from typing import Any, cast
 from asyncio_paho.client import AsyncioPahoClient
 from paho.mqtt.client import MQTTMessage
 
+from myskoda.auth.authorization import Authorization
+
 from .const import (
     MQTT_ACCOUNT_EVENT_TOPICS,
     MQTT_BROKER_HOST,
@@ -64,10 +66,13 @@ class Mqtt:
     _connected_listeners: list[Future[None]]
     should_reconnect: bool
     is_connected: bool
+    authorization: Authorization
+    api: RestApi
 
-    def __init__(
-        self, api: RestApi, ssl_context: ssl.SSLContext | None = None
-    ) -> None:  # noqa: D107
+    def __init__(  # noqa: D107
+        self, authorization: Authorization, api: RestApi, ssl_context: ssl.SSLContext | None = None
+    ) -> None:
+        self.authorization = authorization
         self.api = api
         self._callbacks = []
         self._operation_listeners = []
@@ -81,54 +86,49 @@ class Mqtt:
         """Listen for events emitted by MySkoda's MQTT broker."""
         self._callbacks.append(callback)
 
-    async def connect(self) -> None:
-        """Connect to the MQTT broker and listen for messages."""
-
-        async def perform_connect() -> bool:
-            try:
-                if self.is_connected:
-                    return True
-
-                _LOGGER.debug(
-                    f"Connecting to MQTT on {MQTT_BROKER_HOST}:{MQTT_BROKER_PORT}..."
-                )
-
-                if not self.user:
-                    self.user = await self.api.get_user()
-                    _LOGGER.debug(f"Using user id {self.user.id}...")
-                if not self.vehicles:
-                    self.vehicles = await self.api.list_vehicles()
-
-                self.should_reconnect = True
-
-                self.client = AsyncioPahoClient()
-                self.client.on_connect = self._on_connect
-                self.client.on_message = self._on_message
-                self.client.on_disconnect = self._on_disconnect
-                self.client.on_socket_close = self._on_socket_close
-                self.client.on_connect_fail = self._on_connect_fail
-                if self.ssl_context is not None:
-                    self.client.tls_set_context(context=self.ssl_context)
-                else:
-                    self.client.tls_set_context(context=ssl.create_default_context())
-                self.client.username_pw_set(
-                    self.user.id,
-                    await self.api.idk_session.get_access_token(
-                        self.api.session, self.api.email, self.api.password
-                    ),
-                )
-                self.client.connect_async(
-                    MQTT_BROKER_HOST, MQTT_BROKER_PORT, MQTT_KEEPALIVE
-                )
-
-                await self._wait_for_connection()
-            except FailedToConnectError:
-                return False
-            else:
+    async def _perform_connect(self) -> bool:
+        try:
+            if self.is_connected:
                 return True
 
+            _LOGGER.debug("Connecting to MQTT on {%s}:{%d}...", MQTT_BROKER_HOST, MQTT_BROKER_PORT)
+
+            if not self.user:
+                self.user = await self.api.get_user()
+                _LOGGER.debug(f"Using user id {self.user.id}...")
+
+            if not self.vehicles:
+                self.vehicles = await self.api.list_vehicles()
+
+            self.should_reconnect = True
+
+            self.client = AsyncioPahoClient()
+            self.client.on_connect = self._on_connect
+            self.client.on_message = self._on_message
+            self.client.on_disconnect = self._on_disconnect
+            self.client.on_socket_close = self._on_socket_close
+            self.client.on_connect_fail = self._on_connect_fail
+            if self.ssl_context is not None:
+                self.client.tls_set_context(context=self.ssl_context)
+            else:
+                self.client.tls_set_context(context=ssl.create_default_context())
+
+            self.client.username_pw_set(
+                self.user.id,
+                await self.api.authorization.get_access_token(),
+            )
+            self.client.connect_async(MQTT_BROKER_HOST, MQTT_BROKER_PORT, MQTT_KEEPALIVE)
+
+            await self._wait_for_connection()
+        except FailedToConnectError:
+            return False
+        else:
+            return True
+
+    async def connect(self) -> None:
+        """Connect to the MQTT broker and listen for messages."""
         async with connect_lock:
-            while not await perform_connect():  # noqa: ASYNC110
+            while not await self._perform_connect():  # noqa: ASYNC110
                 await sleep(MQTT_RECONNECT_DELAY)
 
     def reconnect(self) -> None:
@@ -155,9 +155,7 @@ class Mqtt:
 
         return future
 
-    def wait_for_operation(
-        self, operation_name: OperationName
-    ) -> Future[OperationRequest]:
+    def wait_for_operation(self, operation_name: OperationName) -> Future[OperationRequest]:
         """Wait until the next operation of the specified type completes."""
         _LOGGER.debug("Waiting for operation %s complete.", operation_name)
         future: Future[OperationRequest] = get_event_loop().create_future()
@@ -166,9 +164,7 @@ class Mqtt:
 
         return future
 
-    def _on_socket_close(
-        self, client: AsyncioPahoClient, _data: None, _socket: None
-    ) -> None:
+    def _on_socket_close(self, client: AsyncioPahoClient, _data: None, _socket: None) -> None:
         if client is not self.client:
             return
         _LOGGER.info("Socket to MQTT broker closed.")
@@ -253,13 +249,9 @@ class Mqtt:
                 listener.future.set_exception(OperationFailedError(operation))
             else:
                 if operation.status == OperationStatus.COMPLETED_WARNING:
-                    _LOGGER.warning(
-                        "Operation '%s' completed with warnings.", operation.operation
-                    )
+                    _LOGGER.warning("Operation '%s' completed with warnings.", operation.operation)
 
-                _LOGGER.debug(
-                    "Resolving listener for operation '%s'.", operation.operation
-                )
+                _LOGGER.debug("Resolving listener for operation '%s'.", operation.operation)
                 listener.future.set_result(operation)
 
     def _handle_operation(self, event: Event) -> None:
@@ -303,9 +295,7 @@ class Mqtt:
         if len(data) == 0:
             return
 
-        _LOGGER.debug(
-            "Message (%s) received for %s on topic %s: %s", event_type, vin, topic, data
-        )
+        _LOGGER.debug("Message (%s) received for %s on topic %s: %s", event_type, vin, topic, data)
 
         # Messages will contain payload as JSON.
         data = json.loads(msg.payload)

@@ -1,12 +1,6 @@
 """A library for interacting with the MySkoda APIs."""
 
-from .authorization import (
-    AuthorizationError,
-    IDKAuthorizationCode,
-    IDKCredentials,
-    IDKSession,
-    idk_authorize,
-)
+from .auth.authorization import Authorization, AuthorizationError, IDKAuthorizationCode, IDKSession
 from .models import (
     air_conditioning,
     charging,
@@ -25,11 +19,10 @@ from .rest_api import RestApi
 from .vehicle import Vehicle
 
 __all__ = [
+    "Authorization",
     "AuthorizationError",
     "IDKAuthorizationCode",
-    "IDKCredentials",
     "IDKSession",
-    "idk_authorize",
     "air_conditioning",
     "charging",
     "common",
