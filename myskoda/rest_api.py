@@ -4,7 +4,7 @@ import logging
 
 from aiohttp import ClientSession
 
-from .authorization import IDKSession, idk_authorize
+from .auth.authorization import Authorization
 from .const import BASE_URL_SKODA
 from .models.air_conditioning import AirConditioning
 from .models.charging import ChargeMode, Charging
@@ -24,23 +24,11 @@ class RestApi:
     """API hub class that can perform all calls to the MySkoda API."""
 
     session: ClientSession
-    idk_session: IDKSession
+    authorization: Authorization
 
-    def __init__(self, session: ClientSession) -> None:  # noqa: D107
+    def __init__(self, session: ClientSession, authorization: Authorization) -> None:  # noqa: D107
         self.session = session
-
-    async def authenticate(self, email: str, password: str) -> bool:
-        """Perform the full login process.
-
-        Must be called before any other methods on the class can be called.
-        """
-        self.email = email
-        self.password = password
-        self.idk_session = await idk_authorize(self.session, email, password)
-
-        _LOGGER.info("IDK Authorization was successful.")
-
-        return True
+        self.authorization = authorization
 
     async def get_info(self, vin: str) -> Info:
         """Retrieve the basic vehicle information for the specified vehicle."""
@@ -151,9 +139,7 @@ class RestApi:
             return [vehicle["vin"] for vehicle in json["vehicles"]]
 
     async def _headers(self) -> dict[str, str]:
-        return {
-            "authorization": f"Bearer {await self.idk_session.get_access_token(self.session, self.email, self.password)}"
-        }
+        return {"authorization": f"Bearer {await self.authorization.get_access_token()}"}
 
     async def stop_air_conditioning(self, vin: str) -> None:
         """Stop the air conditioning."""
@@ -187,9 +173,7 @@ class RestApi:
 
     async def set_target_temperature(self, vin: str, temperature: float) -> None:
         """Set the air conditioning's target temperature in °C."""
-        _LOGGER.debug(
-            "Setting target temperature for vehicle %s to %s", vin, str(temperature)
-        )
+        _LOGGER.debug("Setting target temperature for vehicle %s to %s", vin, str(temperature))
         json_data = {"temperatureValue": str(temperature), "unitInCar": "CELSIUS"}
         async with self.session.post(
             f"{BASE_URL_SKODA}/api/v2/air-conditioning/{vin}/settings/target-temperature",
@@ -297,9 +281,7 @@ class RestApi:
     ) -> None:
         """Honk and/or flash."""
         positions = await self.get_positions(vin)
-        position = next(
-            pos for pos in positions.positions if pos.type == PositionType.VEHICLE
-        )
+        position = next(pos for pos in positions.positions if pos.type == PositionType.VEHICLE)
         json_data = {
             "mode": "HONK_AND_FLASH" if honk else "FLASH",
             "vehiclePosition": {
