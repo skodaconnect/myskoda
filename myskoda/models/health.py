@@ -1,10 +1,12 @@
 """Models for responses of api/v1/vehicle-health-report/warning-lights endpoint."""
 
+from dataclasses import dataclass, field
 from datetime import datetime
 from enum import StrEnum
 from typing import Any
 
-from pydantic import BaseModel, Field
+from mashumaro import field_options
+from mashumaro.mixins.json import DataClassJSONMixin
 
 
 class WarningLightCategory(StrEnum):
@@ -18,14 +20,16 @@ class WarningLightCategory(StrEnum):
     OTHER = "OTHER"
 
 
-class WarningLight(BaseModel):
+@dataclass
+class WarningLight(DataClassJSONMixin):
     category: WarningLightCategory
     defects: list[Any]
 
 
-class Health(BaseModel):
+@dataclass
+class Health(DataClassJSONMixin):
     """Information about the car's health (currently only mileage)."""
 
-    captured_at: datetime = Field(None, alias="capturedAt")
-    mileage_in_km: int = Field(None, alias="mileageInKm")
-    warning_lights: list[WarningLight] = Field(None, alias="warningLights")
+    captured_at: datetime = field(metadata=field_options(alias="capturedAt"))
+    mileage_in_km: int = field(metadata=field_options(alias="mileageInKm"))
+    warning_lights: list[WarningLight] = field(metadata=field_options(alias="warningLights"))

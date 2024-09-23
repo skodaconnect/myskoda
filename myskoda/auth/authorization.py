@@ -7,12 +7,14 @@ import random
 import string
 import uuid
 from asyncio import Lock
+from dataclasses import dataclass, field
 from datetime import UTC, datetime, timedelta
 from typing import cast
 
 import jwt
 from aiohttp import ClientSession, FormData
-from pydantic import BaseModel, Field, ValidationError
+from mashumaro import field_options
+from mashumaro.mixins.json import DataClassJSONMixin
 
 from myskoda.auth.csrf_parser import CSRFParser, CSRFState
 from myskoda.const import BASE_URL_IDENT, BASE_URL_SKODA, CLIENT_ID, MAX_RETRIES
@@ -20,7 +22,8 @@ from myskoda.const import BASE_URL_IDENT, BASE_URL_SKODA, CLIENT_ID, MAX_RETRIES
 _LOGGER = logging.getLogger(__name__)
 
 
-class IDKAuthorizationCode(BaseModel):
+@dataclass
+class IDKAuthorizationCode(DataClassJSONMixin):
     """One-time authorization code that can be obtained by logging in.
 
     This authorization code can later be exchanged for a set of JWT tokens.
@@ -34,15 +37,16 @@ class IDKAuthorizationCode(BaseModel):
 refresh_token_lock = Lock()
 
 
-class IDKSession(BaseModel):
+@dataclass
+class IDKSession(DataClassJSONMixin):
     """Stores the JWT tokens relevant for a session at the IDK server.
 
     Can be used to authorized and refresh the authorization token.
     """
 
-    access_token: str = Field(None, alias="accessToken")
-    refresh_token: str = Field(None, alias="refreshToken")
-    id_token: str = Field(None, alias="idToken")
+    access_token: str = field(metadata=field_options(alias="accessToken"))
+    refresh_token: str = field(metadata=field_options(alias="refreshToken"))
+    id_token: str = field(metadata=field_options(alias="idToken"))
 
 
 class Authorization:
@@ -160,7 +164,7 @@ class Authorization:
                 [key, value] = code.split("=")
                 data[key] = value
 
-            return IDKAuthorizationCode(**data)
+            return IDKAuthorizationCode.from_dict(data)
 
     async def _exchange_auth_code_for_idk_session(self, code: str, verifier: str) -> IDKSession:
         """Exchange the ident login code for an auth token from Skoda.
@@ -178,7 +182,7 @@ class Authorization:
             json=json_data,
             allow_redirects=False,
         ) as response:
-            return IDKSession(**await response.json())
+            return IDKSession.from_json(await response.text())
 
     async def _get_idk_session(self) -> IDKSession:
         """Perform the full login process.
@@ -231,8 +235,8 @@ class Authorization:
             if not response.ok:
                 return False
             try:
-                self.idk_session = IDKSession.parse_raw(await response.text())
-            except ValidationError:
+                self.idk_session = IDKSession.from_json(await response.text())
+            except Exception:
                 _LOGGER.exception("Failed to parse tokens from refresh endpoint.")
                 return False
             else:

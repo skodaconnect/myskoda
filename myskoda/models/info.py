@@ -1,10 +1,12 @@
 """Models for responses of api/v2/garage/vehicles/{vin}."""
 
 import logging
+from dataclasses import dataclass, field
 from datetime import date
 from enum import StrEnum
 
-from pydantic import BaseModel, Field, validator
+from mashumaro import field_options
+from mashumaro.mixins.json import DataClassJSONMixin
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -83,7 +85,8 @@ class CapabilityStatus(StrEnum):
     LOCATION_DATA_DISABLED = "LOCATION_DATA_DISABLED"
 
 
-class Capability(BaseModel):
+@dataclass
+class Capability(DataClassJSONMixin):
     id: CapabilityId
     statuses: list[CapabilityStatus]
 
@@ -95,20 +98,24 @@ class Capability(BaseModel):
         return not self.statuses
 
 
-class Capabilities(BaseModel):
-    capabilities: list[Capability]
-
-    @validator("capabilities", pre=True, always=True)
-    def drop_unknown_capabilities(cls, value: list[dict]) -> list[dict]:  # noqa: N805
-        """Drop any unknown capabilities and log a message."""
-        unknown_capabilities = [c for c in value if c["id"] not in CapabilityId]
-        if unknown_capabilities:
-            _LOGGER.info(f"Dropping unknown capabilities: {unknown_capabilities}")
-        return [c for c in value if c["id"] in CapabilityId]
+def drop_unknown_capabilities(value: list[dict]) -> list[Capability]:
+    """Drop any unknown capabilities and log a message."""
+    unknown_capabilities = [c for c in value if c["id"] not in CapabilityId]
+    if unknown_capabilities:
+        _LOGGER.info(f"Dropping unknown capabilities: {unknown_capabilities}")
+    return [Capability.from_dict(c) for c in value if c["id"] in CapabilityId]
 
 
-class Battery(BaseModel):
-    capacity: int = Field(None, alias="capacityInKWh")
+@dataclass
+class Capabilities(DataClassJSONMixin):
+    capabilities: list[Capability] = field(
+        metadata=field_options(deserialize=drop_unknown_capabilities)
+    )
+
+
+@dataclass
+class Battery(DataClassJSONMixin):
+    capacity: int = field(metadata=field_options(alias="capacityInKWh"))
 
 
 class BodyType(StrEnum):
@@ -122,57 +129,69 @@ class VehicleState(StrEnum):
     ACTIVATED = "ACTIVATED"
 
 
-class Engine(BaseModel):
-    power: int = Field(None, alias="powerInKW")
-    capacity_in_liters: float | None = Field(None, alias="capacityInLiters")
+@dataclass
+class Engine(DataClassJSONMixin):
+    type: str
+    power: int = field(metadata=field_options(alias="powerInKW"))
+    capacity_in_liters: float | None = field(
+        default=None, metadata=field_options(alias="capacityInLiters")
+    )
+
+
+@dataclass
+class Gearbox(DataClassJSONMixin):
     type: str
 
 
-class Gearbox(BaseModel):
-    type: str
-
-
-class Specification(BaseModel):
-    battery: Battery | None
+@dataclass
+class Specification(DataClassJSONMixin):
     body: BodyType
     engine: Engine
-    manufacturing_date: date = Field(None, alias="manufacturingDate")
-    max_charging_power: int = Field(None, alias="maxChargingPowerInKW")
     model: str
-    model_year: str = Field(None, alias="modelYear")
-    system_code: str = Field(None, alias="systemCode")
-    system_model_id: str = Field(None, alias="systemModelId")
     title: str
-    trim_level: str = Field(None, alias="trimLevel")
+    manufacturing_date: date = field(metadata=field_options(alias="manufacturingDate"))
+    model_year: str = field(metadata=field_options(alias="modelYear"))
+    system_code: str = field(metadata=field_options(alias="systemCode"))
+    system_model_id: str = field(metadata=field_options(alias="systemModelId"))
+    trim_level: str = field(metadata=field_options(alias="trimLevel"))
+    max_charging_power: int | None = field(
+        default=None, metadata=field_options(alias="maxChargingPowerInKW")
+    )
+    battery: Battery | None = field(default=None)
 
 
-class ServicePartner(BaseModel):
-    id: str = Field(None, alias="servicePartnerId")
+@dataclass
+class ServicePartner(DataClassJSONMixin):
+    id: str = field(metadata=field_options(alias="servicePartnerId"))
 
 
 class ErrorType(StrEnum):
     MISSING_RENDER = "MISSING_RENDER"
 
 
-class Error(BaseModel):
+@dataclass
+class Error(DataClassJSONMixin):
     description: str
     type: ErrorType
 
 
-class Info(BaseModel):
+@dataclass
+class Info(DataClassJSONMixin):
     """Basic vehicle information."""
 
-    software_version: str = Field(None, alias="softwareVersion")
     state: VehicleState
     specification: Specification
     vin: str
     name: str
-    device_platform: str = Field(None, alias="devicePlatform")
-    service_partner: ServicePartner = Field(None, alias="servicePartner")
-    workshop_mode_enabled: bool = Field(None, alias="workshopModeEnabled")
     capabilities: Capabilities
-    errors: list[Error] | None
-    license_plate: str = Field(None, alias="licensePlate")
+    device_platform: str = field(metadata=field_options(alias="devicePlatform"))
+    service_partner: ServicePartner = field(metadata=field_options(alias="servicePartner"))
+    workshop_mode_enabled: bool = field(metadata=field_options(alias="workshopModeEnabled"))
+    software_version: str | None = field(
+        default=None, metadata=field_options(alias="softwareVersion")
+    )
+    license_plate: str | None = field(default=None, metadata=field_options(alias="licensePlate"))
+    errors: list[Error] | None = field(default=None)
 
     def has_capability(self, cap: CapabilityId) -> bool:
         """Check for a capability.

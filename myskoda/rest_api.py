@@ -38,7 +38,7 @@ class RestApi:
         ) as response:
             response_text = await response.text()
             _LOGGER.debug(f"vin {vin}: received basic info: {response_text}")
-            return Info.parse_raw(response_text)
+            return Info.from_json(response_text)
 
     async def get_charging(self, vin: str) -> Charging:
         """Retrieve information related to charging for the specified vehicle."""
@@ -47,7 +47,7 @@ class RestApi:
         ) as response:
             response_text = await response.text()
             _LOGGER.debug(f"vin {vin}: received charging info: {response_text}")
-            return Charging.parse_raw(response_text)
+            return Charging.from_json(response_text)
 
     async def get_status(self, vin: str) -> Status:
         """Retrieve the current status for the specified vehicle."""
@@ -57,7 +57,7 @@ class RestApi:
         ) as response:
             response_text = await response.text()
             _LOGGER.debug(f"vin {vin}: received status: {response_text}")
-            return Status.parse_raw(response_text)
+            return Status.from_json(response_text)
 
     async def get_air_conditioning(self, vin: str) -> AirConditioning:
         """Retrieve the current air conditioning status for the specified vehicle."""
@@ -67,7 +67,7 @@ class RestApi:
         ) as response:
             response_text = await response.text()
             _LOGGER.debug(f"vin {vin}: received air conditioning: {response_text}")
-            return AirConditioning.parse_raw(response_text)
+            return AirConditioning.from_json(response_text)
 
     async def get_positions(self, vin: str) -> Positions:
         """Retrieve the current position for the specified vehicle."""
@@ -77,7 +77,7 @@ class RestApi:
         ) as response:
             response_text = await response.text()
             _LOGGER.debug(f"vin {vin}: received position: {response_text}")
-            return Positions.parse_raw(response_text)
+            return Positions.from_json(response_text)
 
     async def get_driving_range(self, vin: str) -> DrivingRange:
         """Retrieve estimated driving range for combustion vehicles."""
@@ -87,7 +87,7 @@ class RestApi:
         ) as response:
             response_text = await response.text()
             _LOGGER.debug(f"vin {vin}: received driving range: {response_text}")
-            return DrivingRange.parse_raw(response_text)
+            return DrivingRange.from_json(response_text)
 
     async def get_trip_statistics(self, vin: str) -> TripStatistics:
         """Retrieve statistics about past trips."""
@@ -97,7 +97,7 @@ class RestApi:
         ) as response:
             response_text = await response.text()
             _LOGGER.debug(f"vin {vin}: received trip statistics: {response_text}")
-            return TripStatistics.parse_raw(response_text)
+            return TripStatistics.from_json(response_text)
 
     async def get_maintenance(self, vin: str) -> Maintenance:
         """Retrieve maintenance report."""
@@ -107,7 +107,7 @@ class RestApi:
         ) as response:
             response_text = await response.text()
             _LOGGER.debug(f"vin {vin}: received maintenance report: {response_text}")
-            return Maintenance.parse_raw(response_text)
+            return Maintenance.from_json(response_text)
 
     async def get_health(self, vin: str) -> Health:
         """Retrieve health information for the specified vehicle."""
@@ -117,7 +117,7 @@ class RestApi:
         ) as response:
             response_text = await response.text()
             _LOGGER.debug(f"vin {vin}: received health: {response_text}")
-            return Health.parse_raw(response_text)
+            return Health.from_json(response_text)
 
     async def get_user(self) -> User:
         """Retrieve user information about logged in user."""
@@ -127,7 +127,7 @@ class RestApi:
         ) as response:
             response_text = await response.text()
             _LOGGER.debug(f"received user: {response_text}")
-            return User.parse_raw(response_text)
+            return User.from_json(response_text)
 
     async def list_vehicles(self) -> list[str]:
         """List all vehicles by their vins."""

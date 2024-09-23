@@ -1,22 +1,26 @@
 """Parse CSRF information from the website."""
 
 import re
+from dataclasses import dataclass, field
 from html.parser import HTMLParser
 
-import yaml
-from pydantic import BaseModel, Field
+from mashumaro import field_options
+from mashumaro.mixins.json import DataClassJSONMixin
+from mashumaro.mixins.yaml import DataClassYAMLMixin
 
 json_object = re.compile(r"window\._IDK\s=\s((?:\n|.)*?)$")
 
 
-class TemplateModel(BaseModel):
+@dataclass
+class TemplateModel(DataClassJSONMixin):
     hmac: str
-    relay_state: str = Field(None, alias="relayState")
+    relay_state: str = field(metadata=field_options(alias="relayState"))
 
 
-class CSRFState(BaseModel):
-    csrf: str = Field(None, alias="csrf_token")
-    template_model: TemplateModel = Field(None, alias="templateModel")
+@dataclass
+class CSRFState(DataClassYAMLMixin):
+    csrf: str = field(metadata=field_options(alias="csrf_token"))
+    template_model: TemplateModel = field(metadata=field_options(alias="templateModel"))
 
 
 class CSRFParser(HTMLParser):
@@ -56,4 +60,4 @@ class CSRFParser(HTMLParser):
         result = result.group(1)
         # Load the info using YAML, since the syntax used in the script is YAML compatible,
         # but not JSON compatible (missing quotes around field names, trailing commas).
-        self.csrf_state = CSRFState(**yaml.safe_load(result))
+        self.csrf_state = CSRFState.from_yaml(result)

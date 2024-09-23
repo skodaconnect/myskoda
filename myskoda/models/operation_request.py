@@ -1,8 +1,10 @@
 """Models for operation requests, returned by the MQTT broker."""
 
+from dataclasses import dataclass, field
 from enum import StrEnum
 
-from pydantic import BaseModel, Field
+from mashumaro import field_options
+from mashumaro.mixins.json import DataClassJSONMixin
 
 
 class OperationStatus(StrEnum):
@@ -49,10 +51,11 @@ class OperationName(StrEnum):
     WINDOWS_HEATING = "windows-heating"
 
 
-class OperationRequest(BaseModel):
+@dataclass
+class OperationRequest(DataClassJSONMixin):
     version: int
-    trace_id: str = Field(None, alias="traceId")
-    request_id: str = Field(None, alias="requestId")
+    trace_id: str = field(metadata=field_options(alias="traceId"))
+    request_id: str = field(metadata=field_options(alias="requestId"))
     operation: OperationName
     status: OperationStatus
-    error_code: str = Field(None, alias="errorCode")
+    error_code: str | None = field(default=None, metadata=field_options(alias="errorCode"))

@@ -1,68 +1,88 @@
 """Models for responses of api/v3/vehicle-maintenance/vehicles/{vin} endpoint."""
 
+from dataclasses import dataclass, field
 from datetime import datetime, time
 from enum import StrEnum
 
-from pydantic import BaseModel, Field
+from mashumaro import field_options
+from mashumaro.mixins.json import DataClassJSONMixin
 
 from .common import Address, Coordinates, Weekday
 
 
-class MaintenanceReport(BaseModel):
-    captured_at: datetime = Field(None, alias="capturedAt")
-    inspection_due_in_days: int = Field(None, alias="inspectionDueInDays")
-    inspection_due_in_km: int = Field(None, alias="inspectionDueInKm")
-    mileage_in_km: int = Field(None, alias="mileageInKm")
-    oil_service_due_in_days: int = Field(None, alias="oilServiceDueInDays")
-    oil_service_due_in_km: int = Field(None, alias="oilServiceDueInKm")
+@dataclass
+class MaintenanceReport(DataClassJSONMixin):
+    captured_at: datetime = field(metadata=field_options(alias="capturedAt"))
+    inspection_due_in_days: int = field(metadata=field_options(alias="inspectionDueInDays"))
+    mileage_in_km: int = field(metadata=field_options(alias="mileageInKm"))
+    inspection_due_in_km: int | None = field(
+        default=None, metadata=field_options(alias="inspectionDueInKm")
+    )
+    oil_service_due_in_days: int | None = field(
+        default=None, metadata=field_options(alias="oilServiceDueInDays")
+    )
+    oil_service_due_in_km: int | None = field(
+        default=None, metadata=field_options(alias="oilServiceDueInKm")
+    )
 
 
-class Contact(BaseModel):
-    email: str | None
-    phone: str | None
-    url: str | None
+@dataclass
+class Contact(DataClassJSONMixin):
+    email: str | None = field(default=None)
+    phone: str | None = field(default=None)
+    url: str | None = field(default=None)
 
 
-class TimeRange(BaseModel):
-    start: time = Field(None, alias="from")
-    end: time = Field(None, alias="to")
+@dataclass
+class TimeRange(DataClassJSONMixin):
+    start: time = field(metadata=field_options(alias="from"))
+    end: time = field(metadata=field_options(alias="to"))
 
 
-class OpeningHoursPeriod(BaseModel):
-    opening_times: list[TimeRange] = Field(None, alias="openingTimes")
-    period_end: Weekday = Field(None, alias="periodEnd")
-    period_start: Weekday = Field(None, alias="periodStart")
+@dataclass
+class OpeningHoursPeriod(DataClassJSONMixin):
+    opening_times: list[TimeRange] = field(metadata=field_options(alias="openingTimes"))
+    period_end: Weekday = field(metadata=field_options(alias="periodEnd"))
+    period_start: Weekday = field(metadata=field_options(alias="periodStart"))
 
 
 class CommunicationChannel(StrEnum):
     email = "EMAIL"
 
 
-class PredictiveMaintenanceSettings(BaseModel):
+@dataclass
+class PredictiveMaintenanceSettings(DataClassJSONMixin):
     email: str
     phone: str
-    preferred_channel: CommunicationChannel = Field(None, alias="preferredChannel")
-    service_activated: bool = Field(None, alias="serviceActivated")
+    preferred_channel: CommunicationChannel = field(
+        metadata=field_options(alias="preferredChannel")
+    )
+    service_activated: bool = field(metadata=field_options(alias="serviceActivated"))
 
 
-class PredictiveMaintenance(BaseModel):
+@dataclass
+class PredictiveMaintenance(DataClassJSONMixin):
     setting: PredictiveMaintenanceSettings
 
 
-class ServicePartner(BaseModel):
+@dataclass
+class ServicePartner(DataClassJSONMixin):
     address: Address
     brand: str
     contact: Contact
     id: str
     location: Coordinates
     name: str
-    opening_hours: list[OpeningHoursPeriod] = Field(None, alias="openingHours")
-    partner_number: str = Field(None, alias="partnerNumber")
+    opening_hours: list[OpeningHoursPeriod] = field(metadata=field_options(alias="openingHours"))
+    partner_number: str = field(metadata=field_options(alias="partnerNumber"))
 
 
-class Maintenance(BaseModel):
-    maintenance_report: MaintenanceReport = Field(None, alias="maintenanceReport")
-    predictive_maintenance: PredictiveMaintenance | None = Field(
-        None, alias="predictiveMaintenance"
+@dataclass
+class Maintenance(DataClassJSONMixin):
+    maintenance_report: MaintenanceReport = field(metadata=field_options(alias="maintenanceReport"))
+    predictive_maintenance: PredictiveMaintenance | None = field(
+        default=None, metadata=field_options(alias="predictiveMaintenance")
     )
-    preferred_service_partner: ServicePartner | None = Field(None, alias="preferredServicePartner")
+    preferred_service_partner: ServicePartner | None = field(
+        default=None, metadata=field_options(alias="preferredServicePartner")
+    )

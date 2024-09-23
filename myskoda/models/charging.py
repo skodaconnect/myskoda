@@ -1,9 +1,11 @@
 """Models for responses of api/v1/charging endpoint."""
 
+from dataclasses import dataclass, field
 from datetime import datetime
 from enum import StrEnum
 
-from pydantic import BaseModel, Field
+from mashumaro import field_options
+from mashumaro.mixins.json import DataClassJSONMixin
 
 from .common import ActiveState, EnabledState
 
@@ -17,7 +19,8 @@ class ChargingErrorType(StrEnum):
     STATUS_OF_CONNECTION_NOT_AVAILABLE = "STATUS_OF_CONNECTION_NOT_AVAILABLE"
 
 
-class ChargingError(BaseModel):
+@dataclass
+class ChargingError(DataClassJSONMixin):
     type: ChargingErrorType
     description: str
 
@@ -56,39 +59,57 @@ class PlugUnlockMode(StrEnum):
     OFF = "OFF"
 
 
-class Settings(BaseModel):
-    available_charge_modes: list[ChargeMode] = Field(None, alias="availableChargeModes")
-    battery_support: EnabledState = Field(None, alias="batterySupport")
-    charging_care_mode: ActiveState = Field(None, alias="chargingCareMode")
-    max_charge_current_ac: MaxChargeCurrent = Field(None, alias="maxChargeCurrentAc")
-    preferred_charge_mode: ChargeMode = Field(None, alias="preferredChargeMode")
-    target_state_of_charge_in_percent: int = Field(None, alias="targetStateOfChargeInPercent")
-    auto_unlock_plug_when_charged: PlugUnlockMode = Field(None, alias="autoUnlockPlugWhenCharged")
+@dataclass
+class Settings(DataClassJSONMixin):
+    available_charge_modes: list[ChargeMode] = field(
+        metadata=field_options(alias="availableChargeModes")
+    )
+    battery_support: EnabledState = field(metadata=field_options(alias="batterySupport"))
+    charging_care_mode: ActiveState = field(metadata=field_options(alias="chargingCareMode"))
+    max_charge_current_ac: MaxChargeCurrent = field(
+        metadata=field_options(alias="maxChargeCurrentAc")
+    )
+    preferred_charge_mode: ChargeMode = field(metadata=field_options(alias="preferredChargeMode"))
+    target_state_of_charge_in_percent: int = field(
+        metadata=field_options(alias="targetStateOfChargeInPercent")
+    )
+    auto_unlock_plug_when_charged: PlugUnlockMode = field(
+        metadata=field_options(alias="autoUnlockPlugWhenCharged")
+    )
 
 
-class Battery(BaseModel):
-    remaining_cruising_range_in_meters: int = Field(None, alias="remainingCruisingRangeInMeters")
-    state_of_charge_in_percent: int = Field(None, alias="stateOfChargeInPercent")
+@dataclass
+class Battery(DataClassJSONMixin):
+    remaining_cruising_range_in_meters: int = field(
+        metadata=field_options(alias="remainingCruisingRangeInMeters")
+    )
+    state_of_charge_in_percent: int = field(metadata=field_options(alias="stateOfChargeInPercent"))
 
 
-class ChargingStatus(BaseModel):
+@dataclass
+class ChargingStatus(DataClassJSONMixin):
     battery: Battery
-    charge_power_in_kw: float | None = Field(None, alias="chargePowerInKw")
-    charging_rate_in_kilometers_per_hour: float = Field(
-        None, alias="chargingRateInKilometersPerHour"
-    )
-    remaining_time_to_fully_charged_in_minutes: int = Field(
-        None, alias="remainingTimeToFullyChargedInMinutes"
-    )
-    charge_type: ChargeType | None = Field(None, alias="chargeType")
     state: ChargingState
+    charging_rate_in_kilometers_per_hour: float = field(
+        metadata=field_options(alias="chargingRateInKilometersPerHour")
+    )
+    remaining_time_to_fully_charged_in_minutes: int = field(
+        metadata=field_options(alias="remainingTimeToFullyChargedInMinutes")
+    )
+    charge_power_in_kw: float | None = field(
+        default=None, metadata=field_options(alias="chargePowerInKw")
+    )
+    charge_type: ChargeType | None = field(default=None, metadata=field_options(alias="chargeType"))
 
 
-class Charging(BaseModel):
+@dataclass
+class Charging(DataClassJSONMixin):
     """Information related to charging an EV."""
 
-    car_captured_timestamp: datetime = Field(None, alias="carCapturedTimestamp")
     errors: list[ChargingError]
-    is_vehicle_in_saved_location: bool = Field(None, alias="isVehicleInSavedLocation")
     settings: Settings
     status: ChargingStatus | None
+    car_captured_timestamp: datetime = field(metadata=field_options(alias="carCapturedTimestamp"))
+    is_vehicle_in_saved_location: bool = field(
+        metadata=field_options(alias="isVehicleInSavedLocation")
+    )
