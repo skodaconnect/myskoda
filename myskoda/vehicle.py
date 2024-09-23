@@ -13,14 +13,14 @@ from .models.trip_statistics import TripStatistics
 
 class Vehicle:
     info: Info
-    charging: Charging | None
-    status: Status | None
-    air_conditioning: AirConditioning | None
-    positions: Positions | None
-    driving_range: DrivingRange | None
-    trip_statistics: TripStatistics | None
+    charging: Charging | None = None
+    status: Status | None = None
+    air_conditioning: AirConditioning | None = None
+    positions: Positions | None = None
+    driving_range: DrivingRange | None = None
+    trip_statistics: TripStatistics | None = None
     maintenance: Maintenance
-    health: Health | None
+    health: Health | None = None
 
     def __init__(self, info: Info, maintenance: Maintenance) -> None:  # noqa: D107
         self.info = info
