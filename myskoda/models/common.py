@@ -29,8 +29,9 @@ class OpenState(StrEnum):
 
 class DoorLockedState(StrEnum):
     LOCKED = "YES"
-    UNLOCKED = "NO"
+    OPENED = "OPENED"
     TRUNK_OPENED = "TRUNK_OPENED"
+    UNLOCKED = "NO"
 
 
 class ChargerLockedState(StrEnum):
