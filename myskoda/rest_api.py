@@ -115,7 +115,8 @@ class RestApi:
             try:
                 return DrivingRange.parse_raw(response_text)
             except ValidationError:
-                _LOGGER.debug(f"Validation failedfor {vin} (driving-range) : {response_text}")
+                _LOGGER.debug(f"Validation failed for {vin} (driving-range) : {response_text}")
+                raise
 
     async def get_trip_statistics(self, vin: str) -> TripStatistics:
         """Retrieve statistics about past trips."""
@@ -171,6 +172,7 @@ class RestApi:
                 return User.parse_raw(response_text)
             except ValidationError:
                 _LOGGER.debug(f"Validation failed (user): {response_text}")
+                raise
 
     async def list_vehicles(self) -> list[str]:
         """List all vehicles by their vins."""
