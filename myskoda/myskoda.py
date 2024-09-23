@@ -11,6 +11,7 @@ from types import SimpleNamespace
 
 from aiohttp import ClientSession, TraceConfig, TraceRequestEndParams
 
+from .auth.authorization import Authorization
 from .event import Event
 from .models.air_conditioning import AirConditioning
 from .models.charging import Charging
@@ -51,18 +52,22 @@ class MySkoda:
     session: ClientSession
     rest_api: RestApi
     mqtt: Mqtt
+    authorization: Authorization
 
-    def __init__(self, session: ClientSession) -> None:  # noqa: D107
-        self.session = session
-        self.rest_api = RestApi(self.session)
-        self.mqtt = Mqtt(self.rest_api)
-
-    async def connect(
-        self, email: str, password: str, ssl_context: SSLContext | None = None
+    def __init__(  # noqa: D107
+        self, session: ClientSession, ssl_context: SSLContext | None = None
     ) -> None:
+        self.session = session
+        self.authorization = Authorization(session)
+        self.rest_api = RestApi(self.session, self.authorization)
+        self.mqtt = Mqtt(self.authorization, self.rest_api, ssl_context=ssl_context)
+
+    async def connect(self, email: str, password: str) -> None:
         """Authenticate on the rest api and connect to the MQTT broker."""
-        await self.rest_api.authenticate(email, password)
-        await self.mqtt.connect(ssl_context=ssl_context)
+        await self.authorization.authorize(email, password)
+        _LOGGER.info("IDK Authorization was successful.")
+
+        await self.mqtt.connect()
         _LOGGER.debug("Myskoda ready.")
 
     def subscribe(self, callback: Callable[[Event], None | Awaitable[None]]) -> None:
@@ -145,9 +150,9 @@ class MySkoda:
         await self.rest_api.stop_air_conditioning(vin)
         await future
 
-    def get_auth_token(self) -> str:
+    async def get_auth_token(self) -> str:
         """Retrieve the main access token for the IDK session."""
-        return self.rest_api.idk_session.access_token
+        return await self.rest_api.authorization.get_access_token()
 
     async def get_info(self, vin: str) -> Info:
         """Retrieve the basic vehicle information for the specified vehicle."""

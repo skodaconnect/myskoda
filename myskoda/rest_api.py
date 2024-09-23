@@ -5,7 +5,7 @@ import logging
 from aiohttp import ClientSession
 from pydantic.error_wrappers import ValidationError
 
-from .authorization import IDKSession, idk_authorize
+from .auth.authorization import Authorization
 from .const import BASE_URL_SKODA
 from .models.air_conditioning import AirConditioning
 from .models.charging import ChargeMode, Charging
@@ -25,21 +25,11 @@ class RestApi:
     """API hub class that can perform all calls to the MySkoda API."""
 
     session: ClientSession
-    idk_session: IDKSession
+    authorization: Authorization
 
-    def __init__(self, session: ClientSession) -> None:  # noqa: D107
+    def __init__(self, session: ClientSession, authorization: Authorization) -> None:  # noqa: D107
         self.session = session
-
-    async def authenticate(self, email: str, password: str) -> bool:
-        """Perform the full login process.
-
-        Must be called before any other methods on the class can be called.
-        """
-        self.idk_session = await idk_authorize(self.session, email, password)
-
-        _LOGGER.info("IDK Authorization was successful.")
-
-        return True
+        self.authorization = authorization
 
     async def get_info(self, vin: str) -> Info:
         """Retrieve the basic vehicle information for the specified vehicle."""
@@ -184,7 +174,7 @@ class RestApi:
             return [vehicle["vin"] for vehicle in json["vehicles"]]
 
     async def _headers(self) -> dict[str, str]:
-        return {"authorization": f"Bearer {await self.idk_session.get_access_token(self.session)}"}
+        return {"authorization": f"Bearer {await self.authorization.get_access_token()}"}
 
     async def stop_air_conditioning(self, vin: str) -> None:
         """Stop the air conditioning."""
