@@ -87,11 +87,11 @@ class Capability(BaseModel):
     statuses: list[CapabilityStatus]
 
     def is_available(self) -> bool:
-        """Check whether the capability can currently be used."""
-        return (
-            CapabilityStatus.DEACTIVATED_BY_ACTIVE_VEHICLE_USER not in self.statuses
-            and CapabilityStatus.INSUFFICIENT_BATTERY_LEVEL not in self.statuses
-        )
+        """Check whether the capability can currently be used.
+
+        It looks like every status is an indication that the capability is not available.
+        """
+        return not self.statuses
 
 
 class Capabilities(BaseModel):
