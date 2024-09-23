@@ -70,7 +70,10 @@ class Mqtt:
     api: RestApi
 
     def __init__(  # noqa: D107
-        self, authorization: Authorization, api: RestApi, ssl_context: ssl.SSLContext | None = None
+        self,
+        authorization: Authorization,
+        api: RestApi,
+        ssl_context: ssl.SSLContext | None = None,
     ) -> None:
         self.authorization = authorization
         self.api = api
@@ -87,11 +90,15 @@ class Mqtt:
         self._callbacks.append(callback)
 
     async def _perform_connect(self) -> bool:
+        """Connect to the MQTT broker once.
+
+        Will return `True` if the connection was established and `False` otherwise.
+        """
         try:
             if self.is_connected:
                 return True
 
-            _LOGGER.debug("Connecting to MQTT on {%s}:{%d}...", MQTT_BROKER_HOST, MQTT_BROKER_PORT)
+            _LOGGER.debug("Connecting to MQTT on %s:%d...", MQTT_BROKER_HOST, MQTT_BROKER_PORT)
 
             if not self.user:
                 self.user = await self.api.get_user()
