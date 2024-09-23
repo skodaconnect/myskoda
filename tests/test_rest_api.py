@@ -18,7 +18,11 @@ def load_vehicle_info() -> list[str]:
     """Load vehicle-info fixture."""
     vehicle_infos = []
     # TODO @dvx76: probably just glob all files
-    for path in ["enyaq/garage_vehicles_iv80.json", "enyaq/garage_vehicles_iv80_coupe.json"]:
+    for path in [
+        "enyaq/garage_vehicles_iv80.json",
+        "enyaq/garage_vehicles_iv80_coupe.json",
+        "superb/garage_vehicles_LK_liftback.json",
+    ]:
         with FIXTURES_DIR.joinpath(path).open() as file:
             vehicle_infos.append(file.read())
     return vehicle_infos
