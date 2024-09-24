@@ -4,7 +4,7 @@ from dataclasses import dataclass, field
 from enum import StrEnum
 
 from mashumaro import field_options
-from mashumaro.mixins.json import DataClassJSONMixin
+from mashumaro.mixins.orjson import DataClassORJSONMixin
 
 from .common import Address, Coordinates
 
@@ -14,7 +14,7 @@ class PositionType(StrEnum):
 
 
 @dataclass
-class Position(DataClassJSONMixin):
+class Position(DataClassORJSONMixin):
     address: Address
     gps_coordinates: Coordinates = field(metadata=field_options(alias="gpsCoordinates"))
     type: PositionType
@@ -25,13 +25,13 @@ class ErrorType(StrEnum):
 
 
 @dataclass
-class Error(DataClassJSONMixin):
+class Error(DataClassORJSONMixin):
     type: ErrorType
     description: str
 
 
 @dataclass
-class Positions(DataClassJSONMixin):
+class Positions(DataClassORJSONMixin):
     """Positional information (GPS) for the vehicle and other things."""
 
     errors: list[Error]

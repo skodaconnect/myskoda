@@ -6,7 +6,7 @@ from enum import StrEnum
 from typing import Generic, TypeVar
 
 from mashumaro import field_options
-from mashumaro.mixins.json import DataClassJSONMixin
+from mashumaro.mixins.orjson import DataClassORJSONMixin
 
 from .charging import ChargeMode, ChargingState
 
@@ -21,7 +21,7 @@ class ServiceEventName(StrEnum):
 
 
 @dataclass
-class ServiceEventData(DataClassJSONMixin):
+class ServiceEventData(DataClassORJSONMixin):
     user_id: str = field(metadata=field_options(alias="userId"))
     vin: str
 
@@ -30,7 +30,7 @@ T = TypeVar("T", bound=ServiceEventData)
 
 
 @dataclass
-class ServiceEvent(Generic[T], DataClassJSONMixin):
+class ServiceEvent(Generic[T], DataClassORJSONMixin):
     version: int
     producer: str
     name: ServiceEventName

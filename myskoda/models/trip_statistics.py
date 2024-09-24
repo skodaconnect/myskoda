@@ -5,7 +5,7 @@ from datetime import date
 from enum import StrEnum
 
 from mashumaro import field_options
-from mashumaro.mixins.json import DataClassJSONMixin
+from mashumaro.mixins.orjson import DataClassORJSONMixin
 
 
 class VehicleType(StrEnum):
@@ -13,7 +13,7 @@ class VehicleType(StrEnum):
 
 
 @dataclass
-class StatisticsEntry(DataClassJSONMixin):
+class StatisticsEntry(DataClassORJSONMixin):
     date: date
     average_fuel_consumption: float | None = field(
         default=None, metadata=field_options(alias="averageFuelConsumption")
@@ -29,7 +29,7 @@ class StatisticsEntry(DataClassJSONMixin):
 
 
 @dataclass
-class TripStatistics(DataClassJSONMixin):
+class TripStatistics(DataClassORJSONMixin):
     overall_average_fuel_consumption: float = field(
         metadata=field_options(alias="overallAverageFuelConsumption")
     )

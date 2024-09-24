@@ -6,7 +6,7 @@ from enum import StrEnum
 from typing import Any
 
 from mashumaro import field_options
-from mashumaro.mixins.json import DataClassJSONMixin
+from mashumaro.mixins.orjson import DataClassORJSONMixin
 
 
 class WarningLightCategory(StrEnum):
@@ -21,13 +21,13 @@ class WarningLightCategory(StrEnum):
 
 
 @dataclass
-class WarningLight(DataClassJSONMixin):
+class WarningLight(DataClassORJSONMixin):
     category: WarningLightCategory
     defects: list[Any]
 
 
 @dataclass
-class Health(DataClassJSONMixin):
+class Health(DataClassORJSONMixin):
     """Information about the car's health (currently only mileage)."""
 
     captured_at: datetime = field(metadata=field_options(alias="capturedAt"))

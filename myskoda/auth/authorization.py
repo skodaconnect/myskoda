@@ -14,7 +14,7 @@ from typing import cast
 import jwt
 from aiohttp import ClientSession, FormData
 from mashumaro import field_options
-from mashumaro.mixins.json import DataClassJSONMixin
+from mashumaro.mixins.orjson import DataClassORJSONMixin
 
 from myskoda.auth.csrf_parser import CSRFParser, CSRFState
 from myskoda.const import BASE_URL_IDENT, BASE_URL_SKODA, CLIENT_ID, MAX_RETRIES
@@ -23,7 +23,7 @@ _LOGGER = logging.getLogger(__name__)
 
 
 @dataclass
-class IDKAuthorizationCode(DataClassJSONMixin):
+class IDKAuthorizationCode(DataClassORJSONMixin):
     """One-time authorization code that can be obtained by logging in.
 
     This authorization code can later be exchanged for a set of JWT tokens.
@@ -38,7 +38,7 @@ refresh_token_lock = Lock()
 
 
 @dataclass
-class IDKSession(DataClassJSONMixin):
+class IDKSession(DataClassORJSONMixin):
     """Stores the JWT tokens relevant for a session at the IDK server.
 
     Can be used to authorized and refresh the authorization token.

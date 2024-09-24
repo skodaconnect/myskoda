@@ -5,7 +5,7 @@ from datetime import date
 from enum import StrEnum
 
 from mashumaro import field_options
-from mashumaro.mixins.json import DataClassJSONMixin
+from mashumaro.mixins.orjson import DataClassORJSONMixin
 
 
 class UserCapabilityId(StrEnum):
@@ -16,12 +16,12 @@ class UserCapabilityId(StrEnum):
 
 
 @dataclass
-class UserCapability(DataClassJSONMixin):
+class UserCapability(DataClassORJSONMixin):
     id: UserCapabilityId
 
 
 @dataclass
-class User(DataClassJSONMixin):
+class User(DataClassORJSONMixin):
     capabilities: list[UserCapability]
     country: str
     date_of_birth: date = field(metadata=field_options(alias="dateOfBirth"))
