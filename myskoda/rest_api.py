@@ -1,6 +1,7 @@
 """Contains API representation for the MySkoda REST API."""
 
 import logging
+from collections.abc import Callable
 
 from aiohttp import ClientSession
 
@@ -30,104 +31,75 @@ class RestApi:
         self.session = session
         self.authorization = authorization
 
-    async def get_info(self, vin: str) -> Info:
-        """Retrieve the basic vehicle information for the specified vehicle."""
+    async def _make_get_request[T](self, url: str, deserialize: Callable[[str], T]) -> T:
         async with self.session.get(
-            f"{BASE_URL_SKODA}/api/v2/garage/vehicles/{vin}?connectivityGenerations=MOD1&connectivityGenerations=MOD2&connectivityGenerations=MOD3&connectivityGenerations=MOD4",
+            f"{BASE_URL_SKODA}/api{url}",
             headers=await self._headers(),
         ) as response:
             response_text = await response.text()
-            _LOGGER.debug(f"vin {vin}: received basic info: {response_text}")
-            return Info.from_json(response_text)
+            try:
+                data = deserialize(response_text)
+            except Exception:
+                _LOGGER.exception(
+                    "Failed to load data from url %s. Return value was '%s'", url, response_text
+                )
+                raise
+            else:
+                return data
+
+    async def get_info(self, vin: str) -> Info:
+        """Retrieve the basic vehicle information for the specified vehicle."""
+        return await self._make_get_request(
+            f"/v2/garage/vehicles/{vin}?connectivityGenerations=MOD1&connectivityGenerations=MOD2&connectivityGenerations=MOD3&connectivityGenerations=MOD4",
+            Info.from_json,
+        )
 
     async def get_charging(self, vin: str) -> Charging:
         """Retrieve information related to charging for the specified vehicle."""
-        async with self.session.get(
-            f"{BASE_URL_SKODA}/api/v1/charging/{vin}", headers=await self._headers()
-        ) as response:
-            response_text = await response.text()
-            _LOGGER.debug(f"vin {vin}: received charging info: {response_text}")
-            return Charging.from_json(response_text)
+        return await self._make_get_request(f"/v1/charging/{vin}", Charging.from_json)
 
     async def get_status(self, vin: str) -> Status:
         """Retrieve the current status for the specified vehicle."""
-        async with self.session.get(
-            f"{BASE_URL_SKODA}/api/v2/vehicle-status/{vin}",
-            headers=await self._headers(),
-        ) as response:
-            response_text = await response.text()
-            _LOGGER.debug(f"vin {vin}: received status: {response_text}")
-            return Status.from_json(response_text)
+        return await self._make_get_request(f"/v2/vehicle-status/{vin}", Status.from_json)
 
     async def get_air_conditioning(self, vin: str) -> AirConditioning:
         """Retrieve the current air conditioning status for the specified vehicle."""
-        async with self.session.get(
-            f"{BASE_URL_SKODA}/api/v2/air-conditioning/{vin}",
-            headers=await self._headers(),
-        ) as response:
-            response_text = await response.text()
-            _LOGGER.debug(f"vin {vin}: received air conditioning: {response_text}")
-            return AirConditioning.from_json(response_text)
+        return await self._make_get_request(
+            f"/v2/air-conditioning/{vin}", AirConditioning.from_json
+        )
 
     async def get_positions(self, vin: str) -> Positions:
         """Retrieve the current position for the specified vehicle."""
-        async with self.session.get(
-            f"{BASE_URL_SKODA}/api/v1/maps/positions?vin={vin}",
-            headers=await self._headers(),
-        ) as response:
-            response_text = await response.text()
-            _LOGGER.debug(f"vin {vin}: received position: {response_text}")
-            return Positions.from_json(response_text)
+        return await self._make_get_request(f"/v1/maps/positions?vin={vin}", Positions.from_json)
 
     async def get_driving_range(self, vin: str) -> DrivingRange:
         """Retrieve estimated driving range for combustion vehicles."""
-        async with self.session.get(
-            f"{BASE_URL_SKODA}/api/v2/vehicle-status/{vin}/driving-range",
-            headers=await self._headers(),
-        ) as response:
-            response_text = await response.text()
-            _LOGGER.debug(f"vin {vin}: received driving range: {response_text}")
-            return DrivingRange.from_json(response_text)
+        return await self._make_get_request(
+            f"/v2/vehicle-status/{vin}/driving-range", DrivingRange.from_json
+        )
 
     async def get_trip_statistics(self, vin: str) -> TripStatistics:
         """Retrieve statistics about past trips."""
-        async with self.session.get(
-            f"{BASE_URL_SKODA}/api/v1/trip-statistics/{vin}?offsetType=week&offset=0&timezone=Europe%2FBerlin",
-            headers=await self._headers(),
-        ) as response:
-            response_text = await response.text()
-            _LOGGER.debug(f"vin {vin}: received trip statistics: {response_text}")
-            return TripStatistics.from_json(response_text)
+        return await self._make_get_request(
+            f"/v1/trip-statistics/{vin}?offsetType=week&offset=0&timezone=Europe%2FBerlin",
+            TripStatistics.from_json,
+        )
 
     async def get_maintenance(self, vin: str) -> Maintenance:
         """Retrieve maintenance report."""
-        async with self.session.get(
-            f"{BASE_URL_SKODA}/api/v3/vehicle-maintenance/vehicles/{vin}",
-            headers=await self._headers(),
-        ) as response:
-            response_text = await response.text()
-            _LOGGER.debug(f"vin {vin}: received maintenance report: {response_text}")
-            return Maintenance.from_json(response_text)
+        return await self._make_get_request(
+            f"/v3/vehicle-maintenance/vehicles/{vin}", Maintenance.from_json
+        )
 
     async def get_health(self, vin: str) -> Health:
         """Retrieve health information for the specified vehicle."""
-        async with self.session.get(
-            f"{BASE_URL_SKODA}/api/v1/vehicle-health-report/warning-lights/{vin}",
-            headers=await self._headers(),
-        ) as response:
-            response_text = await response.text()
-            _LOGGER.debug(f"vin {vin}: received health: {response_text}")
-            return Health.from_json(response_text)
+        return await self._make_get_request(
+            f"/v1/vehicle-health-report/warning-lights/{vin}", Health.from_json
+        )
 
     async def get_user(self) -> User:
         """Retrieve user information about logged in user."""
-        async with self.session.get(
-            f"{BASE_URL_SKODA}/api/v1/users",
-            headers=await self._headers(),
-        ) as response:
-            response_text = await response.text()
-            _LOGGER.debug(f"received user: {response_text}")
-            return User.from_json(response_text)
+        return await self._make_get_request("/v1/users", User.from_json)
 
     async def list_vehicles(self) -> list[str]:
         """List all vehicles by their vins."""
