@@ -5,14 +5,14 @@ from dataclasses import dataclass, field
 from html.parser import HTMLParser
 
 from mashumaro import field_options
-from mashumaro.mixins.json import DataClassJSONMixin
+from mashumaro.mixins.orjson import DataClassORJSONMixin
 from mashumaro.mixins.yaml import DataClassYAMLMixin
 
 json_object = re.compile(r"window\._IDK\s=\s((?:\n|.)*?)$")
 
 
 @dataclass
-class TemplateModel(DataClassJSONMixin):
+class TemplateModel(DataClassORJSONMixin):
     hmac: str
     relay_state: str = field(metadata=field_options(alias="relayState"))
 

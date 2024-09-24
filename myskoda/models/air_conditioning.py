@@ -6,7 +6,7 @@ from enum import StrEnum
 from typing import Any
 
 from mashumaro import field_options
-from mashumaro.mixins.json import DataClassJSONMixin
+from mashumaro.mixins.orjson import DataClassORJSONMixin
 
 from .common import ChargerLockedState, ConnectionState, OnOffState, Side, Weekday
 
@@ -21,7 +21,7 @@ class TimerMode(StrEnum):
 
 
 @dataclass
-class Timer(DataClassJSONMixin):
+class Timer(DataClassORJSONMixin):
     enabled: bool
     id: int
     time: time
@@ -30,26 +30,26 @@ class Timer(DataClassJSONMixin):
 
 
 @dataclass
-class SeatHeating(DataClassJSONMixin):
+class SeatHeating(DataClassORJSONMixin):
     front_left: bool = field(metadata=field_options(alias="frontLeft"))
     front_right: bool = field(metadata=field_options(alias="frontRight"))
 
 
 @dataclass
-class TargetTemperature(DataClassJSONMixin):
+class TargetTemperature(DataClassORJSONMixin):
     temperature_value: float = field(metadata=field_options(alias="temperatureValue"))
     unit_in_car: TemperatureUnit = field(metadata=field_options(alias="unitInCar"))
 
 
 @dataclass
-class WindowHeatingState(DataClassJSONMixin):
+class WindowHeatingState(DataClassORJSONMixin):
     front: OnOffState
     rear: OnOffState
     unspecified: Any
 
 
 @dataclass
-class AirConditioning(DataClassJSONMixin):
+class AirConditioning(DataClassORJSONMixin):
     """Information related to air conditioning."""
 
     timers: list[Timer]

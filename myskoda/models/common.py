@@ -4,7 +4,7 @@ from dataclasses import dataclass, field
 from enum import StrEnum
 
 from mashumaro import field_options
-from mashumaro.mixins.json import DataClassJSONMixin
+from mashumaro.mixins.orjson import DataClassORJSONMixin
 
 
 class OnOffState(StrEnum):
@@ -52,13 +52,13 @@ class Side(StrEnum):
 
 
 @dataclass
-class Coordinates(DataClassJSONMixin):
+class Coordinates(DataClassORJSONMixin):
     latitude: float
     longitude: float
 
 
 @dataclass
-class Address(DataClassJSONMixin):
+class Address(DataClassORJSONMixin):
     city: str
     street: str
     country_code: str = field(metadata=field_options(alias="countryCode"))

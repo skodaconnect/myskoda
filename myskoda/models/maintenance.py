@@ -5,13 +5,13 @@ from datetime import datetime, time
 from enum import StrEnum
 
 from mashumaro import field_options
-from mashumaro.mixins.json import DataClassJSONMixin
+from mashumaro.mixins.orjson import DataClassORJSONMixin
 
 from .common import Address, Coordinates, Weekday
 
 
 @dataclass
-class MaintenanceReport(DataClassJSONMixin):
+class MaintenanceReport(DataClassORJSONMixin):
     captured_at: datetime = field(metadata=field_options(alias="capturedAt"))
     inspection_due_in_days: int = field(metadata=field_options(alias="inspectionDueInDays"))
     mileage_in_km: int = field(metadata=field_options(alias="mileageInKm"))
@@ -27,20 +27,20 @@ class MaintenanceReport(DataClassJSONMixin):
 
 
 @dataclass
-class Contact(DataClassJSONMixin):
+class Contact(DataClassORJSONMixin):
     email: str | None = field(default=None)
     phone: str | None = field(default=None)
     url: str | None = field(default=None)
 
 
 @dataclass
-class TimeRange(DataClassJSONMixin):
+class TimeRange(DataClassORJSONMixin):
     start: time = field(metadata=field_options(alias="from"))
     end: time = field(metadata=field_options(alias="to"))
 
 
 @dataclass
-class OpeningHoursPeriod(DataClassJSONMixin):
+class OpeningHoursPeriod(DataClassORJSONMixin):
     opening_times: list[TimeRange] = field(metadata=field_options(alias="openingTimes"))
     period_end: Weekday = field(metadata=field_options(alias="periodEnd"))
     period_start: Weekday = field(metadata=field_options(alias="periodStart"))
@@ -51,7 +51,7 @@ class CommunicationChannel(StrEnum):
 
 
 @dataclass
-class PredictiveMaintenanceSettings(DataClassJSONMixin):
+class PredictiveMaintenanceSettings(DataClassORJSONMixin):
     email: str
     phone: str
     preferred_channel: CommunicationChannel = field(
@@ -61,12 +61,12 @@ class PredictiveMaintenanceSettings(DataClassJSONMixin):
 
 
 @dataclass
-class PredictiveMaintenance(DataClassJSONMixin):
+class PredictiveMaintenance(DataClassORJSONMixin):
     setting: PredictiveMaintenanceSettings
 
 
 @dataclass
-class ServicePartner(DataClassJSONMixin):
+class ServicePartner(DataClassORJSONMixin):
     address: Address
     brand: str
     contact: Contact
@@ -78,7 +78,7 @@ class ServicePartner(DataClassJSONMixin):
 
 
 @dataclass
-class Maintenance(DataClassJSONMixin):
+class Maintenance(DataClassORJSONMixin):
     maintenance_report: MaintenanceReport = field(metadata=field_options(alias="maintenanceReport"))
     predictive_maintenance: PredictiveMaintenance | None = field(
         default=None, metadata=field_options(alias="predictiveMaintenance")

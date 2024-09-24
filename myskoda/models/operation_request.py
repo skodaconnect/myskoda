@@ -4,7 +4,7 @@ from dataclasses import dataclass, field
 from enum import StrEnum
 
 from mashumaro import field_options
-from mashumaro.mixins.json import DataClassJSONMixin
+from mashumaro.mixins.orjson import DataClassORJSONMixin
 
 
 class OperationStatus(StrEnum):
@@ -52,7 +52,7 @@ class OperationName(StrEnum):
 
 
 @dataclass
-class OperationRequest(DataClassJSONMixin):
+class OperationRequest(DataClassORJSONMixin):
     version: int
     trace_id: str = field(metadata=field_options(alias="traceId"))
     request_id: str = field(metadata=field_options(alias="requestId"))

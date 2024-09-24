@@ -5,7 +5,7 @@ from datetime import datetime
 from enum import StrEnum
 
 from mashumaro import field_options
-from mashumaro.mixins.json import DataClassJSONMixin
+from mashumaro.mixins.orjson import DataClassORJSONMixin
 
 from .common import ActiveState, EnabledState
 
@@ -20,7 +20,7 @@ class ChargingErrorType(StrEnum):
 
 
 @dataclass
-class ChargingError(DataClassJSONMixin):
+class ChargingError(DataClassORJSONMixin):
     type: ChargingErrorType
     description: str
 
@@ -60,7 +60,7 @@ class PlugUnlockMode(StrEnum):
 
 
 @dataclass
-class Settings(DataClassJSONMixin):
+class Settings(DataClassORJSONMixin):
     available_charge_modes: list[ChargeMode] = field(
         metadata=field_options(alias="availableChargeModes")
     )
@@ -79,7 +79,7 @@ class Settings(DataClassJSONMixin):
 
 
 @dataclass
-class Battery(DataClassJSONMixin):
+class Battery(DataClassORJSONMixin):
     remaining_cruising_range_in_meters: int = field(
         metadata=field_options(alias="remainingCruisingRangeInMeters")
     )
@@ -87,7 +87,7 @@ class Battery(DataClassJSONMixin):
 
 
 @dataclass
-class ChargingStatus(DataClassJSONMixin):
+class ChargingStatus(DataClassORJSONMixin):
     battery: Battery
     state: ChargingState
     charging_rate_in_kilometers_per_hour: float = field(
@@ -103,7 +103,7 @@ class ChargingStatus(DataClassJSONMixin):
 
 
 @dataclass
-class Charging(DataClassJSONMixin):
+class Charging(DataClassORJSONMixin):
     """Information related to charging an EV."""
 
     errors: list[ChargingError]

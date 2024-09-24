@@ -6,7 +6,7 @@ from datetime import date
 from enum import StrEnum
 
 from mashumaro import field_options
-from mashumaro.mixins.json import DataClassJSONMixin
+from mashumaro.mixins.orjson import DataClassORJSONMixin
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -86,7 +86,7 @@ class CapabilityStatus(StrEnum):
 
 
 @dataclass
-class Capability(DataClassJSONMixin):
+class Capability(DataClassORJSONMixin):
     id: CapabilityId
     statuses: list[CapabilityStatus]
 
@@ -107,14 +107,14 @@ def drop_unknown_capabilities(value: list[dict]) -> list[Capability]:
 
 
 @dataclass
-class Capabilities(DataClassJSONMixin):
+class Capabilities(DataClassORJSONMixin):
     capabilities: list[Capability] = field(
         metadata=field_options(deserialize=drop_unknown_capabilities)
     )
 
 
 @dataclass
-class Battery(DataClassJSONMixin):
+class Battery(DataClassORJSONMixin):
     capacity: int = field(metadata=field_options(alias="capacityInKWh"))
 
 
@@ -130,7 +130,7 @@ class VehicleState(StrEnum):
 
 
 @dataclass
-class Engine(DataClassJSONMixin):
+class Engine(DataClassORJSONMixin):
     type: str
     power: int = field(metadata=field_options(alias="powerInKW"))
     capacity_in_liters: float | None = field(
@@ -139,12 +139,12 @@ class Engine(DataClassJSONMixin):
 
 
 @dataclass
-class Gearbox(DataClassJSONMixin):
+class Gearbox(DataClassORJSONMixin):
     type: str
 
 
 @dataclass
-class Specification(DataClassJSONMixin):
+class Specification(DataClassORJSONMixin):
     body: BodyType
     engine: Engine
     model: str
@@ -161,7 +161,7 @@ class Specification(DataClassJSONMixin):
 
 
 @dataclass
-class ServicePartner(DataClassJSONMixin):
+class ServicePartner(DataClassORJSONMixin):
     id: str = field(metadata=field_options(alias="servicePartnerId"))
 
 
@@ -170,13 +170,13 @@ class ErrorType(StrEnum):
 
 
 @dataclass
-class Error(DataClassJSONMixin):
+class Error(DataClassORJSONMixin):
     description: str
     type: ErrorType
 
 
 @dataclass
-class Info(DataClassJSONMixin):
+class Info(DataClassORJSONMixin):
     """Basic vehicle information."""
 
     state: VehicleState
