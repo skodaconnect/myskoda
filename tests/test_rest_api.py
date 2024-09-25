@@ -9,6 +9,8 @@ import pytest
 
 from myskoda import RestApi
 from myskoda.auth.authorization import Authorization
+from myskoda.models.common import OpenState
+from myskoda.models.status import DoorWindowState
 
 FIXTURES_DIR = Path(__file__).parent.joinpath("fixtures")
 
@@ -125,3 +127,27 @@ async def test_get_air_conditioning() -> None:
         f"https://mysmob.api.connect.skoda-auto.cz/api/v2/air-conditioning/{target_vin}",
         headers=ANY,
     )
+
+
+@pytest.mark.asyncio
+async def test_get_computed_status() -> None:
+    """Test case for computed values of doors and windows state."""
+    file_name = "superb/vehicle-status-left-back-door-trunk-bonnet-opened.json"
+    vehicle_status = FIXTURES_DIR.joinpath(file_name).read_text()
+    response_mock = AsyncMock()
+    response_mock.text.return_value = vehicle_status
+    session_mock = MagicMock()
+    session_mock.get.return_value.__aenter__.return_value = response_mock
+
+    authorization = Authorization(session_mock)
+    api = RestApi(session_mock, authorization)
+    api.authorization.get_access_token = AsyncMock()
+    target_vin = "TMBJM0CKV1N12345"
+    get_status_result = await api.get_status(target_vin)
+
+    assert get_status_result.left_front_door == DoorWindowState.CLOSED
+    assert get_status_result.left_back_door == DoorWindowState.DOOR_OPEN
+    assert get_status_result.right_front_door == DoorWindowState.CLOSED
+    assert get_status_result.right_back_door == DoorWindowState.WINDOW_OPEN
+    assert get_status_result.detail.bonnet == OpenState.OPEN
+    assert get_status_result.detail.trunk == OpenState.OPEN
