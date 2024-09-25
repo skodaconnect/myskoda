@@ -24,13 +24,15 @@ class UserCapability(DataClassORJSONMixin):
 class User(DataClassORJSONMixin):
     capabilities: list[UserCapability]
     country: str
-    date_of_birth: date = field(metadata=field_options(alias="dateOfBirth"))
     email: str
     first_name: str = field(metadata=field_options(alias="firstName"))
     id: str
     last_name: str = field(metadata=field_options(alias="lastName"))
     nickname: str
-    phone: str
-    preferred_contact_channel: str = field(metadata=field_options(alias="preferredContactChannel"))
     preferred_language: str = field(metadata=field_options(alias="preferredLanguage"))
     profile_picture_url: str = field(metadata=field_options(alias="profilePictureUrl"))
+    date_of_birth: date | None = field(default=None, metadata=field_options(alias="dateOfBirth"))
+    preferred_contact_channel: str | None = field(
+        default=None, metadata=field_options(alias="preferredContactChannel")
+    )
+    phone: str | None = None
