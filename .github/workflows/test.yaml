@@ -33,7 +33,7 @@ jobs:
 
       - name: Install Python dependencies
         run: |
-          poetry install --no-root --extras cli
+          poetry install --no-root --extras "cli docs"
 
       - name: Lint
         run: |
