@@ -1,6 +1,7 @@
-![Version](https://img.shields.io/github/v/release/skodaconnect/myskoda?include_prereleases)
-![PyPi](https://img.shields.io/pypi/v/myskoda?label=latest%20pypi)
-![Downloads PyPi](https://img.shields.io/pypi/dm/myskoda)
+[![Version](https://img.shields.io/github/v/release/skodaconnect/myskoda?include_prereleases)](https://github.com/skodaconnect/myskoda/releases)
+[![PyPi](https://img.shields.io/pypi/v/myskoda?label=latest%20pypi)](https://pypi.org/project/myskoda/)
+[![Downloads PyPi](https://img.shields.io/pypi/dm/myskoda)](https://pypi.org/project/myskoda/)
+[![Docs](https://readthedocs.org/projects/myskoda/badge/?version=latest)](https://myskoda.readthedocs.io/en/latest/)
 
 # MySkoda
 
