@@ -8,8 +8,6 @@ on:
 jobs:
   publish-to-pypi:
     name: Publish Python distribution to PyPI
-    needs:
-      - build
     runs-on: ubuntu-latest
     environment:
       name: pypi

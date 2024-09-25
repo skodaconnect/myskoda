@@ -16,7 +16,11 @@ pyjwt = "^2"
 python = ">=3.12.0"
 pyyaml = "^6"
 termcolor = { version = "^2.4.0", optional = true }
-mashumaro = {extras = ["orjson"], version = "^3.13.1"}
+mashumaro = { extras = ["orjson"], version = "^3.13.1" }
+mkdocs = { extras = ["gen-files"], version = "^1.6.1", optional = true }
+mkdocstrings = { extras = ["python"], version = "^0.26.1", optional = true }
+mkdocs-gen-files = { version = "^0.5.0", optional = true }
+mkdocs-literate-nav = { version = "^0.6.1", optional = true }
 
 [tool.poetry.group.dev.dependencies]
 pyright = "^1.1.379"
@@ -29,6 +33,7 @@ myskoda = "myskoda.cli:cli"
 
 [tool.poetry.extras]
 cli = ["asyncclick", "coloredlogs", "termcolor"]
+docs = ["mkdocs", "mkdocstrings", "mkdocs-gen-files", "mkdocs-literate-nav"]
 
 [build-system]
 build-backend = "poetry.core.masonry.api"
@@ -41,17 +46,18 @@ target-version = "py312"
 [tool.ruff.lint]
 ignore = [
     "COM812", # missing-trailing-comma
-    "D101",   # undocumented-public-class
-    "D103",   # undocumented-public-function
-    "D203",   # one-blank-line-before-class
-    "D211",   # blank-line-before-class
-    "D213",   # multi-line-summary-second-line
+    "D101", # undocumented-public-class
+    "D103", # undocumented-public-function
+    "D203", # one-blank-line-before-class
+    "D211", # blank-line-before-class
+    "D213", # multi-line-summary-second-line
     "FBT001", # boolean-type-hint-positional-argument
     "FIX002", # line-contains-todo
-    "G004",   # logging-f-string
+    "G004", # logging-f-string
     "ISC001", # single-line-implicit-string-concatenation
-    "S101",   # assert (used in tests)
-    "T201",   # print
-    "TD003",  # missing-todo-link
+    "S101", # assert (used in tests)
+    "T201", # print
+    "TD003", # missing-todo-link
+
 ]
 select = ["ALL"]

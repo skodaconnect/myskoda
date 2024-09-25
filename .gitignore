@@ -3,3 +3,4 @@ __pycache__
 venv
 dist
 .vscode/PythonImportHelper-v2-Completion.json
+site/

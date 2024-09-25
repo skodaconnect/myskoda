@@ -1,0 +1,30 @@
+site_name: MySkoda
+theme:
+  name: readthedocs
+  highlightjs: true
+
+watch:
+  - README.md
+
+plugins:
+  - autorefs
+  - search
+  - gen-files:
+      scripts:
+      - scripts/gen_ref_nav.py
+  - literate-nav:
+      nav_file: SUMMARY.md
+  - mkdocstrings:
+      default_handler: python
+      handlers:
+        python:
+          paths: [myskoda]
+
+nav:
+  - Home:
+    - Overview: README.md
+  - API reference:
+    - myskoda: reference/
+  - Reverse Engineering:
+    - MQTT: mqtt.md
+    - Rest API: rest.md
