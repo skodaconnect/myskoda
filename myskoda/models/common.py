@@ -27,6 +27,7 @@ class OpenState(StrEnum):
     OPEN = "OPEN"
     CLOSED = "CLOSED"
     UNSUPPORTED = "UNSUPPORTED"
+    UNKNOWN = "UNKNOWN"
 
 
 class DoorLockedState(StrEnum):
@@ -34,6 +35,7 @@ class DoorLockedState(StrEnum):
     OPENED = "OPENED"
     TRUNK_OPENED = "TRUNK_OPENED"
     UNLOCKED = "NO"
+    UNKNOWN = "UNKNOWN"
 
 
 class ChargerLockedState(StrEnum):

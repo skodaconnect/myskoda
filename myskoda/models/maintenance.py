@@ -14,7 +14,7 @@ from .common import Address, Coordinates, Weekday
 class MaintenanceReport(DataClassORJSONMixin):
     captured_at: datetime = field(metadata=field_options(alias="capturedAt"))
     inspection_due_in_days: int = field(metadata=field_options(alias="inspectionDueInDays"))
-    mileage_in_km: int = field(metadata=field_options(alias="mileageInKm"))
+    mileage_in_km: int | None = field(default=None, metadata=field_options(alias="mileageInKm"))
     inspection_due_in_km: int | None = field(
         default=None, metadata=field_options(alias="inspectionDueInKm")
     )
@@ -80,7 +80,9 @@ class ServicePartner(DataClassORJSONMixin):
 
 @dataclass
 class Maintenance(DataClassORJSONMixin):
-    maintenance_report: MaintenanceReport = field(metadata=field_options(alias="maintenanceReport"))
+    maintenance_report: MaintenanceReport | None = field(
+        default=None, metadata=field_options(alias="maintenanceReport")
+    )
     predictive_maintenance: PredictiveMaintenance | None = field(
         default=None, metadata=field_options(alias="predictiveMaintenance")
     )
