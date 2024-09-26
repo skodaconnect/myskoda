@@ -29,6 +29,8 @@ class Overall(DataClassORJSONMixin):
 class Status(DataClassORJSONMixin):
     """Current status information for a vehicle."""
 
-    car_captured_timestamp: datetime = field(metadata=field_options(alias="carCapturedTimestamp"))
     detail: Detail
     overall: Overall
+    car_captured_timestamp: datetime | None = field(
+        default=None, metadata=field_options(alias="carCapturedTimestamp")
+    )

@@ -107,6 +107,10 @@ async def info(ctx: Context, vin: str) -> None:
     print(f"{colored("capabilities:", "blue")}")
     for capability in info.capabilities.capabilities:
         print(f"- {capability.id}")
+        if len(capability.statuses) != 0:
+            print("  status:")
+            for status in capability.statuses:
+                print(f"  - {status}")
 
 
 @cli.command()
@@ -240,17 +244,18 @@ async def maintenance(ctx: Context, vin: str) -> None:
     myskoda: MySkoda = ctx.obj["myskoda"]
     maintenance = await myskoda.get_maintenance(vin)
 
-    print(f"{colored("mileage:", "blue")} {maintenance.maintenance_report.mileage_in_km}km")
-    print(
-        f"{colored("inspection due in:", "blue")} "
-        f"{maintenance.maintenance_report.inspection_due_in_days}d / "
-        f"{maintenance.maintenance_report.inspection_due_in_km}km"
-    )
-    print(
-        f"{colored("oil service due in:", "blue")} "
-        f"{maintenance.maintenance_report.oil_service_due_in_days}d / "
-        f"{maintenance.maintenance_report.oil_service_due_in_km}km"
-    )
+    if maintenance.maintenance_report:
+        print(f"{colored("mileage:", "blue")} {maintenance.maintenance_report.mileage_in_km}km")
+        print(
+            f"{colored("inspection due in:", "blue")} "
+            f"{maintenance.maintenance_report.inspection_due_in_days}d / "
+            f"{maintenance.maintenance_report.inspection_due_in_km}km"
+        )
+        print(
+            f"{colored("oil service due in:", "blue")} "
+            f"{maintenance.maintenance_report.oil_service_due_in_days}d / "
+            f"{maintenance.maintenance_report.oil_service_due_in_km}km"
+        )
     if maintenance.preferred_service_partner:
         print(f"{colored("service partner:", "blue")} {maintenance.preferred_service_partner.name}")
         address = maintenance.preferred_service_partner.address
