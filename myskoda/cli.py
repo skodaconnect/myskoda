@@ -259,7 +259,9 @@ async def maintenance(ctx: Context, vin: str) -> None:
         print(f"     {address.country} ({address.country_code})")
     if maintenance.predictive_maintenance:
         print(f"{colored("email:", "blue")} {maintenance.predictive_maintenance.setting.email}")
-        print(f"{colored("phone:", "blue")} {maintenance.predictive_maintenance.setting.phone}")
+        print(
+            f"{colored("phone:", "blue")} {maintenance.predictive_maintenance.setting.phone or '-'}"
+        )
 
 
 @cli.command()

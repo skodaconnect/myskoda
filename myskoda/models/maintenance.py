@@ -53,11 +53,12 @@ class CommunicationChannel(StrEnum):
 @dataclass
 class PredictiveMaintenanceSettings(DataClassORJSONMixin):
     email: str
-    phone: str
-    preferred_channel: CommunicationChannel = field(
-        metadata=field_options(alias="preferredChannel")
-    )
     service_activated: bool = field(metadata=field_options(alias="serviceActivated"))
+    phone: str = field(default=None)
+    preferred_channel: CommunicationChannel = field(
+        default=None,
+        metadata=field_options(alias="preferredChannel"),
+    )
 
 
 @dataclass
