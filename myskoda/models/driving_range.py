@@ -11,6 +11,7 @@ from mashumaro.mixins.orjson import DataClassORJSONMixin
 class EngineType(StrEnum):
     DIESEL = "diesel"
     ELECTRIC = "electric"
+    GASOLINE = "gasoline"
 
 
 @dataclass
