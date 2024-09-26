@@ -93,13 +93,13 @@ class ChargingStatus(DataClassORJSONMixin):
     charging_rate_in_kilometers_per_hour: float = field(
         metadata=field_options(alias="chargingRateInKilometersPerHour")
     )
-    remaining_time_to_fully_charged_in_minutes: int = field(
-        metadata=field_options(alias="remainingTimeToFullyChargedInMinutes")
-    )
     charge_power_in_kw: float | None = field(
         default=None, metadata=field_options(alias="chargePowerInKw")
     )
     charge_type: ChargeType | None = field(default=None, metadata=field_options(alias="chargeType"))
+    remaining_time_to_fully_charged_in_minutes: int | None = field(
+        default=None, metadata=field_options(alias="remainingTimeToFullyChargedInMinutes")
+    )
 
 
 @dataclass
