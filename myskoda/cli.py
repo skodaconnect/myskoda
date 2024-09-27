@@ -14,6 +14,7 @@ from asyncclick.core import Context
 from termcolor import colored
 
 from .event import Event, EventType, ServiceEventTopic
+from .models.air_conditioning import AirConditioningState
 from .models.charging import MaxChargeCurrent
 from .models.common import (
     ActiveState,
@@ -145,7 +146,7 @@ async def air_conditioning(ctx: Context, vin: str) -> None:
             f"{ac.target_temperature.temperature_value}°C"
         )
     print(f"{colored("steering wheel position:", "blue")} {ac.steering_wheel_position}")
-    print(f"{colored("air conditioning:", "blue")} {on(ac.state)}")
+    print(f"{colored("air conditioning:", "blue")} {ac_on(ac.state)}")
     print(f"{colored("state:", "blue")} {ac.state}")
     print(
         f"{colored("charger:", "blue")} {connected(ac.charger_connection_state)}, "
@@ -496,6 +497,14 @@ def locked(cond: DoorLockedState) -> str:
 
 def on(cond: OnOffState) -> str:
     return colored("on", "green") if cond == OnOffState.ON else colored("off", "red")
+
+
+def ac_on(cond: AirConditioningState) -> str:
+    return (
+        colored("on", "green")
+        if cond in (AirConditioningState.ON, AirConditioningState.HEATING)
+        else colored("off", "red")
+    )
 
 
 def connected(cond: ConnectionState) -> str:
