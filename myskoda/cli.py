@@ -5,7 +5,10 @@ poetry run python3 -m myskoda.cli
 """
 
 import asyncio
+from collections.abc import Callable
+from functools import update_wrapper
 from logging import DEBUG, INFO
+from typing import ParamSpec, TypeVar
 
 import asyncclick as click
 import coloredlogs
@@ -27,6 +30,26 @@ from .models.common import (
 from .models.operation_request import OperationName, OperationStatus
 from .myskoda import TRACE_CONFIG, MySkoda
 
+R = TypeVar("R")
+P = ParamSpec("P")
+
+
+def mqtt_required(func: Callable[P, R]) -> Callable[P, R]:
+    @click.pass_context
+    def new_func(ctx: Context, *args: P.args, **kwargs: P.kwargs) -> R:
+        ctx.obj["myskoda"].enable_mqtt = True
+        return ctx.invoke(func, *args, **kwargs)
+
+    return update_wrapper(new_func, func)
+
+
+async def ensure_connected(ctx: Context) -> None:
+    """Ensure that MySkoda is connected, enabling MQTT if necessary."""
+    myskoda: MySkoda = ctx.obj["myskoda"]
+    username: str = ctx.obj["username"]
+    password: str = ctx.obj["password"]
+    await myskoda.connect(username, password)
+
 
 @click.group()
 @click.version_option()
@@ -45,8 +68,7 @@ async def cli(ctx: Context, username: str, password: str, verbose: bool) -> None
     if verbose:
         trace_configs.append(TRACE_CONFIG)
     session = ClientSession(trace_configs=trace_configs)
-    myskoda = MySkoda(session)
-    await myskoda.connect(username, password)
+    myskoda = MySkoda(session, enable_mqtt=False)
 
     ctx.obj["myskoda"] = myskoda
     ctx.obj["session"] = session
@@ -72,6 +94,7 @@ async def disconnect(
 @click.pass_context
 async def auth(ctx: Context) -> None:
     """Extract the auth token."""
+    await ensure_connected(ctx)
     myskoda: MySkoda = ctx.obj["myskoda"]
     print(myskoda.get_auth_token())
 
@@ -80,6 +103,7 @@ async def auth(ctx: Context) -> None:
 @click.pass_context
 async def list_vehicles(ctx: Context) -> None:
     """Print a list of all vehicle identification numbers associated with the account."""
+    await ensure_connected(ctx)
     myskoda: MySkoda = ctx.obj["myskoda"]
 
     print(f"{colored("vehicles:", "blue")}")
@@ -92,6 +116,7 @@ async def list_vehicles(ctx: Context) -> None:
 @click.pass_context
 async def info(ctx: Context, vin: str) -> None:
     """Print info for the specified vin."""
+    await ensure_connected(ctx)
     myskoda: MySkoda = ctx.obj["myskoda"]
     info = await myskoda.get_info(vin)
 
@@ -119,6 +144,7 @@ async def info(ctx: Context, vin: str) -> None:
 @click.pass_context
 async def status(ctx: Context, vin: str) -> None:
     """Print current status for the specified vin."""
+    await ensure_connected(ctx)
     myskoda: MySkoda = ctx.obj["myskoda"]
     status = await myskoda.get_status(vin)
 
@@ -138,6 +164,7 @@ async def status(ctx: Context, vin: str) -> None:
 @click.pass_context
 async def air_conditioning(ctx: Context, vin: str) -> None:
     """Print current status about air conditioning."""
+    await ensure_connected(ctx)
     myskoda: MySkoda = ctx.obj["myskoda"]
     ac = await myskoda.get_air_conditioning(vin)
 
@@ -167,6 +194,7 @@ async def air_conditioning(ctx: Context, vin: str) -> None:
 @click.pass_context
 async def positions(ctx: Context, vin: str) -> None:
     """Print the vehicle's current position."""
+    await ensure_connected(ctx)
     myskoda: MySkoda = ctx.obj["myskoda"]
     positions = await myskoda.get_positions(vin)
 
@@ -191,6 +219,7 @@ async def positions(ctx: Context, vin: str) -> None:
 @click.pass_context
 async def health(ctx: Context, vin: str) -> None:
     """Print the vehicle's mileage."""
+    await ensure_connected(ctx)
     myskoda: MySkoda = ctx.obj["myskoda"]
     health = await myskoda.get_health(vin)
 
@@ -203,6 +232,7 @@ async def health(ctx: Context, vin: str) -> None:
 @click.pass_context
 async def charging(ctx: Context, vin: str) -> None:
     """Print the vehicle's current charging state."""
+    await ensure_connected(ctx)
     myskoda: MySkoda = ctx.obj["myskoda"]
     charging = await myskoda.get_charging(vin)
 
@@ -242,6 +272,7 @@ async def charging(ctx: Context, vin: str) -> None:
 @click.pass_context
 async def maintenance(ctx: Context, vin: str) -> None:
     """Print the vehicle's maintenance information."""
+    await ensure_connected(ctx)
     myskoda: MySkoda = ctx.obj["myskoda"]
     maintenance = await myskoda.get_maintenance(vin)
 
@@ -275,6 +306,7 @@ async def maintenance(ctx: Context, vin: str) -> None:
 @click.pass_context
 async def driving_range(ctx: Context, vin: str) -> None:
     """Print the vehicle's estimated driving range information."""
+    await ensure_connected(ctx)
     myskoda: MySkoda = ctx.obj["myskoda"]
     driving_range = await myskoda.get_driving_range(vin)
 
@@ -291,6 +323,7 @@ async def driving_range(ctx: Context, vin: str) -> None:
 @click.pass_context
 async def user(ctx: Context) -> None:
     """Print information about currently logged in user."""
+    await ensure_connected(ctx)
     myskoda: MySkoda = ctx.obj["myskoda"]
     user = await myskoda.get_user()
 
@@ -304,6 +337,7 @@ async def user(ctx: Context) -> None:
 @click.pass_context
 async def trip_statistics(ctx: Context, vin: str) -> None:
     """Print the last trip statics."""
+    await ensure_connected(ctx)
     myskoda: MySkoda = ctx.obj["myskoda"]
     stats = await myskoda.get_trip_statistics(vin)
 
@@ -325,9 +359,11 @@ async def trip_statistics(ctx: Context, vin: str) -> None:
 
 @cli.command()
 @click.argument("operation", type=click.Choice(OperationName))  # pyright: ignore [reportArgumentType]
+@mqtt_required
 @click.pass_context
 async def wait_for_operation(ctx: Context, operation: OperationName) -> None:
     """Wait for the operation with the specified name to complete."""
+    await ensure_connected(ctx)
     myskoda: MySkoda = ctx.obj["myskoda"]
 
     print(f"Waiting for an operation {colored(operation,"green")} to start and complete...")
@@ -337,9 +373,11 @@ async def wait_for_operation(ctx: Context, operation: OperationName) -> None:
 
 
 @cli.command()
+@mqtt_required
 @click.pass_context
 async def subscribe(ctx: Context) -> None:
     """Connect to the MQTT broker and listen for messages."""
+    await ensure_connected(ctx)
     myskoda: MySkoda = ctx.obj["myskoda"]
 
     def on_event(event: Event) -> None:
@@ -371,7 +409,7 @@ async def subscribe(ctx: Context) -> None:
                 print(f"  {colored("charged range:", "blue")} {data.charged_range}km")
                 print(f"  {colored("time to finish:", "blue")} {data.time_to_finish}min")
 
-    myskoda.subscribe(on_event)
+    await myskoda.subscribe(on_event)
     print(f"{colored("Listening for Mqtt events:", "blue")}")
     await asyncio.Event().wait()
 
@@ -380,6 +418,7 @@ async def subscribe(ctx: Context) -> None:
 @click.option("temperature", "--temperature", type=float, required=True)
 @click.option("timeout", "--timeout", type=float, default=300)
 @click.argument("vin")
+@mqtt_required
 @click.pass_context
 async def start_air_conditioning(
     ctx: Context,
@@ -388,6 +427,7 @@ async def start_air_conditioning(
     vin: str,
 ) -> None:
     """Start the air conditioning with the provided target temperature in °C."""
+    await ensure_connected(ctx)
     myskoda: MySkoda = ctx.obj["myskoda"]
     async with asyncio.timeout(timeout):
         await myskoda.start_air_conditioning(vin, temperature)
@@ -396,9 +436,11 @@ async def start_air_conditioning(
 @cli.command()
 @click.option("timeout", "--timeout", type=float, default=300)
 @click.argument("vin")
+@mqtt_required
 @click.pass_context
 async def stop_air_conditioning(ctx: Context, timeout: float, vin: str) -> None:  # noqa: ASYNC109
     """Stop the air conditioning."""
+    await ensure_connected(ctx)
     myskoda: MySkoda = ctx.obj["myskoda"]
     async with asyncio.timeout(timeout):
         await myskoda.stop_air_conditioning(vin)
@@ -408,6 +450,7 @@ async def stop_air_conditioning(ctx: Context, timeout: float, vin: str) -> None:
 @click.option("timeout", "--timeout", type=float, default=300)
 @click.argument("vin")
 @click.option("temperature", "--temperature", type=float, required=True)
+@mqtt_required
 @click.pass_context
 async def set_target_temperature(
     ctx: Context,
@@ -416,6 +459,7 @@ async def set_target_temperature(
     temperature: float,
 ) -> None:
     """Set the air conditioning's target temperature in °C."""
+    await ensure_connected(ctx)
     myskoda: MySkoda = ctx.obj["myskoda"]
     async with asyncio.timeout(timeout):
         await myskoda.set_target_temperature(vin, temperature)
@@ -424,9 +468,11 @@ async def set_target_temperature(
 @cli.command()
 @click.option("timeout", "--timeout", type=float, default=300)
 @click.argument("vin")
+@mqtt_required
 @click.pass_context
 async def start_window_heating(ctx: Context, timeout: float, vin: str) -> None:  # noqa: ASYNC109
     """Start heating both the front and rear window."""
+    await ensure_connected(ctx)
     myskoda: MySkoda = ctx.obj["myskoda"]
     async with asyncio.timeout(timeout):
         await myskoda.start_window_heating(vin)
@@ -435,9 +481,11 @@ async def start_window_heating(ctx: Context, timeout: float, vin: str) -> None: 
 @cli.command()
 @click.option("timeout", "--timeout", type=float, default=300)
 @click.argument("vin")
+@mqtt_required
 @click.pass_context
 async def stop_window_heating(ctx: Context, timeout: float, vin: str) -> None:  # noqa: ASYNC109
     """Stop heating both the front and rear window."""
+    await ensure_connected(ctx)
     myskoda: MySkoda = ctx.obj["myskoda"]
     async with asyncio.timeout(timeout):
         await myskoda.stop_window_heating(vin)
@@ -447,9 +495,11 @@ async def stop_window_heating(ctx: Context, timeout: float, vin: str) -> None:  
 @click.option("timeout", "--timeout", type=float, default=300)
 @click.argument("vin")
 @click.option("limit", "--limit", type=float, required=True)
+@mqtt_required
 @click.pass_context
 async def set_charge_limit(ctx: Context, timeout: float, vin: str, limit: int) -> None:  # noqa: ASYNC109
     """Set the maximum charge limit in percent."""
+    await ensure_connected(ctx)
     myskoda: MySkoda = ctx.obj["myskoda"]
     async with asyncio.timeout(timeout):
         await myskoda.set_charge_limit(vin, limit)
@@ -459,9 +509,11 @@ async def set_charge_limit(ctx: Context, timeout: float, vin: str, limit: int) -
 @click.option("timeout", "--timeout", type=float, default=300)
 @click.argument("vin")
 @click.option("enabled", "--enabled", type=bool, required=True)
+@mqtt_required
 @click.pass_context
 async def set_battery_care_mode(ctx: Context, timeout: float, vin: str, enabled: bool) -> None:  # noqa: ASYNC109
     """Enable or disable the battery care mode."""
+    await ensure_connected(ctx)
     myskoda: MySkoda = ctx.obj["myskoda"]
     async with asyncio.timeout(timeout):
         await myskoda.set_battery_care_mode(vin, enabled)
@@ -471,9 +523,11 @@ async def set_battery_care_mode(ctx: Context, timeout: float, vin: str, enabled:
 @click.option("timeout", "--timeout", type=float, default=300)
 @click.argument("vin")
 @click.option("enabled", "--enabled", type=bool, required=True)
+@mqtt_required
 @click.pass_context
 async def set_reduced_current_limit(ctx: Context, timeout: float, vin: str, enabled: bool) -> None:  # noqa: ASYNC109
     """Enable reducing the current limit by which the car is charged."""
+    await ensure_connected(ctx)
     myskoda: MySkoda = ctx.obj["myskoda"]
     async with asyncio.timeout(timeout):
         await myskoda.set_reduced_current_limit(vin, enabled)
@@ -482,9 +536,11 @@ async def set_reduced_current_limit(ctx: Context, timeout: float, vin: str, enab
 @cli.command()
 @click.option("timeout", "--timeout", type=float, default=300)
 @click.argument("vin")
+@mqtt_required
 @click.pass_context
 async def wakeup(ctx: Context, timeout: float, vin: str) -> None:  # noqa: ASYNC109
     """Wake the vehicle up. Can be called maximum three times a day."""
+    await ensure_connected(ctx)
     myskoda: MySkoda = ctx.obj["myskoda"]
     async with asyncio.timeout(timeout):
         await myskoda.wakeup(vin)
