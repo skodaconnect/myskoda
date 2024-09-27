@@ -9,7 +9,7 @@ from asyncio import gather
 from collections.abc import Awaitable, Callable
 from ssl import SSLContext
 from types import SimpleNamespace
-from typing import ParamSpec, TypeVar
+from typing import TypeVar
 
 from aiohttp import ClientSession, TraceConfig, TraceRequestEndParams
 
@@ -47,14 +47,13 @@ async def trace_response(
 
 
 R = TypeVar("R")
-P = ParamSpec("P")
 
 
 def check_mqtt_enabled(func: Callable[..., Awaitable[R]]) -> Callable[..., Awaitable[R | None]]:
     """Check if MQTT is enabled before calling the function and otherwise log an error."""
 
     @functools.wraps(func)
-    async def wrapper(self: MySkoda, *args, **kwargs) -> R | None:  # noqa: ANN002, ANN003
+    async def wrapper(self: "MySkoda", *args, **kwargs) -> R | None:  # noqa: ANN002, ANN003
         if self.enable_mqtt:
             return await func(self, *args, **kwargs)
         _LOGGER.error(f"MQTT is disabled, cannot perform {func.__name__}")

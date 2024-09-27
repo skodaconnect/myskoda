@@ -8,7 +8,7 @@ import asyncio
 from collections.abc import Awaitable, Callable
 from functools import update_wrapper
 from logging import DEBUG, INFO
-from typing import ParamSpec, TypeVar
+from typing import TypeVar
 
 import asyncclick as click
 import coloredlogs
@@ -31,7 +31,6 @@ from .models.operation_request import OperationName, OperationStatus
 from .myskoda import TRACE_CONFIG, MySkoda
 
 R = TypeVar("R")
-P = ParamSpec("P")
 
 
 def mqtt_required(func: Callable[..., Awaitable[R]]) -> Callable[..., Awaitable[Awaitable[R]]]:
