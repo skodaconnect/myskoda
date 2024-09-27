@@ -89,7 +89,8 @@ class Battery(DataClassORJSONMixin):
 @dataclass
 class ChargingStatus(DataClassORJSONMixin):
     battery: Battery
-    state: ChargingState
+    state: ChargingState | None
+    errors: list[ChargingError] | None
     charging_rate_in_kilometers_per_hour: float = field(
         metadata=field_options(alias="chargingRateInKilometersPerHour")
     )
