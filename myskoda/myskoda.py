@@ -50,11 +50,11 @@ R = TypeVar("R")
 P = ParamSpec("P")
 
 
-def check_mqtt_enabled(func: Callable[P, Awaitable[R]]) -> Callable[P, Awaitable[R]]:
+def check_mqtt_enabled(func: Callable[..., Awaitable[R]]) -> Callable[..., Awaitable[R | None]]:
     """Check if MQTT is enabled before calling the function and otherwise log an error."""
 
     @functools.wraps(func)
-    async def wrapper(self: MySkoda, *args: P.args, **kwargs: P.kwargs) -> R:
+    async def wrapper(self: MySkoda, *args, **kwargs) -> R | None:  # noqa: ANN002, ANN003
         if self.enable_mqtt:
             return await func(self, *args, **kwargs)
         _LOGGER.error(f"MQTT is disabled, cannot perform {func.__name__}")
@@ -97,7 +97,7 @@ class MySkoda:
         _LOGGER.debug("Myskoda ready.")
 
     @check_mqtt_enabled
-    def subscribe(self, callback: Callable[[Event], None | Awaitable[None]]) -> None:
+    async def subscribe(self, callback: Callable[[Event], None | Awaitable[None]]) -> None:
         """Listen for events emitted by MySkoda's MQTT broker."""
         self.mqtt.subscribe(callback)
 

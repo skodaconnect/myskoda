@@ -5,7 +5,7 @@ poetry run python3 -m myskoda.cli
 """
 
 import asyncio
-from collections.abc import Callable
+from collections.abc import Awaitable, Callable
 from functools import update_wrapper
 from logging import DEBUG, INFO
 from typing import ParamSpec, TypeVar
@@ -34,11 +34,13 @@ R = TypeVar("R")
 P = ParamSpec("P")
 
 
-def mqtt_required(func: Callable[P, R]) -> Callable[P, R]:
+def mqtt_required(func: Callable[..., Awaitable[R]]) -> Callable[..., Awaitable[Awaitable[R]]]:
+    """Enable MQTT before connecting to MySkoda."""
+
     @click.pass_context
-    def new_func(ctx: Context, *args: P.args, **kwargs: P.kwargs) -> R:
+    async def new_func(ctx: Context, *args, **kwargs) -> Awaitable[R]:  # noqa: ANN002, ANN003
         ctx.obj["myskoda"].enable_mqtt = True
-        return ctx.invoke(func, *args, **kwargs)
+        return await ctx.invoke(func, *args, **kwargs)
 
     return update_wrapper(new_func, func)
 
