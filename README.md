@@ -55,7 +55,7 @@ await session.close()
 ## Documentation
 
 Detailed documentation [is available at read the docs](https://myskoda.readthedocs.io/en/latest/):
-* [Fetching Data](https://myskoda.readthedocs.io/en/latest/fetching-data/)
+* [Fetching Data](https://myskoda.readthedocs.io/en/latest/fetching_data/)
 * [Subscribing to Events](https://myskoda.readthedocs.io/en/latest/events/)
 * [Primer](https://myskoda.readthedocs.io/en/latest/primer/)
 
