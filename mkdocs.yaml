@@ -21,10 +21,11 @@ plugins:
           paths: [myskoda]
 
 nav:
-  - Home:
-    - Overview: README.md
-  - API reference:
-    - myskoda: reference/
+  - Home: README.md
+  - Fetching Data: fetching_data.md
+  - Events: events.md
+  - Primer: primer.md
+  - API reference: reference/
   - Reverse Engineering:
     - MQTT: mqtt.md
     - Rest API: rest.md
