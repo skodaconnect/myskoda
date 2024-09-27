@@ -20,6 +20,12 @@ class TimerMode(StrEnum):
     RECURRING = "RECURRING"
 
 
+class AirConditioningState(StrEnum):
+    ON = "ON"
+    OFF = "OFF"
+    HEATING = "HEATING"
+
+
 @dataclass
 class Timer(DataClassORJSONMixin):
     enabled: bool
@@ -68,7 +74,7 @@ class AirConditioning(DataClassORJSONMixin):
     seat_heating_activated: SeatHeating = field(
         metadata=field_options(alias="seatHeatingActivated")
     )
-    state: OnOffState
+    state: AirConditioningState
     steering_wheel_position: Side = field(metadata=field_options(alias="steeringWheelPosition"))
     window_heating_enabled: bool = field(metadata=field_options(alias="windowHeatingEnabled"))
     window_heating_state: WindowHeatingState = field(

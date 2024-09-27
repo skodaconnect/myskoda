@@ -1,5 +1,6 @@
 """Unit tests for myskoda.rest_api."""
 
+import datetime
 import json
 from pathlib import Path
 from unittest.mock import ANY, AsyncMock, MagicMock
@@ -94,3 +95,33 @@ async def test_get_status(vehicle_statuses: list[str]) -> None:
             f"https://mysmob.api.connect.skoda-auto.cz/api/v2/vehicle-status/{target_vin}",
             headers=ANY,
         )
+
+
+@pytest.mark.asyncio
+async def test_get_air_conditioning() -> None:
+    """Example unit test for RestAPI.get_air_conditioning(). Needs more work."""
+    air_conditioning_status = (FIXTURES_DIR / "enyaq/air-conditioning-heating.json").read_text()
+    air_conditioning_status_json = json.loads(air_conditioning_status)
+    response_mock = AsyncMock()
+    response_mock.text.return_value = air_conditioning_status
+    session_mock = MagicMock()
+    session_mock.get.return_value.__aenter__.return_value = response_mock
+
+    authorization = Authorization(session_mock)
+    api = RestApi(session_mock, authorization)
+    api.authorization.get_access_token = AsyncMock()
+    target_vin = "TMBJM0CKV1N12345"
+    get_status_result = await api.get_air_conditioning(target_vin)
+
+    assert get_status_result.state == air_conditioning_status_json["state"]
+    assert (
+        get_status_result.timers[0].enabled == air_conditioning_status_json["timers"][0]["enabled"]
+    )
+    assert get_status_result.timers[0].time == datetime.time.fromisoformat(
+        air_conditioning_status_json["timers"][0]["time"]
+    )
+
+    session_mock.get.assert_called_with(
+        f"https://mysmob.api.connect.skoda-auto.cz/api/v2/air-conditioning/{target_vin}",
+        headers=ANY,
+    )
