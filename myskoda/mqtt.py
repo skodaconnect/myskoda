@@ -102,7 +102,7 @@ class Mqtt:
 
             if not self.user:
                 self.user = await self.api.get_user()
-                _LOGGER.debug(f"Using user id {self.user.id}...")
+                _LOGGER.debug("Using user id %s...", self.user.id)
 
             if not self.vehicles:
                 self.vehicles = await self.api.list_vehicles()

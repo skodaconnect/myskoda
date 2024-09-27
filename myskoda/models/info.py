@@ -105,7 +105,7 @@ def drop_unknown_capabilities(value: list[dict]) -> list[Capability]:
     """Drop any unknown capabilities and log a message."""
     unknown_capabilities = [c for c in value if c["id"] not in CapabilityId]
     if unknown_capabilities:
-        _LOGGER.info(f"Dropping unknown capabilities: {unknown_capabilities}")
+        _LOGGER.info("Dropping unknown capabilities: %s", unknown_capabilities)
     return [Capability.from_dict(c) for c in value if c["id"] in CapabilityId]
 
 
