@@ -71,14 +71,14 @@ class AirConditioning(DataClassORJSONMixin):
     estimated_date_time_to_reach_target_temperature: datetime = field(
         metadata=field_options(alias="estimatedDateTimeToReachTargetTemperature")
     )
-    seat_heating_activated: SeatHeating = field(
-        metadata=field_options(alias="seatHeatingActivated")
-    )
     state: AirConditioningState
     steering_wheel_position: Side = field(metadata=field_options(alias="steeringWheelPosition"))
     window_heating_enabled: bool = field(metadata=field_options(alias="windowHeatingEnabled"))
     window_heating_state: WindowHeatingState = field(
         metadata=field_options(alias="windowHeatingState")
+    )
+    seat_heating_activated: SeatHeating | None = field(
+        default=None, metadata=field_options(alias="seatHeatingActivated")
     )
     target_temperature: TargetTemperature | None = field(
         default=None, metadata=field_options(alias="targetTemperature")
