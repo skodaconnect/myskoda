@@ -156,11 +156,11 @@ class Specification(DataClassORJSONMixin):
     model_year: str = field(metadata=field_options(alias="modelYear"))
     system_code: str = field(metadata=field_options(alias="systemCode"))
     system_model_id: str = field(metadata=field_options(alias="systemModelId"))
-    trim_level: str = field(metadata=field_options(alias="trimLevel"))
+    battery: Battery | None = field(default=None)
     max_charging_power: int | None = field(
         default=None, metadata=field_options(alias="maxChargingPowerInKW")
     )
-    battery: Battery | None = field(default=None)
+    trim_level: str | None = field(default=None, metadata=field_options(alias="trimLevel"))
 
 
 @dataclass
