@@ -12,6 +12,8 @@ _LOGGER = logging.getLogger(__name__)
 
 
 class CapabilityId(StrEnum):
+    """List of known Capabilities."""
+
     ACCESS = "ACCESS"
     AIR_CONDITIONING = "AIR_CONDITIONING"
     AIR_CONDITIONING_HEATING_SOURCE_AUXILIARY = "AIR_CONDITIONING_HEATING_SOURCE_AUXILIARY"
@@ -57,9 +59,11 @@ class CapabilityId(StrEnum):
     PLUG_AND_CHARGE = "PLUG_AND_CHARGE"
     POI_SEARCH = "POI_SEARCH"
     POWERPASS_TARIFFS = "POWERPASS_TARIFFS"
+    PREDICTIVE_WAKE_UP = "PREDICTIVE_WAKE_UP"
     ROADSIDE_ASSISTANT = "ROADSIDE_ASSISTANT"
     ROUTE_IMPORT = "ROUTE_IMPORT"
     ROUTE_PLANNING_5_CHARGERS = "ROUTE_PLANNING_5_CHARGERS"
+    ROUTE_PLANNING_10_CHARGERS = "ROUTE_PLANNING_10_CHARGERS"
     ROUTING = "ROUTING"
     SERVICE_PARTNER = "SERVICE_PARTNER"
     SPEED_ALERT = "SPEED_ALERT"
@@ -79,6 +83,8 @@ class CapabilityId(StrEnum):
 
 
 class CapabilityStatus(StrEnum):
+    """List of known statuses for Capabilities."""
+
     DEACTIVATED_BY_ACTIVE_VEHICLE_USER = "DEACTIVATED_BY_ACTIVE_VEHICLE_USER"
     DISABLED_BY_USER = "DISABLED_BY_USER"
     FRONTEND_SWITCHED_OFF = "FRONTEND_SWITCHED_OFF"
@@ -91,6 +97,8 @@ class CapabilityStatus(StrEnum):
 
 @dataclass
 class Capability(DataClassORJSONMixin):
+    """Shows the status of a capability. Empty status indicates no error."""
+
     id: CapabilityId
     statuses: list[CapabilityStatus]
 
@@ -106,12 +114,17 @@ def drop_unknown_capabilities(value: list[dict]) -> list[Capability]:
     """Drop any unknown capabilities and log a message."""
     unknown_capabilities = [c for c in value if c["id"] not in CapabilityId]
     if unknown_capabilities:
-        _LOGGER.info(f"Dropping unknown capabilities: {unknown_capabilities}")
+        _LOGGER.info("Dropping unknown capabilities: %s", unknown_capabilities)
     return [Capability.from_dict(c) for c in value if c["id"] in CapabilityId]
 
 
 @dataclass
 class Capabilities(DataClassORJSONMixin):
+    """Main Model for Capabilities.
+
+    Capabilities are Skoda software features known by the library.
+    """
+
     capabilities: list[Capability] = field(
         metadata=field_options(deserialize=drop_unknown_capabilities)
     )
@@ -119,10 +132,14 @@ class Capabilities(DataClassORJSONMixin):
 
 @dataclass
 class Battery(DataClassORJSONMixin):
+    """Battery features."""
+
     capacity: int = field(metadata=field_options(alias="capacityInKWh"))
 
 
 class BodyType(StrEnum):
+    """Known car body types."""
+
     SUV = "SUV"
     SUV_COUPE = "SUV Coupe"
     COMBI = "Combi"
@@ -130,11 +147,15 @@ class BodyType(StrEnum):
 
 
 class VehicleState(StrEnum):
+    """Main software state of the vehicle."""
+
     ACTIVATED = "ACTIVATED"
 
 
 @dataclass
 class Engine(DataClassORJSONMixin):
+    """Engine features."""
+
     type: str
     power: int = field(metadata=field_options(alias="powerInKW"))
     capacity_in_liters: float | None = field(
@@ -144,11 +165,15 @@ class Engine(DataClassORJSONMixin):
 
 @dataclass
 class Gearbox(DataClassORJSONMixin):
+    """Gearbox features."""
+
     type: str
 
 
 @dataclass
 class Specification(DataClassORJSONMixin):
+    """Car specification. Model for the physical features of the car."""
+
     body: BodyType
     engine: Engine
     model: str
@@ -166,15 +191,21 @@ class Specification(DataClassORJSONMixin):
 
 @dataclass
 class ServicePartner(DataClassORJSONMixin):
+    """ServicePartner is a fancy name for car dealer."""
+
     id: str = field(metadata=field_options(alias="servicePartnerId"))
 
 
 class ErrorType(StrEnum):
+    """Known errors."""
+
     MISSING_RENDER = "MISSING_RENDER"
 
 
 @dataclass
 class Error(DataClassORJSONMixin):
+    """Main model for emitted errors."""
+
     description: str
     type: ErrorType
 

@@ -37,10 +37,14 @@ async def trace_response(
     params: TraceRequestEndParams,
 ) -> None:
     """Log response details. Used in aiohttp.TraceConfig."""
+    resp_text = await params.response.text()
     _LOGGER.debug(
-        f"Trace: {params.method} {str(params.url)[:60]} - "
-        f"response: {params.response.status} ({params.response.content_length} bytes) "
-        f"{(await params.response.text())[:5000]}"
+        "Trace: %s %s - response: %s (%s bytes) %s",
+        params.method,
+        str(params.url)[:60],
+        params.response.status,
+        params.response.content_length,
+        resp_text[:5000],
     )
 
 
