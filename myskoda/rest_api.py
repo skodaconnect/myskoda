@@ -249,7 +249,7 @@ class RestApi:
     async def honk_flash(
         self,
         vin: str,
-        honk: bool = False,  # noqa:FBT002
+        honk: bool = False,
     ) -> None:
         """Honk and/or flash."""
         positions = await self.get_positions(vin)

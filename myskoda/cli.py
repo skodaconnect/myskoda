@@ -6,7 +6,9 @@ poetry run python3 -m myskoda.cli
 
 import asyncio
 import json
+from collections.abc import Awaitable, Callable
 from enum import StrEnum
+from functools import update_wrapper
 from logging import DEBUG, INFO
 
 import asyncclick as click
@@ -19,9 +21,24 @@ from pygments.formatters import TerminalFormatter
 from pygments.lexers import JsonLexer, YamlLexer
 from termcolor import colored
 
-from .event import Event
-from .models.operation_request import OperationName
-from .myskoda import TRACE_CONFIG, MySkoda
+from myskoda.event import Event
+from myskoda.models.operation_request import OperationName
+
+from .myskoda import TRACE_CONFIG, MqttDisabledError, MySkoda
+
+
+def mqtt_required[R](func: Callable[..., Awaitable[R]]) -> Callable[..., Awaitable[Awaitable[R]]]:
+    """Enable MQTT before connecting to MySkoda."""
+
+    @click.pass_context
+    async def new_func(ctx: Context, *args, **kwargs) -> Awaitable[R]:  # noqa: ANN002, ANN003
+        if ctx.obj["mqtt_disabled"]:
+            return await ctx.invoke(func, *args, **kwargs)
+        myskoda: MySkoda = ctx.obj["myskoda"]
+        await myskoda.enable_mqtt()
+        return await ctx.invoke(func, *args, **kwargs)
+
+    return update_wrapper(new_func, func)
 
 
 class Format(StrEnum):
@@ -41,13 +58,17 @@ class Format(StrEnum):
     type=click.Choice(Format),  # pyright: ignore [reportArgumentType]
     default=Format.YAML,
 )
+@click.option("trace", "--trace", help="Enable tracing of HTTP requests.", is_flag=True)
+@click.option("disable_mqtt", "--disable-mqtt", help="Do not connect to MQTT.", is_flag=True)
 @click.pass_context
-async def cli(
+async def cli(  # noqa: PLR0913
     ctx: Context,
     username: str,
     password: str,
     verbose: bool,
     output_format: Format,
+    trace: bool,
+    disable_mqtt: bool,
 ) -> None:
     """Interact with the MySkoda API."""
     coloredlogs.install(level=DEBUG if verbose else INFO)
@@ -59,11 +80,13 @@ async def cli(
     elif output_format == Format.YAML:
         ctx.obj["print"] = _print_yaml
 
+    ctx.obj["mqtt_disabled"] = disable_mqtt
+
     trace_configs = []
-    if verbose:
+    if trace:
         trace_configs.append(TRACE_CONFIG)
     session = ClientSession(trace_configs=trace_configs)
-    myskoda = MySkoda(session)
+    myskoda = MySkoda(session, mqtt_enabled=False)
     await myskoda.connect(username, password)
 
     ctx.obj["myskoda"] = myskoda
@@ -87,6 +110,8 @@ async def disconnect(  # noqa: PLR0913
     password: str,  # noqa: ARG001
     verbose: bool,  # noqa: ARG001
     output_format: Format,  # noqa: ARG001
+    trace: bool,  # noqa: ARG001
+    disable_mqtt: bool,  # noqa: ARG001
 ) -> None:
     myskoda: MySkoda = ctx.obj["myskoda"]
     session: ClientSession = ctx.obj["session"]
@@ -214,9 +239,12 @@ async def trip_statistics(ctx: Context, vin: str) -> None:
 @cli.command()
 @click.argument("operation", type=click.Choice(OperationName))  # pyright: ignore [reportArgumentType]
 @click.pass_context
+@mqtt_required
 async def wait_for_operation(ctx: Context, operation: OperationName) -> None:
     """Wait for the operation with the specified name to complete."""
     myskoda: MySkoda = ctx.obj["myskoda"]
+    if myskoda.mqtt is None:
+        raise MqttDisabledError
 
     print(f"Waiting for an operation {colored(operation,"green")} to start and complete...")
 
@@ -226,6 +254,7 @@ async def wait_for_operation(ctx: Context, operation: OperationName) -> None:
 
 @cli.command()
 @click.pass_context
+@mqtt_required
 async def subscribe(ctx: Context) -> None:
     """Connect to the MQTT broker and listen for messages."""
     myskoda: MySkoda = ctx.obj["myskoda"]
@@ -242,6 +271,7 @@ async def subscribe(ctx: Context) -> None:
 @click.option("timeout", "--timeout", type=float, default=300)
 @click.argument("vin")
 @click.pass_context
+@mqtt_required
 async def start_air_conditioning(
     ctx: Context,
     temperature: float,
@@ -270,6 +300,7 @@ async def stop_air_conditioning(ctx: Context, timeout: float, vin: str) -> None:
 @click.argument("vin")
 @click.option("temperature", "--temperature", type=float, required=True)
 @click.pass_context
+@mqtt_required
 async def set_target_temperature(
     ctx: Context,
     timeout: float,  # noqa: ASYNC109
@@ -286,6 +317,7 @@ async def set_target_temperature(
 @click.option("timeout", "--timeout", type=float, default=300)
 @click.argument("vin")
 @click.pass_context
+@mqtt_required
 async def start_window_heating(ctx: Context, timeout: float, vin: str) -> None:  # noqa: ASYNC109
     """Start heating both the front and rear window."""
     myskoda: MySkoda = ctx.obj["myskoda"]
@@ -297,6 +329,7 @@ async def start_window_heating(ctx: Context, timeout: float, vin: str) -> None: 
 @click.option("timeout", "--timeout", type=float, default=300)
 @click.argument("vin")
 @click.pass_context
+@mqtt_required
 async def stop_window_heating(ctx: Context, timeout: float, vin: str) -> None:  # noqa: ASYNC109
     """Stop heating both the front and rear window."""
     myskoda: MySkoda = ctx.obj["myskoda"]
@@ -309,6 +342,7 @@ async def stop_window_heating(ctx: Context, timeout: float, vin: str) -> None:  
 @click.argument("vin")
 @click.option("limit", "--limit", type=float, required=True)
 @click.pass_context
+@mqtt_required
 async def set_charge_limit(ctx: Context, timeout: float, vin: str, limit: int) -> None:  # noqa: ASYNC109
     """Set the maximum charge limit in percent."""
     myskoda: MySkoda = ctx.obj["myskoda"]
@@ -321,6 +355,7 @@ async def set_charge_limit(ctx: Context, timeout: float, vin: str, limit: int) -
 @click.argument("vin")
 @click.option("enabled", "--enabled", type=bool, required=True)
 @click.pass_context
+@mqtt_required
 async def set_battery_care_mode(ctx: Context, timeout: float, vin: str, enabled: bool) -> None:  # noqa: ASYNC109
     """Enable or disable the battery care mode."""
     myskoda: MySkoda = ctx.obj["myskoda"]
@@ -333,6 +368,7 @@ async def set_battery_care_mode(ctx: Context, timeout: float, vin: str, enabled:
 @click.argument("vin")
 @click.option("enabled", "--enabled", type=bool, required=True)
 @click.pass_context
+@mqtt_required
 async def set_reduced_current_limit(ctx: Context, timeout: float, vin: str, enabled: bool) -> None:  # noqa: ASYNC109
     """Enable reducing the current limit by which the car is charged."""
     myskoda: MySkoda = ctx.obj["myskoda"]
@@ -344,6 +380,7 @@ async def set_reduced_current_limit(ctx: Context, timeout: float, vin: str, enab
 @click.option("timeout", "--timeout", type=float, default=300)
 @click.argument("vin")
 @click.pass_context
+@mqtt_required
 async def wakeup(ctx: Context, timeout: float, vin: str) -> None:  # noqa: ASYNC109
     """Wake the vehicle up. Can be called maximum three times a day."""
     myskoda: MySkoda = ctx.obj["myskoda"]

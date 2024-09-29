@@ -58,6 +58,7 @@ ignore = [
     "D211",   # blank-line-before-class
     "D213",   # multi-line-summary-second-line
     "FBT001", # boolean-type-hint-positional-argument
+    "FBT002", # boolean-default-value-positional-argument 
     "FIX002", # line-contains-todo
     "ISC001", # single-line-implicit-string-concatenation
     "S101",   # assert (used in tests)
