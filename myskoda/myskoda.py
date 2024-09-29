@@ -65,7 +65,7 @@ class MySkoda:
     async def connect(self, email: str, password: str) -> None:
         """Authenticate on the rest api and connect to the MQTT broker."""
         await self.authorization.authorize(email, password)
-        _LOGGER.info("IDK Authorization was successful.")
+        _LOGGER.debug("IDK Authorization was successful.")
 
         await self.mqtt.connect()
         _LOGGER.debug("Myskoda ready.")

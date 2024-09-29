@@ -4,6 +4,8 @@ from datetime import UTC, datetime
 from enum import StrEnum
 from typing import Literal
 
+from mashumaro.mixins.orjson import DataClassORJSONMixin
+
 from .models.operation_request import OperationRequest
 from .models.service_event import ServiceEvent, ServiceEventCharging
 
@@ -25,7 +27,7 @@ class EventType(StrEnum):
     SERVICE_EVENT = "service-event"
 
 
-class BaseEvent:
+class BaseEvent(DataClassORJSONMixin):
     vin: str
     user_id: str
     timestamp: datetime
