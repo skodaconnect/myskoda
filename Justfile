@@ -7,4 +7,7 @@ format:
     poetry run ruff format .
 
 test:
-    poetry run pytest tests
+    poetry run pytest \
+        --cov-report term \
+        --cov-report xml:coverage.xml \
+        --cov=myskoda

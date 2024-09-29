@@ -3,6 +3,7 @@
 [![Downloads PyPi](https://img.shields.io/pypi/dm/myskoda)](https://pypi.org/project/myskoda/)
 [![Docs](https://readthedocs.org/projects/myskoda/badge/?version=latest)](https://myskoda.readthedocs.io/en/latest/)
 [![Discord](https://img.shields.io/discord/877164727636230184)](https://discord.gg/t7az2hSJXq)
+[![Coverage Status](https://coveralls.io/repos/github/skodaconnect/myskoda/badge.svg)](https://coveralls.io/github/skodaconnect/myskoda)
 
 # MySkoda
 

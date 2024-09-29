@@ -42,3 +42,8 @@ jobs:
       - name: Test
         run: |
           just test
+
+      - name: Coveralls
+        uses: coverallsapp/github-action@v2
+        with:
+          file: coverage.xml

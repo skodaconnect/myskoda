@@ -4,3 +4,5 @@ venv
 dist
 .vscode/PythonImportHelper-v2-Completion.json
 site/
+coverage.xml
+.coverage
