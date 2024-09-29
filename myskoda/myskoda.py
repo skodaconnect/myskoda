@@ -3,13 +3,11 @@
 This class provides all methods to operate on the API and MQTT broker.
 """
 
-import functools
 import logging
 from asyncio import gather
 from collections.abc import Awaitable, Callable
 from ssl import SSLContext
 from types import SimpleNamespace
-from typing import TypeVar
 
 from aiohttp import ClientSession, TraceConfig, TraceRequestEndParams
 
@@ -46,22 +44,6 @@ async def trace_response(
     )
 
 
-R = TypeVar("R")
-
-
-def check_mqtt_enabled(func: Callable[..., Awaitable[R]]) -> Callable[..., Awaitable[R | None]]:
-    """Check if MQTT is enabled before calling the function and otherwise log an error."""
-
-    @functools.wraps(func)
-    async def wrapper(self: "MySkoda", *args, **kwargs) -> R | None:  # noqa: ANN002, ANN003
-        if self.enable_mqtt:
-            return await func(self, *args, **kwargs)
-        _LOGGER.error(f"MQTT is disabled, cannot perform {func.__name__}")
-        return None
-
-    return wrapper
-
-
 TRACE_CONFIG = TraceConfig()
 TRACE_CONFIG.on_request_end.append(trace_response)
 
@@ -69,7 +51,7 @@ TRACE_CONFIG.on_request_end.append(trace_response)
 class MySkoda:
     session: ClientSession
     rest_api: RestApi
-    mqtt: Mqtt
+    _mqtt: Mqtt
     authorization: Authorization
     enable_mqtt: bool
 
@@ -83,8 +65,8 @@ class MySkoda:
         self.session = session
         self.authorization = Authorization(session)
         self.rest_api = RestApi(self.session, self.authorization)
+        self._mqtt = Mqtt(self.authorization, self.rest_api, ssl_context=ssl_context)
         self.enable_mqtt = enable_mqtt
-        self.mqtt = Mqtt(self.authorization, self.rest_api, ssl_context=ssl_context)
 
     async def connect(self, email: str, password: str) -> None:
         """Authenticate on the rest api and connect to the MQTT broker."""
@@ -95,7 +77,15 @@ class MySkoda:
             await self.mqtt.connect()
         _LOGGER.debug("Myskoda ready.")
 
-    @check_mqtt_enabled
+    @property
+    def mqtt(self) -> Mqtt:
+        """Get the MQTT client if it is enabled, otherwise log an error."""
+        if self.enable_mqtt:
+            return self._mqtt
+        _LOGGER.error("MQTT is disabled or not initialized, cannot access MQTT operations.")
+        msg = "MQTT is disabled or not initialized"
+        raise RuntimeError(msg)
+
     async def subscribe(self, callback: Callable[[Event], None | Awaitable[None]]) -> None:
         """Listen for events emitted by MySkoda's MQTT broker."""
         self.mqtt.subscribe(callback)
@@ -105,84 +95,72 @@ class MySkoda:
         if self.enable_mqtt:
             self.mqtt.disconnect()
 
-    @check_mqtt_enabled
     async def stop_charging(self, vin: str) -> None:
         """Stop the car from charging."""
         future = self.mqtt.wait_for_operation(OperationName.STOP_CHARGING)
         await self.rest_api.stop_charging(vin)
         await future
 
-    @check_mqtt_enabled
     async def start_charging(self, vin: str) -> None:
         """Start charging the car."""
         future = self.mqtt.wait_for_operation(OperationName.START_CHARGING)
         await self.rest_api.start_charging(vin)
         await future
 
-    @check_mqtt_enabled
     async def honk_flash(self, vin: str, honk: bool = False) -> None:  # noqa: FBT002
         """Honk and/or flash."""
         future = self.mqtt.wait_for_operation(OperationName.START_HONK)
         await self.rest_api.honk_flash(vin, honk)
         await future
 
-    @check_mqtt_enabled
     async def wakeup(self, vin: str) -> None:
         """Wake the vehicle up. Can be called maximum three times a day."""
         future = self.mqtt.wait_for_operation(OperationName.WAKEUP)
         await self.rest_api.honk_flash(vin)
         await future
 
-    @check_mqtt_enabled
     async def set_reduced_current_limit(self, vin: str, reduced: bool) -> None:
         """Enable reducing the current limit by which the car is charged."""
         future = self.mqtt.wait_for_operation(OperationName.UPDATE_CHARGING_CURRENT)
         await self.rest_api.set_reduced_current_limit(vin, reduced=reduced)
         await future
 
-    @check_mqtt_enabled
     async def set_battery_care_mode(self, vin: str, enabled: bool) -> None:
         """Enable or disable the battery care mode."""
         future = self.mqtt.wait_for_operation(OperationName.UPDATE_CARE_MODE)
         await self.rest_api.set_battery_care_mode(vin, enabled)
         await future
 
-    @check_mqtt_enabled
     async def set_charge_limit(self, vin: str, limit: int) -> None:
         """Set the maximum charge limit in percent."""
         future = self.mqtt.wait_for_operation(OperationName.UPDATE_CHARGE_LIMIT)
         await self.rest_api.set_charge_limit(vin, limit)
         await future
 
-    @check_mqtt_enabled
     async def stop_window_heating(self, vin: str) -> None:
         """Stop heating both the front and rear window."""
         future = self.mqtt.wait_for_operation(OperationName.STOP_WINDOW_HEATING)
         await self.rest_api.stop_window_heating(vin)
         await future
 
-    @check_mqtt_enabled
     async def start_window_heating(self, vin: str) -> None:
         """Start heating both the front and rear window."""
         future = self.mqtt.wait_for_operation(OperationName.START_WINDOW_HEATING)
         await self.rest_api.start_window_heating(vin)
         await future
 
-    @check_mqtt_enabled
     async def set_target_temperature(self, vin: str, temperature: float) -> None:
         """Set the air conditioning's target temperature in °C."""
         future = self.mqtt.wait_for_operation(OperationName.SET_AIR_CONDITIONING_TARGET_TEMPERATURE)
         await self.rest_api.set_target_temperature(vin, temperature)
         await future
 
-    @check_mqtt_enabled
     async def start_air_conditioning(self, vin: str, temperature: float) -> None:
         """Start the air conditioning with the provided target temperature in °C."""
         future = self.mqtt.wait_for_operation(OperationName.START_AIR_CONDITIONING)
         await self.rest_api.start_air_conditioning(vin, temperature)
         await future
 
-    @check_mqtt_enabled
     async def stop_air_conditioning(self, vin: str) -> None:
         """Stop the air conditioning."""
         future = self.mqtt.wait_for_operation(OperationName.STOP_AIR_CONDITIONING)
