@@ -55,12 +55,16 @@ class Side(StrEnum):
 
 @dataclass
 class Coordinates(DataClassORJSONMixin):
+    """GPS Coordinates."""
+
     latitude: float
     longitude: float
 
 
 @dataclass
 class Address(DataClassORJSONMixin):
+    """A representation of a house-address."""
+
     city: str
     street: str
     country_code: str = field(metadata=field_options(alias="countryCode"))

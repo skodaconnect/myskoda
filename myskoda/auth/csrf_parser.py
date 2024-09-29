@@ -13,12 +13,16 @@ json_object = re.compile(r"window\._IDK\s=\s((?:\n|.)*?)$")
 
 @dataclass
 class TemplateModel(DataClassORJSONMixin):
+    """Holds HMAC and RelayState for the authorization."""
+
     hmac: str
     relay_state: str = field(metadata=field_options(alias="relayState"))
 
 
 @dataclass
 class CSRFState(DataClassYAMLMixin):
+    """Holds CSRF and embeds HMAC and RelayState for the authorization."""
+
     csrf: str = field(metadata=field_options(alias="csrf_token"))
     template_model: TemplateModel = field(metadata=field_options(alias="templateModel"))
 

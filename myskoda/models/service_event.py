@@ -12,6 +12,8 @@ from .charging import ChargeMode, ChargingState
 
 
 class ServiceEventName(StrEnum):
+    """List of known Service EventNames."""
+
     CHANGE_SOC = "change-soc"
     CHANGE_ACCESS = "change-access"
     CHANGE_LIGHTS = "change-lights"
@@ -22,6 +24,8 @@ class ServiceEventName(StrEnum):
 
 @dataclass
 class ServiceEventData(DataClassORJSONMixin):
+    """Data for Service Events."""
+
     user_id: str = field(metadata=field_options(alias="userId"))
     vin: str
 
@@ -31,6 +35,11 @@ T = TypeVar("T", bound=ServiceEventData)
 
 @dataclass
 class ServiceEvent(Generic[T], DataClassORJSONMixin):
+    """Main model for Service Events.
+
+    Service Events are unsolicited events emitted by the MQTT bus towards the client.
+    """
+
     version: int
     producer: str
     name: ServiceEventName
@@ -79,6 +88,8 @@ def _deserialize_charging_state(value: str) -> ChargingState:
 
 @dataclass
 class ServiceEventChargingData(ServiceEventData):
+    """Charging Data inside a Service Event."""
+
     mode: ChargeMode = field(metadata=field_options(deserialize=_deserialize_mode))
     state: ChargingState = field(metadata=field_options(deserialize=_deserialize_charging_state))
     soc: int
@@ -88,6 +99,8 @@ class ServiceEventChargingData(ServiceEventData):
 
 @dataclass
 class ServiceEventCharging(ServiceEvent):
+    """Charging details of a Service Event."""
+
     data: ServiceEventChargingData
 
 

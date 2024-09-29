@@ -50,6 +50,8 @@ class IDKSession(DataClassORJSONMixin):
 
 
 class Authorization:
+    """Class that holds Authorization information and authorization state of the session."""
+
     session: ClientSession
     idk_session: IDKSession | None = None
 
