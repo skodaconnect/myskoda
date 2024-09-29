@@ -61,8 +61,8 @@ class Coordinates(DataClassORJSONMixin):
 
 @dataclass
 class Address(DataClassORJSONMixin):
-    city: str | None = field(default=None)
     street: str
+    city: str | None = field(default=None)
     country_code: str = field(metadata=field_options(alias="countryCode"))
     zip_code: str = field(metadata=field_options(alias="zipCode"))
     house_number: str | None = field(default=None, metadata=field_options(alias="houseNumber"))
