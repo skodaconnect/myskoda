@@ -12,6 +12,8 @@ from .models.trip_statistics import TripStatistics
 
 
 class Vehicle:
+    """Main model for a Vehicle. Holds all Vehicle information."""
+
     info: Info
     charging: Charging | None = None
     status: Status | None = None
