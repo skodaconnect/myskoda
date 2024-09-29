@@ -24,6 +24,7 @@ class AirConditioningState(StrEnum):
     ON = "ON"
     OFF = "OFF"
     HEATING = "HEATING"
+    VENTILATION = "VENTILATION"
 
 
 @dataclass
