@@ -79,16 +79,11 @@ def _deserialize_charging_state(value: str) -> ChargingState:
 
 @dataclass
 class ServiceEventChargingData(ServiceEventData):
-    mode: ChargeMode
-    state: ChargingState
+    mode: ChargeMode = field(metadata=field_options(deserialize=_deserialize_mode))
+    state: ChargingState = field(metadata=field_options(deserialize=_deserialize_charging_state))
     soc: int
-    charged_range: int = field(
-        metadata=field_options(alias="chargedRange", deserialize=_deserialize_charging_state)
-    )
-    time_to_finish: int | None = field(
-        default=None,
-        metadata=field_options(alias="timeToFinish", deserialize=_deserialize_mode),
-    )
+    charged_range: int = field(metadata=field_options(alias="chargedRange"))
+    time_to_finish: int | None = field(default=None, metadata=field_options(alias="timeToFinish"))
 
 
 @dataclass
