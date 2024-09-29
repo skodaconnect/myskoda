@@ -189,7 +189,9 @@ class Info(DataClassORJSONMixin):
     name: str
     capabilities: Capabilities
     device_platform: str = field(metadata=field_options(alias="devicePlatform"))
-    service_partner: ServicePartner | None = field(default=None, metadata=field_options(alias="servicePartner"))
+    service_partner: ServicePartner | None = field(
+        default=None, metadata=field_options(alias="servicePartner")
+    )
     workshop_mode_enabled: bool = field(metadata=field_options(alias="workshopModeEnabled"))
     software_version: str | None = field(
         default=None, metadata=field_options(alias="softwareVersion")
