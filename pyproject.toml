@@ -25,6 +25,7 @@ mkdocs = { extras = ["gen-files"], version = "^1.6.1", optional = true }
 mkdocstrings = { extras = ["python"], version = "^0.26.1", optional = true }
 mkdocs-gen-files = { version = "^0.5.0", optional = true }
 mkdocs-literate-nav = { version = "^0.6.1", optional = true }
+pygments = {version = "^2.18.0", optional = true}
 
 [tool.poetry.group.dev.dependencies]
 pyright = "^1.1.379"
@@ -37,7 +38,7 @@ pytest-cov = "^5.0.0"
 myskoda = "myskoda.cli:cli"
 
 [tool.poetry.extras]
-cli = ["asyncclick", "coloredlogs", "termcolor"]
+cli = ["asyncclick", "coloredlogs", "termcolor", "pygments"]
 docs = ["mkdocs", "mkdocstrings", "mkdocs-gen-files", "mkdocs-literate-nav"]
 
 [build-system]

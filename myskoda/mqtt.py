@@ -140,7 +140,7 @@ class Mqtt:
 
     def reconnect(self) -> None:
         """Reconnect a client that was previously connected and was disconnected."""
-        _LOGGER.info("Scheduling to reconnect MQTT.")
+        _LOGGER.debug("Scheduling to reconnect MQTT.")
 
         if not self.should_reconnect:
             return
@@ -174,7 +174,7 @@ class Mqtt:
     def _on_socket_close(self, client: AsyncioPahoClient, _data: None, _socket: None) -> None:
         if client is not self.client:
             return
-        _LOGGER.info("Socket to MQTT broker closed.")
+        _LOGGER.debug("Socket to MQTT broker closed.")
         self.is_connected = False
         self.reconnect()
 
@@ -194,7 +194,7 @@ class Mqtt:
     ) -> None:
         if client is not self.client:
             return
-        _LOGGER.info("Connection to MQTT broker lost, reason %d.", reason_code)
+        _LOGGER.debug("Connection to MQTT broker lost, reason %d.", reason_code)
         self.is_connected = False
         self.reconnect()
 
@@ -206,7 +206,7 @@ class Mqtt:
 
         self.is_connected = True
 
-        _LOGGER.info("MQTT Connected.")
+        _LOGGER.debug("MQTT Connected.")
         if not self.user or not self.vehicles:
             _LOGGER.error("Reached on_connect, but user and vehicles not loaded")
             return
