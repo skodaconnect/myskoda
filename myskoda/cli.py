@@ -22,6 +22,7 @@ from termcolor import colored
 from .event import Event
 from .models.operation_request import OperationName
 from .myskoda import TRACE_CONFIG, MySkoda
+from .rest_api import InvalidResponseError
 
 
 class Format(StrEnum):
@@ -207,8 +208,11 @@ async def user(ctx: Context) -> None:
 async def trip_statistics(ctx: Context, vin: str) -> None:
     """Print the last trip statics."""
     myskoda: MySkoda = ctx.obj["myskoda"]
-    stats = await myskoda.get_trip_statistics(vin)
-    ctx.obj["print"](stats.to_dict())
+    try:
+        stats = await myskoda.get_trip_statistics(vin)
+        ctx.obj["print"](stats.to_dict())
+    except InvalidResponseError as e:
+        ctx.obj["print"]({"error": e.response})
 
 
 @cli.command()
