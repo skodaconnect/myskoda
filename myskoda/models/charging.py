@@ -51,6 +51,7 @@ class ChargingState(StrEnum):
 class ChargeType(StrEnum):
     AC = "AC"
     DC = "DC"
+    OFF = "OFF"
 
 
 class PlugUnlockMode(StrEnum):
@@ -64,17 +65,23 @@ class Settings(DataClassORJSONMixin):
     available_charge_modes: list[ChargeMode] = field(
         metadata=field_options(alias="availableChargeModes")
     )
-    battery_support: EnabledState = field(metadata=field_options(alias="batterySupport"))
-    charging_care_mode: ActiveState = field(metadata=field_options(alias="chargingCareMode"))
     max_charge_current_ac: MaxChargeCurrent = field(
         metadata=field_options(alias="maxChargeCurrentAc")
     )
-    preferred_charge_mode: ChargeMode = field(metadata=field_options(alias="preferredChargeMode"))
-    target_state_of_charge_in_percent: int = field(
-        metadata=field_options(alias="targetStateOfChargeInPercent")
+    auto_unlock_plug_when_charged: PlugUnlockMode | None = field(
+        default=None, metadata=field_options(alias="autoUnlockPlugWhenCharged")
     )
-    auto_unlock_plug_when_charged: PlugUnlockMode = field(
-        metadata=field_options(alias="autoUnlockPlugWhenCharged")
+    battery_support: EnabledState | None = field(
+        default=None, metadata=field_options(alias="batterySupport")
+    )
+    charging_care_mode: ActiveState | None = field(
+        default=None, metadata=field_options(alias="chargingCareMode")
+    )
+    preferred_charge_mode: ChargeMode | None = field(
+        default=None, metadata=field_options(alias="preferredChargeMode")
+    )
+    target_state_of_charge_in_percent: int | None = field(
+        default=None, metadata=field_options(alias="targetStateOfChargeInPercent")
     )
 
 
@@ -90,14 +97,14 @@ class Battery(DataClassORJSONMixin):
 class ChargingStatus(DataClassORJSONMixin):
     battery: Battery
     state: ChargingState | None
-    errors: list[ChargingError] | None
-    charging_rate_in_kilometers_per_hour: float = field(
-        metadata=field_options(alias="chargingRateInKilometersPerHour")
-    )
     charge_power_in_kw: float | None = field(
         default=None, metadata=field_options(alias="chargePowerInKw")
     )
+    charging_rate_in_kilometers_per_hour: float | None = field(
+        default=None, metadata=field_options(alias="chargingRateInKilometersPerHour")
+    )
     charge_type: ChargeType | None = field(default=None, metadata=field_options(alias="chargeType"))
+    errors: list[ChargingError] | None = field(default=None)
     remaining_time_to_fully_charged_in_minutes: int | None = field(
         default=None, metadata=field_options(alias="remainingTimeToFullyChargedInMinutes")
     )
