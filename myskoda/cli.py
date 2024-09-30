@@ -15,6 +15,7 @@ import asyncclick as click
 import coloredlogs
 import yaml
 from aiohttp import ClientSession
+from aiohttp.client_exceptions import ClientResponseError
 from asyncclick.core import Context
 from pygments import highlight
 from pygments.formatters import TerminalFormatter
@@ -25,7 +26,6 @@ from myskoda.event import Event
 from myskoda.models.operation_request import OperationName
 
 from .myskoda import TRACE_CONFIG, MqttDisabledError, MySkoda
-from .rest_api import InvalidResponseError
 
 
 def mqtt_required[R](func: Callable[..., Awaitable[R]]) -> Callable[..., Awaitable[Awaitable[R]]]:
@@ -236,8 +236,8 @@ async def trip_statistics(ctx: Context, vin: str) -> None:
     try:
         stats = await myskoda.get_trip_statistics(vin)
         ctx.obj["print"](stats.to_dict())
-    except InvalidResponseError as e:
-        ctx.obj["print"]({"error": e.response})
+    except ClientResponseError as e:
+        ctx.obj["print"]({"error": e.status, "message": e.message, "url": str(e.request_info.url)})
 
 
 @cli.command()

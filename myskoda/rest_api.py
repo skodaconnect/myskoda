@@ -4,7 +4,6 @@ import logging
 from collections.abc import Callable
 
 from aiohttp import ClientSession
-from orjson import JSONDecodeError
 
 from .auth.authorization import Authorization
 from .const import BASE_URL_SKODA
@@ -37,11 +36,10 @@ class RestApi:
             f"{BASE_URL_SKODA}/api{url}",
             headers=await self._headers(),
         ) as response:
+            response.raise_for_status()
             response_text = await response.text()
             try:
                 data = deserialize(response_text)
-            except JSONDecodeError as e:
-                raise InvalidResponseError(response_text) from e
             except Exception:
                 _LOGGER.exception(
                     "Failed to load data from url %s. Return value was '%s'", url, response_text
@@ -270,12 +268,3 @@ class RestApi:
             json=json_data,
         ) as response:
             await response.text()
-
-
-class InvalidResponseError(Exception):
-    """Indicates that the response was not a valid JSON."""
-
-    def __init__(self, response: str) -> None:
-        """Initialize the error with the actual response."""
-        super().__init__(f"Failed to decode the response: {response}")
-        self.response = response
