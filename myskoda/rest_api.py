@@ -12,7 +12,7 @@ from .models.air_conditioning import AirConditioning
 from .models.charging import ChargeMode, Charging
 from .models.driving_range import DrivingRange
 from .models.health import Health
-from .models.info import Info
+from .models.info import Garage, Info
 from .models.maintenance import Maintenance
 from .models.position import Positions, PositionType
 from .models.status import Status
@@ -134,6 +134,7 @@ class RestApi:
         response = await self._make_request(
             method="GET",
             url="/v2/garage?connectivityGenerations=MOD1&connectivityGenerations=MOD2&connectivityGenerations=MOD3&connectivityGenerations=MOD4",
+            deserialize=Garage.from_json,
         )
         json = await response.json()
         return [vehicle["vin"] for vehicle in json["vehicles"]]
