@@ -67,10 +67,6 @@ class AirConditioning(DataClassORJSONMixin):
 
     timers: list[Timer]
     car_captured_timestamp: datetime = field(metadata=field_options(alias="carCapturedTimestamp"))
-    charger_connection_state: ConnectionState = field(
-        metadata=field_options(alias="chargerConnectionState")
-    )
-    charger_lock_state: ChargerLockedState = field(metadata=field_options(alias="chargerLockState"))
     errors: list[Any]
     state: AirConditioningState
     steering_wheel_position: Side = field(metadata=field_options(alias="steeringWheelPosition"))
@@ -79,6 +75,12 @@ class AirConditioning(DataClassORJSONMixin):
     )
     air_conditioning_at_unlock: bool | None = field(
         default=None, metadata=field_options(alias="airConditioningAtUnlock")
+    )
+    charger_connection_state: ConnectionState | None = field(
+        default=None, metadata=field_options(alias="chargerConnectionState")
+    )
+    charger_lock_state: ChargerLockedState | None = field(
+        default=None, metadata=field_options(alias="chargerLockState")
     )
     estimated_date_time_to_reach_target_temperature: datetime | None = field(
         default=None, metadata=field_options(alias="estimatedDateTimeToReachTargetTemperature")

@@ -104,6 +104,7 @@ def load_air_conditioning() -> list[str]:
     air_conditioning = []
     for path in [
         "enyaq/air-conditioning-heating.json",
+        "other/air-conditioning-idle.json",
         "superb/air-conditioning-aux-heater.json",
         "superb/air-conditioning-idle.json",
     ]:
