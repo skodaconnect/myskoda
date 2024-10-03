@@ -89,7 +89,7 @@ async def cli(  # noqa: PLR0913
         trace_configs.append(TRACE_CONFIG)
 
     # Check if we're on windows, if so, tune asyncio to work there as well (https://github.com/skodaconnect/myskoda/issues/77)
-    if sys_platform.startswith("win") and sys_version_info >= (3, 8):
+    if sys_platform.lower().startswith("win") and sys_version_info >= (3, 8):
         import asyncio
 
         try:
