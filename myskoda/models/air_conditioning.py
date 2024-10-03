@@ -21,10 +21,16 @@ class TimerMode(StrEnum):
 
 
 class AirConditioningState(StrEnum):
-    ON = "ON"
-    OFF = "OFF"
     HEATING = "HEATING"
+    HEATING_AUXILIARY = "HEATING_AUXILIARY"
+    OFF = "OFF"
+    ON = "ON"
     VENTILATION = "VENTILATION"
+
+
+# Probaly other states than AUTOMATIC are available, to be discovered
+class HeaterSource(StrEnum):
+    AUTOMATIC = "AUTOMATIC"
 
 
 @dataclass
@@ -60,27 +66,34 @@ class AirConditioning(DataClassORJSONMixin):
     """Information related to air conditioning."""
 
     timers: list[Timer]
-    air_conditioning_at_unlock: bool = field(
-        metadata=field_options(alias="airConditioningAtUnlock")
-    )
     car_captured_timestamp: datetime = field(metadata=field_options(alias="carCapturedTimestamp"))
-    charger_connection_state: ConnectionState = field(
-        metadata=field_options(alias="chargerConnectionState")
-    )
-    charger_lock_state: ChargerLockedState = field(metadata=field_options(alias="chargerLockState"))
     errors: list[Any]
-    estimated_date_time_to_reach_target_temperature: datetime = field(
-        metadata=field_options(alias="estimatedDateTimeToReachTargetTemperature")
-    )
     state: AirConditioningState
     steering_wheel_position: Side = field(metadata=field_options(alias="steeringWheelPosition"))
-    window_heating_enabled: bool = field(metadata=field_options(alias="windowHeatingEnabled"))
     window_heating_state: WindowHeatingState = field(
         metadata=field_options(alias="windowHeatingState")
+    )
+    air_conditioning_at_unlock: bool | None = field(
+        default=None, metadata=field_options(alias="airConditioningAtUnlock")
+    )
+    charger_connection_state: ConnectionState | None = field(
+        default=None, metadata=field_options(alias="chargerConnectionState")
+    )
+    charger_lock_state: ChargerLockedState | None = field(
+        default=None, metadata=field_options(alias="chargerLockState")
+    )
+    estimated_date_time_to_reach_target_temperature: datetime | None = field(
+        default=None, metadata=field_options(alias="estimatedDateTimeToReachTargetTemperature")
+    )
+    heater_source: HeaterSource | None = field(
+        default=None, metadata=field_options(alias="heaterSource")
     )
     seat_heating_activated: SeatHeating | None = field(
         default=None, metadata=field_options(alias="seatHeatingActivated")
     )
     target_temperature: TargetTemperature | None = field(
         default=None, metadata=field_options(alias="targetTemperature")
+    )
+    window_heating_enabled: bool | None = field(
+        default=None, metadata=field_options(alias="windowHeatingEnabled")
     )
