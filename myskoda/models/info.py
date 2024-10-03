@@ -257,3 +257,10 @@ class Info(DataClassORJSONMixin):
         model_year = self.specification.model_year
         system_model_id = self.specification.system_model_id
         return f"{model} {engine} {model_year} ({system_model_id})"
+
+
+@dataclass
+class Garage(DataClassORJSONMixin):
+    """Contents of the users Garage."""
+
+    vehicles: list[Info] | None = field(default=None)

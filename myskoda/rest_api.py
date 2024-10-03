@@ -1,17 +1,18 @@
 """Contains API representation for the MySkoda REST API."""
 
+import asyncio
 import logging
 from collections.abc import Callable
 
-from aiohttp import ClientSession
+from aiohttp import METH_GET, METH_POST, METH_PUT, ClientResponse, ClientSession
 
 from .auth.authorization import Authorization
-from .const import BASE_URL_SKODA
+from .const import BASE_URL_SKODA, REQUEST_TIMEOUT_IN_SECONDS
 from .models.air_conditioning import AirConditioning
 from .models.charging import ChargeMode, Charging
 from .models.driving_range import DrivingRange
 from .models.health import Health
-from .models.info import Info
+from .models.info import Garage, Info
 from .models.maintenance import Maintenance
 from .models.position import Positions, PositionType
 from .models.status import Status
@@ -31,21 +32,40 @@ class RestApi:
         self.session = session
         self.authorization = authorization
 
-    async def _make_get_request[T](self, url: str, deserialize: Callable[[str], T]) -> T:
-        async with self.session.get(
-            f"{BASE_URL_SKODA}/api{url}",
-            headers=await self._headers(),
-        ) as response:
-            response_text = await response.text()
-            try:
-                data = deserialize(response_text)
-            except Exception:
-                _LOGGER.exception(
-                    "Failed to load data from url %s. Return value was '%s'", url, response_text
+    async def _make_request(
+        self, url: str, method: str, json: dict | None = None
+    ) -> ClientResponse:
+        response = ClientResponse()
+        try:
+            async with asyncio.timeout(REQUEST_TIMEOUT_IN_SECONDS):
+                response = await self.session.request(
+                    method,
+                    url=f"{BASE_URL_SKODA}/api{url}",
+                    headers=await self._headers(),
+                    json=json,
                 )
-                raise
-            else:
-                return data
+        except TimeoutError:
+            _LOGGER.exception("Timeout while sending %s request to %s", method, url)
+        return response
+
+    async def _make_get_request[T](self, url: str, deserialize: Callable[[str], T]) -> T:
+        response = await self._make_request(url=url, method=METH_GET)
+        response_text = await response.text()
+        try:
+            data = deserialize(response_text)
+        except Exception:
+            _LOGGER.exception(
+                "Failed to load data from url %s. Return value was '%s'", url, response_text
+            )
+            raise
+        else:
+            return data
+
+    async def _make_post_request(self, url: str, json: dict | None = None) -> ClientResponse:
+        return await self._make_request(url, method=METH_POST, json=json)
+
+    async def _make_put_request(self, url: str, json: dict | None = None) -> ClientResponse:
+        return await self._make_request(url, method=METH_PUT, json=json)
 
     async def get_info(self, vin: str) -> Info:
         """Retrieve the basic vehicle information for the specified vehicle."""
@@ -103,12 +123,12 @@ class RestApi:
 
     async def list_vehicles(self) -> list[str]:
         """List all vehicles by their vins."""
-        async with self.session.get(
-            f"{BASE_URL_SKODA}/api/v2/garage?connectivityGenerations=MOD1&connectivityGenerations=MOD2&connectivityGenerations=MOD3&connectivityGenerations=MOD4",
-            headers=await self._headers(),
-        ) as response:
-            json = await response.json()
-            return [vehicle["vin"] for vehicle in json["vehicles"]]
+        response = await self._make_get_request(
+            url="/v2/garage?connectivityGenerations=MOD1&connectivityGenerations=MOD2&connectivityGenerations=MOD3&connectivityGenerations=MOD4",
+            deserialize=Garage.from_json,
+        )
+        json = await response.json()
+        return [vehicle["vin"] for vehicle in json["vehicles"]]
 
     async def _headers(self) -> dict[str, str]:
         return {"authorization": f"Bearer {await self.authorization.get_access_token()}"}
@@ -116,11 +136,8 @@ class RestApi:
     async def stop_air_conditioning(self, vin: str) -> None:
         """Stop the air conditioning."""
         _LOGGER.debug("Stopping air conditioning for vehicle %s", vin)
-        async with self.session.post(
-            f"{BASE_URL_SKODA}/api/v2/air-conditioning/{vin}/stop",
-            headers=await self._headers(),
-        ) as response:
-            await response.text()
+        response = await self._make_post_request(url="/v2/air-conditioning/{vin}/stop")
+        await response.text()
 
     async def start_air_conditioning(self, vin: str, temperature: float) -> None:
         """Start the air conditioning."""
@@ -136,114 +153,103 @@ class RestApi:
                 "unitInCar": "CELSIUS",
             },
         }
-        async with self.session.post(
-            f"{BASE_URL_SKODA}/api/v2/air-conditioning/{vin}/start",
-            headers=await self._headers(),
+        response = await self._make_post_request(
+            url="/v2/air-conditioning/{vin}/start",
             json=json_data,
-        ) as response:
-            await response.text()
+        )
+        await response.text()
 
     async def set_target_temperature(self, vin: str, temperature: float) -> None:
         """Set the air conditioning's target temperature in °C."""
         _LOGGER.debug("Setting target temperature for vehicle %s to %s", vin, str(temperature))
         json_data = {"temperatureValue": str(temperature), "unitInCar": "CELSIUS"}
-        async with self.session.post(
-            f"{BASE_URL_SKODA}/api/v2/air-conditioning/{vin}/settings/target-temperature",
-            headers=await self._headers(),
+        response = await self._make_post_request(
+            url="/v2/air-conditioning/{vin}/settings/target-temperature",
             json=json_data,
-        ) as response:
-            await response.text()
+        )
+        await response.text()
 
     async def start_window_heating(self, vin: str) -> None:
         """Start heating both the front and rear window."""
         _LOGGER.debug("Starting window heating for vehicle %s", vin)
-        async with self.session.post(
-            f"{BASE_URL_SKODA}/api/v2/air-conditioning/{vin}/start-window-heating",
-            headers=await self._headers(),
-        ) as response:
-            await response.text()
+        response = await self._make_post_request(
+            url="/v2/air-conditioning/{vin}/start-window-heating",
+        )
+        await response.text()
 
     async def stop_window_heating(self, vin: str) -> None:
         """Stop heating both the front and rear window."""
         _LOGGER.debug("Stopping window heating for vehicle %s", vin)
-        async with self.session.post(
-            f"{BASE_URL_SKODA}/api/v2/air-conditioning/{vin}/stop-window-heating",
-            headers=await self._headers(),
-        ) as response:
-            await response.text()
+        response = await self._make_post_request(
+            url="/v2/air-conditioning/{vin}/stop-window-heating",
+        )
+        await response.text()
 
     async def set_charge_limit(self, vin: str, limit: int) -> None:
         """Set the maximum charge limit in percent."""
         _LOGGER.debug("Setting charge limit for vehicle %s to %d", vin, limit)
         json_data = {"targetSOCInPercent": limit}
-        async with self.session.put(
-            f"{BASE_URL_SKODA}/api/v1/charging/{vin}/set-charge-limit",
-            headers=await self._headers(),
+        response = await self._make_put_request(
+            url="/v1/charging/{vin}/set-charge-limit",
             json=json_data,
-        ) as response:
-            await response.text()
+        )
+        await response.text()
 
     # TODO @dvx76: Maybe refactor for FBT001
     async def set_battery_care_mode(self, vin: str, enabled: bool) -> None:
         """Enable or disable the battery care mode."""
         _LOGGER.debug("Setting battery care mode for vehicle %s to %r", vin, enabled)
         json_data = {"chargingCareMode": "ACTIVATED" if enabled else "DEACTIVATED"}
-        async with self.session.put(
-            f"{BASE_URL_SKODA}/api/v1/charging/{vin}/set-care-mode",
-            headers=await self._headers(),
+        response = await self._make_put_request(
+            url="/v1/charging/{vin}/set-care-mode",
             json=json_data,
-        ) as response:
-            await response.text()
+        )
+        await response.text()
 
     # TODO @dvx76: Maybe refactor for FBT001
     async def set_reduced_current_limit(self, vin: str, reduced: bool) -> None:
         """Enable reducing the current limit by which the car is charged."""
         _LOGGER.debug("Setting reduced charging for vehicle %s to %r", vin, reduced)
         json_data = {"chargingCurrent": "REDUCED" if reduced else "MAXIMUM"}
-        async with self.session.put(
-            f"{BASE_URL_SKODA}/api/v1/charging/{vin}/set-charging-current",
-            headers=await self._headers(),
+        response = await self._make_put_request(
+            url="/v1/charging/{vin}/set-charging-current",
             json=json_data,
-        ) as response:
-            await response.text()
+        )
+        await response.text()
 
     async def start_charging(self, vin: str) -> None:
         """Start charging the car."""
         _LOGGER.debug("Starting charging for vehicle %s", vin)
-        async with self.session.post(
-            f"{BASE_URL_SKODA}/api/v1/charging/{vin}/start",
-            headers=await self._headers(),
-        ) as response:
-            await response.text()
+        response = await self._make_post_request(
+            url="/v1/charging/{vin}/start",
+        )
+        await response.text()
 
     async def stop_charging(self, vin: str) -> None:
         """Stop charging the car."""
         _LOGGER.debug("Stopping charging of vehicle %s", vin)
-        async with self.session.post(
-            f"{BASE_URL_SKODA}/api/v1/charging/{vin}/stop",
-            headers=await self._headers(),
-        ) as response:
-            await response.text()
+        response = await self._make_post_request(
+            url="/v1/charging/{vin}/stop",
+        )
+        await response.text()
 
     async def wakeup(self, vin: str) -> None:
         """Wake the vehicle up. Can be called maximum three times a day."""
         _LOGGER.debug("Waking up vehicle %s", vin)
-        async with self.session.post(
-            f"{BASE_URL_SKODA}/api/v1/vehicle-wakeup/{vin}?applyRequestLimiter=true",
-            headers=await self._headers(),
-        ) as response:
-            await response.text()
+        response = await self._make_post_request(
+            url="/v1/vehicle-wakeup/{vin}?applyRequestLimiter=true",
+        )
+        await response.text()
 
     async def set_charge_mode(self, vin: str, mode: ChargeMode) -> None:
         """Wake the vehicle up. Can be called maximum three times a day."""
         _LOGGER.debug("Changing charging mode of vehicle %s to %s", vin, mode)
         json_data = {"chargeMode": mode.value}
-        async with self.session.post(
-            f"{BASE_URL_SKODA}/api/v1/charging/{vin}/set-charge-mode",
-            headers=await self._headers(),
+        response = await self._make_post_request(
+            url="/v1/charging/{vin}/set-charge-mode",
             json=json_data,
-        ) as response:
-            await response.text()
+        )
+        await response.text()
 
     # TODO @dvx76: Maybe refactor for FBT001
     async def honk_flash(
@@ -261,9 +267,7 @@ class RestApi:
                 "lng": position.gps_coordinates.longitude,
             },
         }
-        async with self.session.post(
-            f"{BASE_URL_SKODA}/api/v1/vehicle-access/{vin}/honk-and-flash",
-            headers=await self._headers(),
-            json=json_data,
-        ) as response:
-            await response.text()
+        response = await self._make_post_request(
+            url="/v1/vehicle-access/{vin}/honk-and-flash", json=json_data
+        )
+        await response.text()
