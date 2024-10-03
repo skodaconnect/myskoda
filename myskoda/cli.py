@@ -10,6 +10,7 @@ from collections.abc import Awaitable, Callable
 from enum import StrEnum
 from functools import update_wrapper
 from logging import DEBUG, INFO
+from sys import platform as sys_platform
 
 import asyncclick as click
 import coloredlogs
@@ -85,6 +86,11 @@ async def cli(  # noqa: PLR0913
     trace_configs = []
     if trace:
         trace_configs.append(TRACE_CONFIG)
+
+    # Check if we're on windows, if so, tune asyncio to work there as well (https://github.com/skodaconnect/myskoda/issues/77)
+    if sys_platform.lower().startswith("windows"):
+        asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
+
     session = ClientSession(trace_configs=trace_configs)
     myskoda = MySkoda(session, mqtt_enabled=False)
     await myskoda.connect(username, password)

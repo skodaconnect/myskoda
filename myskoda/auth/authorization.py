@@ -6,9 +6,11 @@ import logging
 import random
 import string
 import uuid
-from asyncio import Lock
+from asyncio import Lock, WindowsSelectorEventLoopPolicy
+from asyncio import set_event_loop_policy as asyncio_set_event_loop_policy
 from dataclasses import dataclass, field
 from datetime import UTC, datetime, timedelta
+from sys import platform as sys_platform
 from typing import cast
 
 import jwt
@@ -57,6 +59,10 @@ class Authorization:
 
     def __init__(self, session: ClientSession) -> None:  # noqa: D107
         self.session = session
+
+        # Check if we're on windows, if so, tune asyncio to work there as well (https://github.com/skodaconnect/myskoda/issues/77)
+        if sys_platform.lower().startswith("windows"):
+            asyncio_set_event_loop_policy(WindowsSelectorEventLoopPolicy())
 
     def _extract_csrf(self, html: str) -> CSRFState:
         parser = CSRFParser()
