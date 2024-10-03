@@ -6,11 +6,11 @@ import logging
 import random
 import string
 import uuid
-from asyncio import Lock, WindowsSelectorEventLoopPolicy
-from asyncio import set_event_loop_policy as asyncio_set_event_loop_policy
+from asyncio import Lock
 from dataclasses import dataclass, field
 from datetime import UTC, datetime, timedelta
 from sys import platform as sys_platform
+from sys import version_info as sys_version_info
 from typing import cast
 
 import jwt
@@ -61,8 +61,16 @@ class Authorization:
         self.session = session
 
         # Check if we're on windows, if so, tune asyncio to work there as well (https://github.com/skodaconnect/myskoda/issues/77)
-        if sys_platform.lower().startswith("windows"):
-            asyncio_set_event_loop_policy(WindowsSelectorEventLoopPolicy())
+        if sys_platform.startswith("win") and sys_version_info >= (3, 8):
+            import asyncio
+
+            try:
+                from asyncio import WindowsSelectorEventLoopPolicy  # type: ignore[unknown-import]
+            except ImportError:
+                pass  # Can't assign a policy which doesn't exist.
+            else:
+                if not isinstance(asyncio.get_event_loop_policy(), WindowsSelectorEventLoopPolicy):
+                    asyncio.set_event_loop_policy(WindowsSelectorEventLoopPolicy())
 
     def _extract_csrf(self, html: str) -> CSRFState:
         parser = CSRFParser()
