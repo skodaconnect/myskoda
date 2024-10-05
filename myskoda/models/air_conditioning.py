@@ -26,7 +26,7 @@ class AirConditioningState(StrEnum):
     OFF = "OFF"
     ON = "ON"
     VENTILATION = "VENTILATION"
-
+    COOLING = "COOLING"
 
 # Probaly other states than AUTOMATIC are available, to be discovered
 class HeaterSource(StrEnum):
