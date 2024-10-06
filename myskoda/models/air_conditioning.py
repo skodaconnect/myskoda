@@ -21,6 +21,7 @@ class TimerMode(StrEnum):
 
 
 class AirConditioningState(StrEnum):
+    COOLING = "COOLING"
     HEATING = "HEATING"
     HEATING_AUXILIARY = "HEATING_AUXILIARY"
     OFF = "OFF"
