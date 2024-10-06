@@ -10,6 +10,7 @@ from mashumaro.mixins.orjson import DataClassORJSONMixin
 
 class VehicleType(StrEnum):
     FUEL = "FUEL"
+    HYBRID = "HYBRID"
 
 
 @dataclass
