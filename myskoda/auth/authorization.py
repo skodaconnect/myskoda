@@ -3,10 +3,8 @@
 import base64
 import hashlib
 import logging
-import random
-import string
-import uuid
 from asyncio import Lock
+from collections.abc import Callable
 from dataclasses import dataclass, field
 from datetime import UTC, datetime, timedelta
 from typing import cast
@@ -17,6 +15,7 @@ from mashumaro import field_options
 from mashumaro.mixins.orjson import DataClassORJSONMixin
 
 from myskoda.auth.csrf_parser import CSRFParser, CSRFState
+from myskoda.auth.utils import generate_nonce
 from myskoda.const import BASE_URL_IDENT, BASE_URL_SKODA, CLIENT_ID, MAX_RETRIES
 
 _LOGGER = logging.getLogger(__name__)
@@ -55,8 +54,11 @@ class Authorization:
     session: ClientSession
     idk_session: IDKSession | None = None
 
-    def __init__(self, session: ClientSession) -> None:  # noqa: D107
+    def __init__(  # noqa: D107
+        self, session: ClientSession, generate_nonce: Callable[[], str] = generate_nonce
+    ) -> None:
         self.session = session
+        self.generate_nonce = generate_nonce
 
     def _extract_csrf(self, html: str) -> CSRFState:
         parser = CSRFParser()
@@ -96,7 +98,7 @@ class Authorization:
 
         params = {
             "client_id": CLIENT_ID,
-            "nonce": str(uuid.uuid4()),
+            "nonce": self.generate_nonce(),
             "redirect_uri": "myskoda://redirect/login/",
             "response_type": "code id_token",
             # OpenID scopes. Can be found here: https://identity.vwgroup.io/.well-known/openid-configuration
@@ -193,9 +195,7 @@ class Authorization:
         """
         # Generate a random string for the OAUTH2 PKCE challenge.
         # (https://www.oauth.com/oauth2-servers/pkce/authorization-request/)
-        verifier = "".join(
-            random.choices(string.ascii_uppercase + string.digits, k=16)  # noqa: S311
-        )
+        verifier = self.generate_nonce()
 
         # Call the initial OIDC (OpenID Connect) authorization,
         # giving us the initial SSO information.
