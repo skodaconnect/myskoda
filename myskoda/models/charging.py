@@ -7,7 +7,7 @@ from enum import StrEnum
 from mashumaro import field_options
 from mashumaro.mixins.orjson import DataClassORJSONMixin
 
-from .common import ActiveState, EnabledState
+from .common import ActiveState, CaseInsensitiveStrEnum, EnabledState
 
 
 class ChargingErrorType(StrEnum):
@@ -25,7 +25,7 @@ class ChargingError(DataClassORJSONMixin):
     description: str
 
 
-class ChargeMode(StrEnum):
+class ChargeMode(CaseInsensitiveStrEnum):
     HOME_STORAGE_CHARGING = "HOME_STORAGE_CHARGING"
     IMMEDIATE_DISCHARGING = "IMMEDIATE_DISCHARGING"
     ONLY_OWN_CURRENT = "ONLY_OWN_CURRENT"
@@ -41,7 +41,7 @@ class MaxChargeCurrent(StrEnum):
     REDUCED = "REDUCED"
 
 
-class ChargingState(StrEnum):
+class ChargingState(CaseInsensitiveStrEnum):
     READY_FOR_CHARGING = "READY_FOR_CHARGING"
     CONNECT_CABLE = "CONNECT_CABLE"
     CONSERVING = "CONSERVING"
