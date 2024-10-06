@@ -305,23 +305,25 @@ class Mqtt:
         _LOGGER.debug("Message (%s) received for %s on topic %s: %s", event_type, vin, topic, data)
 
         # Messages will contain payload as JSON.
-        data = json.loads(msg.payload)
-
-        match event_type:
-            case EventType.OPERATION:
-                self._emit(EventOperation(vin, user_id, data))
-            case EventType.ACCOUNT_EVENT:
-                self._emit(EventAccountPrivacy(vin, user_id, data))
-            case EventType.SERVICE_EVENT:
-                match topic:
-                    case "air-conditioning":
-                        self._emit(EventAirConditioning(vin, user_id, data))
-                    case "charging":
-                        self._emit(EventCharging(vin, user_id, data))
-                    case "vehicle-status/access":
-                        self._emit(EventAccess(vin, user_id, data))
-                    case "vehicle-status/lights":
-                        self._emit(EventLights(vin, user_id, data))
+        try:
+            data = json.loads(msg.payload)
+            match event_type:
+                case EventType.OPERATION:
+                    self._emit(EventOperation(vin, user_id, data))
+                case EventType.ACCOUNT_EVENT:
+                    self._emit(EventAccountPrivacy(vin, user_id, data))
+                case EventType.SERVICE_EVENT:
+                    match topic:
+                        case "air-conditioning":
+                            self._emit(EventAirConditioning(vin, user_id, data))
+                        case "charging":
+                            self._emit(EventCharging(vin, user_id, data))
+                        case "vehicle-status/access":
+                            self._emit(EventAccess(vin, user_id, data))
+                        case "vehicle-status/lights":
+                            self._emit(EventLights(vin, user_id, data))
+        except Exception as exc:  # noqa: BLE001
+            _LOGGER.warning("Exception parsing MQTT event: %s", exc)
 
 
 class OperationFailedError(Exception):
