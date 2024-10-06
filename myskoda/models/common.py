@@ -7,6 +7,22 @@ from mashumaro import field_options
 from mashumaro.mixins.orjson import DataClassORJSONMixin
 
 
+class CaseInsensitiveStrEnum(StrEnum):
+    @classmethod
+    def _missing_(cls, value: object) -> StrEnum | None:
+        """Ignore the case of the value.
+
+        Some endpoints will return values sometimes as uppercase and sometimes as lowercase...
+        """
+        if not isinstance(value, str):
+            raise TypeError
+        value = value.lower()
+        for member in cls:
+            if member.lower() == value:
+                return member
+        return None
+
+
 class OnOffState(StrEnum):
     ON = "ON"
     OFF = "OFF"
