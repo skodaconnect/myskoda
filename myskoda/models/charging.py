@@ -96,7 +96,7 @@ class Battery(DataClassORJSONMixin):
 @dataclass
 class ChargingStatus(DataClassORJSONMixin):
     battery: Battery
-    state: ChargingState | None
+    state: ChargingState | None = field(default=None)
     charge_power_in_kw: float | None = field(
         default=None, metadata=field_options(alias="chargePowerInKw")
     )
