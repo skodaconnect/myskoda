@@ -65,8 +65,8 @@ class Settings(DataClassORJSONMixin):
     available_charge_modes: list[ChargeMode] = field(
         metadata=field_options(alias="availableChargeModes")
     )
-    max_charge_current_ac: MaxChargeCurrent = field(
-        metadata=field_options(alias="maxChargeCurrentAc")
+    max_charge_current_ac: MaxChargeCurrent | None = field(
+        default=None, metadata=field_options(alias="maxChargeCurrentAc")
     )
     auto_unlock_plug_when_charged: PlugUnlockMode | None = field(
         default=None, metadata=field_options(alias="autoUnlockPlugWhenCharged")
