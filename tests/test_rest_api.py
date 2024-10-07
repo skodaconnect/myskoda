@@ -10,6 +10,7 @@ from myskoda import RestApi
 from myskoda.auth.authorization import Authorization
 from myskoda.models.common import OpenState
 from myskoda.models.status import DoorWindowState
+from myskoda.models.trip_statistics import VehicleType
 
 FIXTURES_DIR = Path(__file__).parent.joinpath("fixtures")
 
@@ -202,5 +203,46 @@ async def test_charging(charging: list[str]) -> None:
 
         session_mock.get.assert_called_with(
             f"https://mysmob.api.connect.skoda-auto.cz/api/v1/charging/{target_vin}",
+            headers=ANY,
+        )
+
+
+@pytest.fixture(name="trip_statistics")
+def load_trip_statistics() -> list[str]:
+    """Load trip statistics fixture."""
+    trip_statistics = []
+    for path in [
+        "superb/trip-statistics-iV.json",
+    ]:
+        with FIXTURES_DIR.joinpath(path).open() as file:
+            trip_statistics.append(file.read())
+    return trip_statistics
+
+
+@pytest.mark.asyncio
+async def test_trip_statistics(trip_statistics: list[str]) -> None:
+    """Example unit test for RestAPI.trip_statistics(). Needs more work."""
+    for trip_statistics_input in trip_statistics:
+        trip_statistics_json = json.loads(trip_statistics_input)
+        response_mock = AsyncMock()
+        response_mock.text.return_value = trip_statistics_input
+        session_mock = MagicMock()
+        session_mock.get.return_value.__aenter__.return_value = response_mock
+
+        authorization = Authorization(session_mock)
+        api = RestApi(session_mock, authorization)
+        api.authorization.get_access_token = AsyncMock()
+        target_vin = "TMBJM0CKV1N12345"
+        get_status_result = await api.get_trip_statistics(target_vin)
+
+        assert (
+            get_status_result.overall_average_travel_time_in_min
+            == trip_statistics_json["overallAverageTravelTimeInMin"]
+        )
+        assert get_status_result.vehicle_type == VehicleType.HYBRID
+
+        session_mock.get.assert_called_with(
+            f"https://mysmob.api.connect.skoda-auto.cz/api/v1/trip-statistics/{target_vin}"
+            "?offsetType=week&offset=0&timezone=Europe%2FBerlin",
             headers=ANY,
         )
