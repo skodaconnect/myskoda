@@ -10,11 +10,13 @@ from collections.abc import Awaitable, Callable
 from enum import StrEnum
 from functools import update_wrapper
 from logging import DEBUG, INFO
+from typing import Any
 
 import asyncclick as click
 import coloredlogs
 import yaml
 from aiohttp import ClientSession
+from aiohttp.client_exceptions import ClientResponseError
 from asyncclick.core import Context
 from pygments import highlight
 from pygments.formatters import TerminalFormatter
@@ -39,6 +41,18 @@ def mqtt_required[R](func: Callable[..., Awaitable[R]]) -> Callable[..., Awaitab
         return await ctx.invoke(func, *args, **kwargs)
 
     return update_wrapper(new_func, func)
+
+
+async def handle_request(ctx: Context, func: Callable[..., Awaitable], *args: Any) -> None:  # noqa: ANN401
+    """Handle API requests and perform error handling."""
+    try:
+        result = await func(*args)
+        if hasattr(result, "to_dict"):
+            ctx.obj["print"](result.to_dict())
+        else:
+            ctx.obj["print"](result)
+    except ClientResponseError as e:
+        ctx.obj["print"]({"error": e.status, "message": e.message, "url": str(e.request_info.url)})
 
 
 class Format(StrEnum):
@@ -132,9 +146,7 @@ async def auth(ctx: Context) -> None:
 @click.pass_context
 async def list_vehicles(ctx: Context) -> None:
     """Print a list of all vehicle identification numbers associated with the account."""
-    myskoda: MySkoda = ctx.obj["myskoda"]
-    vehicles = await myskoda.list_vehicle_vins()
-    ctx.obj["print"](vehicles)
+    await handle_request(ctx, ctx.obj["myskoda"].list_vehicle_vins)
 
 
 @cli.command()
@@ -142,9 +154,7 @@ async def list_vehicles(ctx: Context) -> None:
 @click.pass_context
 async def info(ctx: Context, vin: str) -> None:
     """Print info for the specified vin."""
-    myskoda: MySkoda = ctx.obj["myskoda"]
-    info = await myskoda.get_info(vin)
-    ctx.obj["print"](info.to_dict())
+    await handle_request(ctx, ctx.obj["myskoda"].get_info, vin)
 
 
 @cli.command()
@@ -152,9 +162,7 @@ async def info(ctx: Context, vin: str) -> None:
 @click.pass_context
 async def status(ctx: Context, vin: str) -> None:
     """Print current status for the specified vin."""
-    myskoda: MySkoda = ctx.obj["myskoda"]
-    status = await myskoda.get_status(vin)
-    ctx.obj["print"](status.to_dict())
+    await handle_request(ctx, ctx.obj["myskoda"].get_status, vin)
 
 
 @cli.command()
@@ -162,9 +170,7 @@ async def status(ctx: Context, vin: str) -> None:
 @click.pass_context
 async def air_conditioning(ctx: Context, vin: str) -> None:
     """Print current status about air conditioning."""
-    myskoda: MySkoda = ctx.obj["myskoda"]
-    ac = await myskoda.get_air_conditioning(vin)
-    ctx.obj["print"](ac.to_dict())
+    await handle_request(ctx, ctx.obj["myskoda"].get_air_conditioning, vin)
 
 
 @cli.command()
@@ -172,9 +178,7 @@ async def air_conditioning(ctx: Context, vin: str) -> None:
 @click.pass_context
 async def positions(ctx: Context, vin: str) -> None:
     """Print the vehicle's current position."""
-    myskoda: MySkoda = ctx.obj["myskoda"]
-    positions = await myskoda.get_positions(vin)
-    ctx.obj["print"](positions.to_dict())
+    await handle_request(ctx, ctx.obj["myskoda"].get_positions, vin)
 
 
 @cli.command()
@@ -182,9 +186,7 @@ async def positions(ctx: Context, vin: str) -> None:
 @click.pass_context
 async def health(ctx: Context, vin: str) -> None:
     """Print the vehicle's mileage."""
-    myskoda: MySkoda = ctx.obj["myskoda"]
-    health = await myskoda.get_health(vin)
-    ctx.obj["print"](health.to_dict())
+    await handle_request(ctx, ctx.obj["myskoda"].get_health, vin)
 
 
 @cli.command()
@@ -192,9 +194,7 @@ async def health(ctx: Context, vin: str) -> None:
 @click.pass_context
 async def charging(ctx: Context, vin: str) -> None:
     """Print the vehicle's current charging state."""
-    myskoda: MySkoda = ctx.obj["myskoda"]
-    charging = await myskoda.get_charging(vin)
-    ctx.obj["print"](charging.to_dict())
+    await handle_request(ctx, ctx.obj["myskoda"].get_charging, vin)
 
 
 @cli.command()
@@ -202,9 +202,7 @@ async def charging(ctx: Context, vin: str) -> None:
 @click.pass_context
 async def maintenance(ctx: Context, vin: str) -> None:
     """Print the vehicle's maintenance information."""
-    myskoda: MySkoda = ctx.obj["myskoda"]
-    maintenance = await myskoda.get_maintenance(vin)
-    ctx.obj["print"](maintenance.to_dict())
+    await handle_request(ctx, ctx.obj["myskoda"].get_maintenance, vin)
 
 
 @cli.command()
@@ -212,18 +210,14 @@ async def maintenance(ctx: Context, vin: str) -> None:
 @click.pass_context
 async def driving_range(ctx: Context, vin: str) -> None:
     """Print the vehicle's estimated driving range information."""
-    myskoda: MySkoda = ctx.obj["myskoda"]
-    driving_range = await myskoda.get_driving_range(vin)
-    ctx.obj["print"](driving_range.to_dict())
+    await handle_request(ctx, ctx.obj["myskoda"].get_driving_range, vin)
 
 
 @cli.command()
 @click.pass_context
 async def user(ctx: Context) -> None:
     """Print information about currently logged in user."""
-    myskoda: MySkoda = ctx.obj["myskoda"]
-    user = await myskoda.get_user()
-    ctx.obj["print"](user.to_dict())
+    await handle_request(ctx, ctx.obj["myskoda"].get_user)
 
 
 @cli.command()
@@ -231,9 +225,7 @@ async def user(ctx: Context) -> None:
 @click.pass_context
 async def trip_statistics(ctx: Context, vin: str) -> None:
     """Print the last trip statics."""
-    myskoda: MySkoda = ctx.obj["myskoda"]
-    stats = await myskoda.get_trip_statistics(vin)
-    ctx.obj["print"](stats.to_dict())
+    await handle_request(ctx, ctx.obj["myskoda"].get_trip_statistics, vin)
 
 
 @cli.command()

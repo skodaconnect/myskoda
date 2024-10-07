@@ -36,6 +36,7 @@ class RestApi:
             f"{BASE_URL_SKODA}/api{url}",
             headers=await self._headers(),
         ) as response:
+            response.raise_for_status()
             response_text = await response.text()
             try:
                 data = deserialize(response_text)
