@@ -105,8 +105,7 @@ class ServiceEventChargingData(ServiceEventData):
     charged_range: int = field(metadata=field_options(alias="chargedRange"))
     time_to_finish: int | None = field(
         default=None,
-        metadata=field_options(alias="timeToFinish"),
-        deserialize=_deserialize_time_to_finish,
+        metadata=field_options(alias="timeToFinish", deserialize=_deserialize_time_to_finish),
     )
 
 
