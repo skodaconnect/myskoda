@@ -86,6 +86,15 @@ def _deserialize_charging_state(value: str) -> ChargingState:
             raise UnexpectedChargingStateError
 
 
+def _deserialize_time_to_finish(value: int | str) -> int:
+    if value == "null":
+        return 0
+    try:
+        return int(value)
+    except (TypeError, ValueError) as err:
+        raise UnexpectedTimeToFinishError from err
+
+
 @dataclass
 class ServiceEventChargingData(ServiceEventData):
     """Charging Data inside a Service Event."""
@@ -94,7 +103,11 @@ class ServiceEventChargingData(ServiceEventData):
     state: ChargingState = field(metadata=field_options(deserialize=_deserialize_charging_state))
     soc: int
     charged_range: int = field(metadata=field_options(alias="chargedRange"))
-    time_to_finish: int | None = field(default=None, metadata=field_options(alias="timeToFinish"))
+    time_to_finish: int | None = field(
+        default=None,
+        metadata=field_options(alias="timeToFinish"),
+        deserialize=_deserialize_time_to_finish,
+    )
 
 
 @dataclass
@@ -109,4 +122,8 @@ class UnexpectedChargeModeError(Exception):
 
 
 class UnexpectedChargingStateError(Exception):
+    pass
+
+
+class UnexpectedTimeToFinishError(Exception):
     pass
