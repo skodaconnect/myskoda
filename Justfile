@@ -1,13 +1,38 @@
-lint:
+venv:
+    #!/bin/sh
+    [ -d venv ] || python3 -m venv venv
+    source venv/bin/activate
+    [ -f venv/bin/poetry ] || pip install poetry
+
+install: venv
+    #!/bin/sh
+    source venv/bin/activate
+    poetry install --quiet --all-extras
+
+lint: install
+    #!/bin/sh
+    source venv/bin/activate
     poetry run ruff check .
     poetry run ruff format . --diff
     poetry run pyright
 
-format:
+format: install
+    #!/bin/sh
+    source venv/bin/activate
     poetry run ruff format .
 
-test:
+test: install
+    #!/bin/sh
+    source venv/bin/activate
     poetry run pytest \
         --cov-report term \
         --cov-report xml:coverage.xml \
         --cov=myskoda
+
+run *args: install
+    #!/bin/sh
+    source venv/bin/activate
+    myskoda {{args}}
+
+clean:
+    rm -rf venv

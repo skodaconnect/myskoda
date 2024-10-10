@@ -6,3 +6,4 @@ dist
 site/
 coverage.xml
 .coverage
+.env
