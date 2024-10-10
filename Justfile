@@ -21,13 +21,14 @@ format: install
     source venv/bin/activate
     poetry run ruff format .
 
-test: install
+test *args: install
     #!/bin/sh
     source venv/bin/activate
     poetry run pytest \
         --cov-report term \
         --cov-report xml:coverage.xml \
-        --cov=myskoda
+        --cov=myskoda \
+        {{args}}
 
 run *args: install
     #!/bin/sh
