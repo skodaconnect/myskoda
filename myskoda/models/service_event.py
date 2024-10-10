@@ -89,10 +89,7 @@ def _deserialize_charging_state(value: str) -> ChargingState:
 def _deserialize_time_to_finish(value: int | str) -> int:
     if value == "null":
         return 0
-    try:
-        return int(value)
-    except (TypeError, ValueError) as err:
-        raise UnexpectedTimeToFinishError from err
+    return int(value)
 
 
 @dataclass
@@ -121,8 +118,4 @@ class UnexpectedChargeModeError(Exception):
 
 
 class UnexpectedChargingStateError(Exception):
-    pass
-
-
-class UnexpectedTimeToFinishError(Exception):
     pass
