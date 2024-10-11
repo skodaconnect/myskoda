@@ -146,7 +146,7 @@ class RestApi:
     async def stop_air_conditioning(self, vin: str) -> None:
         """Stop the air conditioning."""
         _LOGGER.debug("Stopping air conditioning for vehicle %s", vin)
-        await self._make_post_request(url="/v2/air-conditioning/{vin}/stop")
+        await self._make_post_request(url=f"/v2/air-conditioning/{vin}/stop")
 
     async def start_air_conditioning(self, vin: str, temperature: float) -> None:
         """Start the air conditioning."""
@@ -163,7 +163,7 @@ class RestApi:
             },
         }
         await self._make_post_request(
-            url="/v2/air-conditioning/{vin}/start",
+            url=f"/v2/air-conditioning/{vin}/start",
             json=json_data,
         )
 
@@ -172,7 +172,7 @@ class RestApi:
         _LOGGER.debug("Setting target temperature for vehicle %s to %s", vin, str(temperature))
         json_data = {"temperatureValue": str(temperature), "unitInCar": "CELSIUS"}
         await self._make_post_request(
-            url="/v2/air-conditioning/{vin}/settings/target-temperature",
+            url=f"/v2/air-conditioning/{vin}/settings/target-temperature",
             json=json_data,
         )
 
@@ -180,14 +180,14 @@ class RestApi:
         """Start heating both the front and rear window."""
         _LOGGER.debug("Starting window heating for vehicle %s", vin)
         await self._make_post_request(
-            url="/v2/air-conditioning/{vin}/start-window-heating",
+            url=f"/v2/air-conditioning/{vin}/start-window-heating",
         )
 
     async def stop_window_heating(self, vin: str) -> None:
         """Stop heating both the front and rear window."""
         _LOGGER.debug("Stopping window heating for vehicle %s", vin)
         await self._make_post_request(
-            url="/v2/air-conditioning/{vin}/stop-window-heating",
+            url=f"/v2/air-conditioning/{vin}/stop-window-heating",
         )
 
     async def set_charge_limit(self, vin: str, limit: int) -> None:
@@ -195,7 +195,7 @@ class RestApi:
         _LOGGER.debug("Setting charge limit for vehicle %s to %d", vin, limit)
         json_data = {"targetSOCInPercent": limit}
         await self._make_put_request(
-            url="/v1/charging/{vin}/set-charge-limit",
+            url=f"/v1/charging/{vin}/set-charge-limit",
             json=json_data,
         )
 
@@ -205,7 +205,7 @@ class RestApi:
         _LOGGER.debug("Setting battery care mode for vehicle %s to %r", vin, enabled)
         json_data = {"chargingCareMode": "ACTIVATED" if enabled else "DEACTIVATED"}
         await self._make_put_request(
-            url="/v1/charging/{vin}/set-care-mode",
+            url=f"/v1/charging/{vin}/set-care-mode",
             json=json_data,
         )
 
@@ -215,7 +215,7 @@ class RestApi:
         _LOGGER.debug("Setting reduced charging for vehicle %s to %r", vin, reduced)
         json_data = {"chargingCurrent": "REDUCED" if reduced else "MAXIMUM"}
         await self._make_put_request(
-            url="/v1/charging/{vin}/set-charging-current",
+            url=f"/v1/charging/{vin}/set-charging-current",
             json=json_data,
         )
 
@@ -223,21 +223,21 @@ class RestApi:
         """Start charging the car."""
         _LOGGER.debug("Starting charging for vehicle %s", vin)
         await self._make_post_request(
-            url="/v1/charging/{vin}/start",
+            url=f"/v1/charging/{vin}/start",
         )
 
     async def stop_charging(self, vin: str) -> None:
         """Stop charging the car."""
         _LOGGER.debug("Stopping charging of vehicle %s", vin)
         await self._make_post_request(
-            url="/v1/charging/{vin}/stop",
+            url=f"/v1/charging/{vin}/stop",
         )
 
     async def wakeup(self, vin: str) -> None:
         """Wake the vehicle up. Can be called maximum three times a day."""
         _LOGGER.debug("Waking up vehicle %s", vin)
         await self._make_post_request(
-            url="/v1/vehicle-wakeup/{vin}?applyRequestLimiter=true",
+            url=f"/v1/vehicle-wakeup/{vin}?applyRequestLimiter=true",
         )
 
     async def set_charge_mode(self, vin: str, mode: ChargeMode) -> None:
@@ -245,7 +245,7 @@ class RestApi:
         _LOGGER.debug("Changing charging mode of vehicle %s to %s", vin, mode)
         json_data = {"chargeMode": mode.value}
         await self._make_post_request(
-            url="/v1/charging/{vin}/set-charge-mode",
+            url=f"/v1/charging/{vin}/set-charge-mode",
             json=json_data,
         )
 
@@ -265,4 +265,6 @@ class RestApi:
                 "lng": position.gps_coordinates.longitude,
             },
         }
-        await self._make_post_request(url="/v1/vehicle-access/{vin}/honk-and-flash", json=json_data)
+        await self._make_post_request(
+            url=f"/v1/vehicle-access/{vin}/honk-and-flash", json=json_data
+        )
