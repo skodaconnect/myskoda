@@ -17,6 +17,7 @@ This Python library can be used to work with the MySkoda API.
     - [Documentation](#documentation)
     - [As Library](#as-library)
     - [As CLI](#as-cli)
+    - [Contribute your Fixtures](#contribute-your-fixtures)
 
 <!-- /TOC -->
 
@@ -91,3 +92,21 @@ Help can be accessed the usual way:
 ```sh
 myskoda --help
 ```
+
+## Contribute your Fixtures
+
+Please contribute fixtures for our tests by running the script:
+
+```sh
+python scripts/gen_fixtures.py \
+    --user user@example.com \
+    --password super_secret \
+    --name name_of_your_test \
+    --description "This is an initial test case for this vehicle. The vehicle was in motion"
+```
+
+This will call all get-routes and load all data from your vehicles (no actions will be performed).
+
+The data will be anonymized (vin and personal data are replaced) and serves as unit tests.
+
+Please create a pull request with the resulting data to help us cover more vehicles.
