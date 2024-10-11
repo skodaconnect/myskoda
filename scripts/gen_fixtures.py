@@ -23,7 +23,8 @@ VIN = "TMOCKAA0AA000000"
 
 def anonymize_info(data: dict) -> dict:
     data["vin"] = VIN
-    data["servicePartner"]["servicePartnerId"] = "DEU11111"
+    if "servicePartner" in data:
+        data["servicePartner"]["servicePartnerId"] = "DEU11111"
     return data
 
 
@@ -33,19 +34,21 @@ def anonymize_vehicle(data: dict) -> dict:
 
 
 def anonymize_maintenance(data: dict) -> dict:
-    data["preferredServicePartner"]["name"] = "Mock Service Partner"
-    data["preferredServicePartner"]["partnerNumber"] = "11111"
-    data["preferredServicePartner"]["id"] = "DEU11111"
-    data["preferredServicePartner"]["contact"]["phone"] = "+49 1234 567890"
-    data["preferredServicePartner"]["contact"]["url"] = "https://example.com"
-    data["preferredServicePartner"]["contact"]["email"] = "service@example.com"
-    data["preferredServicePartner"]["address"]["street"] = "Example Street 1"
-    data["preferredServicePartner"]["address"]["zipCode"] = "12345"
-    data["preferredServicePartner"]["address"]["city"] = "Example Town"
-    data["preferredServicePartner"]["location"]["latitude"] = 53.400000
-    data["preferredServicePartner"]["location"]["longitude"] = 9.700000
-    data["predictiveMaintenance"]["setting"]["email"] = "user@example.com"
-    data["predictiveMaintenance"]["setting"]["phone"] = "+49 0987 654321"
+    if "preferredServicePartner" in data:
+        data["preferredServicePartner"]["name"] = "Mock Service Partner"
+        data["preferredServicePartner"]["partnerNumber"] = "11111"
+        data["preferredServicePartner"]["id"] = "DEU11111"
+        data["preferredServicePartner"]["contact"]["phone"] = "+49 1234 567890"
+        data["preferredServicePartner"]["contact"]["url"] = "https://example.com"
+        data["preferredServicePartner"]["contact"]["email"] = "service@example.com"
+        data["preferredServicePartner"]["address"]["street"] = "Example Street 1"
+        data["preferredServicePartner"]["address"]["zipCode"] = "12345"
+        data["preferredServicePartner"]["address"]["city"] = "Example Town"
+        data["preferredServicePartner"]["location"]["latitude"] = 53.400000
+        data["preferredServicePartner"]["location"]["longitude"] = 9.700000
+    if "predictiveMaintenance" in data:
+        data["predictiveMaintenance"]["setting"]["email"] = "user@example.com"
+        data["predictiveMaintenance"]["setting"]["phone"] = "+49 0987 654321"
 
     return data
 
@@ -63,13 +66,14 @@ def anonymize_air_conditioning(data: dict) -> dict:
 
 
 def anonymize_positions(data: dict) -> dict:
-    for position in data["positions"]:
-        position["gpsCoordinates"]["latitude"] = 53.400000
-        position["gpsCoordinates"]["longitude"] = 9.700000
-        position["address"]["city"] = "Example City"
-        position["address"]["street"] = "Example Avenue"
-        position["address"]["houseNumber"] = "15"
-        position["address"]["zipCode"] = "54321"
+    if "positions" in data:
+        for position in data["positions"]:
+            position["gpsCoordinates"]["latitude"] = 53.400000
+            position["gpsCoordinates"]["longitude"] = 9.700000
+            position["address"]["city"] = "Example City"
+            position["address"]["street"] = "Example Avenue"
+            position["address"]["houseNumber"] = "15"
+            position["address"]["zipCode"] = "54321"
     return data
 
 
