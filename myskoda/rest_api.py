@@ -186,8 +186,12 @@ class RestApi:
         """Retrieve user information about logged in user."""
         return self._deserialize(await self.get_user_raw(), User.from_json)
 
-    async def list_vehicles_raw(self) -> str:
-        """List all vehicles by their vins.
+    async def get_garage(self) -> Garage:
+        """Fetch the garage (list of vehicles with limited info)."""
+        return self._deserialize(await self.get_garage_raw(), Garage.from_json)
+
+    async def get_garage_raw(self) -> str:
+        """Fetch the garage (list of vehicles with limited info).
 
         This method will return the raw response as string.
         """
@@ -197,7 +201,7 @@ class RestApi:
 
     async def list_vehicles(self) -> list[str]:
         """List all vehicles by their vins."""
-        garage: Garage = self._deserialize(await self.list_vehicles_raw(), Garage.from_json)
+        garage = await self.get_garage()
         if garage.vehicles is None:
             return []
         return [vehicle.vin for vehicle in garage.vehicles]

@@ -244,6 +244,13 @@ async def trip_statistics(ctx: Context, vin: str) -> None:
 
 
 @cli.command()
+@click.pass_context
+async def garage(ctx: Context) -> None:
+    """Print garage information (list of vehicles with limited information)."""
+    await handle_request(ctx, ctx.obj["myskoda"].get_garage)
+
+
+@cli.command()
 @click.argument("operation", type=click.Choice(OperationName))  # pyright: ignore [reportArgumentType]
 @click.pass_context
 @mqtt_required
