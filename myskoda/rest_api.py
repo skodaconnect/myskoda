@@ -70,47 +70,61 @@ class RestApi:
     async def _make_put_request(self, url: str, json: dict | None = None) -> str:
         return await self._make_request(url=url, method="PUT", json=json)
 
+    def get_info_url(self, vin: str) -> str:
+        """Return the URL for fetching vehicle info."""
+        return f"/v2/garage/vehicles/{vin}?connectivityGenerations=MOD1&connectivityGenerations=MOD2&connectivityGenerations=MOD3&connectivityGenerations=MOD4"  # noqa: E501
+
     async def get_info_raw(self, vin: str) -> str:
         """Retrieve the basic vehicle information for the specified vehicle.
 
         This method will return the raw response as string.
         """
-        return await self._make_get_request(
-            f"/v2/garage/vehicles/{vin}?connectivityGenerations=MOD1&connectivityGenerations=MOD2&connectivityGenerations=MOD3&connectivityGenerations=MOD4",
-        )
+        return await self._make_get_request(self.get_info_url(vin))
 
     async def get_info(self, vin: str) -> Info:
         """Retrieve the basic vehicle information for the specified vehicle."""
         return self._deserialize(await self.get_info_raw(vin), Info.from_json)
+
+    def get_charging_url(self, vin: str) -> str:
+        """Return the URL for fetching vehicle charging data."""
+        return f"/v1/charging/{vin}"
 
     async def get_charging_raw(self, vin: str) -> str:
         """Retrieve the current status for the specified vehicle.
 
         This method will return the raw response as string.
         """
-        return await self._make_get_request(f"/v1/charging/{vin}")
+        return await self._make_get_request(self.get_charging_url(vin))
 
     async def get_charging(self, vin: str) -> Charging:
         """Retrieve information related to charging for the specified vehicle."""
         return self._deserialize(await self.get_charging_raw(vin), Charging.from_json)
+
+    def get_status_url(self, vin: str) -> str:
+        """Return the URL for fetching vehicle status."""
+        return f"/v2/vehicle-status/{vin}"
 
     async def get_status_raw(self, vin: str) -> str:
         """Retrieve the current status for the specified vehicle.
 
         This method will return the raw response as string.
         """
-        return await self._make_get_request(f"/v2/vehicle-status/{vin}")
+        return await self._make_get_request(self.get_status_url(vin))
 
     async def get_status(self, vin: str) -> Status:
         """Retrieve the current status for the specified vehicle."""
         return self._deserialize(await self.get_status_raw(vin), Status.from_json)
+
+    def get_air_conditioning_url(self, vin: str) -> str:
+        """Return the URL for fetching vehicle air conditioning status."""
+        return f"/v2/air-conditioning/{vin}"
 
     async def get_air_conditioning_raw(self, vin: str) -> str:
         """Retrieve the current air conditioning status for the specified vehicle.
 
         This method will return the raw response as string.
         """
-        return await self._make_get_request(f"/v2/air-conditioning/{vin}")
+        return await self._make_get_request(self.get_air_conditioning_url(vin))
 
     async def get_air_conditioning(self, vin: str) -> AirConditioning:
         """Retrieve the current air conditioning status for the specified vehicle."""
@@ -118,73 +132,99 @@ class RestApi:
             await self.get_air_conditioning_raw(vin), AirConditioning.from_json
         )
 
+    def get_positions_url(self, vin: str) -> str:
+        """Return the URL for fetching vehicle positions."""
+        return f"/v1/maps/positions?vin={vin}"
+
     async def get_positions_raw(self, vin: str) -> str:
         """Retrieve the current position for the specified vehicle.
 
         This method will return the raw response as string.
         """
-        return await self._make_get_request(f"/v1/maps/positions?vin={vin}")
+        return await self._make_get_request(self.get_positions_url(vin))
 
     async def get_positions(self, vin: str) -> Positions:
         """Retrieve the current position for the specified vehicle."""
         return self._deserialize(await self.get_positions_raw(vin), Positions.from_json)
+
+    def get_driving_range_url(self, vin: str) -> str:
+        """Return the URL for fetching vehicle driving range."""
+        return f"/v2/vehicle-status/{vin}/driving-range"
 
     async def get_driving_range_raw(self, vin: str) -> str:
         """Retrieve estimated driving range for combustion vehicles.
 
         This method will return the raw response as string.
         """
-        return await self._make_get_request(f"/v2/vehicle-status/{vin}/driving-range")
+        return await self._make_get_request(self.get_driving_range_url(vin))
 
     async def get_driving_range(self, vin: str) -> DrivingRange:
         """Retrieve estimated driving range for combustion vehicles."""
         return self._deserialize(await self.get_driving_range_raw(vin), DrivingRange.from_json)
+
+    def get_trip_statistics_url(self, vin: str) -> str:
+        """Return the URL for fetching vehicle trip statistics."""
+        return f"/v1/trip-statistics/{vin}?offsetType=week&offset=0&timezone=Europe%2FBerlin"
 
     async def get_trip_statistics_raw(self, vin: str) -> str:
         """Retrieve statistics about past trips.
 
         This method will return the raw response as string.
         """
-        return await self._make_get_request(
-            f"/v1/trip-statistics/{vin}?offsetType=week&offset=0&timezone=Europe%2FBerlin",
-        )
+        return await self._make_get_request(self.get_trip_statistics_url(vin))
 
     async def get_trip_statistics(self, vin: str) -> TripStatistics:
         """Retrieve statistics about past trips."""
         return self._deserialize(await self.get_trip_statistics_raw(vin), TripStatistics.from_json)
+
+    def get_maintenance_url(self, vin: str) -> str:
+        """Return the URL for fetching vehicle maintenance report."""
+        return f"/v3/vehicle-maintenance/vehicles/{vin}"
 
     async def get_maintenance_raw(self, vin: str) -> str:
         """Retrieve maintenance report.
 
         This method will return the raw response as string.
         """
-        return await self._make_get_request(f"/v3/vehicle-maintenance/vehicles/{vin}")
+        return await self._make_get_request(self.get_maintenance_url(vin))
 
     async def get_maintenance(self, vin: str) -> Maintenance:
         """Retrieve maintenance report."""
         return self._deserialize(await self.get_maintenance_raw(vin), Maintenance.from_json)
+
+    def get_health_url(self, vin: str) -> str:
+        """Return the URL for fetching vehicle health."""
+        return f"/v1/vehicle-health-report/warning-lights/{vin}"
 
     async def get_health_raw(self, vin: str) -> str:
         """Retrieve health information for the specified vehicle.
 
         This method will return the raw response as string.
         """
-        return await self._make_get_request(f"/v1/vehicle-health-report/warning-lights/{vin}")
+        return await self._make_get_request(self.get_health_url(vin))
 
     async def get_health(self, vin: str) -> Health:
         """Retrieve health information for the specified vehicle."""
         return self._deserialize(await self.get_health_raw(vin), Health.from_json)
+
+    def get_user_url(self) -> str:
+        """Return the URL for fetching the user."""
+        return "/v1/users"
 
     async def get_user_raw(self) -> str:
         """Retrieve user information about logged in user.
 
         This method will return the raw response as string.
         """
-        return await self._make_get_request("/v1/users")
+        return await self._make_get_request(self.get_user_url())
 
     async def get_user(self) -> User:
         """Retrieve user information about logged in user."""
         return self._deserialize(await self.get_user_raw(), User.from_json)
+
+    def get_garage_url(self) -> str:
+        """Return the URL for fetching the garage."""
+        return "/v2/garage?connectivityGenerations=MOD1&connectivityGenerations=MOD2&connectivityGenerations=MOD3&connectivityGenerations=MOD4"  # noqa: E501
 
     async def get_garage(self) -> Garage:
         """Fetch the garage (list of vehicles with limited info)."""
@@ -195,9 +235,7 @@ class RestApi:
 
         This method will return the raw response as string.
         """
-        return await self._make_get_request(
-            "/v2/garage?connectivityGenerations=MOD1&connectivityGenerations=MOD2&connectivityGenerations=MOD3&connectivityGenerations=MOD4",
-        )
+        return await self._make_get_request(self.get_garage_url())
 
     async def list_vehicles(self) -> list[str]:
         """List all vehicles by their vins."""
