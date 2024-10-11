@@ -9,7 +9,7 @@ vehicle:
       view_point: exterior_side
     view_type: UNMODIFIED_EXTERIOR_SIDE
   device_platform: WCAR
-  name: Enyaq
+  name: My Car
   priority: 0
   renders:
   - order: 0

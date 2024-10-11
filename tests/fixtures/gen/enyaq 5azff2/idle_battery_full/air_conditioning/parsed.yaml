@@ -1,9 +1,9 @@
 air_conditioning_at_unlock: true
-car_captured_timestamp: '2024-10-11T11:00:58+00:00'
+car_captured_timestamp: '2024-10-11T19:54:17+00:00'
 charger_connection_state: DISCONNECTED
 charger_lock_state: UNLOCKED
 errors: []
-estimated_date_time_to_reach_target_temperature: '2024-10-11T19:44:12.708975+00:00'
+estimated_date_time_to_reach_target_temperature: '2024-10-11T20:32:24.606295+00:00'
 heater_source: null
 seat_heating_activated:
   front_left: false

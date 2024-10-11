@@ -23,6 +23,7 @@ VIN = "TMOCKAA0AA000000"
 
 def anonymize_info(data: dict) -> dict:
     data["vin"] = VIN
+    data["name"] = "My Car"
     if "licensePlate" in data:
         data["licensePlate"] = "HH AA 1234"
     if "servicePartner" in data:
@@ -32,6 +33,7 @@ def anonymize_info(data: dict) -> dict:
 
 def anonymize_vehicle(data: dict) -> dict:
     data["vin"] = VIN
+    data["name"] = "My Car"
     return data
 
 
