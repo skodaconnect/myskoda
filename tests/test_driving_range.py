@@ -47,7 +47,7 @@ async def test_get_driving_range(
     response_mock = AsyncMock()
     response_mock.text.return_value = vehicle_status
     session_mock = MagicMock()
-    session_mock.get.return_value.__aenter__.return_value = response_mock
+    session_mock.request.return_value.__aenter__.return_value = response_mock
 
     authorization = Authorization(session_mock)
     api = RestApi(session_mock, authorization)
@@ -71,7 +71,9 @@ async def test_get_driving_range(
             == expected_values["expected_secondary_range"]
         )
 
-    session_mock.get.assert_called_with(
-        f"https://mysmob.api.connect.skoda-auto.cz/api/v2/vehicle-status/{target_vin}/driving-range",
+    session_mock.request.assert_called_with(
+        method="GET",
+        url=f"https://mysmob.api.connect.skoda-auto.cz/api/v2/vehicle-status/{target_vin}/driving-range",
         headers=ANY,
+        json=None,
     )

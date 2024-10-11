@@ -40,7 +40,7 @@ async def test_get_info(vehicle_infos: list[str]) -> None:
         response_mock = AsyncMock()
         response_mock.text.return_value = vehicle_info
         session_mock = MagicMock()
-        session_mock.get.return_value.__aenter__.return_value = response_mock
+        session_mock.request.return_value.__aenter__.return_value = response_mock
 
         authorization = Authorization(session_mock)
         api = RestApi(session_mock, authorization)
@@ -50,11 +50,13 @@ async def test_get_info(vehicle_infos: list[str]) -> None:
         # Should probabaly assert the whole thing. Just an example.
         assert get_info_result.name == vehicle_info_json["name"]
 
-        session_mock.get.assert_called_with(
-            "https://mysmob.api.connect.skoda-auto.cz/api/v2/garage/vehicles/TMBJM0CKV1N12345"
+        session_mock.request.assert_called_with(
+            method="GET",
+            url="https://mysmob.api.connect.skoda-auto.cz/api/v2/garage/vehicles/TMBJM0CKV1N12345"
             "?connectivityGenerations=MOD1&connectivityGenerations=MOD2&connectivityGenerations=MOD3"
             "&connectivityGenerations=MOD4",
             headers=ANY,
+            json=None,
         )
 
 
@@ -80,7 +82,7 @@ async def test_get_status(vehicle_statuses: list[str]) -> None:
         response_mock = AsyncMock()
         response_mock.text.return_value = vehicle_status
         session_mock = MagicMock()
-        session_mock.get.return_value.__aenter__.return_value = response_mock
+        session_mock.request.return_value.__aenter__.return_value = response_mock
 
         authorization = Authorization(session_mock)
         api = RestApi(session_mock, authorization)
@@ -93,9 +95,11 @@ async def test_get_status(vehicle_statuses: list[str]) -> None:
         assert get_status_result.detail.bonnet == vehicle_status_json["detail"]["bonnet"]
         assert get_status_result.detail.trunk == vehicle_status_json["detail"]["trunk"]
 
-        session_mock.get.assert_called_with(
-            f"https://mysmob.api.connect.skoda-auto.cz/api/v2/vehicle-status/{target_vin}",
+        session_mock.request.assert_called_with(
+            method="GET",
+            url=f"https://mysmob.api.connect.skoda-auto.cz/api/v2/vehicle-status/{target_vin}",
             headers=ANY,
+            json=None,
         )
 
 
@@ -122,7 +126,7 @@ async def test_get_air_conditioning(air_conditioning: list[str]) -> None:
         response_mock = AsyncMock()
         response_mock.text.return_value = air_conditioning_status
         session_mock = MagicMock()
-        session_mock.get.return_value.__aenter__.return_value = response_mock
+        session_mock.request.return_value.__aenter__.return_value = response_mock
 
         authorization = Authorization(session_mock)
         api = RestApi(session_mock, authorization)
@@ -136,9 +140,11 @@ async def test_get_air_conditioning(air_conditioning: list[str]) -> None:
             == air_conditioning_status_json["windowHeatingState"]["front"]
         )
 
-        session_mock.get.assert_called_with(
-            f"https://mysmob.api.connect.skoda-auto.cz/api/v2/air-conditioning/{target_vin}",
+        session_mock.request.assert_called_with(
+            method="GET",
+            url=f"https://mysmob.api.connect.skoda-auto.cz/api/v2/air-conditioning/{target_vin}",
             headers=ANY,
+            json=None,
         )
 
 
@@ -150,7 +156,7 @@ async def test_get_computed_status() -> None:
     response_mock = AsyncMock()
     response_mock.text.return_value = vehicle_status
     session_mock = MagicMock()
-    session_mock.get.return_value.__aenter__.return_value = response_mock
+    session_mock.request.return_value.__aenter__.return_value = response_mock
 
     authorization = Authorization(session_mock)
     api = RestApi(session_mock, authorization)
@@ -186,7 +192,7 @@ async def test_charging(charging: list[str]) -> None:
         response_mock = AsyncMock()
         response_mock.text.return_value = charging_status
         session_mock = MagicMock()
-        session_mock.get.return_value.__aenter__.return_value = response_mock
+        session_mock.request.return_value.__aenter__.return_value = response_mock
 
         authorization = Authorization(session_mock)
         api = RestApi(session_mock, authorization)
@@ -201,9 +207,11 @@ async def test_charging(charging: list[str]) -> None:
             == air_conditioning_status_json["settings"]["maxChargeCurrentAc"]
         )
 
-        session_mock.get.assert_called_with(
-            f"https://mysmob.api.connect.skoda-auto.cz/api/v1/charging/{target_vin}",
+        session_mock.request.assert_called_with(
+            method="GET",
+            url=f"https://mysmob.api.connect.skoda-auto.cz/api/v1/charging/{target_vin}",
             headers=ANY,
+            json=None,
         )
 
 
@@ -227,7 +235,7 @@ async def test_trip_statistics(trip_statistics: list[str]) -> None:
         response_mock = AsyncMock()
         response_mock.text.return_value = trip_statistics_input
         session_mock = MagicMock()
-        session_mock.get.return_value.__aenter__.return_value = response_mock
+        session_mock.request.return_value.__aenter__.return_value = response_mock
 
         authorization = Authorization(session_mock)
         api = RestApi(session_mock, authorization)
@@ -241,8 +249,10 @@ async def test_trip_statistics(trip_statistics: list[str]) -> None:
         )
         assert get_status_result.vehicle_type == VehicleType.HYBRID
 
-        session_mock.get.assert_called_with(
-            f"https://mysmob.api.connect.skoda-auto.cz/api/v1/trip-statistics/{target_vin}"
+        session_mock.request.assert_called_with(
+            method="GET",
+            url=f"https://mysmob.api.connect.skoda-auto.cz/api/v1/trip-statistics/{target_vin}"
             "?offsetType=week&offset=0&timezone=Europe%2FBerlin",
             headers=ANY,
+            json=None,
         )
