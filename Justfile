@@ -37,3 +37,8 @@ run *args: install
 
 clean:
     rm -rf venv
+
+gen-fixtures *args: install
+    #!/bin/sh
+    source venv/bin/activate
+    python scripts/gen_fixtures.py {{args}}
