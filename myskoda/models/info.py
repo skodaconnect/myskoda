@@ -210,6 +210,33 @@ class Error(DataClassORJSONMixin):
     type: ErrorType
 
 
+class ViewType(StrEnum):
+    UNMODIFIED_EXTERIOR_SIDE = "UNMODIFIED_EXTERIOR_SIDE"
+    HOME = "HOME"
+    CHARGING_LIGHT = "CHARGING_LIGHT"
+    CHARGING_DARK = "CHARGING_DARK"
+    PLUGGED_IN_DARK = "PLUGGED_IN_DARK"
+    PLUGGED_IN_LIGHT = "PLUGGED_IN_LIGHT"
+
+
+class RenderType(StrEnum):
+    REAL = "REAL"
+
+
+@dataclass
+class Render(DataClassORJSONMixin):
+    url: str
+    type: RenderType
+    order: int
+    view_point: str = field(metadata=field_options(alias="viewPoint"))
+
+
+@dataclass
+class CompositeRender(DataClassORJSONMixin):
+    layers: list[Render]
+    view_type: ViewType = field(metadata=field_options(alias="viewType"))
+
+
 @dataclass
 class Info(DataClassORJSONMixin):
     """Basic vehicle information."""
@@ -219,8 +246,12 @@ class Info(DataClassORJSONMixin):
     vin: str
     name: str
     capabilities: Capabilities
+    renders: list[Render]
     device_platform: str = field(metadata=field_options(alias="devicePlatform"))
     workshop_mode_enabled: bool = field(metadata=field_options(alias="workshopModeEnabled"))
+    composite_renders: list[CompositeRender] = field(
+        metadata=field_options(alias="compositeRenders")
+    )
     service_partner: ServicePartner | None = field(
         default=None, metadata=field_options(alias="servicePartner")
     )
@@ -257,10 +288,3 @@ class Info(DataClassORJSONMixin):
         model_year = self.specification.model_year
         system_model_id = self.specification.system_model_id
         return f"{model} {engine} {model_year} ({system_model_id})"
-
-
-@dataclass
-class Garage(DataClassORJSONMixin):
-    """Contents of the users Garage."""
-
-    vehicles: list[Info] | None = field(default=None)
