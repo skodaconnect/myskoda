@@ -38,14 +38,14 @@ class RestApi:
     ) -> ClientResponse:
         try:
             async with asyncio.timeout(REQUEST_TIMEOUT_IN_SECONDS):
-                response = await self.session.request(
-                    method,
+                async with self.session.request(
+                    method=method,
                     url=f"{BASE_URL_SKODA}/api{url}",
                     headers=await self._headers(),
                     json=json,
-                )
-                response.raise_for_status()
-                return response
+                ) as response:
+                    response.raise_for_status()
+                    return response
         except TimeoutError:
             _LOGGER.exception("Timeout while sending %s request to %s", method, url)
             raise
@@ -67,12 +67,12 @@ class RestApi:
             return data
 
     async def _make_post_request(self, url: str, json: dict | None = None) -> ClientResponse:
-        response = await self._make_request(url, method="POST", json=json)
+        response = await self._make_request(url=url, method="POST", json=json)
         await response.text()
         return response
 
     async def _make_put_request(self, url: str, json: dict | None = None) -> ClientResponse:
-        response = await self._make_request(url, method="PUT", json=json)
+        response = await self._make_request(url=url, method="PUT", json=json)
         await response.text()
         return response
 
