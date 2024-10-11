@@ -44,6 +44,7 @@ class RestApi:
                     headers=await self._headers(),
                     json=json,
                 ) as response:
+                    await response.text()  # Ensure response is fully read
                     response.raise_for_status()
                     return response
         except TimeoutError:
@@ -67,14 +68,10 @@ class RestApi:
             return data
 
     async def _make_post_request(self, url: str, json: dict | None = None) -> ClientResponse:
-        response = await self._make_request(url=url, method="POST", json=json)
-        await response.text()
-        return response
+        return await self._make_request(url=url, method="POST", json=json)
 
     async def _make_put_request(self, url: str, json: dict | None = None) -> ClientResponse:
-        response = await self._make_request(url=url, method="PUT", json=json)
-        await response.text()
-        return response
+        return await self._make_request(url=url, method="PUT", json=json)
 
     async def get_info(self, vin: str) -> Info:
         """Retrieve the basic vehicle information for the specified vehicle."""
