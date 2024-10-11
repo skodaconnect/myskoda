@@ -1,0 +1,22 @@
+car_captured_timestamp: '2024-10-11T11:01:15+00:00'
+errors: []
+is_vehicle_in_saved_location: false
+settings:
+  auto_unlock_plug_when_charged: 'OFF'
+  available_charge_modes:
+  - MANUAL
+  battery_support: ENABLED
+  charging_care_mode: DEACTIVATED
+  max_charge_current_ac: MAXIMUM
+  preferred_charge_mode: MANUAL
+  target_state_of_charge_in_percent: 70
+status:
+  battery:
+    remaining_cruising_range_in_meters: 248000
+    state_of_charge_in_percent: 75
+  charge_power_in_kw: 0.0
+  charge_type: null
+  charging_rate_in_kilometers_per_hour: 0.0
+  errors: null
+  remaining_time_to_fully_charged_in_minutes: 0
+  state: CONNECT_CABLE

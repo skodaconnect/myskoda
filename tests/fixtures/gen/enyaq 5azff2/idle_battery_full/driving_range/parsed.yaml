@@ -1,0 +1,9 @@
+car_captured_timestamp: '2024-10-11T10:07:18+00:00'
+car_type: electric
+primary_engine_range:
+  current_fuel_level_in_percent: null
+  current_soc_in_percent: 75
+  engine_type: electric
+  remaining_range_in_km: 248
+secondary_engine_range: null
+total_range_in_km: 248
