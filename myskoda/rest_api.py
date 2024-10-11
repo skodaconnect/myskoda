@@ -11,8 +11,9 @@ from .const import BASE_URL_SKODA, REQUEST_TIMEOUT_IN_SECONDS
 from .models.air_conditioning import AirConditioning
 from .models.charging import ChargeMode, Charging
 from .models.driving_range import DrivingRange
+from .models.garage import Garage
 from .models.health import Health
-from .models.info import Garage, Info
+from .models.info import Info
 from .models.maintenance import Maintenance
 from .models.position import Positions, PositionType
 from .models.status import Status
@@ -131,13 +132,13 @@ class RestApi:
 
     async def list_vehicles(self) -> list[str]:
         """List all vehicles by their vins."""
-        response = await self._make_request(
-            method="GET",
+        garage: Garage = await self._make_get_request(
             url="/v2/garage?connectivityGenerations=MOD1&connectivityGenerations=MOD2&connectivityGenerations=MOD3&connectivityGenerations=MOD4",
             deserialize=Garage.from_json,
         )
-        json = await response.json()
-        return [vehicle["vin"] for vehicle in json["vehicles"]]
+        if garage.vehicles is None:
+            return []
+        return [vehicle.vin for vehicle in garage.vehicles]
 
     async def _headers(self) -> dict[str, str]:
         return {"authorization": f"Bearer {await self.authorization.get_access_token()}"}
