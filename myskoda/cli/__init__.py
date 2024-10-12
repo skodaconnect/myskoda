@@ -14,6 +14,7 @@ from aiohttp import ClientSession
 from asyncclick.core import Context
 
 from myskoda import TRACE_CONFIG, MySkoda
+from myskoda.cli.gen_fixtures import gen_fixtures
 from myskoda.cli.mqtt import subscribe, wait_for_operation
 from myskoda.cli.operations import (
     set_charge_limit,
@@ -145,6 +146,7 @@ cli.add_command(set_reduced_current_limit)
 cli.add_command(wakeup)
 cli.add_command(wait_for_operation)
 cli.add_command(subscribe)
+cli.add_command(gen_fixtures)
 
 if __name__ == "__main__":
     cli()

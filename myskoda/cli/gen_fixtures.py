@@ -1,43 +1,34 @@
 """Generate a set of test fixtures from your garage."""
 
 import json
-from logging import DEBUG
 from pathlib import Path
 from typing import Any
 
 import asyncclick as click
-import coloredlogs
 import yaml
-from aiohttp import ClientSession
 from aioresponses import aioresponses
+from asyncclick.core import Context
 
 from myskoda.anonymize import anonymize_garage_entry
 from myskoda.const import BASE_URL_SKODA
 from myskoda.models.garage import GarageEntry
 from myskoda.models.info import CapabilityId
-from myskoda.myskoda import TRACE_CONFIG, MySkoda
+from myskoda.myskoda import MySkoda
 
-FIXTURES_DIR = Path(__file__).parent.parent / "tests" / "fixtures" / "gen"
+FIXTURES_DIR = Path(__file__).parent.parent.parent / "tests" / "fixtures" / "gen"
 
 
 @click.command()
-@click.option("username", "--user", help="Username used for login.", required=True)
-@click.option("password", "--password", help="Password used for login.", required=True)
 @click.option("vin", "--vin", help="Generate fixtures for this vin only.")
 @click.option("name", "--name", help="Short name describing the vehicle's state.", required=True)
 @click.option("description", "--description", help="A longer description.", required=True)
-async def cli(username: str, password: str, vin: str | None, name: str, description: str) -> None:
+@click.pass_context
+async def gen_fixtures(ctx: Context, vin: str | None, name: str, description: str) -> None:
     """Interact with the MySkoda API."""
-    coloredlogs.install(level=DEBUG)
-
-    session = ClientSession(trace_configs=[TRACE_CONFIG])
-    myskoda = MySkoda(session, mqtt_enabled=False)
-    await myskoda.connect(username, password)
-
+    myskoda: MySkoda = ctx.obj["myskoda"]
     garage = await myskoda.get_garage()
 
     if garage.vehicles is None:
-        await session.close()
         return
 
     for vehicle in garage.vehicles:
@@ -59,8 +50,6 @@ async def cli(username: str, password: str, vin: str | None, name: str, descript
         )
 
         await generate_fixtures(vehicle, myskoda, path)
-
-    await session.close()
 
 
 async def generate_fixture(url: str, raw: dict, data: Any, path: Path, vin: str) -> None:  # noqa: ANN401
@@ -153,7 +142,3 @@ async def generate_fixtures(vehicle: GarageEntry, myskoda: MySkoda, path: Path) 
             path=path / "health",
             vin=vehicle.vin,
         )
-
-
-if __name__ == "__main__":
-    cli()
