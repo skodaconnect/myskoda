@@ -1,6 +1,6 @@
 """Models for fixtures."""
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from datetime import datetime
 from enum import StrEnum
 
@@ -10,31 +10,40 @@ from mashumaro.mixins.yaml import DataClassYAMLMixin
 from myskoda.models.info import Capability, Info
 
 
+@dataclass
+class GetEndpointResult:
+    url: str
+    raw: str
+    result: dict
+
+
+class FixtureReportType(StrEnum):
+    GET = "get"
+
+
 class Endpoint(StrEnum):
-    LIST_VEHICLES = "LIST_VEHICLES"
-    INFO = "INFO"
-    STATUS = "STATUS"
-    AIR_CONDITIONING = "AIR_CONDITIONING"
-    POSITIONS = "POSITIONS"
-    HEALTH = "HEALTH"
-    CHARGING = "CHARGING"
-    MAINTENANCE = "MAINTENANCE"
-    DRIVING_RANGE = "DRIVING_RANGE"
-    USER = "USER"
-    TRIP_STATISTICS = "TRIP_STATISTICS"
-    GARAGE = "GARAGE"
-    ALL = "ALL"
+    INFO = "info"
+    STATUS = "status"
+    AIR_CONDITIONING = "air_conditioning"
+    POSITIONS = "positions"
+    HEALTH = "health"
+    CHARGING = "charging"
+    MAINTENANCE = "maintenance"
+    DRIVING_RANGE = "driving_range"
+    TRIP_STATISTICS = "trip_statistics"
+    ALL = "all"
 
 
 @dataclass
-class FixtureGet(DataClassYAMLMixin):
+class FixtureReportGet(DataClassYAMLMixin):
+    type: FixtureReportType
     vehicle_id: int
-    raw: str
     success: bool
-    error: str
-    url: str
-    result: dict
     endpoint: Endpoint
+    raw: str | None = field(default=None)
+    url: str | None = field(default=None)
+    result: dict | None = field(default=None)
+    error: str | None = field(default=None)
 
 
 @dataclass
@@ -71,4 +80,4 @@ class Fixture(DataClassORJSONMixin, DataClassYAMLMixin):
     description: str | None
     generation_time: datetime
     vehicles: list[FixtureVehicle]
-    get: list[FixtureGet] | None
+    reports: list[FixtureReportGet] | None

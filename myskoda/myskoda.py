@@ -6,11 +6,23 @@ This class provides all methods to operate on the API and MQTT broker.
 import logging
 from asyncio import gather
 from collections.abc import Awaitable, Callable
+from datetime import UTC, datetime
 from ssl import SSLContext
+from traceback import format_exc
 from types import SimpleNamespace
 
 from aiohttp import ClientSession, TraceConfig, TraceRequestEndParams
 
+from myskoda.anonymize import VIN
+from myskoda.models.fixtures import (
+    Endpoint,
+    Fixture,
+    FixtureReportGet,
+    FixtureReportType,
+    FixtureVehicle,
+    GetEndpointResult,
+    create_fixture_vehicle,
+)
 from myskoda.models.garage import Garage
 
 from .auth.authorization import Authorization
@@ -186,65 +198,83 @@ class MySkoda:
         """Retrieve the main access token for the IDK session."""
         return await self.rest_api.authorization.get_access_token()
 
-    async def get_info(self, vin: str, anonymize: bool = False) -> Info:
+    async def get_info(self, vin: str, anonymize: bool = False, raw: str | None = None) -> Info:
         """Retrieve the basic vehicle information for the specified vehicle."""
-        return self._deserialize(await self.rest_api.get_info_raw(vin, anonymize), Info.from_json)
+        if raw is None:
+            raw = await self.rest_api.get_info_raw(vin, anonymize)
+        return self._deserialize(raw, Info.from_json)
 
-    async def get_charging(self, vin: str, anonymize: bool = False) -> Charging:
+    async def get_charging(
+        self, vin: str, anonymize: bool = False, raw: str | None = None
+    ) -> Charging:
         """Retrieve information related to charging for the specified vehicle."""
-        return self._deserialize(
-            await self.rest_api.get_charging_raw(vin, anonymize), Charging.from_json
-        )
+        if raw is None:
+            raw = await self.rest_api.get_charging_raw(vin, anonymize)
+        return self._deserialize(raw, Charging.from_json)
 
-    async def get_status(self, vin: str, anonymize: bool = False) -> Status:
+    async def get_status(self, vin: str, anonymize: bool = False, raw: str | None = None) -> Status:
         """Retrieve the current status for the specified vehicle."""
-        return self._deserialize(
-            await self.rest_api.get_status_raw(vin, anonymize), Status.from_json
-        )
+        if raw is None:
+            raw = await self.rest_api.get_status_raw(vin, anonymize)
+        return self._deserialize(raw, Status.from_json)
 
-    async def get_air_conditioning(self, vin: str, anonymize: bool = False) -> AirConditioning:
+    async def get_air_conditioning(
+        self, vin: str, anonymize: bool = False, raw: str | None = None
+    ) -> AirConditioning:
         """Retrieve the current air conditioning status for the specified vehicle."""
-        return self._deserialize(
-            await self.rest_api.get_air_conditioning_raw(vin, anonymize), AirConditioning.from_json
-        )
+        if raw is None:
+            raw = await self.rest_api.get_air_conditioning_raw(vin, anonymize)
+        return self._deserialize(raw, AirConditioning.from_json)
 
-    async def get_positions(self, vin: str, anonymize: bool = False) -> Positions:
+    async def get_positions(
+        self, vin: str, anonymize: bool = False, raw: str | None = None
+    ) -> Positions:
         """Retrieve the current position for the specified vehicle."""
-        return self._deserialize(
-            await self.rest_api.get_positions_raw(vin, anonymize), Positions.from_json
-        )
+        if raw is None:
+            raw = await self.rest_api.get_positions_raw(vin, anonymize)
+        return self._deserialize(raw, Positions.from_json)
 
-    async def get_driving_range(self, vin: str, anonymize: bool = False) -> DrivingRange:
+    async def get_driving_range(
+        self, vin: str, anonymize: bool = False, raw: str | None = None
+    ) -> DrivingRange:
         """Retrieve estimated driving range for combustion vehicles."""
-        return self._deserialize(
-            await self.rest_api.get_driving_range_raw(vin, anonymize), DrivingRange.from_json
-        )
+        if raw is None:
+            raw = await self.rest_api.get_driving_range_raw(vin, anonymize)
+        return self._deserialize(raw, DrivingRange.from_json)
 
-    async def get_trip_statistics(self, vin: str, anonymize: bool = False) -> TripStatistics:
+    async def get_trip_statistics(
+        self, vin: str, anonymize: bool = False, raw: str | None = None
+    ) -> TripStatistics:
         """Retrieve statistics about past trips."""
-        return self._deserialize(
-            await self.rest_api.get_trip_statistics_raw(vin, anonymize), TripStatistics.from_json
-        )
+        if raw is None:
+            raw = await self.rest_api.get_trip_statistics_raw(vin, anonymize)
+        return self._deserialize(raw, TripStatistics.from_json)
 
-    async def get_maintenance(self, vin: str, anonymize: bool = False) -> Maintenance:
+    async def get_maintenance(
+        self, vin: str, anonymize: bool = False, raw: str | None = None
+    ) -> Maintenance:
         """Retrieve maintenance report."""
-        return self._deserialize(
-            await self.rest_api.get_maintenance_raw(vin, anonymize), Maintenance.from_json
-        )
+        if raw is None:
+            raw = await self.rest_api.get_maintenance_raw(vin, anonymize)
+        return self._deserialize(raw, Maintenance.from_json)
 
-    async def get_health(self, vin: str, anonymize: bool = False) -> Health:
+    async def get_health(self, vin: str, anonymize: bool = False, raw: str | None = None) -> Health:
         """Retrieve health information for the specified vehicle."""
-        return self._deserialize(
-            await self.rest_api.get_health_raw(vin, anonymize), Health.from_json
-        )
+        if raw is None:
+            raw = await self.rest_api.get_health_raw(vin, anonymize)
+        return self._deserialize(raw, Health.from_json)
 
-    async def get_user(self, anonymize: bool = False) -> User:
+    async def get_user(self, anonymize: bool = False, raw: str | None = None) -> User:
         """Retrieve user information about logged in user."""
-        return self._deserialize(await self.rest_api.get_user_raw(anonymize), User.from_json)
+        if raw is None:
+            raw = await self.rest_api.get_user_raw(anonymize)
+        return self._deserialize(raw, User.from_json)
 
-    async def get_garage(self, anonymize: bool = False) -> Garage:
+    async def get_garage(self, anonymize: bool = False, raw: str | None = None) -> Garage:
         """Fetch the garage (list of vehicles with limited info)."""
-        return self._deserialize(await self.rest_api.get_garage_raw(anonymize), Garage.from_json)
+        if raw is None:
+            raw = await self.rest_api.get_garage_raw(anonymize)
+        return self._deserialize(raw, Garage.from_json)
 
     async def list_vehicle_vins(self) -> list[str]:
         """List all vehicles by their vins."""
@@ -295,6 +325,109 @@ class MySkoda:
         else:
             return data
 
+    async def generate_fixture_report(
+        self, vin: str, vehicle: FixtureVehicle, endpoint: Endpoint
+    ) -> FixtureReportGet:
+        """Generate a fixture report for the specified endpoint and vehicle."""
+        try:
+            result = await self._get_endpoint_result(vin, endpoint)
+        except Exception:  # noqa: BLE001
+            return FixtureReportGet(
+                type=FixtureReportType.GET,
+                vehicle_id=vehicle.id,
+                success=False,
+                endpoint=endpoint,
+                error=format_exc(),
+            )
+        else:
+            return FixtureReportGet(
+                type=FixtureReportType.GET,
+                vehicle_id=vehicle.id,
+                raw=result.raw,
+                success=True,
+                url=result.url,
+                endpoint=endpoint,
+                result=result.result,
+            )
+
+    async def _get_endpoint_result(self, vin: str, endpoint: Endpoint) -> GetEndpointResult:
+        url = ""
+        raw = ""
+        result = {}
+
+        if endpoint == Endpoint.INFO:
+            url = self.rest_api.get_info_url(vin).replace(vin, VIN)
+            raw = await self.rest_api.get_info_raw(vin, anonymize=True)
+            result = (await self.get_info(vin, anonymize=True, raw=raw)).to_dict()
+        elif endpoint == Endpoint.STATUS:
+            url = self.rest_api.get_status_url(vin).replace(vin, VIN)
+            raw = await self.rest_api.get_status_raw(vin, anonymize=True)
+            result = (await self.get_status(vin, anonymize=True, raw=raw)).to_dict()
+        elif endpoint == Endpoint.AIR_CONDITIONING:
+            url = self.rest_api.get_air_conditioning_url(vin).replace(vin, VIN)
+            raw = await self.rest_api.get_air_conditioning_raw(vin, anonymize=True)
+            result = (await self.get_air_conditioning(vin, anonymize=True, raw=raw)).to_dict()
+        elif endpoint == Endpoint.POSITIONS:
+            url = self.rest_api.get_positions_url(vin).replace(vin, VIN)
+            raw = await self.rest_api.get_positions_raw(vin, anonymize=True)
+            result = (await self.get_positions(vin, anonymize=True, raw=raw)).to_dict()
+        elif endpoint == Endpoint.HEALTH:
+            url = self.rest_api.get_health_url(vin).replace(vin, VIN)
+            raw = await self.rest_api.get_health_raw(vin, anonymize=True)
+            result = (await self.get_health(vin, anonymize=True, raw=raw)).to_dict()
+        elif endpoint == Endpoint.CHARGING:
+            url = self.rest_api.get_charging_url(vin).replace(vin, VIN)
+            raw = await self.rest_api.get_charging_raw(vin, anonymize=True)
+            result = (await self.get_charging(vin, anonymize=True, raw=raw)).to_dict()
+        elif endpoint == Endpoint.MAINTENANCE:
+            url = self.rest_api.get_maintenance_url(vin).replace(vin, VIN)
+            raw = await self.rest_api.get_maintenance_raw(vin, anonymize=True)
+            result = (await self.get_maintenance(vin, anonymize=True, raw=raw)).to_dict()
+        elif endpoint == Endpoint.DRIVING_RANGE:
+            url = self.rest_api.get_driving_range_url(vin).replace(vin, VIN)
+            raw = await self.rest_api.get_driving_range_raw(vin, anonymize=True)
+            result = (await self.get_driving_range(vin, anonymize=True, raw=raw)).to_dict()
+        elif endpoint == Endpoint.TRIP_STATISTICS:
+            url = self.rest_api.get_trip_statistics_url(vin).replace(vin, VIN)
+            raw = await self.rest_api.get_trip_statistics_raw(vin, anonymize=True)
+            result = (await self.get_trip_statistics(vin, anonymize=True, raw=raw)).to_dict()
+        else:
+            raise UnsupportedEndpointError
+
+        return GetEndpointResult(url=url, raw=raw, result=result)
+
+    async def generate_get_fixture(
+        self, name: str, description: str, vins: list[str], endpoint: Endpoint
+    ) -> Fixture:
+        """Generate a fixture for a get request."""
+        vehicles = [
+            (vin, create_fixture_vehicle(i, await self.get_info(vin))) for i, vin in enumerate(vins)
+        ]
+
+        endpoints = []
+        if endpoint != Endpoint.ALL:
+            endpoints = [endpoint]
+        else:
+            endpoints = filter(lambda ep: ep != Endpoint.ALL, Endpoint)
+
+        reports = [
+            await self.generate_fixture_report(vin, vehicle, endpoint)
+            for (vin, vehicle) in vehicles
+            for endpoint in endpoints
+        ]
+
+        return Fixture(
+            name=name,
+            description=description,
+            generation_time=datetime.now(tz=UTC),
+            vehicles=[vehicle for (_, vehicle) in vehicles],
+            reports=reports,
+        )
+
 
 class MqttDisabledError(Exception):
     """MQTT was not enabled."""
+
+
+class UnsupportedEndpointError(Exception):
+    """Endpoint not implemented."""
