@@ -182,49 +182,49 @@ class MySkoda:
         """Retrieve the main access token for the IDK session."""
         return await self.rest_api.authorization.get_access_token()
 
-    async def get_info(self, vin: str) -> Info:
+    async def get_info(self, vin: str, anonymize: bool = False) -> Info:
         """Retrieve the basic vehicle information for the specified vehicle."""
-        return await self.rest_api.get_info(vin)
+        return await self.rest_api.get_info(vin, anonymize)
 
-    async def get_charging(self, vin: str) -> Charging:
+    async def get_charging(self, vin: str, anonymize: bool = False) -> Charging:
         """Retrieve information related to charging for the specified vehicle."""
-        return await self.rest_api.get_charging(vin)
+        return await self.rest_api.get_charging(vin, anonymize)
 
-    async def get_status(self, vin: str) -> Status:
+    async def get_status(self, vin: str, anonymize: bool = False) -> Status:
         """Retrieve the current status for the specified vehicle."""
-        return await self.rest_api.get_status(vin)
+        return await self.rest_api.get_status(vin, anonymize)
 
-    async def get_air_conditioning(self, vin: str) -> AirConditioning:
+    async def get_air_conditioning(self, vin: str, anonymize: bool = False) -> AirConditioning:
         """Retrieve the current air conditioning status for the specified vehicle."""
-        return await self.rest_api.get_air_conditioning(vin)
+        return await self.rest_api.get_air_conditioning(vin, anonymize)
 
-    async def get_positions(self, vin: str) -> Positions:
+    async def get_positions(self, vin: str, anonymize: bool = False) -> Positions:
         """Retrieve the current position for the specified vehicle."""
-        return await self.rest_api.get_positions(vin)
+        return await self.rest_api.get_positions(vin, anonymize)
 
-    async def get_driving_range(self, vin: str) -> DrivingRange:
+    async def get_driving_range(self, vin: str, anonymize: bool = False) -> DrivingRange:
         """Retrieve estimated driving range for combustion vehicles."""
-        return await self.rest_api.get_driving_range(vin)
+        return await self.rest_api.get_driving_range(vin, anonymize)
 
-    async def get_trip_statistics(self, vin: str) -> TripStatistics:
+    async def get_trip_statistics(self, vin: str, anonymize: bool = False) -> TripStatistics:
         """Retrieve statistics about past trips."""
-        return await self.rest_api.get_trip_statistics(vin)
+        return await self.rest_api.get_trip_statistics(vin, anonymize)
 
-    async def get_maintenance(self, vin: str) -> Maintenance:
+    async def get_maintenance(self, vin: str, anonymize: bool = False) -> Maintenance:
         """Retrieve maintenance report."""
-        return await self.rest_api.get_maintenance(vin)
+        return await self.rest_api.get_maintenance(vin, anonymize)
 
-    async def get_health(self, vin: str) -> Health:
+    async def get_health(self, vin: str, anonymize: bool = False) -> Health:
         """Retrieve health information for the specified vehicle."""
-        return await self.rest_api.get_health(vin)
+        return await self.rest_api.get_health(vin, anonymize)
 
-    async def get_user(self) -> User:
+    async def get_user(self, anonymize: bool = False) -> User:
         """Retrieve user information about logged in user."""
-        return await self.rest_api.get_user()
+        return await self.rest_api.get_user(anonymize)
 
-    async def get_garage(self) -> Garage:
+    async def get_garage(self, anonymize: bool = False) -> Garage:
         """Retrieve the garage (list of vehicles with limited information)."""
-        return await self.rest_api.get_garage()
+        return await self.rest_api.get_garage(anonymize)
 
     async def list_vehicle_vins(self) -> list[str]:
         """List all vehicles by their vins."""
