@@ -33,8 +33,6 @@ from .event import (
     EventType,
 )
 from .models.operation_request import OperationName, OperationRequest, OperationStatus
-from .models.user import User
-from .rest_api import RestApi
 
 _LOGGER = logging.getLogger(__name__)
 TOPIC_RE = re.compile("^(.*?)/(.*?)/(.*?)/(.*?)$")
@@ -57,8 +55,7 @@ connect_lock = Lock()
 
 
 class Mqtt:
-    api: RestApi
-    user: User | None
+    user_id: str | None
     vehicles: list[str] | None
     client: AsyncioPahoClient
     _callbacks: list[Callable[[Event], None | Awaitable[None]]]
@@ -67,22 +64,19 @@ class Mqtt:
     should_reconnect: bool
     is_connected: bool
     authorization: Authorization
-    api: RestApi
 
     def __init__(  # noqa: D107
         self,
         authorization: Authorization,
-        api: RestApi,
         ssl_context: ssl.SSLContext | None = None,
     ) -> None:
         self.authorization = authorization
-        self.api = api
         self._callbacks = []
         self._operation_listeners = []
         self._connected_listeners = []
         self.ssl_context = ssl_context
         self.is_connected = False
-        self.user = None
+        self.user_id = None
         self.vehicles = None
 
     def subscribe(self, callback: Callable[[Event], None | Awaitable[None]]) -> None:
@@ -100,13 +94,6 @@ class Mqtt:
 
             _LOGGER.debug("Connecting to MQTT on %s:%d...", MQTT_BROKER_HOST, MQTT_BROKER_PORT)
 
-            if not self.user:
-                self.user = await self.api.get_user()
-                _LOGGER.debug("Using user id %s...", self.user.id)
-
-            if not self.vehicles:
-                self.vehicles = await self.api.list_vehicles()
-
             self.should_reconnect = True
 
             self.client = AsyncioPahoClient()
@@ -121,8 +108,8 @@ class Mqtt:
                 self.client.tls_set_context(context=ssl.create_default_context())
 
             self.client.username_pw_set(
-                self.user.id,
-                await self.api.authorization.get_access_token(),
+                self.user_id,
+                await self.authorization.get_access_token(),
             )
             self.client.connect_async(MQTT_BROKER_HOST, MQTT_BROKER_PORT, MQTT_KEEPALIVE)
 
@@ -132,8 +119,10 @@ class Mqtt:
         else:
             return True
 
-    async def connect(self) -> None:
+    async def connect(self, user_id: str, vehicles: list[str]) -> None:
         """Connect to the MQTT broker and listen for messages."""
+        self.user_id = user_id
+        self.vehicles = vehicles
         async with connect_lock:
             while not await self._perform_connect():  # noqa: ASYNC110
                 await sleep(MQTT_RECONNECT_DELAY)
@@ -145,7 +134,10 @@ class Mqtt:
         if not self.should_reconnect:
             return
 
-        task = create_task(cast(Any, self.connect()))
+        if not self.user_id or not self.vehicles:
+            raise NotConnectedError
+
+        task = create_task(cast(Any, self.connect(self.user_id, self.vehicles)))
         background_tasks.add(task)
         task.add_done_callback(background_tasks.discard)
 
@@ -207,11 +199,11 @@ class Mqtt:
         self.is_connected = True
 
         _LOGGER.debug("MQTT Connected.")
-        if not self.user or not self.vehicles:
+        if not self.user_id or not self.vehicles:
             _LOGGER.error("Reached on_connect, but user and vehicles not loaded")
             return
 
-        user_id = self.user.id
+        user_id = self.user_id
 
         for vin in self.vehicles:
             for topic in MQTT_OPERATION_TOPICS:
@@ -335,4 +327,8 @@ class OperationFailedError(Exception):
 
 
 class FailedToConnectError(Exception):
+    pass
+
+
+class NotConnectedError(Exception):
     pass

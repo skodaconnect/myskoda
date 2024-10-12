@@ -72,14 +72,16 @@ class MySkoda:
         self.rest_api = RestApi(self.session, self.authorization)
         self.ssl_context = ssl_context
         if mqtt_enabled:
-            self.mqtt = Mqtt(self.authorization, self.rest_api, ssl_context=self.ssl_context)
+            self.mqtt = Mqtt(self.authorization, ssl_context=self.ssl_context)
 
     async def enable_mqtt(self) -> None:
         """If MQTT was not enabled when initializing MySkoda, enable it manually and connect."""
         if self.mqtt is not None:
             return
-        self.mqtt = Mqtt(self.authorization, self.rest_api, ssl_context=self.ssl_context)
-        await self.mqtt.connect()
+        self.mqtt = Mqtt(self.authorization, ssl_context=self.ssl_context)
+        user = await self.get_user()
+        vehicles = await self.list_vehicle_vins()
+        await self.mqtt.connect(user.id, vehicles)
 
     async def _wait_for_operation(self, operation: OperationName) -> None:
         if self.mqtt is None:
@@ -92,7 +94,9 @@ class MySkoda:
         _LOGGER.debug("IDK Authorization was successful.")
 
         if self.mqtt:
-            await self.mqtt.connect()
+            user = await self.get_user()
+            vehicles = await self.list_vehicle_vins()
+            await self.mqtt.connect(user.id, vehicles)
         _LOGGER.debug("Myskoda ready.")
 
     def subscribe(self, callback: Callable[[Event], None | Awaitable[None]]) -> None:
@@ -121,13 +125,13 @@ class MySkoda:
     async def honk_flash(self, vin: str, honk: bool = False) -> None:
         """Honk and/or flash."""
         future = self._wait_for_operation(OperationName.START_HONK)
-        await self.rest_api.honk_flash(vin, honk)
+        await self.rest_api.honk_flash(vin, (await self.get_positions(vin)).positions, honk)
         await future
 
     async def wakeup(self, vin: str) -> None:
         """Wake the vehicle up. Can be called maximum three times a day."""
         future = self._wait_for_operation(OperationName.WAKEUP)
-        await self.rest_api.honk_flash(vin)
+        await self.rest_api.wakeup(vin)
         await future
 
     async def set_reduced_current_limit(self, vin: str, reduced: bool) -> None:
@@ -184,51 +188,70 @@ class MySkoda:
 
     async def get_info(self, vin: str, anonymize: bool = False) -> Info:
         """Retrieve the basic vehicle information for the specified vehicle."""
-        return await self.rest_api.get_info(vin, anonymize)
+        return self._deserialize(await self.rest_api.get_info_raw(vin, anonymize), Info.from_json)
 
     async def get_charging(self, vin: str, anonymize: bool = False) -> Charging:
         """Retrieve information related to charging for the specified vehicle."""
-        return await self.rest_api.get_charging(vin, anonymize)
+        return self._deserialize(
+            await self.rest_api.get_charging_raw(vin, anonymize), Charging.from_json
+        )
 
     async def get_status(self, vin: str, anonymize: bool = False) -> Status:
         """Retrieve the current status for the specified vehicle."""
-        return await self.rest_api.get_status(vin, anonymize)
+        return self._deserialize(
+            await self.rest_api.get_status_raw(vin, anonymize), Status.from_json
+        )
 
     async def get_air_conditioning(self, vin: str, anonymize: bool = False) -> AirConditioning:
         """Retrieve the current air conditioning status for the specified vehicle."""
-        return await self.rest_api.get_air_conditioning(vin, anonymize)
+        return self._deserialize(
+            await self.rest_api.get_air_conditioning_raw(vin, anonymize), AirConditioning.from_json
+        )
 
     async def get_positions(self, vin: str, anonymize: bool = False) -> Positions:
         """Retrieve the current position for the specified vehicle."""
-        return await self.rest_api.get_positions(vin, anonymize)
+        return self._deserialize(
+            await self.rest_api.get_positions_raw(vin, anonymize), Positions.from_json
+        )
 
     async def get_driving_range(self, vin: str, anonymize: bool = False) -> DrivingRange:
         """Retrieve estimated driving range for combustion vehicles."""
-        return await self.rest_api.get_driving_range(vin, anonymize)
+        return self._deserialize(
+            await self.rest_api.get_driving_range_raw(vin, anonymize), DrivingRange.from_json
+        )
 
     async def get_trip_statistics(self, vin: str, anonymize: bool = False) -> TripStatistics:
         """Retrieve statistics about past trips."""
-        return await self.rest_api.get_trip_statistics(vin, anonymize)
+        return self._deserialize(
+            await self.rest_api.get_trip_statistics_raw(vin, anonymize), TripStatistics.from_json
+        )
 
     async def get_maintenance(self, vin: str, anonymize: bool = False) -> Maintenance:
         """Retrieve maintenance report."""
-        return await self.rest_api.get_maintenance(vin, anonymize)
+        return self._deserialize(
+            await self.rest_api.get_maintenance_raw(vin, anonymize), Maintenance.from_json
+        )
 
     async def get_health(self, vin: str, anonymize: bool = False) -> Health:
         """Retrieve health information for the specified vehicle."""
-        return await self.rest_api.get_health(vin, anonymize)
+        return self._deserialize(
+            await self.rest_api.get_health_raw(vin, anonymize), Health.from_json
+        )
 
     async def get_user(self, anonymize: bool = False) -> User:
         """Retrieve user information about logged in user."""
-        return await self.rest_api.get_user(anonymize)
+        return self._deserialize(await self.rest_api.get_user_raw(anonymize), User.from_json)
 
     async def get_garage(self, anonymize: bool = False) -> Garage:
-        """Retrieve the garage (list of vehicles with limited information)."""
-        return await self.rest_api.get_garage(anonymize)
+        """Fetch the garage (list of vehicles with limited info)."""
+        return self._deserialize(await self.rest_api.get_garage_raw(anonymize), Garage.from_json)
 
     async def list_vehicle_vins(self) -> list[str]:
         """List all vehicles by their vins."""
-        return await self.rest_api.list_vehicles()
+        garage = await self.get_garage()
+        if garage.vehicles is None:
+            return []
+        return [vehicle.vin for vehicle in garage.vehicles]
 
     async def get_vehicle(self, vin: str) -> Vehicle:
         """Load a full vehicle based on its capabilities."""
@@ -262,6 +285,15 @@ class MySkoda:
         """Load all vehicles based on their capabilities."""
         vins = await self.list_vehicle_vins()
         return await gather(*(self.get_vehicle(vin) for vin in vins))
+
+    def _deserialize[T](self, text: str, deserialize: Callable[[str], T]) -> T:
+        try:
+            data = deserialize(text)
+        except Exception:
+            _LOGGER.exception("Failed to deserialize data: %s", text)
+            raise
+        else:
+            return data
 
 
 class MqttDisabledError(Exception):

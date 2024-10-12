@@ -20,20 +20,11 @@ from myskoda.anonymize import (
     anonymize_trip_statistics,
     anonymize_user,
 )
+from myskoda.models.charging import ChargeMode
+from myskoda.models.position import Position, PositionType
 
 from .auth.authorization import Authorization
 from .const import BASE_URL_SKODA, REQUEST_TIMEOUT_IN_SECONDS
-from .models.air_conditioning import AirConditioning
-from .models.charging import ChargeMode, Charging
-from .models.driving_range import DrivingRange
-from .models.garage import Garage
-from .models.health import Health
-from .models.info import Info
-from .models.maintenance import Maintenance
-from .models.position import Positions, PositionType
-from .models.status import Status
-from .models.trip_statistics import TripStatistics
-from .models.user import User
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -80,15 +71,6 @@ class RestApi:
             _LOGGER.exception("Invalid status for %s request to %s: %d", method, url, err.status)
             raise
 
-    def _deserialize[T](self, text: str, deserialize: Callable[[str], T]) -> T:
-        try:
-            data = deserialize(text)
-        except Exception:
-            _LOGGER.exception("Failed to deserialize data: %s", text)
-            raise
-        else:
-            return data
-
     async def _make_get_request[T](self, url: str) -> str:
         return await self._make_request(url=url, method="GET")
 
@@ -113,10 +95,6 @@ class RestApi:
             anonymization_fn=anonymize_info,
         )
 
-    async def get_info(self, vin: str, anonymize: bool = False) -> Info:
-        """Retrieve the basic vehicle information for the specified vehicle."""
-        return self._deserialize(await self.get_info_raw(vin, anonymize), Info.from_json)
-
     def get_charging_url(self, vin: str) -> str:
         """Return the URL for fetching vehicle charging data."""
         return f"/v1/charging/{vin}"
@@ -131,10 +109,6 @@ class RestApi:
             anonymize=anonymize,
             anonymization_fn=anonymize_charging,
         )
-
-    async def get_charging(self, vin: str, anonymize: bool = False) -> Charging:
-        """Retrieve information related to charging for the specified vehicle."""
-        return self._deserialize(await self.get_charging_raw(vin, anonymize), Charging.from_json)
 
     def get_status_url(self, vin: str) -> str:
         """Return the URL for fetching vehicle status."""
@@ -151,10 +125,6 @@ class RestApi:
             anonymization_fn=anonymize_status,
         )
 
-    async def get_status(self, vin: str, anonymize: bool = False) -> Status:
-        """Retrieve the current status for the specified vehicle."""
-        return self._deserialize(await self.get_status_raw(vin, anonymize), Status.from_json)
-
     def get_air_conditioning_url(self, vin: str) -> str:
         """Return the URL for fetching vehicle air conditioning status."""
         return f"/v2/air-conditioning/{vin}"
@@ -168,12 +138,6 @@ class RestApi:
             data=await self._make_get_request(self.get_air_conditioning_url(vin)),
             anonymize=anonymize,
             anonymization_fn=anonymize_air_conditioning,
-        )
-
-    async def get_air_conditioning(self, vin: str, anonymize: bool = False) -> AirConditioning:
-        """Retrieve the current air conditioning status for the specified vehicle."""
-        return self._deserialize(
-            await self.get_air_conditioning_raw(vin, anonymize), AirConditioning.from_json
         )
 
     def get_positions_url(self, vin: str) -> str:
@@ -191,10 +155,6 @@ class RestApi:
             anonymization_fn=anonymize_positions,
         )
 
-    async def get_positions(self, vin: str, anonymize: bool = False) -> Positions:
-        """Retrieve the current position for the specified vehicle."""
-        return self._deserialize(await self.get_positions_raw(vin, anonymize), Positions.from_json)
-
     def get_driving_range_url(self, vin: str) -> str:
         """Return the URL for fetching vehicle driving range."""
         return f"/v2/vehicle-status/{vin}/driving-range"
@@ -208,12 +168,6 @@ class RestApi:
             data=await self._make_get_request(self.get_driving_range_url(vin)),
             anonymize=anonymize,
             anonymization_fn=anonymize_driving_range,
-        )
-
-    async def get_driving_range(self, vin: str, anonymize: bool = False) -> DrivingRange:
-        """Retrieve estimated driving range for combustion vehicles."""
-        return self._deserialize(
-            await self.get_driving_range_raw(vin, anonymize), DrivingRange.from_json
         )
 
     def get_trip_statistics_url(self, vin: str) -> str:
@@ -231,12 +185,6 @@ class RestApi:
             anonymization_fn=anonymize_trip_statistics,
         )
 
-    async def get_trip_statistics(self, vin: str, anonymize: bool = False) -> TripStatistics:
-        """Retrieve statistics about past trips."""
-        return self._deserialize(
-            await self.get_trip_statistics_raw(vin, anonymize), TripStatistics.from_json
-        )
-
     def get_maintenance_url(self, vin: str) -> str:
         """Return the URL for fetching vehicle maintenance report."""
         return f"/v3/vehicle-maintenance/vehicles/{vin}"
@@ -250,12 +198,6 @@ class RestApi:
             data=await self._make_get_request(self.get_maintenance_url(vin)),
             anonymize=anonymize,
             anonymization_fn=anonymize_maintenance,
-        )
-
-    async def get_maintenance(self, vin: str, anonymize: bool = False) -> Maintenance:
-        """Retrieve maintenance report."""
-        return self._deserialize(
-            await self.get_maintenance_raw(vin, anonymize), Maintenance.from_json
         )
 
     def get_health_url(self, vin: str) -> str:
@@ -273,10 +215,6 @@ class RestApi:
             anonymization_fn=anonymize_health,
         )
 
-    async def get_health(self, vin: str, anonymize: bool = False) -> Health:
-        """Retrieve health information for the specified vehicle."""
-        return self._deserialize(await self.get_health_raw(vin, anonymize), Health.from_json)
-
     def get_user_url(self) -> str:
         """Return the URL for fetching the user."""
         return "/v1/users"
@@ -292,10 +230,6 @@ class RestApi:
             anonymization_fn=anonymize_user,
         )
 
-    async def get_user(self, anonymize: bool = False) -> User:
-        """Retrieve user information about logged in user."""
-        return self._deserialize(await self.get_user_raw(anonymize), User.from_json)
-
     def get_garage_url(self) -> str:
         """Return the URL for fetching the garage."""
         return "/v2/garage?connectivityGenerations=MOD1&connectivityGenerations=MOD2&connectivityGenerations=MOD3&connectivityGenerations=MOD4"  # noqa: E501
@@ -310,17 +244,6 @@ class RestApi:
             anonymize=anonymize,
             anonymization_fn=anonymize_garage,
         )
-
-    async def get_garage(self, anonymize: bool = False) -> Garage:
-        """Fetch the garage (list of vehicles with limited info)."""
-        return self._deserialize(await self.get_garage_raw(anonymize), Garage.from_json)
-
-    async def list_vehicles(self) -> list[str]:
-        """List all vehicles by their vins."""
-        garage = await self.get_garage()
-        if garage.vehicles is None:
-            return []
-        return [vehicle.vin for vehicle in garage.vehicles]
 
     async def _headers(self) -> dict[str, str]:
         return {"authorization": f"Bearer {await self.authorization.get_access_token()}"}
@@ -435,11 +358,11 @@ class RestApi:
     async def honk_flash(
         self,
         vin: str,
+        positions: list[Position],
         honk: bool = False,
     ) -> None:
         """Honk and/or flash."""
-        positions = await self.get_positions(vin)
-        position = next(pos for pos in positions.positions if pos.type == PositionType.VEHICLE)
+        position = next(pos for pos in positions if pos.type == PositionType.VEHICLE)
         json_data = {
             "mode": "HONK_AND_FLASH" if honk else "FLASH",
             "vehiclePosition": {
