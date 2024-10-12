@@ -1,3 +1,5 @@
+set positional-arguments
+
 venv:
     #!/bin/sh
     [ -d venv ] || python3 -m venv venv
@@ -37,3 +39,8 @@ run *args: install
 
 clean:
     rm -rf venv
+
+gen-fixtures +args: install
+    #!/bin/sh
+    source venv/bin/activate
+    python scripts/gen_fixtures.py "$@"

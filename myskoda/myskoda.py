@@ -11,6 +11,8 @@ from types import SimpleNamespace
 
 from aiohttp import ClientSession, TraceConfig, TraceRequestEndParams
 
+from myskoda.models.garage import Garage
+
 from .auth.authorization import Authorization
 from .event import Event
 from .models.air_conditioning import AirConditioning
@@ -219,6 +221,10 @@ class MySkoda:
     async def get_user(self) -> User:
         """Retrieve user information about logged in user."""
         return await self.rest_api.get_user()
+
+    async def get_garage(self) -> Garage:
+        """Retrieve the garage (list of vehicles with limited information)."""
+        return await self.rest_api.get_garage()
 
     async def list_vehicle_vins(self) -> list[str]:
         """List all vehicles by their vins."""
