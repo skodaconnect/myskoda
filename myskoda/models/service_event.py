@@ -86,9 +86,9 @@ def _deserialize_charging_state(value: str) -> ChargingState:
             raise UnexpectedChargingStateError
 
 
-def _deserialize_time_to_finish(value: int | str) -> int:
+def _deserialize_time_to_finish(value: int | str) -> int | None:
     if value == "null":
-        return 0
+        return None
     return int(value)
 
 
