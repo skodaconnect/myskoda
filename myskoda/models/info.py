@@ -144,6 +144,7 @@ class BodyType(StrEnum):
     SUV_COUPE = "SUV Coupe"
     COMBI = "Combi"
     LIFTBACK = "Liftback"
+    HATCHBACK = "Hatchback"
 
 
 class VehicleState(StrEnum):
