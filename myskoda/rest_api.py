@@ -4,6 +4,7 @@ import asyncio
 import json
 import logging
 from collections.abc import Callable
+from dataclasses import dataclass
 
 from aiohttp import ClientResponseError, ClientSession
 
@@ -18,15 +19,34 @@ from myskoda.anonymize import (
     anonymize_positions,
     anonymize_status,
     anonymize_trip_statistics,
+    anonymize_url,
     anonymize_user,
 )
 from myskoda.models.charging import ChargeMode
+from myskoda.models.garage import Garage
 from myskoda.models.position import Position, PositionType
 
 from .auth.authorization import Authorization
 from .const import BASE_URL_SKODA, REQUEST_TIMEOUT_IN_SECONDS
+from .models.air_conditioning import AirConditioning
+from .models.charging import Charging
+from .models.driving_range import DrivingRange
+from .models.health import Health
+from .models.info import Info
+from .models.maintenance import Maintenance
+from .models.position import Positions
+from .models.status import Status
+from .models.trip_statistics import TripStatistics
+from .models.user import User
 
 _LOGGER = logging.getLogger(__name__)
+
+
+@dataclass
+class GetEndpointResult[T]:
+    url: str
+    raw: str
+    result: T
 
 
 class RestApi:
@@ -80,170 +100,145 @@ class RestApi:
     async def _make_put_request(self, url: str, json: dict | None = None) -> str:
         return await self._make_request(url=url, method="PUT", json=json)
 
-    def get_info_url(self, vin: str) -> str:
-        """Return the URL for fetching vehicle info."""
-        return f"/v2/garage/vehicles/{vin}?connectivityGenerations=MOD1&connectivityGenerations=MOD2&connectivityGenerations=MOD3&connectivityGenerations=MOD4"  # noqa: E501
-
-    async def get_info_raw(self, vin: str, anonymize: bool = False) -> str:
-        """Retrieve the basic vehicle information for the specified vehicle.
-
-        This method will return the raw response as string.
-        """
-        return self.process_json(
-            data=await self._make_get_request(self.get_info_url(vin)),
+    async def get_info(self, vin: str, anonymize: bool = False) -> GetEndpointResult[Info]:
+        """Retrieve information related to basic information for the specified vehicle."""
+        url = f"/v2/garage/vehicles/{vin}?connectivityGenerations=MOD1&connectivityGenerations=MOD2&connectivityGenerations=MOD3&connectivityGenerations=MOD4"  # noqa: E501
+        raw = self.process_json(
+            data=await self._make_get_request(url),
             anonymize=anonymize,
             anonymization_fn=anonymize_info,
         )
+        result = self._deserialize(raw, Info.from_json)
+        url = anonymize_url(url, vin) if anonymize else url
+        return GetEndpointResult(url=url, raw=raw, result=result)
 
-    def get_charging_url(self, vin: str) -> str:
-        """Return the URL for fetching vehicle charging data."""
-        return f"/v1/charging/{vin}"
-
-    async def get_charging_raw(self, vin: str, anonymize: bool = False) -> str:
-        """Retrieve the current status for the specified vehicle.
-
-        This method will return the raw response as string.
-        """
-        return self.process_json(
-            data=await self._make_get_request(self.get_charging_url(vin)),
+    async def get_charging(self, vin: str, anonymize: bool = False) -> GetEndpointResult[Charging]:
+        """Retrieve information related to charging for the specified vehicle."""
+        url = f"/v1/charging/{vin}"
+        raw = self.process_json(
+            data=await self._make_get_request(url),
             anonymize=anonymize,
             anonymization_fn=anonymize_charging,
         )
+        result = self._deserialize(raw, Charging.from_json)
+        url = anonymize_url(url, vin) if anonymize else url
+        return GetEndpointResult(url=url, raw=raw, result=result)
 
-    def get_status_url(self, vin: str) -> str:
-        """Return the URL for fetching vehicle status."""
-        return f"/v2/vehicle-status/{vin}"
-
-    async def get_status_raw(self, vin: str, anonymize: bool = False) -> str:
-        """Retrieve the current status for the specified vehicle.
-
-        This method will return the raw response as string.
-        """
-        return self.process_json(
-            data=await self._make_get_request(self.get_status_url(vin)),
+    async def get_status(self, vin: str, anonymize: bool = False) -> GetEndpointResult[Status]:
+        """Retrieve the current status for the specified vehicle."""
+        url = f"/v2/vehicle-status/{vin}"
+        raw = self.process_json(
+            data=await self._make_get_request(url),
             anonymize=anonymize,
             anonymization_fn=anonymize_status,
         )
+        result = self._deserialize(raw, Status.from_json)
+        url = anonymize_url(url, vin) if anonymize else url
+        return GetEndpointResult(url=url, raw=raw, result=result)
 
-    def get_air_conditioning_url(self, vin: str) -> str:
-        """Return the URL for fetching vehicle air conditioning status."""
-        return f"/v2/air-conditioning/{vin}"
-
-    async def get_air_conditioning_raw(self, vin: str, anonymize: bool = False) -> str:
-        """Retrieve the current air conditioning status for the specified vehicle.
-
-        This method will return the raw response as string.
-        """
-        return self.process_json(
-            data=await self._make_get_request(self.get_air_conditioning_url(vin)),
+    async def get_air_conditioning(
+        self, vin: str, anonymize: bool = False
+    ) -> GetEndpointResult[AirConditioning]:
+        """Retrieve the current air conditioning status for the specified vehicle."""
+        url = f"/v2/air-conditioning/{vin}"
+        raw = self.process_json(
+            data=await self._make_get_request(url),
             anonymize=anonymize,
             anonymization_fn=anonymize_air_conditioning,
         )
+        result = self._deserialize(raw, AirConditioning.from_json)
+        url = anonymize_url(url, vin) if anonymize else url
+        return GetEndpointResult(url=url, raw=raw, result=result)
 
-    def get_positions_url(self, vin: str) -> str:
-        """Return the URL for fetching vehicle positions."""
-        return f"/v1/maps/positions?vin={vin}"
-
-    async def get_positions_raw(self, vin: str, anonymize: bool = False) -> str:
-        """Retrieve the current position for the specified vehicle.
-
-        This method will return the raw response as string.
-        """
-        return self.process_json(
-            data=await self._make_get_request(self.get_positions_url(vin)),
+    async def get_positions(
+        self, vin: str, anonymize: bool = False
+    ) -> GetEndpointResult[Positions]:
+        """Retrieve the current position for the specified vehicle."""
+        url = f"/v1/maps/positions?vin={vin}"
+        raw = self.process_json(
+            data=await self._make_get_request(url),
             anonymize=anonymize,
             anonymization_fn=anonymize_positions,
         )
+        result = self._deserialize(raw, Positions.from_json)
+        url = anonymize_url(url, vin) if anonymize else url
+        return GetEndpointResult(url=url, raw=raw, result=result)
 
-    def get_driving_range_url(self, vin: str) -> str:
-        """Return the URL for fetching vehicle driving range."""
-        return f"/v2/vehicle-status/{vin}/driving-range"
-
-    async def get_driving_range_raw(self, vin: str, anonymize: bool = False) -> str:
-        """Retrieve estimated driving range for combustion vehicles.
-
-        This method will return the raw response as string.
-        """
-        return self.process_json(
-            data=await self._make_get_request(self.get_driving_range_url(vin)),
+    async def get_driving_range(
+        self, vin: str, anonymize: bool = False
+    ) -> GetEndpointResult[DrivingRange]:
+        """Retrieve estimated driving range for combustion vehicles."""
+        url = f"/v2/vehicle-status/{vin}/driving-range"
+        raw = self.process_json(
+            data=await self._make_get_request(url),
             anonymize=anonymize,
             anonymization_fn=anonymize_driving_range,
         )
+        result = self._deserialize(raw, DrivingRange.from_json)
+        url = anonymize_url(url, vin) if anonymize else url
+        return GetEndpointResult(url=url, raw=raw, result=result)
 
-    def get_trip_statistics_url(self, vin: str) -> str:
-        """Return the URL for fetching vehicle trip statistics."""
-        return f"/v1/trip-statistics/{vin}?offsetType=week&offset=0&timezone=Europe%2FBerlin"
-
-    async def get_trip_statistics_raw(self, vin: str, anonymize: bool = False) -> str:
-        """Retrieve statistics about past trips.
-
-        This method will return the raw response as string.
-        """
-        return self.process_json(
-            data=await self._make_get_request(self.get_trip_statistics_url(vin)),
+    async def get_trip_statistics(
+        self, vin: str, anonymize: bool = False
+    ) -> GetEndpointResult[TripStatistics]:
+        """Retrieve statistics about past trips."""
+        url = f"/v1/trip-statistics/{vin}?offsetType=week&offset=0&timezone=Europe%2FBerlin"
+        raw = self.process_json(
+            data=await self._make_get_request(url),
             anonymize=anonymize,
             anonymization_fn=anonymize_trip_statistics,
         )
+        result = self._deserialize(raw, TripStatistics.from_json)
+        url = anonymize_url(url, vin) if anonymize else url
+        return GetEndpointResult(url=url, raw=raw, result=result)
 
-    def get_maintenance_url(self, vin: str) -> str:
-        """Return the URL for fetching vehicle maintenance report."""
-        return f"/v3/vehicle-maintenance/vehicles/{vin}"
-
-    async def get_maintenance_raw(self, vin: str, anonymize: bool = False) -> str:
-        """Retrieve maintenance report.
-
-        This method will return the raw response as string.
-        """
-        return self.process_json(
-            data=await self._make_get_request(self.get_maintenance_url(vin)),
+    async def get_maintenance(
+        self, vin: str, anonymize: bool = False
+    ) -> GetEndpointResult[Maintenance]:
+        """Retrieve maintenance report."""
+        url = f"/v3/vehicle-maintenance/vehicles/{vin}"
+        raw = self.process_json(
+            data=await self._make_get_request(url),
             anonymize=anonymize,
             anonymization_fn=anonymize_maintenance,
         )
+        result = self._deserialize(raw, Maintenance.from_json)
+        url = anonymize_url(url, vin) if anonymize else url
+        return GetEndpointResult(url=url, raw=raw, result=result)
 
-    def get_health_url(self, vin: str) -> str:
-        """Return the URL for fetching vehicle health."""
-        return f"/v1/vehicle-health-report/warning-lights/{vin}"
-
-    async def get_health_raw(self, vin: str, anonymize: bool = False) -> str:
-        """Retrieve health information for the specified vehicle.
-
-        This method will return the raw response as string.
-        """
-        return self.process_json(
-            data=await self._make_get_request(self.get_health_url(vin)),
+    async def get_health(self, vin: str, anonymize: bool = False) -> GetEndpointResult[Health]:
+        """Retrieve health information for the specified vehicle."""
+        url = f"/v1/vehicle-health-report/warning-lights/{vin}"
+        raw = self.process_json(
+            data=await self._make_get_request(url),
             anonymize=anonymize,
             anonymization_fn=anonymize_health,
         )
+        result = self._deserialize(raw, Health.from_json)
+        url = anonymize_url(url, vin) if anonymize else url
+        return GetEndpointResult(url=url, raw=raw, result=result)
 
-    def get_user_url(self) -> str:
-        """Return the URL for fetching the user."""
-        return "/v1/users"
-
-    async def get_user_raw(self, anonymize: bool = False) -> str:
-        """Retrieve user information about logged in user.
-
-        This method will return the raw response as string.
-        """
-        return self.process_json(
-            data=await self._make_get_request(self.get_user_url()),
+    async def get_user(self, anonymize: bool = False) -> GetEndpointResult[User]:
+        """Retrieve user information about logged in user."""
+        url = "/v1/users"
+        raw = self.process_json(
+            data=await self._make_get_request(url),
             anonymize=anonymize,
             anonymization_fn=anonymize_user,
         )
+        result = self._deserialize(raw, User.from_json)
+        return GetEndpointResult(url=url, raw=raw, result=result)
 
-    def get_garage_url(self) -> str:
-        """Return the URL for fetching the garage."""
-        return "/v2/garage?connectivityGenerations=MOD1&connectivityGenerations=MOD2&connectivityGenerations=MOD3&connectivityGenerations=MOD4"  # noqa: E501
-
-    async def get_garage_raw(self, anonymize: bool = False) -> str:
-        """Fetch the garage (list of vehicles with limited info).
-
-        This method will return the raw response as string.
-        """
-        return self.process_json(
-            data=await self._make_get_request(self.get_garage_url()),
+    async def get_garage(self, anonymize: bool = False) -> GetEndpointResult[Garage]:
+        """Fetch the garage (list of vehicles with limited info)."""
+        url = "/v2/garage?connectivityGenerations=MOD1&connectivityGenerations=MOD2&connectivityGenerations=MOD3&connectivityGenerations=MOD4"  # noqa: E501
+        raw = self.process_json(
+            data=await self._make_get_request(url),
             anonymize=anonymize,
             anonymization_fn=anonymize_garage,
         )
+        result = self._deserialize(raw, Garage.from_json)
+        return GetEndpointResult(url=url, raw=raw, result=result)
 
     async def _headers(self) -> dict[str, str]:
         return {"authorization": f"Bearer {await self.authorization.get_access_token()}"}
@@ -373,3 +368,12 @@ class RestApi:
         await self._make_post_request(
             url=f"/v1/vehicle-access/{vin}/honk-and-flash", json=json_data
         )
+
+    def _deserialize[T](self, text: str, deserialize: Callable[[str], T]) -> T:
+        try:
+            data = deserialize(text)
+        except Exception:
+            _LOGGER.exception("Failed to deserialize data: %s", text)
+            raise
+        else:
+            return data

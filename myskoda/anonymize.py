@@ -108,3 +108,7 @@ def anonymize_garage(data: dict) -> dict:
     if "vehicles" in data:
         data["vehicles"] = [anonymize_garage_entry(vehicle) for vehicle in data["vehicles"]]
     return data
+
+
+def anonymize_url(url: str, vin: str) -> str:
+    return url.replace(vin, VIN)

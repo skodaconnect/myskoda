@@ -10,13 +10,6 @@ from mashumaro.mixins.yaml import DataClassYAMLMixin
 from myskoda.models.info import Capability, Info
 
 
-@dataclass
-class GetEndpointResult:
-    url: str
-    raw: str
-    result: dict
-
-
 class FixtureReportType(StrEnum):
     GET = "get"
 
