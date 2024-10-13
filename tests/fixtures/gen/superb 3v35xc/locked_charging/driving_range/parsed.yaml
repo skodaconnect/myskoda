@@ -1,0 +1,13 @@
+car_captured_timestamp: '2024-10-13T11:55:44+00:00'
+car_type: hybrid
+primary_engine_range:
+  current_fuel_level_in_percent: 100
+  current_soc_in_percent: 100
+  engine_type: gasoline
+  remaining_range_in_km: 850
+secondary_engine_range:
+  current_fuel_level_in_percent: null
+  current_soc_in_percent: 80
+  engine_type: electric
+  remaining_range_in_km: 31
+total_range_in_km: 881

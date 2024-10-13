@@ -1,0 +1,41 @@
+maintenance_report:
+  captured_at: '2024-10-13T10:13:01+00:00'
+  inspection_due_in_days: 268
+  inspection_due_in_km: 26800
+  mileage_in_km: 46873
+  oil_service_due_in_days: 268
+  oil_service_due_in_km: 11800
+predictive_maintenance:
+  setting:
+    email: user@example.com
+    phone: +49 0987 654321
+    preferred_channel: null
+    service_activated: true
+preferred_service_partner:
+  address:
+    city: Example Town
+    country: null
+    country_code: FIN
+    house_number: null
+    street: Example Street 1
+    zip_code: '12345'
+  brand: C
+  contact:
+    email: service@example.com
+    phone: +49 1234 567890
+    url: https://example.com
+  id: DEU11111
+  location:
+    latitude: 53.4
+    longitude: 9.7
+  name: Mock Service Partner
+  opening_hours:
+  - opening_times:
+    - end: '17:00:00'
+      start: 07:30:00
+    period_end: FRIDAY
+    period_start: MONDAY
+  - opening_times: []
+    period_end: SUNDAY
+    period_start: SATURDAY
+  partner_number: '11111'

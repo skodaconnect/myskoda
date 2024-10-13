@@ -1,0 +1,65 @@
+detailed_statistics:
+- average_fuel_consumption: 1.28
+  average_speed_in_kmph: 38
+  date: '2024-10-07'
+  mileage_in_km: 75
+  travel_time_in_min: 125
+  trip_ids:
+  - 3358100036
+  - 3360605663
+  - 3362200337
+- average_fuel_consumption: 0.0
+  average_speed_in_kmph: 40
+  date: '2024-10-08'
+  mileage_in_km: 39
+  travel_time_in_min: 63
+  trip_ids:
+  - 3362934086
+  - 3366071179
+- average_fuel_consumption: 1.96
+  average_speed_in_kmph: 54
+  date: '2024-10-09'
+  mileage_in_km: 87
+  travel_time_in_min: 99
+  trip_ids:
+  - 3367871415
+  - 3370663541
+  - 3371649848
+- average_fuel_consumption: 0.0
+  average_speed_in_kmph: 40
+  date: '2024-10-10'
+  mileage_in_km: 23
+  travel_time_in_min: 36
+  trip_ids:
+  - 3372751737
+  - 3375641538
+- average_fuel_consumption: 0.0
+  average_speed_in_kmph: 20
+  date: '2024-10-11'
+  mileage_in_km: 11
+  travel_time_in_min: 35
+  trip_ids:
+  - 3377726443
+  - 3380572124
+- average_fuel_consumption: 0.0
+  average_speed_in_kmph: 46
+  date: '2024-10-12'
+  mileage_in_km: 20
+  travel_time_in_min: 29
+  trip_ids:
+  - 3384079439
+  - 3384708428
+- average_fuel_consumption: 0.0
+  average_speed_in_kmph: 60
+  date: '2024-10-13'
+  mileage_in_km: 34
+  travel_time_in_min: 34
+  trip_ids:
+  - 3387044063
+overall_average_fuel_consumption: 0.92
+overall_average_mileage_in_km: 41
+overall_average_speed_in_kmph: 46
+overall_average_travel_time_in_min: 60
+overall_mileage_in_km: 289
+overall_travel_time_in_min: 421
+vehicle_type: HYBRID

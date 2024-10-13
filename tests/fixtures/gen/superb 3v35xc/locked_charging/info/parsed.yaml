@@ -1,0 +1,171 @@
+capabilities:
+  capabilities:
+  - id: ACCESS
+    statuses: []
+  - id: AUTOMATION
+    statuses: []
+  - id: DEALER_APPOINTMENT
+    statuses: []
+  - id: DEPARTURE_TIMERS
+    statuses: []
+  - id: GEO_FENCE
+    statuses: []
+  - id: HONK_AND_FLASH
+    statuses: []
+  - id: MEASUREMENTS
+    statuses: []
+  - id: NEWS
+    statuses:
+    - LICENSE_MISSING
+  - id: PARKING_POSITION
+    statuses: []
+  - id: ROADSIDE_ASSISTANT
+    statuses: []
+  - id: SPEED_ALERT
+    statuses: []
+  - id: STATE
+    statuses: []
+  - id: TRIP_STATISTICS
+    statuses: []
+  - id: VEHICLE_HEALTH_INSPECTION
+    statuses: []
+  - id: WARNING_LIGHTS
+    statuses: []
+  - id: VEHICLE_WAKE_UP
+    statuses: []
+  - id: POWERPASS_TARIFFS
+    statuses: []
+  - id: AIR_CONDITIONING_HEATING_SOURCE_ELECTRIC
+    statuses: []
+  - id: PAY_TO_FUEL
+    statuses: []
+  - id: AIR_CONDITIONING_SAVE_AND_ACTIVATE
+    statuses: []
+  - id: CUBIC
+    statuses: []
+  - id: SUBSCRIPTIONS
+    statuses: []
+  - id: CHARGING_MQB
+    statuses: []
+  - id: AIR_CONDITIONING_HEATING_SOURCE_AUXILIARY
+    statuses: []
+  - id: DIGICERT
+    statuses: []
+  - id: VEHICLE_HEALTH_WARNINGS
+    statuses: []
+  - id: PAY_TO_PARK
+    statuses: []
+  - id: FUEL_STATUS
+    statuses: []
+  - id: SERVICE_PARTNER
+    statuses: []
+  - id: WINDOW_HEATING
+    statuses: []
+  - id: CHARGING
+    statuses: []
+  - id: MISUSE_PROTECTION
+    statuses: []
+  - id: AIR_CONDITIONING
+    statuses: []
+composite_renders:
+- layers:
+  - order: 0
+    type: REAL
+    url: https://iprenders.blob.core.windows.net/base3v3s20201119/0F0FEKAcM-837-icSUg3f_sXOJRZCyGa-CK2vH0E59-4A6othXxnP8dOzuUaqJV-H9AsCqv16YbLX2EKOzn5fjwk-IaBMLRAHXUTFO-19201080dayvext_front1080.png
+    view_point: exterior_front
+  view_type: UNMODIFIED_EXTERIOR_FRONT
+- layers:
+  - order: 0
+    type: REAL
+    url: https://iprenders.blob.core.windows.net/base3v3s20201119/0F0FEKAcM-837-icSUg3f_sXOJRZCyGa-CK2vH0E59-4A6othXxnP8dOzuUaqJV-H9AsCqv16YbLX2EKOzn5fjwk-IaBMLRAHXUTFO-19201080dayvext_side1080.png
+    view_point: exterior_side
+  view_type: UNMODIFIED_EXTERIOR_SIDE
+- layers:
+  - order: 0
+    type: REAL
+    url: https://iprenders.blob.core.windows.net/base3v3s20201119/0F0FEKAcM-837-icSUg3f_sXOJRZCyGa-CK2vH0E59-4A6othXxnP8dOzuUaqJV-H9AsCqv16YbLX2EKOzn5fjwk-IaBMLRAHXUTFO-19201080dayvext_side1080.png
+    view_point: exterior_side
+  view_type: HOME
+- layers:
+  - order: 0
+    type: REAL
+    url: https://iprenders.blob.core.windows.net/base3v3s20201119/0F0FEKAcM-837-icSUg3f_sXOJRZCyGa-CK2vH0E59-4A6othXxnP8dOzuUaqJV-H9AsCqv16YbLX2EKOzn5fjwk-IaBMLRAHXUTFO-19201080dayvext_front1080.png
+    view_point: exterior_front
+  - order: 1
+    type: REAL
+    url: https://mspgwlivestorage.blob.core.windows.net/renders/cables/superb_3V_cable_charging_light_v1.png
+    view_point: exterior_front
+  view_type: CHARGING_LIGHT
+- layers:
+  - order: 0
+    type: REAL
+    url: https://iprenders.blob.core.windows.net/base3v3s20201119/0F0FEKAcM-837-icSUg3f_sXOJRZCyGa-CK2vH0E59-4A6othXxnP8dOzuUaqJV-H9AsCqv16YbLX2EKOzn5fjwk-IaBMLRAHXUTFO-19201080dayvext_front1080.png
+    view_point: exterior_front
+  - order: 1
+    type: REAL
+    url: https://mspgwlivestorage.blob.core.windows.net/renders/cables/superb_3V_cable_charging_dark_v1.png
+    view_point: exterior_front
+  view_type: CHARGING_DARK
+- layers:
+  - order: 0
+    type: REAL
+    url: https://iprenders.blob.core.windows.net/base3v3s20201119/0F0FEKAcM-837-icSUg3f_sXOJRZCyGa-CK2vH0E59-4A6othXxnP8dOzuUaqJV-H9AsCqv16YbLX2EKOzn5fjwk-IaBMLRAHXUTFO-19201080dayvext_front1080.png
+    view_point: exterior_front
+  - order: 1
+    type: REAL
+    url: https://mspgwlivestorage.blob.core.windows.net/renders/cables/superb_3V_cable_plugged_in_light_v1.png
+    view_point: exterior_front
+  view_type: PLUGGED_IN_LIGHT
+- layers:
+  - order: 0
+    type: REAL
+    url: https://iprenders.blob.core.windows.net/base3v3s20201119/0F0FEKAcM-837-icSUg3f_sXOJRZCyGa-CK2vH0E59-4A6othXxnP8dOzuUaqJV-H9AsCqv16YbLX2EKOzn5fjwk-IaBMLRAHXUTFO-19201080dayvext_front1080.png
+    view_point: exterior_front
+  - order: 1
+    type: REAL
+    url: https://mspgwlivestorage.blob.core.windows.net/renders/cables/superb_3V_cable_plugged_in_dark_v1.png
+    view_point: exterior_front
+  view_type: PLUGGED_IN_DARK
+device_platform: MBB_ODP
+errors: null
+license_plate: null
+name: My Car
+renders:
+- order: 0
+  type: REAL
+  url: https://iprenders.blob.core.windows.net/base3v3s20201119/0F0FEKAcM-837-icSUg3f_sXOJRZCyGa-CK2vH0E59-4A6othXxnP8dOzuUaqJV-H9AsCqv16YbLX2EKOzn5fjwk-IaBMLRAHXUTFO-19201080dayvext_front1080.png
+  view_point: exterior_front
+- order: 1
+  type: REAL
+  url: https://iprenders.blob.core.windows.net/base3v3s20201119/0F0FEKAcM-837-icSUg3f_sXOJRZCyGa-CK2vH0E59-4A6othXxnP8dOzuUaqJV-H9AsCqv16YbLX2EKOzn5fjwk-IaBMLRAHXUTFO-19201080dayvext_side1080.png
+  view_point: exterior_side
+- order: 2
+  type: REAL
+  url: https://ip-modcwp.azureedge.net/modcwp3v3s20201119/0F0FEKAcM-837-icSUg3f_sXOJRZCyGa-CK2vH0E59-4A6othXxnP8dOzuUaqJV-H9AsCqv16YbLX2EKOzn5fjwk-IaBMLRAHXUTFO-1920658dayvext_side1080.png?v=638547362740000000
+  view_point: garage_l
+- order: 3
+  type: REAL
+  url: https://ip-modcwp.azureedge.net/modcwp3v3s20201119/0F0FEKAcL-837-.icTUg3f_sXOJRZCyGa-K2uF0E59-1A_6othYxnP8dO0vUbrJV-H9sBqv16ZdLX2FKO.zn5hjwl-IaBMLRHXUSFP-700390dayvext_front1080.png?v=637860511190000000
+  view_point: main
+service_partner:
+  id: DEU11111
+software_version: null
+specification:
+  battery:
+    capacity: 13
+  body: Liftback
+  engine:
+    capacity_in_liters: 1.4
+    power: 160
+    type: TSI iV
+  manufacturing_date: '2020-06-08'
+  max_charging_power: null
+  model: Superb
+  model_year: '2020'
+  system_code: UNKNOWN
+  system_model_id: 3V35XC
+  title: "\u0160koda Superb"
+  trim_level: L&K iV
+state: ACTIVATED
+vin: TMOCKAA0AA000000
+workshop_mode_enabled: false

@@ -1,0 +1,13 @@
+errors: []
+positions:
+- address:
+    city: Example City
+    country: Finland
+    country_code: FI
+    house_number: '15'
+    street: Example Avenue
+    zip_code: '54321'
+  gps_coordinates:
+    latitude: 53.4
+    longitude: 9.7
+  type: VEHICLE

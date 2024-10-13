@@ -1,0 +1,27 @@
+car_captured_timestamp: '2024-10-13T11:55:44+00:00'
+errors:
+- description: Care mode is not available.
+  type: CARE_MODE_IS_NOT_AVAILABLE
+- description: Auto unlock is not available.
+  type: AUTO_UNLOCK_IS_NOT_AVAILABLE
+- description: Charge limit is not available.
+  type: CHARGE_LIMIT_IS_NOT_AVAILABLE
+is_vehicle_in_saved_location: false
+settings:
+  auto_unlock_plug_when_charged: null
+  available_charge_modes: []
+  battery_support: null
+  charging_care_mode: null
+  max_charge_current_ac: MAXIMUM
+  preferred_charge_mode: null
+  target_state_of_charge_in_percent: null
+status:
+  battery:
+    remaining_cruising_range_in_meters: 31000
+    state_of_charge_in_percent: 80
+  charge_power_in_kw: null
+  charge_type: AC
+  charging_rate_in_kilometers_per_hour: null
+  errors: null
+  remaining_time_to_fully_charged_in_minutes: 60
+  state: CHARGING

@@ -1,0 +1,22 @@
+car_captured_timestamp: '2024-10-13T10:13:01+00:00'
+detail:
+  bonnet: CLOSED
+  sunroof: CLOSED
+  trunk: CLOSED
+overall:
+  doors: CLOSED
+  doors_locked: 'YES'
+  lights: 'OFF'
+  locked: 'YES'
+  windows: CLOSED
+renders:
+  dark_mode:
+    one_and_half_x: https://mysmob.api.connect.skoda-auto.cz/api/v2/vehicle-status/render?carType=LIMOUSINE&vehicleState=1-1-1-1-0-0-0-0-2&lastModifiedAt=1727873060&dimension=1-5x&theme=DARK
+    one_x: https://mysmob.api.connect.skoda-auto.cz/api/v2/vehicle-status/render?carType=LIMOUSINE&vehicleState=1-1-1-1-0-0-0-0-2&lastModifiedAt=1727873060&dimension=1x&theme=DARK
+    three_x: https://mysmob.api.connect.skoda-auto.cz/api/v2/vehicle-status/render?carType=LIMOUSINE&vehicleState=1-1-1-1-0-0-0-0-2&lastModifiedAt=1727873060&dimension=3x&theme=DARK
+    two_x: https://mysmob.api.connect.skoda-auto.cz/api/v2/vehicle-status/render?carType=LIMOUSINE&vehicleState=1-1-1-1-0-0-0-0-2&lastModifiedAt=1727873060&dimension=2x&theme=DARK
+  light_mode:
+    one_and_half_x: https://mysmob.api.connect.skoda-auto.cz/api/v2/vehicle-status/render?carType=LIMOUSINE&vehicleState=1-1-1-1-0-0-0-0-2&lastModifiedAt=1727873060&dimension=1-5x&theme=LIGHT
+    one_x: https://mysmob.api.connect.skoda-auto.cz/api/v2/vehicle-status/render?carType=LIMOUSINE&vehicleState=1-1-1-1-0-0-0-0-2&lastModifiedAt=1727873060&dimension=1x&theme=LIGHT
+    three_x: https://mysmob.api.connect.skoda-auto.cz/api/v2/vehicle-status/render?carType=LIMOUSINE&vehicleState=1-1-1-1-0-0-0-0-2&lastModifiedAt=1727873060&dimension=3x&theme=LIGHT
+    two_x: https://mysmob.api.connect.skoda-auto.cz/api/v2/vehicle-status/render?carType=LIMOUSINE&vehicleState=1-1-1-1-0-0-0-0-2&lastModifiedAt=1727873060&dimension=2x&theme=LIGHT

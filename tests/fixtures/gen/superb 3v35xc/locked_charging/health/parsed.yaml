@@ -1,0 +1,17 @@
+captured_at: '2024-10-13T10:13:01+00:00'
+mileage_in_km: 46873
+warning_lights:
+- category: ASSISTANCE
+  defects: []
+- category: COMFORT
+  defects: []
+- category: BRAKE
+  defects: []
+- category: ENGINE
+  defects: []
+- category: LIGHTING
+  defects: []
+- category: TIRE
+  defects: []
+- category: OTHER
+  defects: []

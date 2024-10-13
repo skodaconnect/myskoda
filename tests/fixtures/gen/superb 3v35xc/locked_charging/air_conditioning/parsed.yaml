@@ -1,0 +1,23 @@
+air_conditioning_at_unlock: null
+car_captured_timestamp: '2024-10-13T10:10:43+00:00'
+charger_connection_state: CONNECTED
+charger_lock_state: LOCKED
+errors:
+- description: APIs for obtaining seat heating status are not available
+  type: UNAVAILABLE_VEHICLE_INFORMATION
+- description: APIs for obtaining air conditioning timers are not available
+  type: UNAVAILABLE_TIMERS_INFORMATION
+estimated_date_time_to_reach_target_temperature: null
+heater_source: AUTOMATIC
+seat_heating_activated: null
+state: 'OFF'
+steering_wheel_position: LEFT
+target_temperature:
+  temperature_value: 16.0
+  unit_in_car: CELSIUS
+timers: []
+window_heating_enabled: null
+window_heating_state:
+  front: 'OFF'
+  rear: 'OFF'
+  unspecified: INVALID
