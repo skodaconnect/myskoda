@@ -48,6 +48,7 @@ class OpeningHoursPeriod(DataClassORJSONMixin):
 
 class CommunicationChannel(StrEnum):
     email = "EMAIL"
+    phone = "PHONE"
 
 
 @dataclass
