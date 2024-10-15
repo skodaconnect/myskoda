@@ -1,6 +1,7 @@
 """Generate a set of test fixtures from your garage."""
 
 from pathlib import Path
+from typing import cast
 
 import asyncclick as click
 from asyncclick.core import Context
@@ -20,14 +21,20 @@ FIXTURES_DIR = Path(__file__).parent.parent.parent / "tests" / "fixtures" / "gen
 )
 @click.option("name", "--name", help="Short name describing the vehicle's state.", required=True)
 @click.option("description", "--description", help="A longer description.")
+@click.option("file", "--file", help="Override default file name.")
 @click.pass_context
-async def gen_fixtures(ctx: Context, vehicle: str, name: str, description: str) -> None:
+async def gen_fixtures(
+    ctx: Context, vehicle: str, name: str, description: str, file: str | None
+) -> None:
     """Interact with the MySkoda API."""
     myskoda: MySkoda = ctx.obj["myskoda"]
+
+    default_filename = Path("fixtures") / f"{name.replace(" ", "_").lower()}.yaml"
 
     ctx.obj["vins"] = await get_vin_list(myskoda, vehicle)
     ctx.obj["name"] = name
     ctx.obj["description"] = description
+    ctx.obj["file"] = Path(file) if file is not None else default_filename
 
 
 @gen_fixtures.command()
@@ -43,7 +50,11 @@ async def get(ctx: Context, endpoint: Endpoint) -> None:
         endpoint=endpoint,
     )
 
-    ctx.obj["print"](fixture.to_dict())
+    text = cast(str, fixture.to_yaml())
+
+    file: Path = ctx.obj["file"]
+    file.parent.mkdir(parents=True, exist_ok=True)
+    file.write_text(text)
 
 
 async def get_vin_list(myskoda: MySkoda, vehicle: str) -> list[str]:
