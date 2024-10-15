@@ -35,12 +35,7 @@ test *args: install
 run *args: install
     #!/bin/sh
     source venv/bin/activate
-    myskoda {{args}}
+    myskoda "$@"
 
 clean:
     rm -rf venv
-
-gen-fixtures +args: install
-    #!/bin/sh
-    source venv/bin/activate
-    python scripts/gen_fixtures.py "$@"
