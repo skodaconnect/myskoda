@@ -6,12 +6,22 @@ This class provides all methods to operate on the API and MQTT broker.
 import logging
 from asyncio import gather
 from collections.abc import Awaitable, Callable
+from datetime import UTC, datetime
 from ssl import SSLContext
+from traceback import format_exc
 from types import SimpleNamespace
+from typing import Any
 
 from aiohttp import ClientSession, TraceConfig, TraceRequestEndParams
 
-from myskoda.models.garage import Garage
+from myskoda.models.fixtures import (
+    Endpoint,
+    Fixture,
+    FixtureReportGet,
+    FixtureReportType,
+    FixtureVehicle,
+    create_fixture_vehicle,
+)
 
 from .auth.authorization import Authorization
 from .event import Event
@@ -27,7 +37,7 @@ from .models.status import Status
 from .models.trip_statistics import TripStatistics
 from .models.user import User
 from .mqtt import Mqtt
-from .rest_api import RestApi
+from .rest_api import GetEndpointResult, RestApi
 from .vehicle import Vehicle
 
 _LOGGER = logging.getLogger(__name__)
@@ -72,14 +82,16 @@ class MySkoda:
         self.rest_api = RestApi(self.session, self.authorization)
         self.ssl_context = ssl_context
         if mqtt_enabled:
-            self.mqtt = Mqtt(self.authorization, self.rest_api, ssl_context=self.ssl_context)
+            self.mqtt = Mqtt(self.authorization, ssl_context=self.ssl_context)
 
     async def enable_mqtt(self) -> None:
         """If MQTT was not enabled when initializing MySkoda, enable it manually and connect."""
         if self.mqtt is not None:
             return
-        self.mqtt = Mqtt(self.authorization, self.rest_api, ssl_context=self.ssl_context)
-        await self.mqtt.connect()
+        self.mqtt = Mqtt(self.authorization, ssl_context=self.ssl_context)
+        user = await self.get_user()
+        vehicles = await self.list_vehicle_vins()
+        await self.mqtt.connect(user.id, vehicles)
 
     async def _wait_for_operation(self, operation: OperationName) -> None:
         if self.mqtt is None:
@@ -92,7 +104,9 @@ class MySkoda:
         _LOGGER.debug("IDK Authorization was successful.")
 
         if self.mqtt:
-            await self.mqtt.connect()
+            user = await self.get_user()
+            vehicles = await self.list_vehicle_vins()
+            await self.mqtt.connect(user.id, vehicles)
         _LOGGER.debug("Myskoda ready.")
 
     def subscribe(self, callback: Callable[[Event], None | Awaitable[None]]) -> None:
@@ -121,13 +135,13 @@ class MySkoda:
     async def honk_flash(self, vin: str, honk: bool = False) -> None:
         """Honk and/or flash."""
         future = self._wait_for_operation(OperationName.START_HONK)
-        await self.rest_api.honk_flash(vin, honk)
+        await self.rest_api.honk_flash(vin, (await self.get_positions(vin)).positions, honk)
         await future
 
     async def wakeup(self, vin: str) -> None:
         """Wake the vehicle up. Can be called maximum three times a day."""
         future = self._wait_for_operation(OperationName.WAKEUP)
-        await self.rest_api.honk_flash(vin)
+        await self.rest_api.wakeup(vin)
         await future
 
     async def set_reduced_current_limit(self, vin: str, reduced: bool) -> None:
@@ -182,53 +196,52 @@ class MySkoda:
         """Retrieve the main access token for the IDK session."""
         return await self.rest_api.authorization.get_access_token()
 
-    async def get_info(self, vin: str) -> Info:
+    async def get_info(self, vin: str, anonymize: bool = False) -> Info:
         """Retrieve the basic vehicle information for the specified vehicle."""
-        return await self.rest_api.get_info(vin)
+        return (await self.rest_api.get_info(vin, anonymize=anonymize)).result
 
-    async def get_charging(self, vin: str) -> Charging:
+    async def get_charging(self, vin: str, anonymize: bool = False) -> Charging:
         """Retrieve information related to charging for the specified vehicle."""
-        return await self.rest_api.get_charging(vin)
+        return (await self.rest_api.get_charging(vin, anonymize=anonymize)).result
 
-    async def get_status(self, vin: str) -> Status:
+    async def get_status(self, vin: str, anonymize: bool = False) -> Status:
         """Retrieve the current status for the specified vehicle."""
-        return await self.rest_api.get_status(vin)
+        return (await self.rest_api.get_status(vin, anonymize=anonymize)).result
 
-    async def get_air_conditioning(self, vin: str) -> AirConditioning:
+    async def get_air_conditioning(self, vin: str, anonymize: bool = False) -> AirConditioning:
         """Retrieve the current air conditioning status for the specified vehicle."""
-        return await self.rest_api.get_air_conditioning(vin)
+        return (await self.rest_api.get_air_conditioning(vin, anonymize=anonymize)).result
 
-    async def get_positions(self, vin: str) -> Positions:
+    async def get_positions(self, vin: str, anonymize: bool = False) -> Positions:
         """Retrieve the current position for the specified vehicle."""
-        return await self.rest_api.get_positions(vin)
+        return (await self.rest_api.get_positions(vin, anonymize=anonymize)).result
 
-    async def get_driving_range(self, vin: str) -> DrivingRange:
+    async def get_driving_range(self, vin: str, anonymize: bool = False) -> DrivingRange:
         """Retrieve estimated driving range for combustion vehicles."""
-        return await self.rest_api.get_driving_range(vin)
+        return (await self.rest_api.get_driving_range(vin, anonymize=anonymize)).result
 
-    async def get_trip_statistics(self, vin: str) -> TripStatistics:
+    async def get_trip_statistics(self, vin: str, anonymize: bool = False) -> TripStatistics:
         """Retrieve statistics about past trips."""
-        return await self.rest_api.get_trip_statistics(vin)
+        return (await self.rest_api.get_trip_statistics(vin, anonymize=anonymize)).result
 
-    async def get_maintenance(self, vin: str) -> Maintenance:
+    async def get_maintenance(self, vin: str, anonymize: bool = False) -> Maintenance:
         """Retrieve maintenance report."""
-        return await self.rest_api.get_maintenance(vin)
+        return (await self.rest_api.get_maintenance(vin, anonymize=anonymize)).result
 
-    async def get_health(self, vin: str) -> Health:
+    async def get_health(self, vin: str, anonymize: bool = False) -> Health:
         """Retrieve health information for the specified vehicle."""
-        return await self.rest_api.get_health(vin)
+        return (await self.rest_api.get_health(vin, anonymize=anonymize)).result
 
-    async def get_user(self) -> User:
+    async def get_user(self, anonymize: bool = False) -> User:
         """Retrieve user information about logged in user."""
-        return await self.rest_api.get_user()
-
-    async def get_garage(self) -> Garage:
-        """Retrieve the garage (list of vehicles with limited information)."""
-        return await self.rest_api.get_garage()
+        return (await self.rest_api.get_user(anonymize=anonymize)).result
 
     async def list_vehicle_vins(self) -> list[str]:
         """List all vehicles by their vins."""
-        return await self.rest_api.list_vehicles()
+        garage = (await self.rest_api.get_garage()).result
+        if garage.vehicles is None:
+            return []
+        return [vehicle.vin for vehicle in garage.vehicles]
 
     async def get_vehicle(self, vin: str) -> Vehicle:
         """Load a full vehicle based on its capabilities."""
@@ -263,6 +276,92 @@ class MySkoda:
         vins = await self.list_vehicle_vins()
         return await gather(*(self.get_vehicle(vin) for vin in vins))
 
+    async def generate_fixture_report(
+        self, vin: str, vehicle: FixtureVehicle, endpoint: Endpoint
+    ) -> FixtureReportGet:
+        """Generate a fixture report for the specified endpoint and vehicle."""
+        try:
+            result = await self.get_endpoint(vin, endpoint, anonymize=True)
+        except Exception:  # noqa: BLE001
+            return FixtureReportGet(
+                type=FixtureReportType.GET,
+                vehicle_id=vehicle.id,
+                success=False,
+                endpoint=endpoint,
+                error=format_exc(),
+            )
+        else:
+            return FixtureReportGet(
+                type=FixtureReportType.GET,
+                vehicle_id=vehicle.id,
+                raw=result.raw,
+                success=True,
+                url=result.url,
+                endpoint=endpoint,
+                result=result.result.to_dict(),
+            )
+
+    async def get_endpoint(
+        self, vin: str, endpoint: Endpoint, anonymize: bool = False
+    ) -> GetEndpointResult[Any]:
+        """Invoke a get endpoint by endpoint enum."""
+        result = GetEndpointResult(url="", result=None, raw="")
+
+        if endpoint == Endpoint.INFO:
+            result = await self.rest_api.get_info(vin, anonymize=anonymize)
+        elif endpoint == Endpoint.STATUS:
+            result = await self.rest_api.get_status(vin, anonymize=anonymize)
+        elif endpoint == Endpoint.AIR_CONDITIONING:
+            result = await self.rest_api.get_air_conditioning(vin, anonymize=anonymize)
+        elif endpoint == Endpoint.POSITIONS:
+            result = await self.rest_api.get_positions(vin, anonymize=anonymize)
+        elif endpoint == Endpoint.HEALTH:
+            result = await self.rest_api.get_health(vin, anonymize=anonymize)
+        elif endpoint == Endpoint.CHARGING:
+            result = await self.rest_api.get_charging(vin, anonymize=anonymize)
+        elif endpoint == Endpoint.MAINTENANCE:
+            result = await self.rest_api.get_maintenance(vin, anonymize=anonymize)
+        elif endpoint == Endpoint.DRIVING_RANGE:
+            result = await self.rest_api.get_driving_range(vin, anonymize=anonymize)
+        elif endpoint == Endpoint.TRIP_STATISTICS:
+            result = await self.rest_api.get_trip_statistics(vin, anonymize=anonymize)
+        else:
+            raise UnsupportedEndpointError
+
+        return result
+
+    async def generate_get_fixture(
+        self, name: str, description: str, vins: list[str], endpoint: Endpoint
+    ) -> Fixture:
+        """Generate a fixture for a get request."""
+        vehicles = [
+            (vin, create_fixture_vehicle(i, await self.get_info(vin))) for i, vin in enumerate(vins)
+        ]
+
+        endpoints = []
+        if endpoint != Endpoint.ALL:
+            endpoints = [endpoint]
+        else:
+            endpoints = filter(lambda ep: ep != Endpoint.ALL, Endpoint)
+
+        reports = [
+            await self.generate_fixture_report(vin, vehicle, endpoint)
+            for (vin, vehicle) in vehicles
+            for endpoint in endpoints
+        ]
+
+        return Fixture(
+            name=name,
+            description=description,
+            generation_time=datetime.now(tz=UTC),
+            vehicles=[vehicle for (_, vehicle) in vehicles],
+            reports=reports,
+        )
+
 
 class MqttDisabledError(Exception):
     """MQTT was not enabled."""
+
+
+class UnsupportedEndpointError(Exception):
+    """Endpoint not implemented."""
