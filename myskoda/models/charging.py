@@ -116,8 +116,10 @@ class Charging(DataClassORJSONMixin):
 
     errors: list[ChargingError]
     settings: Settings
-    status: ChargingStatus | None
-    car_captured_timestamp: datetime = field(metadata=field_options(alias="carCapturedTimestamp"))
     is_vehicle_in_saved_location: bool = field(
         metadata=field_options(alias="isVehicleInSavedLocation")
     )
+    car_captured_timestamp: datetime | None = field(
+        default=None, metadata=field_options(alias="carCapturedTimestamp")
+    )
+    status: ChargingStatus | None = field(default=None)

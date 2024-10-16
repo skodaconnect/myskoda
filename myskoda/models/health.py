@@ -30,6 +30,6 @@ class WarningLight(DataClassORJSONMixin):
 class Health(DataClassORJSONMixin):
     """Information about the car's health (currently only mileage)."""
 
-    captured_at: datetime = field(metadata=field_options(alias="capturedAt"))
-    mileage_in_km: int = field(metadata=field_options(alias="mileageInKm"))
     warning_lights: list[WarningLight] = field(metadata=field_options(alias="warningLights"))
+    mileage_in_km: int | None = field(default=None, metadata=field_options(alias="mileageInKm"))
+    captured_at: datetime | None = field(default=None, metadata=field_options(alias="capturedAt"))
