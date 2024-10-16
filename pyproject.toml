@@ -17,7 +17,7 @@ asyncio-paho = "^0.6.0"
 coloredlogs = { version = "^15.0.1", optional = true }
 paho-mqtt = "^1"
 pyjwt = "^2"
-python = ">=3.12.0"
+python = ">=3.12.0, <4.0"
 pyyaml = "^6"
 termcolor = { version = "^2.4.0", optional = true }
 mashumaro = { extras = ["orjson"], version = "^3.13.1" }
@@ -34,6 +34,8 @@ pytest-asyncio = "^0"
 ruff = "^0.6.4"
 pytest-cov = "^5.0.0"
 aioresponses = "^0.7.6"
+amqtt = "0.11.0-beta1"
+setuptools = "^75.2.0"
 
 [tool.poetry.scripts]
 myskoda = "myskoda.cli:cli"
@@ -71,3 +73,5 @@ select = ["ALL"]
 
 [tool.pytest.ini_options]
 asyncio_mode = "auto"
+log_format = "%(asctime)s %(levelname)s %(message)s"
+log_date_format = "%Y-%m-%d %H:%M:%S"

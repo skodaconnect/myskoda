@@ -61,23 +61,34 @@ class Mqtt:
     _callbacks: list[Callable[[Event], None | Awaitable[None]]]
     _operation_listeners: list[OperationListener]
     _connected_listeners: list[Future[None]]
+    _disconnect_listener: Future[None] | None
     should_reconnect: bool
     is_connected: bool
     authorization: Authorization
+    host: str
+    port: int
+    enable_ssl: bool
 
     def __init__(  # noqa: D107
         self,
         authorization: Authorization,
         ssl_context: ssl.SSLContext | None = None,
+        host: str = MQTT_BROKER_HOST,
+        port: int = MQTT_BROKER_PORT,
+        enable_ssl: bool = True,
     ) -> None:
         self.authorization = authorization
         self._callbacks = []
         self._operation_listeners = []
         self._connected_listeners = []
+        self._disconnect_listener = None
         self.ssl_context = ssl_context
         self.is_connected = False
         self.user_id = None
         self.vehicles = None
+        self.host = host
+        self.port = port
+        self.enable_ssl = enable_ssl
 
     def subscribe(self, callback: Callable[[Event], None | Awaitable[None]]) -> None:
         """Listen for events emitted by MySkoda's MQTT broker."""
@@ -92,7 +103,7 @@ class Mqtt:
             if self.is_connected:
                 return True
 
-            _LOGGER.debug("Connecting to MQTT on %s:%d...", MQTT_BROKER_HOST, MQTT_BROKER_PORT)
+            _LOGGER.debug("Connecting to MQTT on %s:%d...", self.host, self.port)
 
             self.should_reconnect = True
 
@@ -102,16 +113,17 @@ class Mqtt:
             self.client.on_disconnect = self._on_disconnect
             self.client.on_socket_close = self._on_socket_close
             self.client.on_connect_fail = self._on_connect_fail
-            if self.ssl_context is not None:
-                self.client.tls_set_context(context=self.ssl_context)
-            else:
-                self.client.tls_set_context(context=ssl.create_default_context())
+            if self.enable_ssl:
+                if self.ssl_context is not None:
+                    self.client.tls_set_context(context=self.ssl_context)
+                else:
+                    self.client.tls_set_context(context=ssl.create_default_context())
 
             self.client.username_pw_set(
                 self.user_id,
                 await self.authorization.get_access_token(),
             )
-            self.client.connect_async(MQTT_BROKER_HOST, MQTT_BROKER_PORT, MQTT_KEEPALIVE)
+            self.client.connect_async(self.host, self.port, MQTT_KEEPALIVE)
 
             await self._wait_for_connection()
         except FailedToConnectError:
@@ -141,10 +153,14 @@ class Mqtt:
         background_tasks.add(task)
         task.add_done_callback(background_tasks.discard)
 
-    def disconnect(self) -> None:
+    async def disconnect(self) -> None:
         """Stop the thread for processing MQTT messages."""
+        future: Future[None] = get_event_loop().create_future()
+        self._disconnect_listener = future
         self.should_reconnect = False
         self.client.disconnect()  # pyright: ignore [reportArgumentType]
+        await future
+        self._disconnect_listener = None
 
     def _wait_for_connection(self) -> Future[None]:
         """Wait until MQTT is connected and setup."""
@@ -168,6 +184,8 @@ class Mqtt:
             return
         _LOGGER.debug("Socket to MQTT broker closed.")
         self.is_connected = False
+        if self._disconnect_listener is not None:
+            self._disconnect_listener.set_result(None)
         self.reconnect()
 
     def _on_connect_fail(self, client: AsyncioPahoClient, _data: None) -> None:

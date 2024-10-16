@@ -24,6 +24,7 @@ from myskoda.models.fixtures import (
 )
 
 from .auth.authorization import Authorization
+from .const import MQTT_BROKER_HOST, MQTT_BROKER_PORT
 from .event import Event
 from .models.air_conditioning import AirConditioning
 from .models.charging import Charging
@@ -71,18 +72,27 @@ class MySkoda:
     authorization: Authorization
     ssl_context: SSLContext | None = None
 
-    def __init__(  # noqa: D107
+    def __init__(  # noqa: D107, PLR0913
         self,
         session: ClientSession,
         ssl_context: SSLContext | None = None,
         mqtt_enabled: bool = True,
+        mqtt_broker_host: str = MQTT_BROKER_HOST,
+        mqtt_broker_port: int = MQTT_BROKER_PORT,
+        mqtt_enable_ssl: bool = True,
     ) -> None:
         self.session = session
         self.authorization = Authorization(session)
         self.rest_api = RestApi(self.session, self.authorization)
         self.ssl_context = ssl_context
         if mqtt_enabled:
-            self.mqtt = Mqtt(self.authorization, ssl_context=self.ssl_context)
+            self.mqtt = Mqtt(
+                self.authorization,
+                ssl_context=self.ssl_context,
+                host=mqtt_broker_host,
+                port=mqtt_broker_port,
+                enable_ssl=mqtt_enable_ssl,
+            )
 
     async def enable_mqtt(self) -> None:
         """If MQTT was not enabled when initializing MySkoda, enable it manually and connect."""
@@ -115,10 +125,10 @@ class MySkoda:
             raise MqttDisabledError
         self.mqtt.subscribe(callback)
 
-    def disconnect(self) -> None:
+    async def disconnect(self) -> None:
         """Disconnect from the MQTT broker."""
         if self.mqtt:
-            self.mqtt.disconnect()
+            await self.mqtt.disconnect()
 
     async def stop_charging(self, vin: str) -> None:
         """Stop the car from charging."""
