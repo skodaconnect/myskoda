@@ -10,7 +10,7 @@ from datetime import UTC, datetime, timedelta
 from typing import cast
 
 import jwt
-from aiohttp import ClientSession, FormData
+from aiohttp import ClientSession, FormData, InvalidUrlClientError
 from mashumaro import field_options
 from mashumaro.mixins.orjson import DataClassORJSONMixin
 
@@ -73,7 +73,10 @@ class Authorization:
         """Authorize on the VW IDK servers."""
         self.email = email
         self.password = password
-        self.idk_session = await self._get_idk_session()
+        try:
+            self.idk_session = await self._get_idk_session()
+        except InvalidUrlClientError as ex:
+            raise AuthorizationFailedError from ex
 
         if self.idk_session is None:
             raise AuthorizationFailedError
@@ -149,26 +152,31 @@ class Authorization:
         # using the `myskoda://` URL prefix.
         # The following loop will follow all redirects until the last redirect to `myskoda://` is
         # encountered. This last URL will contain the token.
-        async with self.session.post(
-            f"{BASE_URL_IDENT}/signin-service/v1/{CLIENT_ID}/login/authenticate",
-            data=form_data(),
-            allow_redirects=False,
-        ) as auth_response:
-            location = auth_response.headers["Location"]
-            while not location.startswith("myskoda://"):
-                async with self.session.get(location, allow_redirects=False) as response:
-                    location = response.headers["Location"]
-            codes = location.replace("myskoda://redirect/login/#", "")
+        try:
+            async with self.session.post(
+                f"{BASE_URL_IDENT}/signin-service/v1/{CLIENT_ID}/login/authenticate",
+                data=form_data(),
+                allow_redirects=False,
+                raise_for_status=True,
+            ) as auth_response:
+                location = auth_response.headers["Location"]
+                while not location.startswith("myskoda://"):
+                    async with self.session.get(location, allow_redirects=False) as response:
+                        location = response.headers["Location"]
+                codes = location.replace("myskoda://redirect/login/#", "")
+        except InvalidUrlClientError:
+            _LOGGER.exception("Error occurred while sending password. Password may be incorrect.")
+            raise
 
-            # The last redirection starting with `myskoda://` was encountered.
-            # The URL will contain the information we need as query parameters,
-            # without the leading `?`.
-            data = {}
-            for code in codes.split("&"):
-                [key, value] = code.split("=")
-                data[key] = value
+        # The last redirection starting with `myskoda://` was encountered.
+        # The URL will contain the information we need as query parameters,
+        # without the leading `?`.
+        data = {}
+        for code in codes.split("&"):
+            [key, value] = code.split("=")
+            data[key] = value
 
-            return IDKAuthorizationCode.from_dict(data)
+        return IDKAuthorizationCode.from_dict(data)
 
     async def _exchange_auth_code_for_idk_session(self, code: str, verifier: str) -> IDKSession:
         """Exchange the ident login code for an auth token from Skoda.
