@@ -7,6 +7,7 @@ from enum import StrEnum
 
 from mashumaro import field_options
 from mashumaro.mixins.orjson import DataClassORJSONMixin
+from mashumaro.mixins.yaml import DataClassYAMLMixin
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -96,7 +97,7 @@ class CapabilityStatus(StrEnum):
 
 
 @dataclass
-class Capability(DataClassORJSONMixin):
+class Capability(DataClassORJSONMixin, DataClassYAMLMixin):
     """Shows the status of a capability. Empty status indicates no error."""
 
     id: CapabilityId
@@ -144,6 +145,7 @@ class BodyType(StrEnum):
     SUV_COUPE = "SUV Coupe"
     COMBI = "Combi"
     LIFTBACK = "Liftback"
+    HATCHBACK = "Hatchback"
 
 
 class VehicleState(StrEnum):

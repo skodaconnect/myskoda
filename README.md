@@ -95,17 +95,49 @@ myskoda --help
 
 ## Contribute your Fixtures
 
-Please contribute fixtures for our tests by running the script:
+Please contribute fixtures for our tests by running this command:
 
 ```sh
-python scripts/gen_fixtures.py \
-    --user user@example.com \
-    --password super_secret \
-    --name name_of_your_test \
-    --description "This is an initial test case for this vehicle. The vehicle was in motion"
+# Export all endpoints for all vehicles.
+myskoda \
+    --user user \
+    --password password \
+    gen-fixtures \
+        --name my_cars \
+        --description "My cars in no specific state."
+        --vehicle all \
+        get all
 ```
 
-This will call all get-routes and load all data from your vehicles (no actions will be performed).
+It is also possible to just contribute a single vehicle:
+
+```sh
+# Export all endpoints for a specific vehicle.
+myskoda \
+    --user user \
+    --password password \
+    gen-fixtures \
+        --name my_favorite_car \
+        --description "My favorite car in no specific state."
+        --vehicle TMOCKAA0AA000000 \
+        get all
+```
+
+Or even narrow down to an inidividual endpoint for an individual vehicle:
+
+```sh
+# Export a specific endpoint for a specific vehicle.
+myskoda \
+    --user user \
+    --password password \
+    gen-fixtures \
+        --name my_favorite_car_info \
+        --description "Info for my favorite car in no specific state."
+        --vehicle TMOCKAA0AA000000 \
+        get info
+```
+
+This will call all the selected get-routes and load all data from your vehicles (no actions will be performed).
 
 The data will be anonymized (vin and personal data are replaced) and serves as unit tests.
 

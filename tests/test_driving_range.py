@@ -1,13 +1,12 @@
 """Unit tests for myskoda.driving_range."""
 
 from pathlib import Path
-from unittest.mock import ANY, AsyncMock, MagicMock
 
 import pytest
+from aioresponses import aioresponses
 
-from myskoda import RestApi
-from myskoda.auth.authorization import Authorization
 from myskoda.models.driving_range import EngineType
+from myskoda.myskoda import MySkoda
 
 FIXTURES_DIR = Path(__file__).parent.joinpath("fixtures")
 
@@ -40,20 +39,20 @@ print(f"__file__ = {__file__}")
     ],
 )
 async def test_get_driving_range(
-    fixture_file: str, expected_values: dict[str, dict[str, EngineType | int]]
+    fixture_file: str,
+    expected_values: dict[str, dict[str, EngineType | int]],
+    myskoda: MySkoda,
+    responses: aioresponses,
 ) -> None:
     """Test case for driving range response."""
     vehicle_status = FIXTURES_DIR.joinpath(fixture_file).read_text()
-    response_mock = AsyncMock()
-    response_mock.text.return_value = vehicle_status
-    session_mock = MagicMock()
-    session_mock.request.return_value.__aenter__.return_value = response_mock
-
-    authorization = Authorization(session_mock)
-    api = RestApi(session_mock, authorization)
-    api.authorization.get_access_token = AsyncMock()
     target_vin = "TMBJM0CKV1N12345"
-    get_status_result = await api.get_driving_range(target_vin)
+    responses.get(
+        url=f"https://mysmob.api.connect.skoda-auto.cz/api/v2/vehicle-status/{target_vin}/driving-range",
+        body=vehicle_status,
+    )
+
+    get_status_result = await myskoda.get_driving_range(target_vin)
 
     assert get_status_result.car_type == expected_values["car_type"]
     assert get_status_result.primary_engine_range.engine_type == expected_values["primary_engine"]
@@ -70,10 +69,3 @@ async def test_get_driving_range(
             get_status_result.secondary_engine_range.remaining_range_in_km
             == expected_values["expected_secondary_range"]
         )
-
-    session_mock.request.assert_called_with(
-        method="GET",
-        url=f"https://mysmob.api.connect.skoda-auto.cz/api/v2/vehicle-status/{target_vin}/driving-range",
-        headers=ANY,
-        json=None,
-    )

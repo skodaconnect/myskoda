@@ -8,6 +8,7 @@ from aiohttp import ClientSession
 from aioresponses import aioresponses
 
 from myskoda.auth.authorization import Authorization
+from myskoda.myskoda import MySkoda
 from myskoda.rest_api import RestApi
 
 
@@ -26,3 +27,18 @@ async def api_fixture() -> AsyncIterator[RestApi]:
         api = RestApi(session, authorization)
         api.authorization.get_access_token = AsyncMock()
         yield api
+
+
+@pytest.fixture(name="myskoda")
+async def myskoda() -> AsyncIterator[MySkoda]:
+    """Return rest api."""
+    async with ClientSession() as session:
+        authorization = Authorization(session)
+        api = RestApi(session, authorization)
+        api.authorization.get_access_token = AsyncMock()
+        api.authorization.authorize = AsyncMock()
+        myskoda = MySkoda(session, mqtt_enabled=False)
+        myskoda.authorization.get_access_token = AsyncMock()
+        myskoda.authorization.authorize = AsyncMock()
+        await myskoda.connect("user@example.com", "password")
+        yield myskoda
