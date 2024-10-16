@@ -164,19 +164,19 @@ class Authorization:
                     async with self.session.get(location, allow_redirects=False) as response:
                         location = response.headers["Location"]
                 codes = location.replace("myskoda://redirect/login/#", "")
-
-                # The last redirection starting with `myskoda://` was encountered.
-                # The URL will contain the information we need as query parameters,
-                # without the leading `?`.
-                data = {}
-                for code in codes.split("&"):
-                    [key, value] = code.split("=")
-                    data[key] = value
-
-                return IDKAuthorizationCode.from_dict(data)
         except InvalidUrlClientError:
             _LOGGER.exception("Error occurred while sending password. Password may be incorrect.")
             raise
+
+        # The last redirection starting with `myskoda://` was encountered.
+        # The URL will contain the information we need as query parameters,
+        # without the leading `?`.
+        data = {}
+        for code in codes.split("&"):
+            [key, value] = code.split("=")
+            data[key] = value
+
+        return IDKAuthorizationCode.from_dict(data)
 
     async def _exchange_auth_code_for_idk_session(self, code: str, verifier: str) -> IDKSession:
         """Exchange the ident login code for an auth token from Skoda.
