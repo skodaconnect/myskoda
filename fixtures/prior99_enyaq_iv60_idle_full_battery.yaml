@@ -528,7 +528,7 @@ reports:
     \ File \"/home/prior/repositories/myskoda/myskoda/rest_api.py\", line 85, in _make_request\n
     \   response.raise_for_status()\n  File \"/home/prior/repositories/myskoda/venv/lib/python3.12/site-packages/aiohttp/client_reqrep.py\",
     line 1157, in raise_for_status\n    raise ClientResponseError(\naiohttp.client_exceptions.ClientResponseError:
-    404, message='Not Found', url='https://mysmob.api.connect.skoda-auto.cz/api/v1/trip-statistics/TMBJB9NY6RF032382?offsetType=week&offset=0&timezone=Europe/Berlin'\n"
+    404, message='Not Found', url='https://mysmob.api.connect.skoda-auto.cz/api/v1/trip-statistics/TMOCKAA0AA000000?offsetType=week&offset=0&timezone=Europe/Berlin'\n"
   raw: null
   result: null
   success: false

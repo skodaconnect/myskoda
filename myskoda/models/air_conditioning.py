@@ -68,12 +68,14 @@ class AirConditioning(DataClassORJSONMixin):
     """Information related to air conditioning."""
 
     timers: list[Timer]
-    car_captured_timestamp: datetime = field(metadata=field_options(alias="carCapturedTimestamp"))
     errors: list[Any]
     state: AirConditioningState
     steering_wheel_position: Side = field(metadata=field_options(alias="steeringWheelPosition"))
     window_heating_state: WindowHeatingState = field(
         metadata=field_options(alias="windowHeatingState")
+    )
+    car_captured_timestamp: datetime | None = field(
+        default=None, metadata=field_options(alias="carCapturedTimestamp")
     )
     air_conditioning_at_unlock: bool | None = field(
         default=None, metadata=field_options(alias="airConditioningAtUnlock")
