@@ -119,7 +119,7 @@ async def disconnect(  # noqa: PLR0913
     myskoda: MySkoda = ctx.obj["myskoda"]
     session: ClientSession = ctx.obj["session"]
 
-    myskoda.disconnect()
+    await myskoda.disconnect()
     await session.close()
 
 
