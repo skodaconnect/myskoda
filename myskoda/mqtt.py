@@ -1,17 +1,18 @@
 """MQTT client module for the MySkoda server."""
 
-import json
 import logging
 import re
 import ssl
 from asyncio import Future, Lock, create_task, get_event_loop, sleep
 from collections.abc import Awaitable, Callable
+from datetime import UTC, datetime
 from typing import Any, cast
 
 from asyncio_paho.client import AsyncioPahoClient
 from paho.mqtt.client import MQTTMessage
 
 from myskoda.auth.authorization import Authorization
+from myskoda.models.service_event import ServiceEvent, ServiceEventCharging
 
 from .const import (
     MQTT_ACCOUNT_EVENT_TOPICS,
@@ -61,6 +62,7 @@ class Mqtt:
     _callbacks: list[Callable[[Event], None | Awaitable[None]]]
     _operation_listeners: list[OperationListener]
     _connected_listeners: list[Future[None]]
+    _subscribed_listeners: Future[None] | None
     _disconnect_listener: Future[None] | None
     should_reconnect: bool
     is_connected: bool
@@ -81,6 +83,7 @@ class Mqtt:
         self._callbacks = []
         self._operation_listeners = []
         self._connected_listeners = []
+        self._subscribed_listener = None
         self._disconnect_listener = None
         self.ssl_context = ssl_context
         self.is_connected = False
@@ -110,6 +113,7 @@ class Mqtt:
             self.client = AsyncioPahoClient()
             self.client.on_connect = self._on_connect
             self.client.on_message = self._on_message
+            self.client.on_subscribe = self._on_subscribe
             self.client.on_disconnect = self._on_disconnect
             self.client.on_socket_close = self._on_socket_close
             self.client.on_connect_fail = self._on_connect_fail
@@ -138,6 +142,16 @@ class Mqtt:
         async with connect_lock:
             while not await self._perform_connect():  # noqa: ASYNC110
                 await sleep(MQTT_RECONNECT_DELAY)
+
+        user_id = self.user_id
+
+        for vin in self.vehicles:
+            for topic in MQTT_OPERATION_TOPICS:
+                await self._subscribe_to_topic(f"{user_id}/{vin}/operation-request/{topic}")
+            for topic in MQTT_SERVICE_EVENT_TOPICS:
+                await self._subscribe_to_topic(f"{user_id}/{vin}/service-event/{topic}")
+            for topic in MQTT_ACCOUNT_EVENT_TOPICS:
+                await self._subscribe_to_topic(f"{user_id}/{vin}/account-event/{topic}")
 
     def reconnect(self) -> None:
         """Reconnect a client that was previously connected and was disconnected."""
@@ -221,23 +235,35 @@ class Mqtt:
             _LOGGER.error("Reached on_connect, but user and vehicles not loaded")
             return
 
-        user_id = self.user_id
-
-        for vin in self.vehicles:
-            for topic in MQTT_OPERATION_TOPICS:
-                self._subscribe_to_topic(f"{user_id}/{vin}/operation-request/{topic}")
-            for topic in MQTT_SERVICE_EVENT_TOPICS:
-                self._subscribe_to_topic(f"{user_id}/{vin}/service-event/{topic}")
-            for topic in MQTT_ACCOUNT_EVENT_TOPICS:
-                self._subscribe_to_topic(f"{user_id}/{vin}/account-event/{topic}")
-
         for future in self._connected_listeners:
             future.set_result(None)
         self._connected_listeners = []
 
-    def _subscribe_to_topic(self, topic: str) -> None:
+    def _on_subscribe(
+        self,
+        client: AsyncioPahoClient,
+        _data: None,
+        _mid: int,
+        _reason_code_list: list[int],
+    ) -> None:
+        if client is not self.client:
+            return
+
+        if self._subscribed_listener is not None:
+            listener = self._subscribed_listener
+            self._subscribed_listener = None
+            listener.set_result(None)
+
+    async def _subscribe_to_topic(self, topic: str) -> None:
         _LOGGER.debug("Subscribing to topic: %s", topic)
+        if self._subscribed_listener is not None:
+            raise ConcurrentSubscribeError
+
+        future: Future[None] = get_event_loop().create_future()
+        self._subscribed_listener = future
+
         self.client.subscribe(topic)
+        await future
 
     def _emit(self, event: Event) -> None:
         for callback in self._callbacks:
@@ -316,22 +342,62 @@ class Mqtt:
 
         # Messages will contain payload as JSON.
         try:
-            data = json.loads(msg.payload)
             match event_type:
                 case EventType.OPERATION:
-                    self._emit(EventOperation(vin, user_id, data))
+                    self._emit(
+                        EventOperation(
+                            vin=vin,
+                            user_id=user_id,
+                            timestamp=datetime.now(tz=UTC),
+                            operation=OperationRequest.from_json(msg.payload),
+                        )
+                    )
                 case EventType.ACCOUNT_EVENT:
-                    self._emit(EventAccountPrivacy(vin, user_id, data))
+                    self._emit(
+                        EventAccountPrivacy(
+                            vin=vin,
+                            user_id=user_id,
+                            timestamp=datetime.now(tz=UTC),
+                        )
+                    )
                 case EventType.SERVICE_EVENT:
                     match topic:
                         case "air-conditioning":
-                            self._emit(EventAirConditioning(vin, user_id, data))
+                            self._emit(
+                                EventAirConditioning(
+                                    vin=vin,
+                                    user_id=user_id,
+                                    timestamp=datetime.now(tz=UTC),
+                                    event=ServiceEvent.from_json(msg.payload),
+                                )
+                            )
                         case "charging":
-                            self._emit(EventCharging(vin, user_id, data))
+                            self._emit(
+                                EventCharging(
+                                    vin=vin,
+                                    user_id=user_id,
+                                    timestamp=datetime.now(tz=UTC),
+                                    event=ServiceEventCharging.from_json(msg.payload),
+                                )
+                            )
                         case "vehicle-status/access":
-                            self._emit(EventAccess(vin, user_id, data))
+                            self._emit(
+                                EventAccess(
+                                    vin=vin,
+                                    user_id=user_id,
+                                    timestamp=datetime.now(tz=UTC),
+                                    event=ServiceEvent.from_json(msg.payload),
+                                )
+                            )
                         case "vehicle-status/lights":
-                            self._emit(EventLights(vin, user_id, data))
+                            self._emit(
+                                EventLights(
+                                    vin=vin,
+                                    user_id=user_id,
+                                    timestamp=datetime.now(tz=UTC),
+                                    event=ServiceEvent.from_json(msg.payload),
+                                )
+                            )
         except Exception as exc:  # noqa: BLE001
             _LOGGER.warning("Exception parsing MQTT event: %s", exc)
 
@@ -349,4 +415,8 @@ class FailedToConnectError(Exception):
 
 
 class NotConnectedError(Exception):
+    pass
+
+
+class ConcurrentSubscribeError(Exception):
     pass
