@@ -158,8 +158,8 @@ class VehicleState(StrEnum):
 class Engine(DataClassORJSONMixin):
     """Engine features."""
 
-    type: str | None = field(default=None)
     power: int = field(metadata=field_options(alias="powerInKW"))
+    type: str | None = field(default=None)
     capacity_in_liters: float | None = field(
         default=None, metadata=field_options(alias="capacityInLiters")
     )
