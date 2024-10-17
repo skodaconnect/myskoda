@@ -1,5 +1,6 @@
 """Methods for anonymizing data from the API."""
 
+ACCESS_TOKEN = "eyJ0eXAiOiI0ODEyODgzZi05Y2FiLTQwMWMtYTI5OC0wZmEyMTA5Y2ViY2EiLCJhbGciOiJSUzI1NiJ9"  # noqa: S105
 USER_ID = "b8bc126c-ee36-402b-8723-2c1c3dff8dec"
 VIN = "TMOCKAA0AA000000"
 ADDRESS = {

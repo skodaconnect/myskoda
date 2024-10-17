@@ -12,6 +12,7 @@ from aioresponses import aioresponses
 from amqtt.broker import Broker, CancelledError
 from amqtt.client import MQTTClient
 
+from myskoda.anonymize import ACCESS_TOKEN
 from myskoda.auth.authorization import Authorization
 from myskoda.myskoda import MySkoda
 from myskoda.rest_api import RestApi
@@ -42,9 +43,7 @@ def random_port() -> int:
         return sock.getsockname()[1]
 
 
-@pytest.fixture
-async def broker_port() -> AsyncIterator[int]:
-    port = random_port()
+def create_broker(port: int) -> Broker:
     config = {
         "listeners": {
             "default": {
@@ -59,9 +58,19 @@ async def broker_port() -> AsyncIterator[int]:
         "topic-check": {"enabled": False},
     }
 
-    broker = Broker(config)
+    return Broker(config)
+
+
+@pytest.fixture
+async def broker_port() -> AsyncIterator[int]:
+    port = random_port()
+    broker = create_broker(port)
     await broker.start()
     yield port
+    await kill_broker(broker)
+
+
+async def kill_broker(broker: Broker) -> None:
     try:
         async with timeout(0.1):
             await broker.shutdown()
@@ -79,27 +88,29 @@ async def mqtt_client(broker_port: int) -> AsyncIterator[MQTTClient]:
     await client.disconnect()
 
 
+def mock_default_routes(responses: aioresponses) -> None:
+    responses.get(
+        url="https://mysmob.api.connect.skoda-auto.cz/api/v1/users",
+        body=(FIXTURES_DIR / "mqtt" / "user.json").read_text(),
+    )
+    responses.get(
+        url="https://mysmob.api.connect.skoda-auto.cz/api/v2/garage?connectivityGenerations=MOD1&connectivityGenerations=MOD2&connectivityGenerations=MOD3&connectivityGenerations=MOD4",
+        body=(FIXTURES_DIR / "mqtt" / "vehicles.json").read_text(),
+    )
+
+
 @pytest.fixture
 async def myskoda(responses: aioresponses, broker_port: int) -> AsyncIterator[MySkoda]:
     """Return rest api."""
     async with ClientSession() as session:
-        responses.get(
-            url="https://mysmob.api.connect.skoda-auto.cz/api/v1/users",
-            body=(FIXTURES_DIR / "mqtt" / "user.json").read_text(),
-        )
-        responses.get(
-            url="https://mysmob.api.connect.skoda-auto.cz/api/v2/garage?connectivityGenerations=MOD1&connectivityGenerations=MOD2&connectivityGenerations=MOD3&connectivityGenerations=MOD4",
-            body=(FIXTURES_DIR / "mqtt" / "vehicles.json").read_text(),
-        )
+        mock_default_routes(responses)
         myskoda = MySkoda(
             session,
             mqtt_broker_host="127.0.0.1",
             mqtt_broker_port=broker_port,
             mqtt_enable_ssl=False,
         )
-        myskoda.authorization.get_access_token = AsyncMock(
-            return_value="eyJ0eXAiOiI0ODEyODgzZi05Y2FiLTQwMWMtYTI5OC0wZmEyMTA5Y2ViY2EiLCJhbGciOiJSUzI1NiJ9"
-        )
+        myskoda.authorization.get_access_token = AsyncMock(return_value=ACCESS_TOKEN)
         myskoda.authorization.authorize = AsyncMock()
         await myskoda.connect("user@example.com", "password")
         yield myskoda

@@ -30,8 +30,7 @@ async def test_wait_for_operation(
     mqtt_client: MQTTClient,
     myskoda: MySkoda,
 ) -> None:
-    if myskoda.mqtt is None:
-        return
+    assert myskoda.mqtt is not None
 
     topic = f"{USER_ID}/{VIN}/operation-request/air-conditioning/start-stop-air-conditioning"
 
@@ -59,8 +58,7 @@ async def test_subscribe_event(
     mqtt_client: MQTTClient,
     myskoda: MySkoda,
 ) -> None:
-    if myskoda.mqtt is None:
-        return
+    assert myskoda.mqtt is not None
 
     base_topic = f"{USER_ID}/{VIN}"
     trace_id = "7a59299d06535a6756d10e96e0c75ed3"
