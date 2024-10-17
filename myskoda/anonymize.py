@@ -1,5 +1,6 @@
 """Methods for anonymizing data from the API."""
 
+USER_ID = "b8bc126c-ee36-402b-8723-2c1c3dff8dec"
 VIN = "TMOCKAA0AA000000"
 ADDRESS = {
     "city": "Example City",
