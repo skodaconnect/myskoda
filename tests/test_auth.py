@@ -7,6 +7,7 @@ import aiohttp
 import pytest
 from aioresponses import aioresponses
 
+from myskoda.anonymize import USER_ID
 from myskoda.auth import authorization
 from myskoda.const import BASE_URL_IDENT, BASE_URL_SKODA, CLIENT_ID
 
@@ -40,7 +41,7 @@ def redirect_loop(responses: aioresponses, urls: list[str]) -> None:
 async def test_get_info(responses: aioresponses) -> None:
     nonce = "abcdefghabcdefgh"
     relay_state = "d865b506bd6759b20e832c8c692c5ca2669ebd27"
-    user_id = "b8bc126c-ee36-402b-8723-2c1c3dff8dec"
+    user_id = USER_ID
     hmac = "575452461e126b1873f4655918e14d0ba1a40622b768438fe4dd6d9579bc170c"
 
     def generate_nonce() -> str:

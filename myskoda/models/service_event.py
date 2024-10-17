@@ -45,7 +45,7 @@ class ServiceEvent(Generic[T], DataClassORJSONMixin):
     name: ServiceEventName
     data: T
     trace_id: str = field(metadata=field_options(alias="traceId"))
-    timestamp: datetime | None = field(default=None, metadata=field_options(alias="requestId"))
+    timestamp: datetime | None = field(default=None)
 
 
 def _deserialize_mode(value: str) -> ChargeMode:  # noqa: PLR0911
@@ -107,7 +107,7 @@ class ServiceEventChargingData(ServiceEventData):
 
 
 @dataclass
-class ServiceEventCharging(ServiceEvent):
+class ServiceEventCharging(ServiceEvent, DataClassORJSONMixin):
     """Charging details of a Service Event."""
 
     data: ServiceEventChargingData
