@@ -27,7 +27,7 @@ from .auth.authorization import Authorization
 from .const import MQTT_BROKER_HOST, MQTT_BROKER_PORT
 from .event import Event
 from .models.air_conditioning import AirConditioning
-from .models.charging import Charging
+from .models.charging import ChargeMode, Charging
 from .models.driving_range import DrivingRange
 from .models.health import Health
 from .models.info import CapabilityId, Info
@@ -142,9 +142,18 @@ class MySkoda:
         await self.rest_api.start_charging(vin)
         await future
 
+    async def set_charge_mode(self, vin: str, mode: ChargeMode) -> None:
+        """Set the charge mode."""
+        future = self._wait_for_operation(OperationName.UPDATE_CHARGE_MODE)
+        await self.rest_api.set_charge_mode(vin, mode=mode)
+        await future
+
     async def honk_flash(self, vin: str, honk: bool = False) -> None:
         """Honk and/or flash."""
-        future = self._wait_for_operation(OperationName.START_HONK)
+        if honk:
+            future = self._wait_for_operation(OperationName.START_HONK)
+        else:
+            future = self._wait_for_operation(OperationName.START_FLASH)
         await self.rest_api.honk_flash(vin, (await self.get_positions(vin)).positions, honk)
         await future
 

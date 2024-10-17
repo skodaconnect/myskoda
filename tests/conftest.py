@@ -1,5 +1,6 @@
 """Test helpers."""
 
+import json
 from asyncio.timeouts import timeout
 from collections.abc import AsyncIterator, Generator
 from pathlib import Path
@@ -18,6 +19,8 @@ from myskoda.myskoda import MySkoda
 from myskoda.rest_api import RestApi
 
 FIXTURES_DIR = Path(__file__).parent / "fixtures"
+TRACE_ID = "7a59299d06535a6756d10e96e0c75ed3"
+REQUEST_ID = "b9bc1258-2d0c-43c2-8d67-44d9f6c8cb9f"
 
 
 @pytest.fixture
@@ -115,3 +118,15 @@ async def myskoda(responses: aioresponses, broker_port: int) -> AsyncIterator[My
         await myskoda.connect("user@example.com", "password")
         yield myskoda
         await myskoda.disconnect()
+
+
+def create_completed_json(operation: str) -> bytes:
+    return json.dumps(
+        {
+            "version": 1,
+            "operation": operation,
+            "status": "COMPLETED_SUCCESS",
+            "traceId": TRACE_ID,
+            "requestId": REQUEST_ID,
+        }
+    ).encode("utf-8")
