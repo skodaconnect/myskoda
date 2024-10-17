@@ -83,10 +83,6 @@ async def mqtt_client(broker_port: int) -> AsyncIterator[MQTTClient]:
 async def myskoda(responses: aioresponses, broker_port: int) -> AsyncIterator[MySkoda]:
     """Return rest api."""
     async with ClientSession() as session:
-        authorization = Authorization(session)
-        api = RestApi(session, authorization)
-        api.authorization.get_access_token = AsyncMock()
-        api.authorization.authorize = AsyncMock()
         responses.get(
             url="https://mysmob.api.connect.skoda-auto.cz/api/v1/users",
             body=(FIXTURES_DIR / "mqtt" / "user.json").read_text(),
