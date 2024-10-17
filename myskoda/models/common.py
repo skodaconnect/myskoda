@@ -57,6 +57,7 @@ class DoorLockedState(StrEnum):
 class ChargerLockedState(StrEnum):
     LOCKED = "LOCKED"
     UNLOCKED = "UNLOCKED"
+    INVALID = "INVALID"
 
 
 class ConnectionState(StrEnum):
