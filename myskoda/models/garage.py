@@ -2,6 +2,7 @@
 
 import logging
 from dataclasses import dataclass, field
+from enum import StrEnum
 
 from mashumaro import field_options
 from mashumaro.mixins.orjson import DataClassORJSONMixin
@@ -9,6 +10,20 @@ from mashumaro.mixins.orjson import DataClassORJSONMixin
 from myskoda.models.info import CompositeRender, Render, VehicleState
 
 _LOGGER = logging.getLogger(__name__)
+
+
+class GarageErrorType(StrEnum):
+    """Known errors in the Garage."""
+
+    NO_MOD1_4_VEHICLES = "NO_MOD1_4_VEHICLES"
+
+
+@dataclass
+class GarageError(DataClassORJSONMixin):
+    """Errors occurring in the Garage."""
+
+    description: str
+    type: GarageErrorType
 
 
 @dataclass
@@ -33,3 +48,4 @@ class Garage(DataClassORJSONMixin):
     """Contents of the users Garage."""
 
     vehicles: list[GarageEntry] | None = field(default=None)
+    errors: list[GarageError] | None = field(default=None)
