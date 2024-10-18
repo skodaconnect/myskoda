@@ -202,7 +202,6 @@ class ErrorType(StrEnum):
     """Known errors."""
 
     MISSING_RENDER = "MISSING_RENDER"
-    NO_MOD1_4_VEHICLES = "NO_MOD1_4_VEHICLES"
 
 
 @dataclass
