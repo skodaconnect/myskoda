@@ -84,7 +84,7 @@ class Address(DataClassORJSONMixin):
 
     street: str
     country_code: str = field(metadata=field_options(alias="countryCode"))
-    zip_code: str = field(metadata=field_options(alias="zipCode"))
+    zip_code: str | None = field(default=None, metadata=field_options(alias="zipCode"))
     house_number: str | None = field(default=None, metadata=field_options(alias="houseNumber"))
     city: str | None = field(default=None)
     country: str | None = field(default=None)
