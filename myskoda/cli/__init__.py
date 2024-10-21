@@ -43,6 +43,18 @@ from myskoda.cli.requests import (
 )
 from myskoda.cli.utils import Format, print_json, print_yaml
 
+if sys_platform.lower().startswith("win") and sys_version_info >= (3, 8):
+    # Check if we're on windows, if so, tune asyncio to work there as well (https://github.com/skodaconnect/myskoda/issues/77)
+    import asyncio
+
+    try:
+        from asyncio import WindowsSelectorEventLoopPolicy  # type: ignore[unknown-import]
+    except ImportError:
+        pass  # Can't assign a policy which doesn't exist.
+    else:
+        if not isinstance(asyncio.get_event_loop_policy(), WindowsSelectorEventLoopPolicy):
+            asyncio.set_event_loop_policy(WindowsSelectorEventLoopPolicy())
+
 
 @click.group()
 @click.version_option()
@@ -83,18 +95,6 @@ async def cli(  # noqa: PLR0913
     trace_configs = []
     if trace:
         trace_configs.append(TRACE_CONFIG)
-
-    # Check if we're on windows, if so, tune asyncio to work there as well (https://github.com/skodaconnect/myskoda/issues/77)
-    if sys_platform.lower().startswith("win") and sys_version_info >= (3, 8):
-        import asyncio
-
-        try:
-            from asyncio import WindowsSelectorEventLoopPolicy  # type: ignore[unknown-import]
-        except ImportError:
-            pass  # Can't assign a policy which doesn't exist.
-        else:
-            if not isinstance(asyncio.get_event_loop_policy(), WindowsSelectorEventLoopPolicy):
-                asyncio.set_event_loop_policy(WindowsSelectorEventLoopPolicy())
 
     session = ClientSession(trace_configs=trace_configs)
     myskoda = MySkoda(session, mqtt_enabled=False)
