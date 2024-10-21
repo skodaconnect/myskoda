@@ -1,8 +1,11 @@
 """Methods for anonymizing data from the API."""
 
+import re
+
 ACCESS_TOKEN = "eyJ0eXAiOiI0ODEyODgzZi05Y2FiLTQwMWMtYTI5OC0wZmEyMTA5Y2ViY2EiLCJhbGciOiJSUzI1NiJ9"  # noqa: S105
 USER_ID = "b8bc126c-ee36-402b-8723-2c1c3dff8dec"
 VIN = "TMOCKAA0AA000000"
+VIN_REGEX = re.compile(r"TMB\w{14}")
 ADDRESS = {
     "city": "Example City",
     "street": "Example Avenue",
@@ -112,5 +115,5 @@ def anonymize_garage(data: dict) -> dict:
     return data
 
 
-def anonymize_url(url: str, vin: str) -> str:
-    return url.replace(vin, VIN)
+def anonymize_url(url: str) -> str:
+    return VIN_REGEX.sub(VIN, url)
