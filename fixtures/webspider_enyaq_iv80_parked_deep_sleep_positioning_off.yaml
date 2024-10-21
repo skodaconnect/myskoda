@@ -1,558 +1,6 @@
----
-description: Vehicle is parked and in deep sleep, positioning turned off
-generation_time: '2024-10-18T15:28:19.599636+00:00'
-name: parked-deep-sleep_pos_off_air_conditioning
-reports:
-- endpoint: air_conditioning
-  error: null
-  raw: '{"estimatedDateTimeToReachTargetTemperature": "2024-10-18T15:28:19.59167794Z",
-    "state": "OFF", "runningRequests": [], "targetTemperature": {"temperatureValue":
-    19.5, "unitInCar": "CELSIUS"}, "airConditioningAtUnlock": false, "windowHeatingEnabled":
-    true, "steeringWheelPosition": "LEFT", "seatHeatingActivated": {"frontLeft": true,
-    "frontRight": true}, "chargerConnectionState": "DISCONNECTED", "chargerLockState":
-    "UNLOCKED", "windowHeatingState": {"front": "OFF", "rear": "OFF", "unspecified":
-    "INVALID"}, "timers": [{"id": 1, "enabled": true, "time": "08:05", "type": "RECURRING",
-    "selectedDays": ["MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY"]}, {"id":
-    2, "enabled": false, "time": "17:30", "type": "ONE_OFF", "selectedDays": ["TUESDAY"]}],
-    "carCapturedTimestamp": "2024-10-18T12:46:27Z", "errors": []}'
-  result:
-    air_conditioning_at_unlock: false
-    car_captured_timestamp: '2024-10-18T12:46:27+00:00'
-    charger_connection_state: DISCONNECTED
-    charger_lock_state: UNLOCKED
-    errors: []
-    estimated_date_time_to_reach_target_temperature: '2024-10-18T15:28:19.591677+00:00'
-    heater_source: null
-    seat_heating_activated:
-      front_left: true
-      front_right: true
-    state: 'OFF'
-    steering_wheel_position: LEFT
-    target_temperature:
-      temperature_value: 19.5
-      unit_in_car: CELSIUS
-    timers:
-    - enabled: true
-      id: 1
-      selected_days:
-      - MONDAY
-      - TUESDAY
-      - WEDNESDAY
-      - THURSDAY
-      - FRIDAY
-      time: 08:05:00
-      type: RECURRING
-    - enabled: false
-      id: 2
-      selected_days:
-      - TUESDAY
-      time: '17:30:00'
-      type: ONE_OFF
-    window_heating_enabled: true
-    window_heating_state:
-      front: 'OFF'
-      rear: 'OFF'
-      unspecified: INVALID
-  success: true
-  type: get
-  url: /v2/air-conditioning/TMOCKAA0AA000000
-  vehicle_id: 0
-vehicles:
-- capabilities:
-  - id: AUTOMATION
-    statuses:
-    - DEACTIVATED_BY_ACTIVE_VEHICLE_USER
-  - id: BATTERY_CHARGING_CARE
-    statuses: []
-  - id: BATTERY_SUPPORT
-    statuses: []
-  - id: CHARGING_PROFILES
-    statuses:
-    - DEACTIVATED_BY_ACTIVE_VEHICLE_USER
-  - id: CHARGING_STATIONS
-    statuses: []
-  - id: DIGICERT
-    statuses: []
-  - id: MAP_UPDATE
-    statuses: []
-  - id: MEASUREMENTS
-    statuses: []
-  - id: PARKING_INFORMATION
-    statuses: []
-  - id: PARKING_POSITION
-    statuses:
-    - DEACTIVATED_BY_ACTIVE_VEHICLE_USER
-  - id: POI_SEARCH
-    statuses: []
-  - id: ROADSIDE_ASSISTANT
-    statuses:
-    - DEACTIVATED_BY_ACTIVE_VEHICLE_USER
-  - id: ROUTING
-    statuses: []
-  - id: STATE
-    statuses: []
-  - id: TRAFFIC_INFORMATION
-    statuses: []
-  - id: VEHICLE_HEALTH_INSPECTION
-    statuses: []
-  - id: WARNING_LIGHTS
-    statuses: []
-  - id: WEB_RADIO
-    statuses: []
-  - id: AIR_CONDITIONING_TIMERS
-    statuses: []
-  - id: AIR_CONDITIONING_SMART_SETTINGS
-    statuses: []
-  - id: POWERPASS_TARIFFS
-    statuses: []
-  - id: AIR_CONDITIONING_SAVE_AND_ACTIVATE
-    statuses: []
-  - id: CUBIC
-    statuses: []
-  - id: ROUTE_PLANNING_5_CHARGERS
-    statuses: []
-  - id: SUBSCRIPTIONS
-    statuses: []
-  - id: DESTINATIONS
-    statuses: []
-  - id: CHARGING_MEB
-    statuses: []
-  - id: VEHICLE_SERVICES_BACKUPS
-    statuses: []
-  - id: EV_ROUTE_PLANNING
-    statuses: []
-  - id: CHARGE_MODE_SELECTION
-    statuses: []
-  - id: DIGICERT
-    statuses: []
-  - id: VEHICLE_HEALTH_WARNINGS
-    statuses: []
-  - id: PAY_TO_PARK
-    statuses: []
-  - id: ONLINE_SPEECH_GPS
-    statuses: []
-  - id: GUEST_USER_MANAGEMENT
-    statuses: []
-  - id: DESTINATION_IMPORT_UPGRADABLE
-    statuses: []
-  - id: SERVICE_PARTNER
-    statuses: []
-  - id: WINDOW_HEATING
-    statuses: []
-  - id: CHARGING
-    statuses: []
-  - id: AIR_CONDITIONING
-    statuses: []
-  - id: EXTENDED_CHARGING_SETTINGS
-    statuses: []
-  - id: VEHICLE_WAKE_UP_TRIGGER
-    statuses: []
-  device_platform: WCAR
-  id: 0
-  model: Enyaq
-  model_year: '2021'
-  software_version: '3.0'
-  system_model_id: 5AZJJ2
-  trim_level: null
----
-description: Vehicle is parked and in deep sleep, positioning turned off
-generation_time: '2024-10-18T15:28:30.004711+00:00'
-name: parked-deep-sleep_pos_off_charging
-reports:
-- endpoint: charging
-  error: null
-  raw: '{"isVehicleInSavedLocation": false, "status": {"chargingRateInKilometersPerHour":
-    0.0, "chargePowerInKw": 0.0, "remainingTimeToFullyChargedInMinutes": 0, "state":
-    "CONNECT_CABLE", "battery": {"remainingCruisingRangeInMeters": 249000, "stateOfChargeInPercent":
-    65}}, "settings": {"targetStateOfChargeInPercent": 80, "preferredChargeMode":
-    "MANUAL", "availableChargeModes": ["MANUAL"], "chargingCareMode": "ACTIVATED",
-    "autoUnlockPlugWhenCharged": "OFF", "maxChargeCurrentAc": "REDUCED", "batterySupport":
-    "ENABLED"}, "carCapturedTimestamp": "2024-10-18T12:47:12Z", "errors": []}'
-  result:
-    car_captured_timestamp: '2024-10-18T12:47:12+00:00'
-    errors: []
-    is_vehicle_in_saved_location: false
-    settings:
-      auto_unlock_plug_when_charged: 'OFF'
-      available_charge_modes:
-      - MANUAL
-      battery_support: ENABLED
-      charging_care_mode: ACTIVATED
-      max_charge_current_ac: REDUCED
-      preferred_charge_mode: MANUAL
-      target_state_of_charge_in_percent: 80
-    status:
-      battery:
-        remaining_cruising_range_in_meters: 249000
-        state_of_charge_in_percent: 65
-      charge_power_in_kw: 0.0
-      charge_type: null
-      charging_rate_in_kilometers_per_hour: 0.0
-      errors: null
-      remaining_time_to_fully_charged_in_minutes: 0
-      state: CONNECT_CABLE
-  success: true
-  type: get
-  url: /v1/charging/TMOCKAA0AA000000
-  vehicle_id: 0
-vehicles:
-- capabilities:
-  - id: AUTOMATION
-    statuses:
-    - DEACTIVATED_BY_ACTIVE_VEHICLE_USER
-  - id: BATTERY_CHARGING_CARE
-    statuses: []
-  - id: BATTERY_SUPPORT
-    statuses: []
-  - id: CHARGING_PROFILES
-    statuses:
-    - DEACTIVATED_BY_ACTIVE_VEHICLE_USER
-  - id: CHARGING_STATIONS
-    statuses: []
-  - id: DIGICERT
-    statuses: []
-  - id: MAP_UPDATE
-    statuses: []
-  - id: MEASUREMENTS
-    statuses: []
-  - id: PARKING_INFORMATION
-    statuses: []
-  - id: PARKING_POSITION
-    statuses:
-    - DEACTIVATED_BY_ACTIVE_VEHICLE_USER
-  - id: POI_SEARCH
-    statuses: []
-  - id: ROADSIDE_ASSISTANT
-    statuses:
-    - DEACTIVATED_BY_ACTIVE_VEHICLE_USER
-  - id: ROUTING
-    statuses: []
-  - id: STATE
-    statuses: []
-  - id: TRAFFIC_INFORMATION
-    statuses: []
-  - id: VEHICLE_HEALTH_INSPECTION
-    statuses: []
-  - id: WARNING_LIGHTS
-    statuses: []
-  - id: WEB_RADIO
-    statuses: []
-  - id: AIR_CONDITIONING_TIMERS
-    statuses: []
-  - id: AIR_CONDITIONING_SMART_SETTINGS
-    statuses: []
-  - id: POWERPASS_TARIFFS
-    statuses: []
-  - id: AIR_CONDITIONING_SAVE_AND_ACTIVATE
-    statuses: []
-  - id: CUBIC
-    statuses: []
-  - id: ROUTE_PLANNING_5_CHARGERS
-    statuses: []
-  - id: SUBSCRIPTIONS
-    statuses: []
-  - id: DESTINATIONS
-    statuses: []
-  - id: CHARGING_MEB
-    statuses: []
-  - id: VEHICLE_SERVICES_BACKUPS
-    statuses: []
-  - id: EV_ROUTE_PLANNING
-    statuses: []
-  - id: CHARGE_MODE_SELECTION
-    statuses: []
-  - id: DIGICERT
-    statuses: []
-  - id: VEHICLE_HEALTH_WARNINGS
-    statuses: []
-  - id: PAY_TO_PARK
-    statuses: []
-  - id: ONLINE_SPEECH_GPS
-    statuses: []
-  - id: GUEST_USER_MANAGEMENT
-    statuses: []
-  - id: DESTINATION_IMPORT_UPGRADABLE
-    statuses: []
-  - id: SERVICE_PARTNER
-    statuses: []
-  - id: WINDOW_HEATING
-    statuses: []
-  - id: CHARGING
-    statuses: []
-  - id: AIR_CONDITIONING
-    statuses: []
-  - id: EXTENDED_CHARGING_SETTINGS
-    statuses: []
-  - id: VEHICLE_WAKE_UP_TRIGGER
-    statuses: []
-  device_platform: WCAR
-  id: 0
-  model: Enyaq
-  model_year: '2021'
-  software_version: '3.0'
-  system_model_id: 5AZJJ2
-  trim_level: null
----
-description: Vehicle is parked and in deep sleep, positioning turned off
-generation_time: '2024-10-18T15:28:35.488313+00:00'
-name: parked-deep-sleep_pos_off_driving_range
-reports:
-- endpoint: driving_range
-  error: null
-  raw: '{"carType": "electric", "totalRangeInKm": 249, "primaryEngineRange": {"engineType":
-    "electric", "currentSoCInPercent": 65, "remainingRangeInKm": 249}, "carCapturedTimestamp":
-    "2024-10-18T12:46:26Z"}'
-  result:
-    car_captured_timestamp: '2024-10-18T12:46:26+00:00'
-    car_type: electric
-    primary_engine_range:
-      current_fuel_level_in_percent: null
-      current_soc_in_percent: 65
-      engine_type: electric
-      remaining_range_in_km: 249
-    secondary_engine_range: null
-    total_range_in_km: 249
-  success: true
-  type: get
-  url: /v2/vehicle-status/TMOCKAA0AA000000/driving-range
-  vehicle_id: 0
-vehicles:
-- capabilities:
-  - id: AUTOMATION
-    statuses:
-    - DEACTIVATED_BY_ACTIVE_VEHICLE_USER
-  - id: BATTERY_CHARGING_CARE
-    statuses: []
-  - id: BATTERY_SUPPORT
-    statuses: []
-  - id: CHARGING_PROFILES
-    statuses:
-    - DEACTIVATED_BY_ACTIVE_VEHICLE_USER
-  - id: CHARGING_STATIONS
-    statuses: []
-  - id: DIGICERT
-    statuses: []
-  - id: MAP_UPDATE
-    statuses: []
-  - id: MEASUREMENTS
-    statuses: []
-  - id: PARKING_INFORMATION
-    statuses: []
-  - id: PARKING_POSITION
-    statuses:
-    - DEACTIVATED_BY_ACTIVE_VEHICLE_USER
-  - id: POI_SEARCH
-    statuses: []
-  - id: ROADSIDE_ASSISTANT
-    statuses:
-    - DEACTIVATED_BY_ACTIVE_VEHICLE_USER
-  - id: ROUTING
-    statuses: []
-  - id: STATE
-    statuses: []
-  - id: TRAFFIC_INFORMATION
-    statuses: []
-  - id: VEHICLE_HEALTH_INSPECTION
-    statuses: []
-  - id: WARNING_LIGHTS
-    statuses: []
-  - id: WEB_RADIO
-    statuses: []
-  - id: AIR_CONDITIONING_TIMERS
-    statuses: []
-  - id: AIR_CONDITIONING_SMART_SETTINGS
-    statuses: []
-  - id: POWERPASS_TARIFFS
-    statuses: []
-  - id: AIR_CONDITIONING_SAVE_AND_ACTIVATE
-    statuses: []
-  - id: CUBIC
-    statuses: []
-  - id: ROUTE_PLANNING_5_CHARGERS
-    statuses: []
-  - id: SUBSCRIPTIONS
-    statuses: []
-  - id: DESTINATIONS
-    statuses: []
-  - id: CHARGING_MEB
-    statuses: []
-  - id: VEHICLE_SERVICES_BACKUPS
-    statuses: []
-  - id: EV_ROUTE_PLANNING
-    statuses: []
-  - id: CHARGE_MODE_SELECTION
-    statuses: []
-  - id: DIGICERT
-    statuses: []
-  - id: VEHICLE_HEALTH_WARNINGS
-    statuses: []
-  - id: PAY_TO_PARK
-    statuses: []
-  - id: ONLINE_SPEECH_GPS
-    statuses: []
-  - id: GUEST_USER_MANAGEMENT
-    statuses: []
-  - id: DESTINATION_IMPORT_UPGRADABLE
-    statuses: []
-  - id: SERVICE_PARTNER
-    statuses: []
-  - id: WINDOW_HEATING
-    statuses: []
-  - id: CHARGING
-    statuses: []
-  - id: AIR_CONDITIONING
-    statuses: []
-  - id: EXTENDED_CHARGING_SETTINGS
-    statuses: []
-  - id: VEHICLE_WAKE_UP_TRIGGER
-    statuses: []
-  device_platform: WCAR
-  id: 0
-  model: Enyaq
-  model_year: '2021'
-  software_version: '3.0'
-  system_model_id: 5AZJJ2
-  trim_level: null
----
-description: Vehicle is parked and in deep sleep, positioning turned off
-generation_time: '2024-10-18T15:28:24.937663+00:00'
-name: parked-deep-sleep_pos_off_health
-reports:
-- endpoint: health
-  error: null
-  raw: '{"capturedAt": "2024-10-18T12:46:47.15Z", "mileageInKm": 83109, "warningLights":
-    [{"category": "OTHER", "defects": [{"text": "Please add washer fluid.", "priority":
-    "125", "icon": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAFAAAABQCAYAAACOEfKtAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAA4ZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNi1jMTQ1IDc5LjE2MzQ5OSwgMjAxOC8wOC8xMy0xNjo0MDoyMiAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wTU09Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9tbS8iIHhtbG5zOnN0UmVmPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvc1R5cGUvUmVzb3VyY2VSZWYjIiB4bWxuczp4bXA9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC8iIHhtcE1NOk9yaWdpbmFsRG9jdW1lbnRJRD0ieG1wLmRpZDo5ZWVlODdiNS1lOWYwLTQwYzctODFmMy05ZWM3OWZmM2E0ZGIiIHhtcE1NOkRvY3VtZW50SUQ9InhtcC5kaWQ6MzJBRUZEMTU2MDRDMTFFQUIyMEFDNkUxMjQ0NkE5NzciIHhtcE1NOkluc3RhbmNlSUQ9InhtcC5paWQ6MzJBRUZEMTQ2MDRDMTFFQUIyMEFDNkUxMjQ0NkE5NzciIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTkgKE1hY2ludG9zaCkiPiA8eG1wTU06RGVyaXZlZEZyb20gc3RSZWY6aW5zdGFuY2VJRD0ieG1wLmlpZDozYWQwNDA5NS02MTdhLTRlMjMtOWFjMC02OTcwNTI4YWZiNGEiIHN0UmVmOmRvY3VtZW50SUQ9ImFkb2JlOmRvY2lkOnBob3Rvc2hvcDo1YjU3YjMyYi1mZmFhLTg1NDQtYjg0ZS0yZjY0NjJmZDVlOGUiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz4SZ1SJAAAGiklEQVR42uxaCWwUVRh+PWitIJZYxCqi1IpVKUSJRwweFVOU1HphJGisGhTFg3ggKkYlHmhQMREkqdYqGg+MxBOMR0QNhwYVLSDeTSoiqShtsahI1/8L32Sf4+x2tjvdnd3+f/KlMzvzpjPf/O8/vnk5kUjEqPXccpUCJVAJVAKVQDUlUAlUApVANSVQCcw0y0/2At/NzU/mfw8VNAsKBYMFP/kce4CgVfC3YDjH7ezJTZTP+CfjPLBc8KTgd8Ez/G2IoEXwteBGQYHHOPw2XfAVCduPvy8S/CZoFBya7VP4akGT4FLBAI/jIwQPCr4UjLJ+rxCsFTzCbbfhWpcI1glmZCuBRYIawR7c/0zwFLfhjfPpSYbTcow1Fttl1rkL+dfQm9dYXlot2DNVD5WTrB7oMwbuI9gqyBPcyWn4vMd5xYLZghcFKy0v3S44VlAnmCXY5jF2kqBScIdgl6BE8Gtvx8BUEAgvXy94U3CLwO8dI1YuIennCL7xOQ7n3yc4V3B4d/8vWQLzU+DlVYxbFcycD/gct9RKCstIqJ+3fZ3gZm5X8zoZHQNPs7aXJTDudReZkQSId2xcNiQRx4tQp21IYNwn1vbHCYxDKdTO7bJsINDJuu0JxD/YHzG2ExlbFPpOxIfV9HDcG0hyPRy7v/bCfaUXTtJQ8B4hGM0sXSoYxroRU78/y5J29r2oJTcJfmasayLa+wqB/QSnMDtWscPI8zGuJM6xCFu494m3BZ3ZRCDCxKmCyYKzBYN8jHE8zvGs/lRsir2aAXYglawBO1kuodN5racqTRgI3FswVXCV4OAYnoOyZjU9qImKDLAjxjULmSAOtKY+vPhoy5MRFs4jNrNXflSwJVN6YXjJTYJrBQM9PAvZ9RXBcnYm8V7ANsvL4tlegpMEtfTyfV3H8UKeYBe0KchWLjdgb54m+JYN/0DL094RTOSDXSh4qRvyErUO9tpT6aHjBS9b07eILxT3dleQ9WFQBEIp+VywwAr4uPlGZtdqPtBfKYi5u5hIJjJ0POwqrKEGbRRMCAuBkJ9WCEZaHocADnH0sgRUlN4wlDtQuKEvPsTEZFgqwWMbJQTlppvAPCsZ7WQsQsZtTvK6bYx9OQHcYyvj8ihX6MiTGNiVbgLvsbwMdd4JIW4cIGwM5jbE1hvCMIX/FFxhyU2zOX2DKIMixr+M1Z0hUz9m7V9vfCjWqUoiHwgaLPWlIYR99r2sHw2TzLNhExOgAv/C7bEsoMNix5vdXwQNM3Jg9xYkgfhKNt3av19wUAjIQ1x+3HpW1IE/hFXOWmyiUjy+qNW7sugg9sWxMusw1pSxsjCyaHmc/3+iRxcy0yqx8Cl1XtCNftA2jZ2BYQFdZx1DT/qeiS2yQgRYFcNz0dlA5l8ZZ5p+aKKrHWCHsSuCoWebwkI71ARi2cVt1j46gVKrY7H/ugkawXsa43F8tImuoRkeoxsyFBby6bn1JvpJYR67JRN2Ag3LhdXWtF3At+98YLrGpdDgYe+2CvJZLiGi0Pz3c+gc170PsWq6EnYfU1jUw75n7MsINcaxkYw5/awWL4cKCxSbreyV8fd0wck8p4PktVCKwpSbRPkKWl8BicaXuld5bh293Lm2YdtWwGuOp6DxPwv7ygR41e3W/kL+hgc/xnVup4kuPlrChGIbSqQLmCQaPKQyjDtLcDEFAyf5LHLF4UAJ7G1FGsXr+QzmTjewme1eDT0Pv63jgzpa3ZEkayyn6ioKFG08/pHgIsFRJP5ds1tjhNettchrDaJdS6cHGsah5dZDTTCJrVBItF2Dyj2U+9Aen4s3IBPWxqC0gBp8OffrGc86PM4tZuw8hFN0AD2wjdhIgmJ9aJ9jkfdWd+QFYan6KjeTU7aUDzhXcCW9EtP0TE7nSh/Xgvy0ngQt5QvqYlhwWrTtqWolU0Wg0+Yt5j7Umx2czokqN7km+hUOq1F/pIdPtkobrBFsTsWDpWqBpWPIvrUxjiEYfcpsimm6hdM8wtiG7FtB4o6L8/LXsCvx1XFkQgy0DWVKFQlxpiOkpaeZWNp8Xgda4TgmiVrrOXqlXUtHJxKvzbuVxKFswQrSMwQveJAXT1BtY62Ib79lrC9BHhaof5HKB0rH2hg87ArWa0FYCwWM+YyHJtsJ7AqQPNs2pOFZdHlb2rNwXzf1QCVQCVQClUA1JVAJVAKVQDUlUAlUApVANSVQCVQClUA1JVAJVAKVQDUlUAlUArPb/hVgAEO2e0qovEQ+AAAAAElFTkSuQmCC"}]},
-    {"category": "ASSISTANCE", "defects": []}, {"category": "COMFORT", "defects":
-    []}, {"category": "BRAKE", "defects": []}, {"category": "ELECTRIC_ENGINE", "defects":
-    []}, {"category": "LIGHTING", "defects": []}, {"category": "TIRE", "defects":
-    []}]}'
-  result:
-    captured_at: '2024-10-18T12:46:47.150000+00:00'
-    mileage_in_km: 83109
-    warning_lights:
-    - category: OTHER
-      defects:
-      - icon: data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAFAAAABQCAYAAACOEfKtAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAA4ZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNi1jMTQ1IDc5LjE2MzQ5OSwgMjAxOC8wOC8xMy0xNjo0MDoyMiAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wTU09Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9tbS8iIHhtbG5zOnN0UmVmPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvc1R5cGUvUmVzb3VyY2VSZWYjIiB4bWxuczp4bXA9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC8iIHhtcE1NOk9yaWdpbmFsRG9jdW1lbnRJRD0ieG1wLmRpZDo5ZWVlODdiNS1lOWYwLTQwYzctODFmMy05ZWM3OWZmM2E0ZGIiIHhtcE1NOkRvY3VtZW50SUQ9InhtcC5kaWQ6MzJBRUZEMTU2MDRDMTFFQUIyMEFDNkUxMjQ0NkE5NzciIHhtcE1NOkluc3RhbmNlSUQ9InhtcC5paWQ6MzJBRUZEMTQ2MDRDMTFFQUIyMEFDNkUxMjQ0NkE5NzciIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTkgKE1hY2ludG9zaCkiPiA8eG1wTU06RGVyaXZlZEZyb20gc3RSZWY6aW5zdGFuY2VJRD0ieG1wLmlpZDozYWQwNDA5NS02MTdhLTRlMjMtOWFjMC02OTcwNTI4YWZiNGEiIHN0UmVmOmRvY3VtZW50SUQ9ImFkb2JlOmRvY2lkOnBob3Rvc2hvcDo1YjU3YjMyYi1mZmFhLTg1NDQtYjg0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
-        priority: '125'
-        text: Please add washer fluid.
-    - category: ASSISTANCE
-      defects: []
-    - category: COMFORT
-      defects: []
-    - category: BRAKE
-      defects: []
-    - category: ELECTRIC_ENGINE
-      defects: []
-    - category: LIGHTING
-      defects: []
-    - category: TIRE
-      defects: []
-  success: true
-  type: get
-  url: /v1/vehicle-health-report/warning-lights/TMOCKAA0AA000000
-  vehicle_id: 0
-vehicles:
-- capabilities:
-  - id: AUTOMATION
-    statuses:
-    - DEACTIVATED_BY_ACTIVE_VEHICLE_USER
-  - id: BATTERY_CHARGING_CARE
-    statuses: []
-  - id: BATTERY_SUPPORT
-    statuses: []
-  - id: CHARGING_PROFILES
-    statuses:
-    - DEACTIVATED_BY_ACTIVE_VEHICLE_USER
-  - id: CHARGING_STATIONS
-    statuses: []
-  - id: DIGICERT
-    statuses: []
-  - id: MAP_UPDATE
-    statuses: []
-  - id: MEASUREMENTS
-    statuses: []
-  - id: PARKING_INFORMATION
-    statuses: []
-  - id: PARKING_POSITION
-    statuses:
-    - DEACTIVATED_BY_ACTIVE_VEHICLE_USER
-  - id: POI_SEARCH
-    statuses: []
-  - id: ROADSIDE_ASSISTANT
-    statuses:
-    - DEACTIVATED_BY_ACTIVE_VEHICLE_USER
-  - id: ROUTING
-    statuses: []
-  - id: STATE
-    statuses: []
-  - id: TRAFFIC_INFORMATION
-    statuses: []
-  - id: VEHICLE_HEALTH_INSPECTION
-    statuses: []
-  - id: WARNING_LIGHTS
-    statuses: []
-  - id: WEB_RADIO
-    statuses: []
-  - id: AIR_CONDITIONING_TIMERS
-    statuses: []
-  - id: AIR_CONDITIONING_SMART_SETTINGS
-    statuses: []
-  - id: POWERPASS_TARIFFS
-    statuses: []
-  - id: AIR_CONDITIONING_SAVE_AND_ACTIVATE
-    statuses: []
-  - id: CUBIC
-    statuses: []
-  - id: ROUTE_PLANNING_5_CHARGERS
-    statuses: []
-  - id: SUBSCRIPTIONS
-    statuses: []
-  - id: DESTINATIONS
-    statuses: []
-  - id: CHARGING_MEB
-    statuses: []
-  - id: VEHICLE_SERVICES_BACKUPS
-    statuses: []
-  - id: EV_ROUTE_PLANNING
-    statuses: []
-  - id: CHARGE_MODE_SELECTION
-    statuses: []
-  - id: DIGICERT
-    statuses: []
-  - id: VEHICLE_HEALTH_WARNINGS
-    statuses: []
-  - id: PAY_TO_PARK
-    statuses: []
-  - id: ONLINE_SPEECH_GPS
-    statuses: []
-  - id: GUEST_USER_MANAGEMENT
-    statuses: []
-  - id: DESTINATION_IMPORT_UPGRADABLE
-    statuses: []
-  - id: SERVICE_PARTNER
-    statuses: []
-  - id: WINDOW_HEATING
-    statuses: []
-  - id: CHARGING
-    statuses: []
-  - id: AIR_CONDITIONING
-    statuses: []
-  - id: EXTENDED_CHARGING_SETTINGS
-    statuses: []
-  - id: VEHICLE_WAKE_UP_TRIGGER
-    statuses: []
-  device_platform: WCAR
-  id: 0
-  model: Enyaq
-  model_year: '2021'
-  software_version: '3.0'
-  system_model_id: 5AZJJ2
-  trim_level: null
----
-description: Vehicle is parked and in deep sleep, positioning turned off
-generation_time: '2024-10-18T15:28:11.627233+00:00'
-name: parked-deep-sleep_pos_off_info
+description: Vehicle is parked and in deep sleep
+generation_time: '2024-10-21T20:45:06.618406+00:00'
+name: parked-deep-sleep
 reports:
 - endpoint: info
   error: null
@@ -593,16 +41,15 @@ reports:
     "viewPoint": "exterior_side", "type": "REAL", "order": 1}], "modifications": {"adjustSpaceInPx":
     {"top": -317, "bottom": -193, "left": -149, "right": -111}, "densityIndependentHeight":
     270, "flipHorizontal": true, "anchorTo": "LEFT"}, "viewType": "PLUGGED_IN_DARK"}],
-    "capabilities": {"capabilities": [{"id": "AUTOMATION", "statuses": ["DEACTIVATED_BY_ACTIVE_VEHICLE_USER"]},
-    {"id": "BATTERY_CHARGING_CARE", "statuses": []}, {"id": "BATTERY_SUPPORT", "statuses":
-    []}, {"id": "CHARGING_PROFILES", "statuses": ["DEACTIVATED_BY_ACTIVE_VEHICLE_USER"]},
-    {"id": "CHARGING_STATIONS", "statuses": []}, {"id": "DIGICERT", "statuses": []},
-    {"id": "MAP_UPDATE", "statuses": []}, {"id": "MEASUREMENTS", "statuses": []},
-    {"id": "PARKING_INFORMATION", "statuses": []}, {"id": "PARKING_POSITION", "statuses":
-    ["DEACTIVATED_BY_ACTIVE_VEHICLE_USER"]}, {"id": "POI_SEARCH", "statuses": []},
-    {"id": "ROADSIDE_ASSISTANT", "statuses": ["DEACTIVATED_BY_ACTIVE_VEHICLE_USER"]},
-    {"id": "ROUTING", "statuses": []}, {"id": "STATE", "statuses": []}, {"id": "TRAFFIC_INFORMATION",
-    "statuses": []}, {"id": "VEHICLE_HEALTH_INSPECTION", "statuses": []}, {"id": "WARNING_LIGHTS",
+    "capabilities": {"capabilities": [{"id": "AUTOMATION", "statuses": []}, {"id":
+    "BATTERY_CHARGING_CARE", "statuses": []}, {"id": "BATTERY_SUPPORT", "statuses":
+    []}, {"id": "CHARGING_PROFILES", "statuses": []}, {"id": "CHARGING_STATIONS",
+    "statuses": []}, {"id": "DIGICERT", "statuses": []}, {"id": "MAP_UPDATE", "statuses":
+    []}, {"id": "MEASUREMENTS", "statuses": []}, {"id": "PARKING_INFORMATION", "statuses":
+    []}, {"id": "PARKING_POSITION", "statuses": []}, {"id": "POI_SEARCH", "statuses":
+    []}, {"id": "ROADSIDE_ASSISTANT", "statuses": []}, {"id": "ROUTING", "statuses":
+    []}, {"id": "STATE", "statuses": []}, {"id": "TRAFFIC_INFORMATION", "statuses":
+    []}, {"id": "VEHICLE_HEALTH_INSPECTION", "statuses": []}, {"id": "WARNING_LIGHTS",
     "statuses": []}, {"id": "WEB_RADIO", "statuses": []}, {"id": "AIR_CONDITIONING_TIMERS",
     "statuses": []}, {"id": "AIR_CONDITIONING_SMART_SETTINGS", "statuses": []}, {"id":
     "POWERPASS_TARIFFS", "statuses": []}, {"id": "AIR_CONDITIONING_SAVE_AND_ACTIVATE",
@@ -621,15 +68,13 @@ reports:
     capabilities:
       capabilities:
       - id: AUTOMATION
-        statuses:
-        - DEACTIVATED_BY_ACTIVE_VEHICLE_USER
+        statuses: []
       - id: BATTERY_CHARGING_CARE
         statuses: []
       - id: BATTERY_SUPPORT
         statuses: []
       - id: CHARGING_PROFILES
-        statuses:
-        - DEACTIVATED_BY_ACTIVE_VEHICLE_USER
+        statuses: []
       - id: CHARGING_STATIONS
         statuses: []
       - id: DIGICERT
@@ -641,13 +86,11 @@ reports:
       - id: PARKING_INFORMATION
         statuses: []
       - id: PARKING_POSITION
-        statuses:
-        - DEACTIVATED_BY_ACTIVE_VEHICLE_USER
+        statuses: []
       - id: POI_SEARCH
         statuses: []
       - id: ROADSIDE_ASSISTANT
-        statuses:
-        - DEACTIVATED_BY_ACTIVE_VEHICLE_USER
+        statuses: []
       - id: ROUTING
         statuses: []
       - id: STATE
@@ -804,112 +247,193 @@ reports:
   type: get
   url: /v2/garage/vehicles/TMOCKAA0AA000000?connectivityGenerations=MOD1&connectivityGenerations=MOD2&connectivityGenerations=MOD3&connectivityGenerations=MOD4
   vehicle_id: 0
-vehicles:
-- capabilities:
-  - id: AUTOMATION
-    statuses:
-    - DEACTIVATED_BY_ACTIVE_VEHICLE_USER
-  - id: BATTERY_CHARGING_CARE
-    statuses: []
-  - id: BATTERY_SUPPORT
-    statuses: []
-  - id: CHARGING_PROFILES
-    statuses:
-    - DEACTIVATED_BY_ACTIVE_VEHICLE_USER
-  - id: CHARGING_STATIONS
-    statuses: []
-  - id: DIGICERT
-    statuses: []
-  - id: MAP_UPDATE
-    statuses: []
-  - id: MEASUREMENTS
-    statuses: []
-  - id: PARKING_INFORMATION
-    statuses: []
-  - id: PARKING_POSITION
-    statuses:
-    - DEACTIVATED_BY_ACTIVE_VEHICLE_USER
-  - id: POI_SEARCH
-    statuses: []
-  - id: ROADSIDE_ASSISTANT
-    statuses:
-    - DEACTIVATED_BY_ACTIVE_VEHICLE_USER
-  - id: ROUTING
-    statuses: []
-  - id: STATE
-    statuses: []
-  - id: TRAFFIC_INFORMATION
-    statuses: []
-  - id: VEHICLE_HEALTH_INSPECTION
-    statuses: []
-  - id: WARNING_LIGHTS
-    statuses: []
-  - id: WEB_RADIO
-    statuses: []
-  - id: AIR_CONDITIONING_TIMERS
-    statuses: []
-  - id: AIR_CONDITIONING_SMART_SETTINGS
-    statuses: []
-  - id: POWERPASS_TARIFFS
-    statuses: []
-  - id: AIR_CONDITIONING_SAVE_AND_ACTIVATE
-    statuses: []
-  - id: CUBIC
-    statuses: []
-  - id: ROUTE_PLANNING_5_CHARGERS
-    statuses: []
-  - id: SUBSCRIPTIONS
-    statuses: []
-  - id: DESTINATIONS
-    statuses: []
-  - id: CHARGING_MEB
-    statuses: []
-  - id: VEHICLE_SERVICES_BACKUPS
-    statuses: []
-  - id: EV_ROUTE_PLANNING
-    statuses: []
-  - id: CHARGE_MODE_SELECTION
-    statuses: []
-  - id: DIGICERT
-    statuses: []
-  - id: VEHICLE_HEALTH_WARNINGS
-    statuses: []
-  - id: PAY_TO_PARK
-    statuses: []
-  - id: ONLINE_SPEECH_GPS
-    statuses: []
-  - id: GUEST_USER_MANAGEMENT
-    statuses: []
-  - id: DESTINATION_IMPORT_UPGRADABLE
-    statuses: []
-  - id: SERVICE_PARTNER
-    statuses: []
-  - id: WINDOW_HEATING
-    statuses: []
-  - id: CHARGING
-    statuses: []
-  - id: AIR_CONDITIONING
-    statuses: []
-  - id: EXTENDED_CHARGING_SETTINGS
-    statuses: []
-  - id: VEHICLE_WAKE_UP_TRIGGER
-    statuses: []
-  device_platform: WCAR
-  id: 0
-  model: Enyaq
-  model_year: '2021'
-  software_version: '3.0'
-  system_model_id: 5AZJJ2
-  trim_level: null
----
-description: Vehicle is parked and in deep sleep, positioning turned off
-generation_time: '2024-10-18T15:28:32.904735+00:00'
-name: parked-deep-sleep_pos_off_maintenance
-reports:
+- endpoint: status
+  error: null
+  raw: '{"overall": {"doorsLocked": "YES", "locked": "YES", "doors": "CLOSED", "windows":
+    "CLOSED", "lights": "OFF"}, "detail": {"sunroof": "CLOSED", "trunk": "CLOSED",
+    "bonnet": "CLOSED"}, "renders": {"lightMode": {"oneX": "https://mysmob.api.connect.skoda-auto.cz/api/v2/vehicle-status/render?carType=SUV&vehicleState=1-1-1-1-0-0-0-0-2&lastModifiedAt=1727873060&dimension=1x&theme=LIGHT",
+    "oneAndHalfX": "https://mysmob.api.connect.skoda-auto.cz/api/v2/vehicle-status/render?carType=SUV&vehicleState=1-1-1-1-0-0-0-0-2&lastModifiedAt=1727873060&dimension=1-5x&theme=LIGHT",
+    "twoX": "https://mysmob.api.connect.skoda-auto.cz/api/v2/vehicle-status/render?carType=SUV&vehicleState=1-1-1-1-0-0-0-0-2&lastModifiedAt=1727873060&dimension=2x&theme=LIGHT",
+    "threeX": "https://mysmob.api.connect.skoda-auto.cz/api/v2/vehicle-status/render?carType=SUV&vehicleState=1-1-1-1-0-0-0-0-2&lastModifiedAt=1727873060&dimension=3x&theme=LIGHT"},
+    "darkMode": {"oneX": "https://mysmob.api.connect.skoda-auto.cz/api/v2/vehicle-status/render?carType=SUV&vehicleState=1-1-1-1-0-0-0-0-2&lastModifiedAt=1727873060&dimension=1x&theme=DARK",
+    "oneAndHalfX": "https://mysmob.api.connect.skoda-auto.cz/api/v2/vehicle-status/render?carType=SUV&vehicleState=1-1-1-1-0-0-0-0-2&lastModifiedAt=1727873060&dimension=1-5x&theme=DARK",
+    "twoX": "https://mysmob.api.connect.skoda-auto.cz/api/v2/vehicle-status/render?carType=SUV&vehicleState=1-1-1-1-0-0-0-0-2&lastModifiedAt=1727873060&dimension=2x&theme=DARK",
+    "threeX": "https://mysmob.api.connect.skoda-auto.cz/api/v2/vehicle-status/render?carType=SUV&vehicleState=1-1-1-1-0-0-0-0-2&lastModifiedAt=1727873060&dimension=3x&theme=DARK"}},
+    "carCapturedTimestamp": "2024-10-21T14:50:44.426Z"}'
+  result:
+    car_captured_timestamp: '2024-10-21T14:50:44.426000+00:00'
+    detail:
+      bonnet: CLOSED
+      sunroof: CLOSED
+      trunk: CLOSED
+    overall:
+      doors: CLOSED
+      doors_locked: 'YES'
+      lights: 'OFF'
+      locked: 'YES'
+      windows: CLOSED
+    renders:
+      dark_mode:
+        one_and_half_x: https://mysmob.api.connect.skoda-auto.cz/api/v2/vehicle-status/render?carType=SUV&vehicleState=1-1-1-1-0-0-0-0-2&lastModifiedAt=1727873060&dimension=1-5x&theme=DARK
+        one_x: https://mysmob.api.connect.skoda-auto.cz/api/v2/vehicle-status/render?carType=SUV&vehicleState=1-1-1-1-0-0-0-0-2&lastModifiedAt=1727873060&dimension=1x&theme=DARK
+        three_x: https://mysmob.api.connect.skoda-auto.cz/api/v2/vehicle-status/render?carType=SUV&vehicleState=1-1-1-1-0-0-0-0-2&lastModifiedAt=1727873060&dimension=3x&theme=DARK
+        two_x: https://mysmob.api.connect.skoda-auto.cz/api/v2/vehicle-status/render?carType=SUV&vehicleState=1-1-1-1-0-0-0-0-2&lastModifiedAt=1727873060&dimension=2x&theme=DARK
+      light_mode:
+        one_and_half_x: https://mysmob.api.connect.skoda-auto.cz/api/v2/vehicle-status/render?carType=SUV&vehicleState=1-1-1-1-0-0-0-0-2&lastModifiedAt=1727873060&dimension=1-5x&theme=LIGHT
+        one_x: https://mysmob.api.connect.skoda-auto.cz/api/v2/vehicle-status/render?carType=SUV&vehicleState=1-1-1-1-0-0-0-0-2&lastModifiedAt=1727873060&dimension=1x&theme=LIGHT
+        three_x: https://mysmob.api.connect.skoda-auto.cz/api/v2/vehicle-status/render?carType=SUV&vehicleState=1-1-1-1-0-0-0-0-2&lastModifiedAt=1727873060&dimension=3x&theme=LIGHT
+        two_x: https://mysmob.api.connect.skoda-auto.cz/api/v2/vehicle-status/render?carType=SUV&vehicleState=1-1-1-1-0-0-0-0-2&lastModifiedAt=1727873060&dimension=2x&theme=LIGHT
+  success: true
+  type: get
+  url: /v2/vehicle-status/TMOCKAA0AA000000
+  vehicle_id: 0
+- endpoint: air_conditioning
+  error: null
+  raw: '{"estimatedDateTimeToReachTargetTemperature": "2024-10-21T20:45:04.986284234Z",
+    "state": "OFF", "runningRequests": [], "targetTemperature": {"temperatureValue":
+    19.5, "unitInCar": "CELSIUS"}, "airConditioningAtUnlock": false, "windowHeatingEnabled":
+    true, "steeringWheelPosition": "LEFT", "seatHeatingActivated": {"frontLeft": true,
+    "frontRight": true}, "chargerConnectionState": "DISCONNECTED", "chargerLockState":
+    "UNLOCKED", "windowHeatingState": {"front": "OFF", "rear": "OFF", "unspecified":
+    "INVALID"}, "timers": [{"id": 1, "enabled": true, "time": "08:05", "type": "RECURRING",
+    "selectedDays": ["MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY"]}, {"id":
+    2, "enabled": false, "time": "17:30", "type": "ONE_OFF", "selectedDays": ["TUESDAY"]}],
+    "carCapturedTimestamp": "2024-10-21T14:50:38Z", "errors": []}'
+  result:
+    air_conditioning_at_unlock: false
+    car_captured_timestamp: '2024-10-21T14:50:38+00:00'
+    charger_connection_state: DISCONNECTED
+    charger_lock_state: UNLOCKED
+    errors: []
+    estimated_date_time_to_reach_target_temperature: '2024-10-21T20:45:04.986284+00:00'
+    heater_source: null
+    seat_heating_activated:
+      front_left: true
+      front_right: true
+    state: 'OFF'
+    steering_wheel_position: LEFT
+    target_temperature:
+      temperature_value: 19.5
+      unit_in_car: CELSIUS
+    timers:
+    - enabled: true
+      id: 1
+      selected_days:
+      - MONDAY
+      - TUESDAY
+      - WEDNESDAY
+      - THURSDAY
+      - FRIDAY
+      time: 08:05:00
+      type: RECURRING
+    - enabled: false
+      id: 2
+      selected_days:
+      - TUESDAY
+      time: '17:30:00'
+      type: ONE_OFF
+    window_heating_enabled: true
+    window_heating_state:
+      front: 'OFF'
+      rear: 'OFF'
+      unspecified: INVALID
+  success: true
+  type: get
+  url: /v2/air-conditioning/TMOCKAA0AA000000
+  vehicle_id: 0
+- endpoint: positions
+  error: null
+  raw: '{"positions": [{"type": "VEHICLE", "gpsCoordinates": {"latitude": 53.470636,
+    "longitude": 9.689872}, "address": {"city": "Example City", "street": "Example
+    Avenue", "houseNumber": "15", "zipCode": "54321", "countryCode": "DEU"}}], "errors":
+    []}'
+  result:
+    errors: []
+    positions:
+    - address:
+        city: Example City
+        country: null
+        country_code: DEU
+        house_number: '15'
+        street: Example Avenue
+        zip_code: '54321'
+      gps_coordinates:
+        latitude: 53.470636
+        longitude: 9.689872
+      type: VEHICLE
+  success: true
+  type: get
+  url: /v1/maps/positions?vin=TMOCKAA0AA000000
+  vehicle_id: 0
+- endpoint: health
+  error: null
+  raw: '{"capturedAt": "2024-10-21T14:50:57.884Z", "mileageInKm": 83217, "warningLights":
+    [{"category": "ASSISTANCE", "defects": []}, {"category": "COMFORT", "defects":
+    []}, {"category": "BRAKE", "defects": []}, {"category": "ELECTRIC_ENGINE", "defects":
+    []}, {"category": "LIGHTING", "defects": []}, {"category": "TIRE", "defects":
+    []}, {"category": "OTHER", "defects": []}]}'
+  result:
+    captured_at: '2024-10-21T14:50:57.884000+00:00'
+    mileage_in_km: 83217
+    warning_lights:
+    - category: ASSISTANCE
+      defects: []
+    - category: COMFORT
+      defects: []
+    - category: BRAKE
+      defects: []
+    - category: ELECTRIC_ENGINE
+      defects: []
+    - category: LIGHTING
+      defects: []
+    - category: TIRE
+      defects: []
+    - category: OTHER
+      defects: []
+  success: true
+  type: get
+  url: /v1/vehicle-health-report/warning-lights/TMOCKAA0AA000000
+  vehicle_id: 0
+- endpoint: charging
+  error: null
+  raw: '{"isVehicleInSavedLocation": false, "status": {"chargingRateInKilometersPerHour":
+    0.0, "chargePowerInKw": 0.0, "remainingTimeToFullyChargedInMinutes": 0, "state":
+    "CONNECT_CABLE", "battery": {"remainingCruisingRangeInMeters": 138000, "stateOfChargeInPercent":
+    34}}, "settings": {"targetStateOfChargeInPercent": 80, "preferredChargeMode":
+    "MANUAL", "availableChargeModes": ["MANUAL"], "chargingCareMode": "ACTIVATED",
+    "autoUnlockPlugWhenCharged": "OFF", "maxChargeCurrentAc": "REDUCED", "batterySupport":
+    "ENABLED"}, "carCapturedTimestamp": "2024-10-21T14:50:39Z", "errors": []}'
+  result:
+    car_captured_timestamp: '2024-10-21T14:50:39+00:00'
+    errors: []
+    is_vehicle_in_saved_location: false
+    settings:
+      auto_unlock_plug_when_charged: 'OFF'
+      available_charge_modes:
+      - MANUAL
+      battery_support: ENABLED
+      charging_care_mode: ACTIVATED
+      max_charge_current_ac: REDUCED
+      preferred_charge_mode: MANUAL
+      target_state_of_charge_in_percent: 80
+    status:
+      battery:
+        remaining_cruising_range_in_meters: 138000
+        state_of_charge_in_percent: 34
+      charge_power_in_kw: 0.0
+      charge_type: null
+      charging_rate_in_kilometers_per_hour: 0.0
+      errors: null
+      remaining_time_to_fully_charged_in_minutes: 0
+      state: CONNECT_CABLE
+  success: true
+  type: get
+  url: /v1/charging/TMOCKAA0AA000000
+  vehicle_id: 0
 - endpoint: maintenance
   error: null
-  raw: '{"maintenanceReport": {"capturedAt": "2024-10-18T12:43:28.751Z", "inspectionDueInDays":
-    236, "mileageInKm": 83109}, "preferredServicePartner": {"name": "Example Service
+  raw: '{"maintenanceReport": {"capturedAt": "2024-10-21T14:50:44.496Z", "inspectionDueInDays":
+    235, "mileageInKm": 83217}, "preferredServicePartner": {"name": "Example Service
     Partner", "brand": "C", "partnerNumber": "1111", "id": "DEU11111", "contact":
     {"phone": "+49 1234 567890", "url": "https://example.com", "email": "user@example.com"},
     "address": {"city": "Example City", "street": "Example Avenue", "houseNumber":
@@ -921,10 +445,10 @@ reports:
     []}]}}'
   result:
     maintenance_report:
-      captured_at: '2024-10-18T12:43:28.751000+00:00'
-      inspection_due_in_days: 236
+      captured_at: '2024-10-21T14:50:44.496000+00:00'
+      inspection_due_in_days: 235
       inspection_due_in_km: null
-      mileage_in_km: 83109
+      mileage_in_km: 83217
       oil_service_due_in_days: null
       oil_service_due_in_km: null
     predictive_maintenance: null
@@ -965,130 +489,35 @@ reports:
   type: get
   url: /v3/vehicle-maintenance/vehicles/TMOCKAA0AA000000
   vehicle_id: 0
-vehicles:
-- capabilities:
-  - id: AUTOMATION
-    statuses:
-    - DEACTIVATED_BY_ACTIVE_VEHICLE_USER
-  - id: BATTERY_CHARGING_CARE
-    statuses: []
-  - id: BATTERY_SUPPORT
-    statuses: []
-  - id: CHARGING_PROFILES
-    statuses:
-    - DEACTIVATED_BY_ACTIVE_VEHICLE_USER
-  - id: CHARGING_STATIONS
-    statuses: []
-  - id: DIGICERT
-    statuses: []
-  - id: MAP_UPDATE
-    statuses: []
-  - id: MEASUREMENTS
-    statuses: []
-  - id: PARKING_INFORMATION
-    statuses: []
-  - id: PARKING_POSITION
-    statuses:
-    - DEACTIVATED_BY_ACTIVE_VEHICLE_USER
-  - id: POI_SEARCH
-    statuses: []
-  - id: ROADSIDE_ASSISTANT
-    statuses:
-    - DEACTIVATED_BY_ACTIVE_VEHICLE_USER
-  - id: ROUTING
-    statuses: []
-  - id: STATE
-    statuses: []
-  - id: TRAFFIC_INFORMATION
-    statuses: []
-  - id: VEHICLE_HEALTH_INSPECTION
-    statuses: []
-  - id: WARNING_LIGHTS
-    statuses: []
-  - id: WEB_RADIO
-    statuses: []
-  - id: AIR_CONDITIONING_TIMERS
-    statuses: []
-  - id: AIR_CONDITIONING_SMART_SETTINGS
-    statuses: []
-  - id: POWERPASS_TARIFFS
-    statuses: []
-  - id: AIR_CONDITIONING_SAVE_AND_ACTIVATE
-    statuses: []
-  - id: CUBIC
-    statuses: []
-  - id: ROUTE_PLANNING_5_CHARGERS
-    statuses: []
-  - id: SUBSCRIPTIONS
-    statuses: []
-  - id: DESTINATIONS
-    statuses: []
-  - id: CHARGING_MEB
-    statuses: []
-  - id: VEHICLE_SERVICES_BACKUPS
-    statuses: []
-  - id: EV_ROUTE_PLANNING
-    statuses: []
-  - id: CHARGE_MODE_SELECTION
-    statuses: []
-  - id: DIGICERT
-    statuses: []
-  - id: VEHICLE_HEALTH_WARNINGS
-    statuses: []
-  - id: PAY_TO_PARK
-    statuses: []
-  - id: ONLINE_SPEECH_GPS
-    statuses: []
-  - id: GUEST_USER_MANAGEMENT
-    statuses: []
-  - id: DESTINATION_IMPORT_UPGRADABLE
-    statuses: []
-  - id: SERVICE_PARTNER
-    statuses: []
-  - id: WINDOW_HEATING
-    statuses: []
-  - id: CHARGING
-    statuses: []
-  - id: AIR_CONDITIONING
-    statuses: []
-  - id: EXTENDED_CHARGING_SETTINGS
-    statuses: []
-  - id: VEHICLE_WAKE_UP_TRIGGER
-    statuses: []
-  device_platform: WCAR
-  id: 0
-  model: Enyaq
-  model_year: '2021'
-  software_version: '3.0'
-  system_model_id: 5AZJJ2
-  trim_level: null
----
-description: Vehicle is parked and in deep sleep, positioning turned off
-generation_time: '2024-10-18T15:28:22.275246+00:00'
-name: parked-deep-sleep_pos_off_positions
-reports:
-- endpoint: positions
+- endpoint: driving_range
   error: null
-  raw: '{"positions": [], "errors": []}'
+  raw: '{"carType": "electric", "totalRangeInKm": 138, "primaryEngineRange": {"engineType":
+    "electric", "currentSoCInPercent": 34, "remainingRangeInKm": 138}, "carCapturedTimestamp":
+    "2024-10-21T14:50:39Z"}'
   result:
-    errors: []
-    positions: []
+    car_captured_timestamp: '2024-10-21T14:50:39+00:00'
+    car_type: electric
+    primary_engine_range:
+      current_fuel_level_in_percent: null
+      current_soc_in_percent: 34
+      engine_type: electric
+      remaining_range_in_km: 138
+    secondary_engine_range: null
+    total_range_in_km: 138
   success: true
   type: get
-  url: /v1/maps/positions?vin=TMOCKAA0AA000000
+  url: /v2/vehicle-status/TMOCKAA0AA000000/driving-range
   vehicle_id: 0
 vehicles:
 - capabilities:
   - id: AUTOMATION
-    statuses:
-    - DEACTIVATED_BY_ACTIVE_VEHICLE_USER
+    statuses: []
   - id: BATTERY_CHARGING_CARE
     statuses: []
   - id: BATTERY_SUPPORT
     statuses: []
   - id: CHARGING_PROFILES
-    statuses:
-    - DEACTIVATED_BY_ACTIVE_VEHICLE_USER
+    statuses: []
   - id: CHARGING_STATIONS
     statuses: []
   - id: DIGICERT
@@ -1100,155 +529,11 @@ vehicles:
   - id: PARKING_INFORMATION
     statuses: []
   - id: PARKING_POSITION
-    statuses:
-    - DEACTIVATED_BY_ACTIVE_VEHICLE_USER
+    statuses: []
   - id: POI_SEARCH
     statuses: []
   - id: ROADSIDE_ASSISTANT
-    statuses:
-    - DEACTIVATED_BY_ACTIVE_VEHICLE_USER
-  - id: ROUTING
     statuses: []
-  - id: STATE
-    statuses: []
-  - id: TRAFFIC_INFORMATION
-    statuses: []
-  - id: VEHICLE_HEALTH_INSPECTION
-    statuses: []
-  - id: WARNING_LIGHTS
-    statuses: []
-  - id: WEB_RADIO
-    statuses: []
-  - id: AIR_CONDITIONING_TIMERS
-    statuses: []
-  - id: AIR_CONDITIONING_SMART_SETTINGS
-    statuses: []
-  - id: POWERPASS_TARIFFS
-    statuses: []
-  - id: AIR_CONDITIONING_SAVE_AND_ACTIVATE
-    statuses: []
-  - id: CUBIC
-    statuses: []
-  - id: ROUTE_PLANNING_5_CHARGERS
-    statuses: []
-  - id: SUBSCRIPTIONS
-    statuses: []
-  - id: DESTINATIONS
-    statuses: []
-  - id: CHARGING_MEB
-    statuses: []
-  - id: VEHICLE_SERVICES_BACKUPS
-    statuses: []
-  - id: EV_ROUTE_PLANNING
-    statuses: []
-  - id: CHARGE_MODE_SELECTION
-    statuses: []
-  - id: DIGICERT
-    statuses: []
-  - id: VEHICLE_HEALTH_WARNINGS
-    statuses: []
-  - id: PAY_TO_PARK
-    statuses: []
-  - id: ONLINE_SPEECH_GPS
-    statuses: []
-  - id: GUEST_USER_MANAGEMENT
-    statuses: []
-  - id: DESTINATION_IMPORT_UPGRADABLE
-    statuses: []
-  - id: SERVICE_PARTNER
-    statuses: []
-  - id: WINDOW_HEATING
-    statuses: []
-  - id: CHARGING
-    statuses: []
-  - id: AIR_CONDITIONING
-    statuses: []
-  - id: EXTENDED_CHARGING_SETTINGS
-    statuses: []
-  - id: VEHICLE_WAKE_UP_TRIGGER
-    statuses: []
-  device_platform: WCAR
-  id: 0
-  model: Enyaq
-  model_year: '2021'
-  software_version: '3.0'
-  system_model_id: 5AZJJ2
-  trim_level: null
----
-description: Vehicle is parked and in deep sleep, positioning turned off
-generation_time: '2024-10-18T15:28:14.205933+00:00'
-name: parked-deep-sleep_pos_off_status
-reports:
-- endpoint: status
-  error: null
-  raw: '{"overall": {"doorsLocked": "YES", "locked": "YES", "doors": "CLOSED", "windows":
-    "CLOSED", "lights": "OFF"}, "detail": {"sunroof": "CLOSED", "trunk": "CLOSED",
-    "bonnet": "CLOSED"}, "renders": {"lightMode": {"oneX": "https://mysmob.api.connect.skoda-auto.cz/api/v2/vehicle-status/render?carType=SUV&vehicleState=1-1-1-1-0-0-0-0-2&lastModifiedAt=1727873060&dimension=1x&theme=LIGHT",
-    "oneAndHalfX": "https://mysmob.api.connect.skoda-auto.cz/api/v2/vehicle-status/render?carType=SUV&vehicleState=1-1-1-1-0-0-0-0-2&lastModifiedAt=1727873060&dimension=1-5x&theme=LIGHT",
-    "twoX": "https://mysmob.api.connect.skoda-auto.cz/api/v2/vehicle-status/render?carType=SUV&vehicleState=1-1-1-1-0-0-0-0-2&lastModifiedAt=1727873060&dimension=2x&theme=LIGHT",
-    "threeX": "https://mysmob.api.connect.skoda-auto.cz/api/v2/vehicle-status/render?carType=SUV&vehicleState=1-1-1-1-0-0-0-0-2&lastModifiedAt=1727873060&dimension=3x&theme=LIGHT"},
-    "darkMode": {"oneX": "https://mysmob.api.connect.skoda-auto.cz/api/v2/vehicle-status/render?carType=SUV&vehicleState=1-1-1-1-0-0-0-0-2&lastModifiedAt=1727873060&dimension=1x&theme=DARK",
-    "oneAndHalfX": "https://mysmob.api.connect.skoda-auto.cz/api/v2/vehicle-status/render?carType=SUV&vehicleState=1-1-1-1-0-0-0-0-2&lastModifiedAt=1727873060&dimension=1-5x&theme=DARK",
-    "twoX": "https://mysmob.api.connect.skoda-auto.cz/api/v2/vehicle-status/render?carType=SUV&vehicleState=1-1-1-1-0-0-0-0-2&lastModifiedAt=1727873060&dimension=2x&theme=DARK",
-    "threeX": "https://mysmob.api.connect.skoda-auto.cz/api/v2/vehicle-status/render?carType=SUV&vehicleState=1-1-1-1-0-0-0-0-2&lastModifiedAt=1727873060&dimension=3x&theme=DARK"}},
-    "carCapturedTimestamp": "2024-10-18T12:48:53.198Z"}'
-  result:
-    car_captured_timestamp: '2024-10-18T12:48:53.198000+00:00'
-    detail:
-      bonnet: CLOSED
-      sunroof: CLOSED
-      trunk: CLOSED
-    overall:
-      doors: CLOSED
-      doors_locked: 'YES'
-      lights: 'OFF'
-      locked: 'YES'
-      windows: CLOSED
-    renders:
-      dark_mode:
-        one_and_half_x: https://mysmob.api.connect.skoda-auto.cz/api/v2/vehicle-status/render?carType=SUV&vehicleState=1-1-1-1-0-0-0-0-2&lastModifiedAt=1727873060&dimension=1-5x&theme=DARK
-        one_x: https://mysmob.api.connect.skoda-auto.cz/api/v2/vehicle-status/render?carType=SUV&vehicleState=1-1-1-1-0-0-0-0-2&lastModifiedAt=1727873060&dimension=1x&theme=DARK
-        three_x: https://mysmob.api.connect.skoda-auto.cz/api/v2/vehicle-status/render?carType=SUV&vehicleState=1-1-1-1-0-0-0-0-2&lastModifiedAt=1727873060&dimension=3x&theme=DARK
-        two_x: https://mysmob.api.connect.skoda-auto.cz/api/v2/vehicle-status/render?carType=SUV&vehicleState=1-1-1-1-0-0-0-0-2&lastModifiedAt=1727873060&dimension=2x&theme=DARK
-      light_mode:
-        one_and_half_x: https://mysmob.api.connect.skoda-auto.cz/api/v2/vehicle-status/render?carType=SUV&vehicleState=1-1-1-1-0-0-0-0-2&lastModifiedAt=1727873060&dimension=1-5x&theme=LIGHT
-        one_x: https://mysmob.api.connect.skoda-auto.cz/api/v2/vehicle-status/render?carType=SUV&vehicleState=1-1-1-1-0-0-0-0-2&lastModifiedAt=1727873060&dimension=1x&theme=LIGHT
-        three_x: https://mysmob.api.connect.skoda-auto.cz/api/v2/vehicle-status/render?carType=SUV&vehicleState=1-1-1-1-0-0-0-0-2&lastModifiedAt=1727873060&dimension=3x&theme=LIGHT
-        two_x: https://mysmob.api.connect.skoda-auto.cz/api/v2/vehicle-status/render?carType=SUV&vehicleState=1-1-1-1-0-0-0-0-2&lastModifiedAt=1727873060&dimension=2x&theme=LIGHT
-  success: true
-  type: get
-  url: /v2/vehicle-status/TMOCKAA0AA000000
-  vehicle_id: 0
-vehicles:
-- capabilities:
-  - id: AUTOMATION
-    statuses:
-    - DEACTIVATED_BY_ACTIVE_VEHICLE_USER
-  - id: BATTERY_CHARGING_CARE
-    statuses: []
-  - id: BATTERY_SUPPORT
-    statuses: []
-  - id: CHARGING_PROFILES
-    statuses:
-    - DEACTIVATED_BY_ACTIVE_VEHICLE_USER
-  - id: CHARGING_STATIONS
-    statuses: []
-  - id: DIGICERT
-    statuses: []
-  - id: MAP_UPDATE
-    statuses: []
-  - id: MEASUREMENTS
-    statuses: []
-  - id: PARKING_INFORMATION
-    statuses: []
-  - id: PARKING_POSITION
-    statuses:
-    - DEACTIVATED_BY_ACTIVE_VEHICLE_USER
-  - id: POI_SEARCH
-    statuses: []
-  - id: ROADSIDE_ASSISTANT
-    statuses:
-    - DEACTIVATED_BY_ACTIVE_VEHICLE_USER
   - id: ROUTING
     statuses: []
   - id: STATE
