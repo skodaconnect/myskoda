@@ -109,7 +109,7 @@ class RestApi:
             anonymization_fn=anonymize_info,
         )
         result = self._deserialize(raw, Info.from_json)
-        url = anonymize_url(url, vin) if anonymize else url
+        url = anonymize_url(url) if anonymize else url
         return GetEndpointResult(url=url, raw=raw, result=result)
 
     async def get_charging(self, vin: str, anonymize: bool = False) -> GetEndpointResult[Charging]:
@@ -121,7 +121,7 @@ class RestApi:
             anonymization_fn=anonymize_charging,
         )
         result = self._deserialize(raw, Charging.from_json)
-        url = anonymize_url(url, vin) if anonymize else url
+        url = anonymize_url(url) if anonymize else url
         return GetEndpointResult(url=url, raw=raw, result=result)
 
     async def get_status(self, vin: str, anonymize: bool = False) -> GetEndpointResult[Status]:
@@ -133,7 +133,7 @@ class RestApi:
             anonymization_fn=anonymize_status,
         )
         result = self._deserialize(raw, Status.from_json)
-        url = anonymize_url(url, vin) if anonymize else url
+        url = anonymize_url(url) if anonymize else url
         return GetEndpointResult(url=url, raw=raw, result=result)
 
     async def get_air_conditioning(
@@ -147,7 +147,7 @@ class RestApi:
             anonymization_fn=anonymize_air_conditioning,
         )
         result = self._deserialize(raw, AirConditioning.from_json)
-        url = anonymize_url(url, vin) if anonymize else url
+        url = anonymize_url(url) if anonymize else url
         return GetEndpointResult(url=url, raw=raw, result=result)
 
     async def get_positions(
@@ -161,7 +161,7 @@ class RestApi:
             anonymization_fn=anonymize_positions,
         )
         result = self._deserialize(raw, Positions.from_json)
-        url = anonymize_url(url, vin) if anonymize else url
+        url = anonymize_url(url) if anonymize else url
         return GetEndpointResult(url=url, raw=raw, result=result)
 
     async def get_driving_range(
@@ -175,7 +175,7 @@ class RestApi:
             anonymization_fn=anonymize_driving_range,
         )
         result = self._deserialize(raw, DrivingRange.from_json)
-        url = anonymize_url(url, vin) if anonymize else url
+        url = anonymize_url(url) if anonymize else url
         return GetEndpointResult(url=url, raw=raw, result=result)
 
     async def get_trip_statistics(
@@ -189,7 +189,7 @@ class RestApi:
             anonymization_fn=anonymize_trip_statistics,
         )
         result = self._deserialize(raw, TripStatistics.from_json)
-        url = anonymize_url(url, vin) if anonymize else url
+        url = anonymize_url(url) if anonymize else url
         return GetEndpointResult(url=url, raw=raw, result=result)
 
     async def get_maintenance(
@@ -203,7 +203,7 @@ class RestApi:
             anonymization_fn=anonymize_maintenance,
         )
         result = self._deserialize(raw, Maintenance.from_json)
-        url = anonymize_url(url, vin) if anonymize else url
+        url = anonymize_url(url) if anonymize else url
         return GetEndpointResult(url=url, raw=raw, result=result)
 
     async def get_health(self, vin: str, anonymize: bool = False) -> GetEndpointResult[Health]:
@@ -215,7 +215,7 @@ class RestApi:
             anonymization_fn=anonymize_health,
         )
         result = self._deserialize(raw, Health.from_json)
-        url = anonymize_url(url, vin) if anonymize else url
+        url = anonymize_url(url) if anonymize else url
         return GetEndpointResult(url=url, raw=raw, result=result)
 
     async def get_user(self, anonymize: bool = False) -> GetEndpointResult[User]:

@@ -14,6 +14,7 @@ from typing import Any
 
 from aiohttp import ClientSession, TraceConfig, TraceRequestEndParams
 
+from myskoda.anonymize import anonymize_url
 from myskoda.models.fixtures import (
     Endpoint,
     Fixture,
@@ -307,7 +308,7 @@ class MySkoda:
                 vehicle_id=vehicle.id,
                 success=False,
                 endpoint=endpoint,
-                error=format_exc(),
+                error=anonymize_url(format_exc()),
             )
         else:
             return FixtureReportGet(
