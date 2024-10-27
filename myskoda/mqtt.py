@@ -200,7 +200,6 @@ class Mqtt:
         self.is_connected = False
         if self._disconnect_listener is not None:
             self._disconnect_listener.set_result(None)
-        self.reconnect()
 
     def _on_connect_fail(self, client: AsyncioPahoClient, _data: None) -> None:
         if client is not self.client:
