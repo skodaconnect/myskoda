@@ -75,7 +75,7 @@ class Authorization:
         self.password = password
         try:
             self.idk_session = await self._get_idk_session()
-        except InvalidUrlClientError as ex:
+        except (InvalidUrlClientError, KeyError) as ex:
             raise AuthorizationFailedError from ex
 
         if self.idk_session is None:
