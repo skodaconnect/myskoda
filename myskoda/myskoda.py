@@ -25,7 +25,6 @@ from myskoda.models.fixtures import (
 )
 
 from .auth.authorization import Authorization
-from .const import MQTT_BROKER_HOST, MQTT_BROKER_PORT
 from .event import Event
 from .models.air_conditioning import AirConditioning
 from .models.charging import ChargeMode, Charging
@@ -38,7 +37,7 @@ from .models.position import Positions
 from .models.status import Status
 from .models.trip_statistics import TripStatistics
 from .models.user import User
-from .mqtt import Mqtt
+from .mqtt import MySkodaMqttClient
 from .rest_api import GetEndpointResult, RestApi
 from .vehicle import Vehicle
 
@@ -69,7 +68,7 @@ TRACE_CONFIG.on_request_end.append(trace_response)
 class MySkoda:
     session: ClientSession
     rest_api: RestApi
-    mqtt: Mqtt | None = None
+    mqtt: MySkodaMqttClient | None = None
     authorization: Authorization
     ssl_context: SSLContext | None = None
 
@@ -78,28 +77,34 @@ class MySkoda:
         session: ClientSession,
         ssl_context: SSLContext | None = None,
         mqtt_enabled: bool = True,
-        mqtt_broker_host: str = MQTT_BROKER_HOST,
-        mqtt_broker_port: int = MQTT_BROKER_PORT,
-        mqtt_enable_ssl: bool = True,
+        mqtt_broker_host: str | None = None,
+        mqtt_broker_port: int | None = None,
+        mqtt_enable_ssl: bool | None = None,
     ) -> None:
         self.session = session
         self.authorization = Authorization(session)
         self.rest_api = RestApi(self.session, self.authorization)
         self.ssl_context = ssl_context
+        self.mqtt_broker_host = mqtt_broker_host
+        self.mqtt_broker_port = mqtt_broker_port
+        self.mqtt_enable_ssl = mqtt_enable_ssl
         if mqtt_enabled:
-            self.mqtt = Mqtt(
-                self.authorization,
-                ssl_context=self.ssl_context,
-                host=mqtt_broker_host,
-                port=mqtt_broker_port,
-                enable_ssl=mqtt_enable_ssl,
-            )
+            self.mqtt = self._create_mqtt_client()
+
+    def _create_mqtt_client(self) -> MySkodaMqttClient:
+        kwargs = {
+            "authorization": self.authorization,
+            "hostname": self.mqtt_broker_host,
+            "port": self.mqtt_broker_port,
+            "enable_ssl": self.mqtt_enable_ssl,
+        }
+        return MySkodaMqttClient(**{k: v for k, v in kwargs.items() if v is not None})
 
     async def enable_mqtt(self) -> None:
         """If MQTT was not enabled when initializing MySkoda, enable it manually and connect."""
         if self.mqtt is not None:
             return
-        self.mqtt = Mqtt(self.authorization, ssl_context=self.ssl_context)
+        self.mqtt = self._create_mqtt_client()
         user = await self.get_user()
         vehicles = await self.list_vehicle_vins()
         await self.mqtt.connect(user.id, vehicles)

@@ -119,8 +119,8 @@ async def disconnect(  # noqa: PLR0913
     myskoda: MySkoda = ctx.obj["myskoda"]
     session: ClientSession = ctx.obj["session"]
 
-    await myskoda.disconnect()
     await session.close()
+    await myskoda.disconnect()
 
 
 cli.add_command(list_vehicles)
