@@ -152,6 +152,7 @@ class VehicleState(StrEnum):
     """Main software state of the vehicle."""
 
     ACTIVATED = "ACTIVATED"
+    GUEST_USER = "GUEST_USER"
 
 
 @dataclass
