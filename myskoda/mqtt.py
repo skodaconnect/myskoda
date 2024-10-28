@@ -111,6 +111,7 @@ class Mqtt:
             self.should_reconnect = True
 
             self.client = AsyncioPahoClient()
+            self.client.enable_logger()
             self.client.on_connect = self._on_connect
             self.client.on_message = self._on_message
             self.client.on_subscribe = self._on_subscribe
