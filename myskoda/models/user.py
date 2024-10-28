@@ -30,7 +30,9 @@ class User(DataClassORJSONMixin):
     last_name: str = field(metadata=field_options(alias="lastName"))
     nickname: str
     preferred_language: str = field(metadata=field_options(alias="preferredLanguage"))
-    profile_picture_url: str = field(metadata=field_options(alias="profilePictureUrl"))
+    profile_picture_url: str | None = field(
+        default=None, metadata=field_options(alias="profilePictureUrl")
+    )
     date_of_birth: date | None = field(default=None, metadata=field_options(alias="dateOfBirth"))
     preferred_contact_channel: str | None = field(
         default=None, metadata=field_options(alias="preferredContactChannel")
