@@ -32,6 +32,7 @@ class OnOffState(StrEnum):
 class EnabledState(StrEnum):
     ENABLED = "ENABLED"
     DISABLED = "DISABLED"
+    NOT_ALLOWED = "NOT_ALLOWED"
 
 
 class ActiveState(StrEnum):
