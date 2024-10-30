@@ -377,7 +377,7 @@ reports:
   vehicle_id: 0
 - endpoint: trip_statistics
   error: null
-  raw: '{"overallMileageInKm": 80, "overallTravelTimeInMin": 75, "overallAverageMileageInKm":
+  raw: '{"overall_average_electric_consumption": None, "overallMileageInKm": 80, "overallTravelTimeInMin": 75, "overallAverageMileageInKm":
     27, "overallAverageTravelTimeInMin": 25, "overallAverageFuelConsumption": 7.36,
     "overallAverageSpeedInKmph": 67, "vehicleType": "FUEL", "detailedStatistics":
     [{"date": "2024-10-14", "tripIds": ["2804340647", "2804697197"], "mileageInKm":
