@@ -83,10 +83,10 @@ class Coordinates(DataClassORJSONMixin):
 class Address(DataClassORJSONMixin):
     """A representation of a house-address."""
 
-    street: str
     country_code: str = field(metadata=field_options(alias="countryCode"))
     zip_code: str | None = field(default=None, metadata=field_options(alias="zipCode"))
     house_number: str | None = field(default=None, metadata=field_options(alias="houseNumber"))
+    street: str | None = field(default=None)
     city: str | None = field(default=None)
     country: str | None = field(default=None)
 
