@@ -16,6 +16,7 @@ class GarageErrorType(StrEnum):
     """Known errors in the Garage."""
 
     NO_MOD1_4_VEHICLES = "NO_MOD1_4_VEHICLES"
+    UNKNOWN = "UNKNOWN"
 
 
 @dataclass

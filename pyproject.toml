@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "myskoda"
-version = "0.8.4"
+version = "0.8.6"
 description = "Library for interaction with the MySkoda APIs."
 authors = [
     "Frederick Gnodtke <frederick@gnodtke.net>",
@@ -11,9 +11,9 @@ readme = "README.md"
 
 [tool.poetry.dependencies]
 aiohttp = "^3"
+aiomqtt = "^2.0"
 asyncclick = { version = "^8.1.7.2", optional = true }
 asyncio = "^3"
-asyncio-paho = "^0.6.0"
 coloredlogs = { version = "^15.0.1", optional = true }
 paho-mqtt = "^1"
 pyjwt = "^2"
@@ -25,13 +25,13 @@ mkdocs = { extras = ["gen-files"], version = "^1.6.1", optional = true }
 mkdocstrings = { extras = ["python"], version = "^0.26.1", optional = true }
 mkdocs-gen-files = { version = "^0.5.0", optional = true }
 mkdocs-literate-nav = { version = "^0.6.1", optional = true }
-pygments = {version = "^2.18.0", optional = true}
+pygments = { version = "^2.18.0", optional = true }
 
 [tool.poetry.group.dev.dependencies]
 pyright = "^1.1.379"
 pytest = "^8"
 pytest-asyncio = "^0"
-ruff = "^0.6.4"
+ruff = ">=0.6.4,<0.8.0"
 pytest-cov = "^5.0.0"
 aioresponses = "^0.7.6"
 amqtt = "0.11.0-beta1"
@@ -61,7 +61,7 @@ ignore = [
     "D211",   # blank-line-before-class
     "D213",   # multi-line-summary-second-line
     "FBT001", # boolean-type-hint-positional-argument
-    "FBT002", # boolean-default-value-positional-argument 
+    "FBT002", # boolean-default-value-positional-argument
     "FIX002", # line-contains-todo
     "ISC001", # single-line-implicit-string-concatenation
     "S101",   # assert (used in tests)
@@ -77,6 +77,4 @@ log_format = "%(asctime)s %(levelname)s %(message)s"
 log_date_format = "%Y-%m-%d %H:%M:%S"
 
 [tool.coverage.run]
-omit = [
-    "myskoda/cli/*"
-]
+omit = ["myskoda/cli/*"]

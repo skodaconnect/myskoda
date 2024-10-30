@@ -19,7 +19,7 @@ from .models import (
     status,
     user,
 )
-from .mqtt import Mqtt
+from .mqtt import MySkodaMqttClient
 from .myskoda import TRACE_CONFIG, MySkoda
 from .rest_api import RestApi
 from .vehicle import Vehicle
@@ -41,7 +41,7 @@ __all__ = [
     "MySkoda",
     "operation_request",
     "service_event",
-    "Mqtt",
+    "MySkodaMqttClient",
     "Vehicle",
     "user",
     "TRACE_CONFIG",
