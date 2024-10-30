@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "myskoda"
-version = "0.8.5"
+version = "0.8.6"
 description = "Library for interaction with the MySkoda APIs."
 authors = [
     "Frederick Gnodtke <frederick@gnodtke.net>",
@@ -15,7 +15,6 @@ aiomqtt = "^2.0"
 asyncclick = { version = "^8.1.7.2", optional = true }
 asyncio = "^3"
 coloredlogs = { version = "^15.0.1", optional = true }
-paho-mqtt = "^1"
 pyjwt = "^2"
 python = ">=3.12.0, <4.0"
 pyyaml = "^6"
