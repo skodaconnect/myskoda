@@ -382,9 +382,10 @@ reports:
     "overallAverageSpeedInKmph": 67, "vehicleType": "FUEL", "detailedStatistics":
     [{"date": "2024-10-14", "tripIds": ["2804340647", "2804697197"], "mileageInKm":
     55, "travelTimeInMin": 43, "averageFuelConsumption": 8.48, "averageSpeedInKmph":
-      75 }, {"date": "2024-10-15", "tripIds": ["2804930587", "2805168290"], "mileageInKm": 25, 
-    "travelTimeInMin": 32, "averageFuelConsumption": 4.89, "averageSpeedInKmph": 49}, {"date": "2024-10-16"}, 
-    {"date": "2024-10-17"}, {"date": "2024-10-18"}, {"date": "2024-10-19"}, {"date": "2024-10-20"}]}'
+    75}, {"date": "2024-10-15", "tripIds": ["2804930587", "2805168290"], "mileageInKm":
+    25, "travelTimeInMin": 32, "averageFuelConsumption": 4.89, "averageSpeedInKmph":
+    49}, {"date": "2024-10-16"}, {"date": "2024-10-17"}, {"date": "2024-10-18"}, {"date":
+    "2024-10-19"}, {"date": "2024-10-20"}]}'
   result:
     detailed_statistics:
     - average_fuel_consumption: 8.48

@@ -518,7 +518,7 @@ reports:
 - endpoint: trip_statistics
   error: null
   raw: '{"overallMileageInKm": 41, "overallTravelTimeInMin": 73, "overallAverageMileageInKm":
-    14, "overallAverageTravelTimeInMin": 24, "overallAverageFuelConsumption": 0.0, "overallAverageElectricConsumption": null,
+    14, "overallAverageTravelTimeInMin": 24, "overallAverageFuelConsumption": 0.0,
     "overallAverageElectricConsumption": 17.99, "overallAverageSpeedInKmph": 36, "vehicleType":
     "HYBRID", "detailedStatistics": [{"date": "2024-10-14", "tripIds": ["3390168222"],
     "mileageInKm": 12, "travelTimeInMin": 14, "averageFuelConsumption": 0.0, "averageElectricConsumption":
