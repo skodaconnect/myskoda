@@ -518,7 +518,7 @@ reports:
 - endpoint: trip_statistics
   error: null
   raw: '{"overallMileageInKm": 41, "overallTravelTimeInMin": 73, "overallAverageMileageInKm":
-    14, "overallAverageTravelTimeInMin": 24, "overallAverageFuelConsumption": 0.0,
+    14, "overallAverageTravelTimeInMin": 24, "overallAverageFuelConsumption": 0.0, "overallAverageElectricConsumption": null,
     "overallAverageElectricConsumption": 17.99, "overallAverageSpeedInKmph": 36, "vehicleType":
     "HYBRID", "detailedStatistics": [{"date": "2024-10-14", "tripIds": ["3390168222"],
     "mileageInKm": 12, "travelTimeInMin": 14, "averageFuelConsumption": 0.0, "averageElectricConsumption":
@@ -533,6 +533,9 @@ reports:
     detailed_statistics:
     - average_fuel_consumption: 0.0
       average_speed_in_kmph: 49
+      average_aux_consumption: null
+      average_electric_consumption: 21.0
+      average_recuperation: null
       date: '2024-10-14'
       mileage_in_km: 12
       travel_time_in_min: 14
@@ -540,6 +543,9 @@ reports:
       - 3390168222
     - average_fuel_consumption: 0.0
       average_speed_in_kmph: 30
+      average_aux_consumption: null
+      average_electric_consumption: 10.35
+      average_recuperation: null
       date: '2024-10-15'
       mileage_in_km: 17
       travel_time_in_min: 35
@@ -548,6 +554,9 @@ reports:
       - 3398500831
     - average_fuel_consumption: 0.0
       average_speed_in_kmph: 31
+      average_aux_consumption: null
+      average_electric_consumption: 25.8
+      average_recuperation: null
       date: '2024-10-16'
       mileage_in_km: 12
       travel_time_in_min: 24
@@ -555,28 +564,41 @@ reports:
       - 3403348176
     - average_fuel_consumption: null
       average_speed_in_kmph: null
+      average_aux_consumption: null
+      average_electric_consumption: null
+      average_recuperation: null
       date: '2024-10-17'
       mileage_in_km: null
       travel_time_in_min: null
       trip_ids: null
     - average_fuel_consumption: null
       average_speed_in_kmph: null
+      average_aux_consumption: null
+      average_electric_consumption: null
+      average_recuperation: null
       date: '2024-10-18'
       mileage_in_km: null
       travel_time_in_min: null
       trip_ids: null
     - average_fuel_consumption: null
       average_speed_in_kmph: null
+      average_aux_consumption: null
+      average_electric_consumption: null
+      average_recuperation: null
       date: '2024-10-19'
       mileage_in_km: null
       travel_time_in_min: null
       trip_ids: null
     - average_fuel_consumption: null
       average_speed_in_kmph: null
+      average_aux_consumption: null
+      average_electric_consumption: null
+      average_recuperation: null
       date: '2024-10-20'
       mileage_in_km: null
       travel_time_in_min: null
       trip_ids: null
+    overall_average_electric_consumption: 17.99
     overall_average_fuel_consumption: 0.0
     overall_average_mileage_in_km: 14
     overall_average_speed_in_kmph: 36
