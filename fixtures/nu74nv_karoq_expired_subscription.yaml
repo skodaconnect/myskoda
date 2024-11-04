@@ -241,6 +241,7 @@ reports:
     power cable connection/lock information are not available"}]}'
   result:
     air_conditioning_at_unlock: null
+    air_conditioning_without_external_power: null
     car_captured_timestamp: null
     charger_connection_state: null
     charger_lock_state: null

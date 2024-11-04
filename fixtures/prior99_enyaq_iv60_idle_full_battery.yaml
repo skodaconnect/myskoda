@@ -305,6 +305,7 @@ reports:
     "errors": []}'
   result:
     air_conditioning_at_unlock: true
+    air_conditioning_without_external_power: null
     car_captured_timestamp: '2024-10-14T23:11:50+00:00'
     charger_connection_state: DISCONNECTED
     charger_lock_state: UNLOCKED

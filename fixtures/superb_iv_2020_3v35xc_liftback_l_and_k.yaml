@@ -289,6 +289,7 @@ reports:
     "description": "APIs for obtaining air conditioning timers are not available"}]}'
   result:
     air_conditioning_at_unlock: null
+    air_conditioning_without_external_power: false
     car_captured_timestamp: '2024-10-16T17:39:43+00:00'
     charger_connection_state: DISCONNECTED
     charger_lock_state: UNLOCKED
