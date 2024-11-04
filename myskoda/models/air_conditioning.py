@@ -33,6 +33,7 @@ class AirConditioningState(StrEnum):
 # Probaly other states than AUTOMATIC are available, to be discovered
 class HeaterSource(StrEnum):
     AUTOMATIC = "AUTOMATIC"
+    ELECTRIC = "ELECTRIC"
 
 
 @dataclass
@@ -100,4 +101,7 @@ class AirConditioning(DataClassORJSONMixin):
     )
     window_heating_enabled: bool | None = field(
         default=None, metadata=field_options(alias="windowHeatingEnabled")
+    )
+    airconditioning_without_external_power: bool | None = field(
+        default=None, metadata=field_options(alias="airConditioningWithoutExternalPower")
     )
