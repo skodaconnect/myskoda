@@ -102,6 +102,6 @@ class AirConditioning(DataClassORJSONMixin):
     window_heating_enabled: bool | None = field(
         default=None, metadata=field_options(alias="windowHeatingEnabled")
     )
-    airconditioning_without_external_power: bool | None = field(
+    air_conditioning_without_external_power: bool | None = field(
         default=None, metadata=field_options(alias="airConditioningWithoutExternalPower")
     )
