@@ -260,6 +260,7 @@ reports:
     connection/lock information are not available"}]}'
   result:
     air_conditioning_at_unlock: null
+    air_conditioning_without_external_power: null
     car_captured_timestamp: '2024-10-21T06:56:48+00:00'
     charger_connection_state: null
     charger_lock_state: null
