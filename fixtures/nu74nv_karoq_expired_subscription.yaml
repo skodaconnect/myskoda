@@ -81,6 +81,10 @@ reports:
         statuses:
         - LICENSE_MISSING
         - LICENSE_EXPIRED
+      - id: THEFT_WARNING
+        statuses:
+        - LICENSE_MISSING
+        - LICENSE_EXPIRED
       - id: TRIP_STATISTICS
         statuses:
         - LICENSE_MISSING
