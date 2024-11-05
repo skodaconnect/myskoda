@@ -22,6 +22,7 @@ class Position(DataClassORJSONMixin):
 
 class ErrorType(StrEnum):
     VEHICLE_IN_MOTION = "VEHICLE_IN_MOTION"
+    VEHICLE_POSITION_UNAVAILABLE = "VEHICLE_POSITION_UNAVAILABLE"
 
 
 @dataclass
