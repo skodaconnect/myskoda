@@ -41,9 +41,6 @@ class StatisticsEntry(DataClassORJSONMixin):
 
 @dataclass
 class TripStatistics(DataClassORJSONMixin):
-    overall_average_mileage_in_km: int = field(
-        metadata=field_options(alias="overallAverageMileageInKm")
-    )
     overall_average_speed_in_kmph: int = field(
         metadata=field_options(alias="overallAverageSpeedInKmph")
     )
@@ -61,4 +58,7 @@ class TripStatistics(DataClassORJSONMixin):
     )
     overall_average_fuel_consumption: float | None = field(
         default=None, metadata=field_options(alias="overallAverageFuelConsumption")
+    )
+    overall_average_mileage_in_km: int | None = field(
+        default=None, metadata=field_options(alias="overallAverageMileageInKm")
     )
