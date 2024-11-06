@@ -150,7 +150,8 @@ class MySkodaMqttClient:
                     tls_context=_SSL_CONTEXT if self.enable_ssl else None,
                     keepalive=MQTT_KEEPALIVE,
                 ) as client:
-                    _LOGGER.info("Connected to MQTT with %s", client)
+                    _LOGGER.info("Connected to MQTT")
+                    _LOGGER.debug("using MQTT client %s", client)
                     for vin in self.vehicle_vins:
                         for topic in MQTT_OPERATION_TOPICS:
                             await client.subscribe(
@@ -169,7 +170,7 @@ class MySkodaMqttClient:
                 await asyncio.sleep(MQTT_RECONNECT_DELAY)
 
     def _on_message(self, msg: aiomqtt.Message) -> None:
-        """Deserialize received MQTT message and emit Event to subscibed callbacks."""
+        """Deserialize received MQTT message and emit Event to subscribed callbacks."""
         # Extract the topic, user id and vin from the topic's name.
         # Internally, the topic will always look like this:
         # `/{user_id}/{vin}/path/to/topic`
