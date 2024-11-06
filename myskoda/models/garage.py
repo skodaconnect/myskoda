@@ -17,6 +17,7 @@ class GarageErrorType(StrEnum):
 
     NO_MOD1_4_VEHICLES = "NO_MOD1_4_VEHICLES"
     UNKNOWN = "UNKNOWN"
+    MISSING_RENDER = "MISSING_RENDER"
 
 
 @dataclass
