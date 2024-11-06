@@ -363,6 +363,7 @@ reports:
     "diesel", "currentSoCInPercent": 81, "currentFuelLevelInPercent": 81, "remainingRangeInKm":
     530}, "carCapturedTimestamp": "2024-10-16T17:46:58Z"}'
   result:
+    ad_blue_range: null
     car_captured_timestamp: '2024-10-16T17:46:58+00:00'
     car_type: diesel
     primary_engine_range:
