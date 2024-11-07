@@ -152,6 +152,7 @@ class BodyType(StrEnum):
     COMBI = "Combi"
     LIFTBACK = "Liftback"
     HATCHBACK = "Hatchback"
+    CROSSOVER = "Crossover"
 
 
 class VehicleState(StrEnum):
