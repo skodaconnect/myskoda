@@ -25,6 +25,8 @@ from myskoda.cli.operations import (
     stop_air_conditioning,
     stop_window_heating,
     wakeup,
+    lock,
+    unlock
 )
 from myskoda.cli.requests import (
     air_conditioning,
@@ -147,6 +149,8 @@ cli.add_command(wakeup)
 cli.add_command(wait_for_operation)
 cli.add_command(subscribe)
 cli.add_command(gen_fixtures)
+cli.add_command(lock)
+cli.add_command(unlock)
 
 if __name__ == "__main__":
     cli()
