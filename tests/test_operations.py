@@ -319,7 +319,7 @@ async def test_lock(
     operation: str
 ) -> None:
     url = f"{BASE_URL_SKODA}/api/v1/vehicle-access/{VIN}/lock"
-    responses.put(url=url)
+    responses.post(url=url)
 
     future = myskoda.lock(VIN, spin)
 
@@ -345,7 +345,7 @@ async def test_unlock(
     operation: str
 ) -> None:
     url = f"{BASE_URL_SKODA}/api/v1/vehicle-access/{VIN}/unlock"
-    responses.put(url=url)
+    responses.post(url=url)
 
     future = myskoda.unlock(VIN, spin)
 
