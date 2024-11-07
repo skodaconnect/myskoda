@@ -310,7 +310,7 @@ async def test_honk_and_flash(  # noqa: PLR0913
     )
 
 @pytest.mark.asyncio
-@pytest.mark.parametrize(("spin","operation"),["1234","lock-vehicle"])
+@pytest.mark.parametrize(("spin","operation"),[("1234","lock-vehicle")])
 async def test_lock(
     responses: aioresponses,
     mqtt_client: MQTTClient,
@@ -336,7 +336,7 @@ async def test_lock(
 
 
 @pytest.mark.asyncio
-@pytest.mark.parametrize(("spin","operation"),["1234","lock-vehicle"])
+@pytest.mark.parametrize(("spin","operation"),[("1234","lock-vehicle")])
 async def test_unlock(
     responses: aioresponses,
     mqtt_client: MQTTClient,
