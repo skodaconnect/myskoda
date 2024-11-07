@@ -379,8 +379,8 @@ class RestApi:
         json_data = {
             "mode": "HONK_AND_FLASH" if honk else "FLASH",
             "vehiclePosition": {
-                "lat": position.gps_coordinates.latitude,
-                "lng": position.gps_coordinates.longitude,
+                "latitude": position.gps_coordinates.latitude,
+                "longitude": position.gps_coordinates.longitude,
             },
         }
         await self._make_post_request(

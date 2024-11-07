@@ -306,7 +306,7 @@ async def test_honk_and_flash(  # noqa: PLR0913
         url=url,
         method="POST",
         headers={"authorization": f"Bearer {ACCESS_TOKEN}"},
-        json={"mode": expected, "vehiclePosition": {"lat": lat, "lng": lng}},
+        json={"mode": expected, "vehiclePosition": {"latitude": lat, "longitude": lng}},
     )
 
 @pytest.mark.asyncio
