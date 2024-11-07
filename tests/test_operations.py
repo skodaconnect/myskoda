@@ -310,13 +310,9 @@ async def test_honk_and_flash(  # noqa: PLR0913
     )
 
 @pytest.mark.asyncio
-@pytest.mark.parametrize(("spin","operation"),[("1234","lock-vehicle")])
+@pytest.mark.parametrize("spin", ["1234", "4321"])
 async def test_lock(
-    responses: aioresponses,
-    mqtt_client: MQTTClient,
-    myskoda: MySkoda,
-    spin: str,
-    operation: str
+    responses: aioresponses, mqtt_client: MQTTClient, myskoda: MySkoda, spin: str
 ) -> None:
     url = f"{BASE_URL_SKODA}/api/v1/vehicle-access/{VIN}/lock"
     responses.post(url=url)
@@ -324,25 +320,20 @@ async def test_lock(
     future = myskoda.lock(VIN, spin)
 
     topic = f"{USER_ID}/{VIN}/operation-request/vehicle-access/lock-vehicle"
-    await mqtt_client.publish(topic, create_completed_json(operation), QOS_2)
+    await mqtt_client.publish(topic, create_completed_json("lock"), QOS_2)
 
     await future
     responses.assert_called_with(
         url=url,
-        method="PUT",
+        method="POST",
         headers={"authorization": f"Bearer {ACCESS_TOKEN}"},
         json={"currentSpin": spin},
     )
 
-
 @pytest.mark.asyncio
-@pytest.mark.parametrize(("spin","operation"),[("1234","lock-vehicle")])
+@pytest.mark.parametrize("spin", ["1234", "4321"])
 async def test_unlock(
-    responses: aioresponses,
-    mqtt_client: MQTTClient,
-    myskoda: MySkoda,
-    spin: str,
-    operation: str
+    responses: aioresponses, mqtt_client: MQTTClient, myskoda: MySkoda, spin: str
 ) -> None:
     url = f"{BASE_URL_SKODA}/api/v1/vehicle-access/{VIN}/unlock"
     responses.post(url=url)
@@ -350,12 +341,12 @@ async def test_unlock(
     future = myskoda.unlock(VIN, spin)
 
     topic = f"{USER_ID}/{VIN}/operation-request/vehicle-access/lock-vehicle"
-    await mqtt_client.publish(topic, create_completed_json(operation), QOS_2)
+    await mqtt_client.publish(topic, create_completed_json("unlock"), QOS_2)
 
     await future
     responses.assert_called_with(
         url=url,
-        method="PUT",
+        method="POST",
         headers={"authorization": f"Bearer {ACCESS_TOKEN}"},
         json={"currentSpin": spin},
     )
