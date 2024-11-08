@@ -169,6 +169,7 @@ class BodyType(StrEnum):
     LIFTBACK = "Liftback"
     HATCHBACK = "Hatchback"
     CROSSOVER = "Crossover"
+    SPACEBACK = "Spaceback"
 
 
 class VehicleState(StrEnum):
