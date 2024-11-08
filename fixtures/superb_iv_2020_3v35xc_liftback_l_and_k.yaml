@@ -499,6 +499,7 @@ reports:
     850}, "secondaryEngineRange": {"engineType": "electric", "currentSoCInPercent":
     63, "remainingRangeInKm": 23}, "carCapturedTimestamp": "2024-10-16T17:40:53Z"}'
   result:
+    ad_blue_range: null
     car_captured_timestamp: '2024-10-16T17:40:53+00:00'
     car_type: hybrid
     primary_engine_range:

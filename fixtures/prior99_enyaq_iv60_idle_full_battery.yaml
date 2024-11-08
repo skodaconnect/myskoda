@@ -502,6 +502,7 @@ reports:
     "electric", "currentSoCInPercent": 47, "remainingRangeInKm": 153}, "carCapturedTimestamp":
     "2024-10-14T16:15:14Z"}'
   result:
+    ad_blue_range: null
     car_captured_timestamp: '2024-10-14T16:15:14+00:00'
     car_type: electric
     primary_engine_range:
