@@ -37,6 +37,7 @@ from .models.position import Positions
 from .models.status import Status
 from .models.trip_statistics import TripStatistics
 from .models.user import User
+from .models.spin import Spin
 from .mqtt import MySkodaMqttClient
 from .rest_api import GetEndpointResult, RestApi
 from .vehicle import Vehicle
@@ -217,6 +218,20 @@ class MySkoda:
         await self.rest_api.stop_air_conditioning(vin)
         await future
 
+    async def start_auxiliary_heating(self, vin: str, temperature: float, spin: str = "") -> None:
+        """Start the auxiliary heating with the provided target temperature in °C."""
+        # NOTE: 08/11/2024 - no response is published in MQTT (maybe bug in MySkoda api?) so we don't wait
+        # future = self._wait_for_operation(OperationName.START_AUXILIARY_HEATING)
+        await self.rest_api.start_auxiliary_heating(vin, temperature, spin)
+        # await future
+
+    async def stop_auxiliary_heating(self, vin: str) -> None:
+        """Stop the auxiliary heating."""
+        # NOTE: 08/11/2024 - no response is published in MQTT (maybe bug in MySkoda api?) so we don't wait
+        # future = self._wait_for_operation(OperationName.STOP_AUXILIARY_HEATING)
+        await self.rest_api.stop_auxiliary_heating(vin)
+        # await future
+
     async def lock(self, vin: str, spin: str) -> None:
         """Lock the car."""
         future = self._wait_for_operation(OperationName.LOCK)
@@ -232,6 +247,10 @@ class MySkoda:
     async def get_auth_token(self) -> str:
         """Retrieve the main access token for the IDK session."""
         return await self.rest_api.authorization.get_access_token()
+
+    async def verify_spin(self, spin: str, anonymize: bool = False) -> Spin:
+        """Verify S-PIN."""
+        return (await self.rest_api.verify_spin(spin, anonymize=anonymize)).result
 
     async def get_info(self, vin: str, anonymize: bool = False) -> Info:
         """Retrieve the basic vehicle information for the specified vehicle."""

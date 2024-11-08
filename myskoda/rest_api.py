@@ -38,6 +38,7 @@ from .models.position import Positions
 from .models.status import Status
 from .models.trip_statistics import TripStatistics
 from .models.user import User
+from .models.spin import Spin
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -99,6 +100,19 @@ class RestApi:
 
     async def _make_put_request(self, url: str, json: dict | None = None) -> str:
         return await self._make_request(url=url, method="PUT", json=json)
+
+    async def verify_spin(self, spin: str, anonymize: bool = False) -> GetEndpointResult[Spin]:
+        """Verify SPIN."""
+        url = f"/v1/spin/verify"
+        json_data = {"currentSpin": spin}
+        raw = self.process_json(
+            data=await self._make_post_request(url, json_data),
+            anonymize=anonymize,
+            anonymization_fn=anonymize_info,
+        )
+        result = self._deserialize(raw, Spin.from_json)
+        url = anonymize_url(url) if anonymize else url
+        return GetEndpointResult(url=url, raw=raw, result=result)
 
     async def get_info(self, vin: str, anonymize: bool = False) -> GetEndpointResult[Info]:
         """Retrieve information related to basic information for the specified vehicle."""
@@ -264,6 +278,32 @@ class RestApi:
         }
         await self._make_post_request(
             url=f"/v2/air-conditioning/{vin}/start",
+            json=json_data,
+        )
+
+    async def stop_auxiliary_heating(self, vin: str) -> None:
+        """Stop the auxiliary heating."""
+        _LOGGER.debug("Stopping auxiliary heating for vehicle %s", vin)
+        await self._make_post_request(url=f"/v2/air-conditioning/{vin}/auxiliary-heating/stop")
+
+    async def start_auxiliary_heating(self, vin: str, temperature: float, spin: str = "") -> None:
+        """Start the auxiliary heating."""
+        _LOGGER.debug(
+            "Starting auxiliary heating for vehicle %s with temperature %s",
+            vin,
+            str(temperature),
+        )
+        json_data = {
+            "heaterSource": "AUTOMATIC",
+            "airConditioningWithoutExternalPower": True,
+            "spin": spin,
+            "targetTemperature": {
+                "temperatureValue": str(temperature),
+                "unitInCar": "CELSIUS",
+            },
+        }
+        await self._make_post_request(
+            url=f"/v2/air-conditioning/{vin}/auxiliary-heating/start",
             json=json_data,
         )
 
