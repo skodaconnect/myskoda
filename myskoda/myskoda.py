@@ -217,6 +217,18 @@ class MySkoda:
         await self.rest_api.stop_air_conditioning(vin)
         await future
 
+    async def lock(self, vin: str, spin: str) -> None:
+        """Lock the car."""
+        future = self._wait_for_operation(OperationName.LOCK)
+        await self.rest_api.lock(vin, spin)
+        await future
+
+    async def unlock(self, vin: str, spin: str) -> None:
+        """Unlock the car."""
+        future = self._wait_for_operation(OperationName.UNLOCK)
+        await self.rest_api.unlock(vin, spin)
+        await future
+
     async def get_auth_token(self) -> str:
         """Retrieve the main access token for the IDK session."""
         return await self.rest_api.authorization.get_access_token()

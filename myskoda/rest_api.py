@@ -349,6 +349,24 @@ class RestApi:
             json=json_data,
         )
 
+    async def lock(self, vin: str, spin: str) -> None:
+        """Lock the vehicle."""
+        _LOGGER.debug("Locking vehicle %s", vin)
+        json_data = {"currentSpin": spin}
+        await self._make_post_request(
+            url=f"/v1/vehicle-access/{vin}/lock",
+            json=json_data,
+        )
+
+    async def unlock(self, vin: str, spin: str) -> None:
+        """Unlock the vehicle."""
+        _LOGGER.debug("Unlocking vehicle %s", vin)
+        json_data = {"currentSpin": spin}
+        await self._make_post_request(
+            url=f"/v1/vehicle-access/{vin}/unlock",
+            json=json_data,
+        )
+
     # TODO @dvx76: Maybe refactor for FBT001
     async def honk_flash(
         self,
@@ -361,8 +379,8 @@ class RestApi:
         json_data = {
             "mode": "HONK_AND_FLASH" if honk else "FLASH",
             "vehiclePosition": {
-                "lat": position.gps_coordinates.latitude,
-                "lng": position.gps_coordinates.longitude,
+                "latitude": position.gps_coordinates.latitude,
+                "longitude": position.gps_coordinates.longitude,
             },
         }
         await self._make_post_request(

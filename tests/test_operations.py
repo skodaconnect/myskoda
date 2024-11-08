@@ -306,5 +306,47 @@ async def test_honk_and_flash(  # noqa: PLR0913
         url=url,
         method="POST",
         headers={"authorization": f"Bearer {ACCESS_TOKEN}"},
-        json={"mode": expected, "vehiclePosition": {"lat": lat, "lng": lng}},
+        json={"mode": expected, "vehiclePosition": {"latitude": lat, "longitude": lng}},
+    )
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize("spin", ["1234", "4321"])
+async def test_lock(
+    responses: aioresponses, mqtt_client: MQTTClient, myskoda: MySkoda, spin: str
+) -> None:
+    url = f"{BASE_URL_SKODA}/api/v1/vehicle-access/{VIN}/lock"
+    responses.post(url=url)
+
+    future = myskoda.lock(VIN, spin)
+
+    topic = f"{USER_ID}/{VIN}/operation-request/vehicle-access/lock-vehicle"
+    await mqtt_client.publish(topic, create_completed_json("lock"), QOS_2)
+
+    await future
+    responses.assert_called_with(
+        url=url,
+        method="POST",
+        headers={"authorization": f"Bearer {ACCESS_TOKEN}"},
+        json={"currentSpin": spin},
+    )
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize("spin", ["1234", "4321"])
+async def test_unlock(
+    responses: aioresponses, mqtt_client: MQTTClient, myskoda: MySkoda, spin: str
+) -> None:
+    url = f"{BASE_URL_SKODA}/api/v1/vehicle-access/{VIN}/unlock"
+    responses.post(url=url)
+
+    future = myskoda.unlock(VIN, spin)
+
+    topic = f"{USER_ID}/{VIN}/operation-request/vehicle-access/lock-vehicle"
+    await mqtt_client.publish(topic, create_completed_json("unlock"), QOS_2)
+
+    await future
+    responses.assert_called_with(
+        url=url,
+        method="POST",
+        headers={"authorization": f"Bearer {ACCESS_TOKEN}"},
+        json={"currentSpin": spin},
     )

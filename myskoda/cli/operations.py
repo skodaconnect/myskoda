@@ -132,3 +132,49 @@ async def wakeup(ctx: Context, timeout: float, vin: str) -> None:  # noqa: ASYNC
     myskoda: MySkoda = ctx.obj["myskoda"]
     async with asyncio.timeout(timeout):
         await myskoda.wakeup(vin)
+
+@click.command()
+@click.option("spin", "--spin", type=str, required=True)
+@click.option("timeout", "--timeout", type=float, default=300)
+@click.argument("vin")
+@click.pass_context
+@mqtt_required
+async def lock(
+    ctx: Context,
+    spin: str,
+    timeout: float,  # noqa: ASYNC109
+    vin: str,
+) -> None:
+    """Lock the car."""
+    myskoda: MySkoda = ctx.obj["myskoda"]
+    async with asyncio.timeout(timeout):
+        await myskoda.lock(vin, spin)
+
+@click.command()
+@click.option("spin", "--spin", type=str, required=True)
+@click.option("timeout", "--timeout", type=float, default=300)
+@click.argument("vin")
+@click.pass_context
+@mqtt_required
+async def unlock(
+    ctx: Context,
+    spin: str,
+    timeout: float,  # noqa: ASYNC109
+    vin: str,
+) -> None:
+    """Unlock the car."""
+    myskoda: MySkoda = ctx.obj["myskoda"]
+    async with asyncio.timeout(timeout):
+        await myskoda.unlock(vin, spin)
+
+@click.command()
+@click.option("timeout", "--timeout", type=float, default=300)
+@click.option("honk", "--honk", type=bool, default=False)
+@click.argument("vin")
+@click.pass_context
+@mqtt_required
+async def honk_flash(ctx: Context, timeout: float, vin: str, honk: bool) -> None:  # noqa: ASYNC109
+    """Honk and/or flash."""
+    myskoda: MySkoda = ctx.obj["myskoda"]
+    async with asyncio.timeout(timeout):
+        await myskoda.honk_flash(vin, honk)
