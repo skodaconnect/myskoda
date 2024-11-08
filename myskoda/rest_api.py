@@ -103,7 +103,7 @@ class RestApi:
 
     async def verify_spin(self, spin: str, anonymize: bool = False) -> GetEndpointResult[Spin]:
         """Verify SPIN."""
-        url = f"/v1/spin/verify"
+        url = "/v1/spin/verify"
         json_data = {"currentSpin": spin}
         raw = self.process_json(
             data=await self._make_post_request(url, json_data),
@@ -264,15 +264,16 @@ class RestApi:
 
     async def start_air_conditioning(self, vin: str, temperature: float) -> None:
         """Start the air conditioning."""
+        round_temp = f"{round(temperature * 2) / 2:.1f}"
         _LOGGER.debug(
             "Starting air conditioning for vehicle %s with temperature %s",
             vin,
-            str(temperature),
+            round_temp,
         )
         json_data = {
             "heaterSource": "ELECTRIC",
             "targetTemperature": {
-                "temperatureValue": str(temperature),
+                "temperatureValue": round_temp,
                 "unitInCar": "CELSIUS",
             },
         }
@@ -286,19 +287,20 @@ class RestApi:
         _LOGGER.debug("Stopping auxiliary heating for vehicle %s", vin)
         await self._make_post_request(url=f"/v2/air-conditioning/{vin}/auxiliary-heating/stop")
 
-    async def start_auxiliary_heating(self, vin: str, temperature: float, spin: str = "") -> None:
+    async def start_auxiliary_heating(self, vin: str, temperature: float, spin: str) -> None:
         """Start the auxiliary heating."""
+        round_temp = f"{round(temperature * 2) / 2:.1f}"
         _LOGGER.debug(
             "Starting auxiliary heating for vehicle %s with temperature %s",
             vin,
-            str(temperature),
+            round_temp,
         )
         json_data = {
             "heaterSource": "AUTOMATIC",
             "airConditioningWithoutExternalPower": True,
             "spin": spin,
             "targetTemperature": {
-                "temperatureValue": str(temperature),
+                "temperatureValue": round_temp,
                 "unitInCar": "CELSIUS",
             },
         }
@@ -309,8 +311,9 @@ class RestApi:
 
     async def set_target_temperature(self, vin: str, temperature: float) -> None:
         """Set the air conditioning's target temperature in °C."""
-        _LOGGER.debug("Setting target temperature for vehicle %s to %s", vin, str(temperature))
-        json_data = {"temperatureValue": str(temperature), "unitInCar": "CELSIUS"}
+        round_temp = f"{round(temperature * 2) / 2:.1f}"
+        _LOGGER.debug("Setting target temperature for vehicle %s to %s", vin, round_temp)
+        json_data = {"temperatureValue": round_temp, "unitInCar": "CELSIUS"}
         await self._make_post_request(
             url=f"/v2/air-conditioning/{vin}/settings/target-temperature",
             json=json_data,

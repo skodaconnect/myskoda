@@ -47,7 +47,6 @@ async def stop_air_conditioning(ctx: Context, timeout: float, vin: str) -> None:
 @click.option("timeout", "--timeout", type=float, default=300)
 @click.argument("vin")
 @click.pass_context
-#@mqtt_required NOTE: 08/11/2024 - no response is published in MQTT (maybe bug in MySkoda api?) so we don't need MQTT
 async def start_auxiliary_heating(
     ctx: Context,
     temperature: float,

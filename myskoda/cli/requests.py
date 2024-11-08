@@ -120,7 +120,7 @@ async def garage(ctx: Context, anonymize: bool) -> None:
 @click.option("anonymize", "--anonymize", help="Strip all personal data.", is_flag=True)
 @click.pass_context
 async def verify_spin(ctx: Context, spin: str, anonymize: bool) -> None:
-    """Verify S-PIN"""
+    """Verify S-PIN."""
     await handle_request(ctx, ctx.obj["myskoda"].verify_spin, spin, anonymize)
 
 

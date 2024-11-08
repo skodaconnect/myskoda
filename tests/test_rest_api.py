@@ -236,13 +236,16 @@ async def test_get_spin_status(
         spin_status_json = json.loads(spin_status)
 
         responses.post(
-            url=f"https://mysmob.api.connect.skoda-auto.cz/api/v1/spin/verify",
+            url="https://mysmob.api.connect.skoda-auto.cz/api/v1/spin/verify",
             body=spin_status,
         )
         get_spin_status_result = await myskoda.verify_spin(spin)
 
-        assert get_spin_status_result.verificationStatus == spin_status_json["verificationStatus"]
-        if get_spin_status_result.spinStatus is not None:
-            assert get_spin_status_result.spinStatus.remainingTries == spin_status_json["spinStatus"]["remainingTries"]
-            assert get_spin_status_result.spinStatus.lockedWaitingTimeInSeconds == spin_status_json["spinStatus"]["lockedWaitingTimeInSeconds"]
-            assert get_spin_status_result.spinStatus.state == spin_status_json["spinStatus"]["state"]
+        assert get_spin_status_result.verification_status == spin_status_json["verificationStatus"]
+        if get_spin_status_result.spin_status is not None:
+            assert (get_spin_status_result.spin_status.remaining_tries
+                    == spin_status_json["spinStatus"]["remainingTries"])
+            assert (get_spin_status_result.spin_status.locked_waiting_time_in_seconds
+                    == spin_status_json["spinStatus"]["lockedWaitingTimeInSeconds"])
+            assert (get_spin_status_result.spin_status.state
+                    == spin_status_json["spinStatus"]["state"])

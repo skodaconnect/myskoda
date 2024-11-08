@@ -29,7 +29,7 @@ from myskoda.cli.operations import (
     wakeup,
     lock,
     unlock,
-    honk_flash
+    honk_flash,
 )
 from myskoda.cli.requests import (
     air_conditioning,
@@ -45,7 +45,7 @@ from myskoda.cli.requests import (
     status,
     trip_statistics,
     user,
-    verify_spin
+    verify_spin,
 )
 from myskoda.cli.utils import Format, print_json, print_yaml
 

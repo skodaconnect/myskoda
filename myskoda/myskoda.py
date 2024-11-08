@@ -218,16 +218,16 @@ class MySkoda:
         await self.rest_api.stop_air_conditioning(vin)
         await future
 
-    async def start_auxiliary_heating(self, vin: str, temperature: float, spin: str = "") -> None:
+    async def start_auxiliary_heating(self, vin: str, temperature: float, spin: str) -> None:
         """Start the auxiliary heating with the provided target temperature in °C."""
-        # NOTE: 08/11/2024 - no response is published in MQTT (maybe bug in MySkoda api?) so we don't wait
+        # NOTE: 08/11/2024 - no response is published in MQTT (maybe bug in api?) so we don't wait
         # future = self._wait_for_operation(OperationName.START_AUXILIARY_HEATING)
         await self.rest_api.start_auxiliary_heating(vin, temperature, spin)
         # await future
 
     async def stop_auxiliary_heating(self, vin: str) -> None:
         """Stop the auxiliary heating."""
-        # NOTE: 08/11/2024 - no response is published in MQTT (maybe bug in MySkoda api?) so we don't wait
+        # NOTE: 08/11/2024 - no response is published in MQTT (maybe bug in api?) so we don't wait
         # future = self._wait_for_operation(OperationName.STOP_AUXILIARY_HEATING)
         await self.rest_api.stop_auxiliary_heating(vin)
         # await future
