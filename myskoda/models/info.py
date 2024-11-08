@@ -57,6 +57,7 @@ class CapabilityId(StrEnum):
     MISUSE_PROTECTION = "MISUSE_PROTECTION"
     NEWS = "NEWS"
     ONLINE_SPEECH_GPS = "ONLINE_SPEECH_GPS"
+    OUTSIDE_TEMPERATURE = "OUTSIDE_TEMPERATURE"
     PARKING_INFORMATION = "PARKING_INFORMATION"
     PARKING_POSITION = "PARKING_POSITION"
     PAY_TO_FUEL = "PAY_TO_FUEL"
@@ -100,6 +101,21 @@ class CapabilityStatus(StrEnum):
     LICENSE_MISSING = "LICENSE_MISSING"
     LOCATION_DATA_DISABLED = "LOCATION_DATA_DISABLED"
     INSUFFICIENT_RIGHTS = "INSUFFICIENT_RIGHTS"
+
+
+class ErrorType(StrEnum):
+    """Known errors."""
+
+    MISSING_RENDER = "MISSING_RENDER"
+    UNAVAILABLE_SERVICE_PLATFORM_CAPABILITIES = "UNAVAILABLE_SERVICE_PLATFORM_CAPABILITIES"
+
+
+@dataclass
+class Error(DataClassORJSONMixin):
+    """Main model for emitted errors."""
+
+    description: str
+    type: ErrorType
 
 
 @dataclass
@@ -204,20 +220,6 @@ class ServicePartner(DataClassORJSONMixin):
     """ServicePartner is a fancy name for car dealer."""
 
     id: str = field(metadata=field_options(alias="servicePartnerId"))
-
-
-class ErrorType(StrEnum):
-    """Known errors."""
-
-    MISSING_RENDER = "MISSING_RENDER"
-
-
-@dataclass
-class Error(DataClassORJSONMixin):
-    """Main model for emitted errors."""
-
-    description: str
-    type: ErrorType
 
 
 class ViewType(StrEnum):
