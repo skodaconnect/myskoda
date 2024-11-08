@@ -19,9 +19,11 @@ class EngineType(StrEnum):
 class EngineRange(DataClassORJSONMixin):
     current_soc_in_percent: int = field(metadata=field_options(alias="currentSoCInPercent"))
     engine_type: EngineType = field(metadata=field_options(alias="engineType"))
-    remaining_range_in_km: int = field(metadata=field_options(alias="remainingRangeInKm"))
     current_fuel_level_in_percent: int | None = field(
         default=None, metadata=field_options(alias="currentFuelLevelInPercent")
+    )
+    remaining_range_in_km: int | None = field(
+        default=None, metadata=field_options(alias="remainingRangeInKm")
     )
 
 
