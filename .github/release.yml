@@ -1,0 +1,22 @@
+changelog:
+  exclude:
+    labels:
+      - ignore-for-release
+  categories:
+    - title: :boom: Breaking Changes :boom"
+      labels:
+        - breaking
+        - major
+    - title: :sparkle: New features
+      labels:
+        - minor
+        - enhancements
+    - title: :bug: Bugfixes
+      labels:
+        - bugfix
+    - title: :hammer_and_wrench: Dependencies
+      labels:
+        - dependencies
+    - title: :spiral_notepad: Other changes
+      labels:
+        - '*'
