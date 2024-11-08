@@ -41,9 +41,6 @@ class StatisticsEntry(DataClassORJSONMixin):
 
 @dataclass
 class TripStatistics(DataClassORJSONMixin):
-    overall_average_travel_time_in_min: int = field(
-        metadata=field_options(alias="overallAverageTravelTimeInMin")
-    )
     overall_mileage_in_km: int = field(metadata=field_options(alias="overallMileageInKm"))
     overall_travel_time_in_min: int = field(metadata=field_options(alias="overallTravelTimeInMin"))
     vehicle_type: VehicleType = field(metadata=field_options(alias="vehicleType"))
@@ -61,4 +58,7 @@ class TripStatistics(DataClassORJSONMixin):
     )
     overall_average_speed_in_kmph: int | None = field(
         default=None, metadata=field_options(alias="overallAverageSpeedInKmph")
+    )
+    overall_average_travel_time_in_min: int | None = field(
+        default=None, metadata=field_options(alias="overallAverageTravelTimeInMin")
     )
