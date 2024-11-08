@@ -82,6 +82,8 @@ reports:
         statuses: []
       - id: ICE_VEHICLE_RTS
         statuses: []
+      - id: OUTSIDE_TEMPERATURE
+        statuses: []
       - id: DIGICERT
         statuses: []
       - id: VEHICLE_HEALTH_WARNINGS
