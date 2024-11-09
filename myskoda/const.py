@@ -37,7 +37,7 @@ MQTT_OPERATION_TOPICS = [
 MQTT_SERVICE_EVENT_TOPICS = [
     "air-conditioning",
     "charging",
-    "departure"
+    "departure",
     "vehicle-status/access",
     "vehicle-status/lights",
 ]
