@@ -1,5 +1,5 @@
 description: null
-generation_time: '2024-11-08T19:31:45.927310+00:00'
+generation_time: '2024-11-09T19:56:00.188385+00:00'
 name: Kamiq
 reports:
 - endpoint: info
@@ -152,39 +152,40 @@ reports:
   vehicle_id: 0
 - endpoint: status
   error: null
-  raw: '{"overall": {"doorsLocked": "UNKNOWN", "locked": "UNKNOWN", "doors": "UNKNOWN",
-    "windows": "UNKNOWN", "lights": "OFF"}, "detail": {"sunroof": "UNSUPPORTED", "trunk":
-    "UNKNOWN", "bonnet": "UNKNOWN"}, "renders": {"lightMode": {"oneX": "https://mysmob.api.connect.skoda-auto.cz/api/v2/vehicle-status/render?carType=SUV&vehicleState=9-9-9-9-0-0-3-3-0&lastModifiedAt=1730291332&dimension=1x&theme=LIGHT",
-    "oneAndHalfX": "https://mysmob.api.connect.skoda-auto.cz/api/v2/vehicle-status/render?carType=SUV&vehicleState=9-9-9-9-0-0-3-3-0&lastModifiedAt=1730291332&dimension=1-5x&theme=LIGHT",
-    "twoX": "https://mysmob.api.connect.skoda-auto.cz/api/v2/vehicle-status/render?carType=SUV&vehicleState=9-9-9-9-0-0-3-3-0&lastModifiedAt=1730291332&dimension=2x&theme=LIGHT",
-    "threeX": "https://mysmob.api.connect.skoda-auto.cz/api/v2/vehicle-status/render?carType=SUV&vehicleState=9-9-9-9-0-0-3-3-0&lastModifiedAt=1730291332&dimension=3x&theme=LIGHT"},
-    "darkMode": {"oneX": "https://mysmob.api.connect.skoda-auto.cz/api/v2/vehicle-status/render?carType=SUV&vehicleState=9-9-9-9-0-0-3-3-0&lastModifiedAt=1730291332&dimension=1x&theme=DARK",
-    "oneAndHalfX": "https://mysmob.api.connect.skoda-auto.cz/api/v2/vehicle-status/render?carType=SUV&vehicleState=9-9-9-9-0-0-3-3-0&lastModifiedAt=1730291332&dimension=1-5x&theme=DARK",
-    "twoX": "https://mysmob.api.connect.skoda-auto.cz/api/v2/vehicle-status/render?carType=SUV&vehicleState=9-9-9-9-0-0-3-3-0&lastModifiedAt=1730291332&dimension=2x&theme=DARK",
-    "threeX": "https://mysmob.api.connect.skoda-auto.cz/api/v2/vehicle-status/render?carType=SUV&vehicleState=9-9-9-9-0-0-3-3-0&lastModifiedAt=1730291332&dimension=3x&theme=DARK"}}}'
+  raw: '{"overall": {"doorsLocked": "YES", "locked": "YES", "doors": "CLOSED", "windows":
+    "CLOSED", "lights": "OFF"}, "detail": {"sunroof": "UNSUPPORTED", "trunk": "CLOSED",
+    "bonnet": "CLOSED"}, "renders": {"lightMode": {"oneX": "https://mysmob.api.connect.skoda-auto.cz/api/v2/vehicle-status/render?carType=SUV&vehicleState=1-1-1-1-0-0-0-0-0&lastModifiedAt=1730291332&dimension=1x&theme=LIGHT",
+    "oneAndHalfX": "https://mysmob.api.connect.skoda-auto.cz/api/v2/vehicle-status/render?carType=SUV&vehicleState=1-1-1-1-0-0-0-0-0&lastModifiedAt=1730291332&dimension=1-5x&theme=LIGHT",
+    "twoX": "https://mysmob.api.connect.skoda-auto.cz/api/v2/vehicle-status/render?carType=SUV&vehicleState=1-1-1-1-0-0-0-0-0&lastModifiedAt=1730291332&dimension=2x&theme=LIGHT",
+    "threeX": "https://mysmob.api.connect.skoda-auto.cz/api/v2/vehicle-status/render?carType=SUV&vehicleState=1-1-1-1-0-0-0-0-0&lastModifiedAt=1730291332&dimension=3x&theme=LIGHT"},
+    "darkMode": {"oneX": "https://mysmob.api.connect.skoda-auto.cz/api/v2/vehicle-status/render?carType=SUV&vehicleState=1-1-1-1-0-0-0-0-0&lastModifiedAt=1730291332&dimension=1x&theme=DARK",
+    "oneAndHalfX": "https://mysmob.api.connect.skoda-auto.cz/api/v2/vehicle-status/render?carType=SUV&vehicleState=1-1-1-1-0-0-0-0-0&lastModifiedAt=1730291332&dimension=1-5x&theme=DARK",
+    "twoX": "https://mysmob.api.connect.skoda-auto.cz/api/v2/vehicle-status/render?carType=SUV&vehicleState=1-1-1-1-0-0-0-0-0&lastModifiedAt=1730291332&dimension=2x&theme=DARK",
+    "threeX": "https://mysmob.api.connect.skoda-auto.cz/api/v2/vehicle-status/render?carType=SUV&vehicleState=1-1-1-1-0-0-0-0-0&lastModifiedAt=1730291332&dimension=3x&theme=DARK"}},
+    "carCapturedTimestamp": "2024-11-09T10:23:55Z"}'
   result:
-    car_captured_timestamp: null
+    car_captured_timestamp: '2024-11-09T10:23:55+00:00'
     detail:
-      bonnet: UNKNOWN
+      bonnet: CLOSED
       sunroof: UNSUPPORTED
-      trunk: UNKNOWN
+      trunk: CLOSED
     overall:
-      doors: UNKNOWN
-      doors_locked: UNKNOWN
+      doors: CLOSED
+      doors_locked: 'YES'
       lights: 'OFF'
-      locked: UNKNOWN
-      windows: UNKNOWN
+      locked: 'YES'
+      windows: CLOSED
     renders:
       dark_mode:
-        one_and_half_x: https://mysmob.api.connect.skoda-auto.cz/api/v2/vehicle-status/render?carType=SUV&vehicleState=9-9-9-9-0-0-3-3-0&lastModifiedAt=1730291332&dimension=1-5x&theme=DARK
-        one_x: https://mysmob.api.connect.skoda-auto.cz/api/v2/vehicle-status/render?carType=SUV&vehicleState=9-9-9-9-0-0-3-3-0&lastModifiedAt=1730291332&dimension=1x&theme=DARK
-        three_x: https://mysmob.api.connect.skoda-auto.cz/api/v2/vehicle-status/render?carType=SUV&vehicleState=9-9-9-9-0-0-3-3-0&lastModifiedAt=1730291332&dimension=3x&theme=DARK
-        two_x: https://mysmob.api.connect.skoda-auto.cz/api/v2/vehicle-status/render?carType=SUV&vehicleState=9-9-9-9-0-0-3-3-0&lastModifiedAt=1730291332&dimension=2x&theme=DARK
+        one_and_half_x: https://mysmob.api.connect.skoda-auto.cz/api/v2/vehicle-status/render?carType=SUV&vehicleState=1-1-1-1-0-0-0-0-0&lastModifiedAt=1730291332&dimension=1-5x&theme=DARK
+        one_x: https://mysmob.api.connect.skoda-auto.cz/api/v2/vehicle-status/render?carType=SUV&vehicleState=1-1-1-1-0-0-0-0-0&lastModifiedAt=1730291332&dimension=1x&theme=DARK
+        three_x: https://mysmob.api.connect.skoda-auto.cz/api/v2/vehicle-status/render?carType=SUV&vehicleState=1-1-1-1-0-0-0-0-0&lastModifiedAt=1730291332&dimension=3x&theme=DARK
+        two_x: https://mysmob.api.connect.skoda-auto.cz/api/v2/vehicle-status/render?carType=SUV&vehicleState=1-1-1-1-0-0-0-0-0&lastModifiedAt=1730291332&dimension=2x&theme=DARK
       light_mode:
-        one_and_half_x: https://mysmob.api.connect.skoda-auto.cz/api/v2/vehicle-status/render?carType=SUV&vehicleState=9-9-9-9-0-0-3-3-0&lastModifiedAt=1730291332&dimension=1-5x&theme=LIGHT
-        one_x: https://mysmob.api.connect.skoda-auto.cz/api/v2/vehicle-status/render?carType=SUV&vehicleState=9-9-9-9-0-0-3-3-0&lastModifiedAt=1730291332&dimension=1x&theme=LIGHT
-        three_x: https://mysmob.api.connect.skoda-auto.cz/api/v2/vehicle-status/render?carType=SUV&vehicleState=9-9-9-9-0-0-3-3-0&lastModifiedAt=1730291332&dimension=3x&theme=LIGHT
-        two_x: https://mysmob.api.connect.skoda-auto.cz/api/v2/vehicle-status/render?carType=SUV&vehicleState=9-9-9-9-0-0-3-3-0&lastModifiedAt=1730291332&dimension=2x&theme=LIGHT
+        one_and_half_x: https://mysmob.api.connect.skoda-auto.cz/api/v2/vehicle-status/render?carType=SUV&vehicleState=1-1-1-1-0-0-0-0-0&lastModifiedAt=1730291332&dimension=1-5x&theme=LIGHT
+        one_x: https://mysmob.api.connect.skoda-auto.cz/api/v2/vehicle-status/render?carType=SUV&vehicleState=1-1-1-1-0-0-0-0-0&lastModifiedAt=1730291332&dimension=1x&theme=LIGHT
+        three_x: https://mysmob.api.connect.skoda-auto.cz/api/v2/vehicle-status/render?carType=SUV&vehicleState=1-1-1-1-0-0-0-0-0&lastModifiedAt=1730291332&dimension=3x&theme=LIGHT
+        two_x: https://mysmob.api.connect.skoda-auto.cz/api/v2/vehicle-status/render?carType=SUV&vehicleState=1-1-1-1-0-0-0-0-0&lastModifiedAt=1730291332&dimension=2x&theme=LIGHT
   success: true
   type: get
   url: /v2/vehicle-status/TMOCKAA0AA000000
@@ -230,37 +231,56 @@ reports:
   vehicle_id: 0
 - endpoint: positions
   error: null
-  raw: '{"positions": [], "errors": [{"type": "VEHICLE_POSITION_UNAVAILABLE", "description":
-    "Vehicle position is not available"}]}'
+  raw: '{"positions": [{"type": "VEHICLE", "gpsCoordinates": {"latitude": 53.470636,
+    "longitude": 9.689872}, "address": {"city": "Example City", "street": "Example
+    Avenue", "houseNumber": "15", "zipCode": "54321", "countryCode": "DEU"}}], "errors":
+    []}'
   result:
-    errors:
-    - description: Vehicle position is not available
-      type: VEHICLE_POSITION_UNAVAILABLE
-    positions: []
+    errors: []
+    positions:
+    - address:
+        city: Example City
+        country: null
+        country_code: DEU
+        house_number: '15'
+        street: Example Avenue
+        zip_code: '54321'
+      gps_coordinates:
+        latitude: 53.470636
+        longitude: 9.689872
+      type: VEHICLE
   success: true
   type: get
   url: /v1/maps/positions?vin=TMOCKAA0AA000000
   vehicle_id: 0
 - endpoint: health
-  error: "Traceback (most recent call last):\n  File \"/usr/local/lib/python3.12/site-packages/myskoda/myskoda.py\",
-    line 321, in generate_fixture_report\n    result = await self.get_endpoint(vin,
-    endpoint, anonymize=True)\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n
-    \ File \"/usr/local/lib/python3.12/site-packages/myskoda/myskoda.py\", line 356,
-    in get_endpoint\n    result = await self.rest_api.get_health(vin, anonymize=anonymize)\n
-    \            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File
-    \"/usr/local/lib/python3.12/site-packages/myskoda/rest_api.py\", line 213, in
-    get_health\n    data=await self._make_get_request(url),\n         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n
-    \ File \"/usr/local/lib/python3.12/site-packages/myskoda/rest_api.py\", line 95,
-    in _make_get_request\n    return await self._make_request(url=url, method=\"GET\")\n
-    \          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.12/site-packages/myskoda/rest_api.py\",
-    line 85, in _make_request\n    response.raise_for_status()\n  File \"/usr/local/lib/python3.12/site-packages/aiohttp/client_reqrep.py\",
-    line 1157, in raise_for_status\n    raise ClientResponseError(\naiohttp.client_exceptions.ClientResponseError:
-    500, message='Internal Server Error', url='https://mysmob.api.connect.skoda-auto.cz/api/v1/vehicle-health-report/warning-lights/TMOCKAA0AA000000'\n"
-  raw: null
-  result: null
-  success: false
+  error: null
+  raw: '{"capturedAt": "2024-11-09T10:23:54Z", "mileageInKm": 77043, "warningLights":
+    [{"category": "ASSISTANCE", "defects": []}, {"category": "COMFORT", "defects":
+    []}, {"category": "BRAKE", "defects": []}, {"category": "ENGINE", "defects": []},
+    {"category": "LIGHTING", "defects": []}, {"category": "TIRE", "defects": []},
+    {"category": "OTHER", "defects": []}]}'
+  result:
+    captured_at: '2024-11-09T10:23:54+00:00'
+    mileage_in_km: 77043
+    warning_lights:
+    - category: ASSISTANCE
+      defects: []
+    - category: COMFORT
+      defects: []
+    - category: BRAKE
+      defects: []
+    - category: ENGINE
+      defects: []
+    - category: LIGHTING
+      defects: []
+    - category: TIRE
+      defects: []
+    - category: OTHER
+      defects: []
+  success: true
   type: get
-  url: null
+  url: /v1/vehicle-health-report/warning-lights/TMOCKAA0AA000000
   vehicle_id: 0
 - endpoint: charging
   error: null
@@ -297,9 +317,9 @@ reports:
   vehicle_id: 0
 - endpoint: maintenance
   error: null
-  raw: '{"maintenanceReport": {"capturedAt": "2024-11-08T17:46:17Z", "inspectionDueInDays":
-    490, "inspectionDueInKm": 15500, "mileageInKm": 77040, "oilServiceDueInDays":
-    490, "oilServiceDueInKm": 15500}, "preferredServicePartner": {"name": "Example
+  raw: '{"maintenanceReport": {"capturedAt": "2024-11-09T10:23:54Z", "inspectionDueInDays":
+    489, "inspectionDueInKm": 15500, "mileageInKm": 77043, "oilServiceDueInDays":
+    489, "oilServiceDueInKm": 15500}, "preferredServicePartner": {"name": "Example
     Service Partner", "brand": "C", "partnerNumber": "1111", "id": "DEU11111", "contact":
     {"phone": "+49 1234 567890", "url": "https://example.com", "email": "user@example.com"},
     "address": {"city": "Example City", "street": "Example Avenue", "houseNumber":
@@ -334,11 +354,11 @@ reports:
     n.a. of oil. You can continue driving."}]}]}}'
   result:
     maintenance_report:
-      captured_at: '2024-11-08T17:46:17+00:00'
-      inspection_due_in_days: 490
+      captured_at: '2024-11-09T10:23:54+00:00'
+      inspection_due_in_days: 489
       inspection_due_in_km: 15500
-      mileage_in_km: 77040
-      oil_service_due_in_days: 490
+      mileage_in_km: 77043
+      oil_service_due_in_days: 489
       oil_service_due_in_km: 15500
     predictive_maintenance:
       setting:
@@ -385,44 +405,137 @@ reports:
   vehicle_id: 0
 - endpoint: driving_range
   error: null
-  raw: '{"carType": "gasoline", "totalRangeInKm": 770, "primaryEngineRange": {"engineType":
-    "gasoline", "currentSoCInPercent": 91, "currentFuelLevelInPercent": 91, "remainingRangeInKm":
-    770}, "carCapturedTimestamp": "2024-11-08T17:46:18Z"}'
+  raw: '{"carType": "gasoline", "totalRangeInKm": 750, "primaryEngineRange": {"engineType":
+    "gasoline", "currentSoCInPercent": 90, "currentFuelLevelInPercent": 90, "remainingRangeInKm":
+    750}, "carCapturedTimestamp": "2024-11-09T10:23:55Z"}'
   result:
     ad_blue_range: null
-    car_captured_timestamp: '2024-11-08T17:46:18+00:00'
+    car_captured_timestamp: '2024-11-09T10:23:55+00:00'
     car_type: gasoline
     primary_engine_range:
-      current_fuel_level_in_percent: 91
-      current_soc_in_percent: 91
+      current_fuel_level_in_percent: 90
+      current_soc_in_percent: 90
       engine_type: gasoline
-      remaining_range_in_km: 770
+      remaining_range_in_km: 750
     secondary_engine_range: null
-    total_range_in_km: 770
+    total_range_in_km: 750
   success: true
   type: get
   url: /v2/vehicle-status/TMOCKAA0AA000000/driving-range
   vehicle_id: 0
 - endpoint: trip_statistics
-  error: "Traceback (most recent call last):\n  File \"/usr/local/lib/python3.12/site-packages/myskoda/myskoda.py\",
-    line 321, in generate_fixture_report\n    result = await self.get_endpoint(vin,
-    endpoint, anonymize=True)\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n
-    \ File \"/usr/local/lib/python3.12/site-packages/myskoda/myskoda.py\", line 364,
-    in get_endpoint\n    result = await self.rest_api.get_trip_statistics(vin, anonymize=anonymize)\n
-    \            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n
-    \ File \"/usr/local/lib/python3.12/site-packages/myskoda/rest_api.py\", line 187,
-    in get_trip_statistics\n    data=await self._make_get_request(url),\n         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n
-    \ File \"/usr/local/lib/python3.12/site-packages/myskoda/rest_api.py\", line 95,
-    in _make_get_request\n    return await self._make_request(url=url, method=\"GET\")\n
-    \          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.12/site-packages/myskoda/rest_api.py\",
-    line 85, in _make_request\n    response.raise_for_status()\n  File \"/usr/local/lib/python3.12/site-packages/aiohttp/client_reqrep.py\",
-    line 1157, in raise_for_status\n    raise ClientResponseError(\naiohttp.client_exceptions.ClientResponseError:
-    500, message='Internal Server Error', url='https://mysmob.api.connect.skoda-auto.cz/api/v1/trip-statistics/TMOCKAA0AA000000?offsetType=week&offset=0&timezone=Europe/Berlin'\n"
-  raw: null
-  result: null
-  success: false
+  error: null
+  raw: '{"overallCost": {"totalCost": 52.39, "totalCostCurrency": "EUR", "fuelCost":
+    {"cost": 52.39, "costCurrency": "EUR", "pricePerUnit": 1.82}}, "overallMileageInKm":
+    497, "overallTravelTimeInMin": 463, "overallAverageMileageInKm": 83, "overallAverageTravelTimeInMin":
+    77, "overallAverageFuelConsumption": 5.79, "overallAverageSpeedInKmph": 71, "vehicleType":
+    "FUEL", "detailedStatistics": [{"cost": {"totalCost": 3.62, "totalCostCurrency":
+    "EUR", "fuelCost": {"cost": 3.62, "costCurrency": "EUR", "pricePerUnit": 1.82}},
+    "date": "2024-11-04", "tripIds": ["3488245024"], "mileageInKm": 28, "travelTimeInMin":
+    40, "averageFuelConsumption": 7.1, "averageSpeedInKmph": 42}, {"cost": {"totalCost":
+    15.72, "totalCostCurrency": "EUR", "fuelCost": {"cost": 15.72, "costCurrency":
+    "EUR", "pricePerUnit": 1.82}}, "date": "2024-11-05", "tripIds": ["3492197228",
+    "3494619994"], "mileageInKm": 163, "travelTimeInMin": 140, "averageFuelConsumption":
+    5.3, "averageSpeedInKmph": 71}, {"cost": {"totalCost": 0.91, "totalCostCurrency":
+    "EUR", "fuelCost": {"cost": 0.91, "costCurrency": "EUR", "pricePerUnit": 1.82}},
+    "date": "2024-11-06", "tripIds": ["3498968951"], "mileageInKm": 6, "travelTimeInMin":
+    12, "averageFuelConsumption": 8.3, "averageSpeedInKmph": 30}, {"cost": {"totalCost":
+    19.35, "totalCostCurrency": "EUR", "fuelCost": {"cost": 19.35, "costCurrency":
+    "EUR", "pricePerUnit": 1.82}}, "date": "2024-11-07", "tripIds": ["3500823873",
+    "3503865164"], "mileageInKm": 185, "travelTimeInMin": 131, "averageFuelConsumption":
+    5.75, "averageSpeedInKmph": 86}, {"cost": {"totalCost": 12.27, "totalCostCurrency":
+    "EUR", "fuelCost": {"cost": 12.27, "costCurrency": "EUR", "pricePerUnit": 1.82}},
+    "date": "2024-11-08", "tripIds": ["3507225733", "3508666464"], "mileageInKm":
+    113, "travelTimeInMin": 130, "averageFuelConsumption": 5.97, "averageSpeedInKmph":
+    55}, {"cost": {"totalCost": 0.52, "totalCostCurrency": "EUR", "fuelCost": {"cost":
+    0.52, "costCurrency": "EUR", "pricePerUnit": 1.82}}, "date": "2024-11-09", "tripIds":
+    ["3512346851"], "mileageInKm": 2, "travelTimeInMin": 10, "averageFuelConsumption":
+    14.2, "averageSpeedInKmph": 17}, {"date": "2024-11-10"}]}'
+  result:
+    detailed_statistics:
+    - average_aux_consumption: null
+      average_electric_consumption: null
+      average_fuel_consumption: 7.1
+      average_recuperation: null
+      average_speed_in_kmph: 42
+      date: '2024-11-04'
+      mileage_in_km: 28
+      travel_time_in_min: 40
+      trip_ids:
+      - 3488245024
+    - average_aux_consumption: null
+      average_electric_consumption: null
+      average_fuel_consumption: 5.3
+      average_recuperation: null
+      average_speed_in_kmph: 71
+      date: '2024-11-05'
+      mileage_in_km: 163
+      travel_time_in_min: 140
+      trip_ids:
+      - 3492197228
+      - 3494619994
+    - average_aux_consumption: null
+      average_electric_consumption: null
+      average_fuel_consumption: 8.3
+      average_recuperation: null
+      average_speed_in_kmph: 30
+      date: '2024-11-06'
+      mileage_in_km: 6
+      travel_time_in_min: 12
+      trip_ids:
+      - 3498968951
+    - average_aux_consumption: null
+      average_electric_consumption: null
+      average_fuel_consumption: 5.75
+      average_recuperation: null
+      average_speed_in_kmph: 86
+      date: '2024-11-07'
+      mileage_in_km: 185
+      travel_time_in_min: 131
+      trip_ids:
+      - 3500823873
+      - 3503865164
+    - average_aux_consumption: null
+      average_electric_consumption: null
+      average_fuel_consumption: 5.97
+      average_recuperation: null
+      average_speed_in_kmph: 55
+      date: '2024-11-08'
+      mileage_in_km: 113
+      travel_time_in_min: 130
+      trip_ids:
+      - 3507225733
+      - 3508666464
+    - average_aux_consumption: null
+      average_electric_consumption: null
+      average_fuel_consumption: 14.2
+      average_recuperation: null
+      average_speed_in_kmph: 17
+      date: '2024-11-09'
+      mileage_in_km: 2
+      travel_time_in_min: 10
+      trip_ids:
+      - 3512346851
+    - average_aux_consumption: null
+      average_electric_consumption: null
+      average_fuel_consumption: null
+      average_recuperation: null
+      average_speed_in_kmph: null
+      date: '2024-11-10'
+      mileage_in_km: null
+      travel_time_in_min: null
+      trip_ids: null
+    overall_average_electric_consumption: null
+    overall_average_fuel_consumption: 5.79
+    overall_average_mileage_in_km: 83
+    overall_average_speed_in_kmph: 71
+    overall_average_travel_time_in_min: 77
+    overall_mileage_in_km: 497
+    overall_travel_time_in_min: 463
+    vehicle_type: FUEL
+  success: true
   type: get
-  url: null
+  url: /v1/trip-statistics/TMOCKAA0AA000000?offsetType=week&offset=0&timezone=Europe%2FBerlin
   vehicle_id: 0
 vehicles:
 - capabilities:
