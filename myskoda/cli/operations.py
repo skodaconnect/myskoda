@@ -34,6 +34,7 @@ async def start_air_conditioning(
 @click.option("timeout", "--timeout", type=float, default=300)
 @click.argument("vin")
 @click.pass_context
+@mqtt_required
 async def stop_air_conditioning(ctx: Context, timeout: float, vin: str) -> None:  # noqa: ASYNC109
     """Stop the air conditioning."""
     myskoda: MySkoda = ctx.obj["myskoda"]
@@ -47,6 +48,7 @@ async def stop_air_conditioning(ctx: Context, timeout: float, vin: str) -> None:
 @click.option("timeout", "--timeout", type=float, default=300)
 @click.argument("vin")
 @click.pass_context
+@mqtt_required
 async def start_auxiliary_heating(
     ctx: Context,
     temperature: float,
@@ -63,6 +65,7 @@ async def start_auxiliary_heating(
 @click.option("timeout", "--timeout", type=float, default=300)
 @click.argument("vin")
 @click.pass_context
+@mqtt_required
 async def stop_auxiliary_heating(ctx: Context, timeout: float, vin: str) -> None:  # noqa: ASYNC109
     """Stop the auxiliary heating."""
     myskoda: MySkoda = ctx.obj["myskoda"]
