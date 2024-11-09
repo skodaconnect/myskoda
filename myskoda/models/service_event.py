@@ -97,10 +97,16 @@ def _deserialize_time_to_finish(value: int | str) -> int | None:
 class ServiceEventChargingData(ServiceEventData):
     """Charging Data inside a Service Event."""
 
-    mode: ChargeMode = field(metadata=field_options(deserialize=_deserialize_mode))
-    state: ChargingState = field(metadata=field_options(deserialize=_deserialize_charging_state))
-    soc: int
-    charged_range: int = field(metadata=field_options(alias="chargedRange"))
+    mode: ChargeMode | None = field(
+        default=None,
+        metadata=field_options(deserialize=_deserialize_mode),
+    )
+    state: ChargingState | None = field(
+        default=None,
+        metadata=field_options(deserialize=_deserialize_charging_state),
+    )
+    soc: int | None = field(default=None)
+    charged_range: int | None = field(default=None, metadata=field_options(alias="chargedRange"))
     time_to_finish: int | None = field(
         default=None,
         metadata=field_options(alias="timeToFinish", deserialize=_deserialize_time_to_finish),
