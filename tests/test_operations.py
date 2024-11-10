@@ -33,9 +33,14 @@ async def test_stop_air_conditioning(
 
 
 @pytest.mark.asyncio
-@pytest.mark.parametrize("temperature", [21.5, 23.5, 10])
+@pytest.mark.parametrize(("temperature", "expected"),
+                         [(21.5, "21.5"), (23.2, "23.0"), (10.01, "10.0")])
 async def test_start_air_conditioning(
-    responses: aioresponses, mqtt_client: MQTTClient, myskoda: MySkoda, temperature: float
+        responses: aioresponses,
+        mqtt_client: MQTTClient,
+        myskoda: MySkoda,
+        temperature: float,
+        expected: str
 ) -> None:
     url = f"{BASE_URL_SKODA}/api/v2/air-conditioning/{VIN}/start"
     responses.post(url=url)
@@ -52,15 +57,20 @@ async def test_start_air_conditioning(
         headers={"authorization": f"Bearer {ACCESS_TOKEN}"},
         json={
             "heaterSource": "ELECTRIC",
-            "targetTemperature": {"temperatureValue": f"{temperature}", "unitInCar": "CELSIUS"},
+            "targetTemperature": {"temperatureValue": f"{expected}", "unitInCar": "CELSIUS"},
         },
     )
 
 
 @pytest.mark.asyncio
-@pytest.mark.parametrize("temperature", [21.5, 23.5, 10])
+@pytest.mark.parametrize(("temperature", "expected"),
+                         [(21.5, "21.5"), (23.2, "23.0"), (10.01, "10.0")])
 async def test_set_target_temperature(
-    responses: aioresponses, mqtt_client: MQTTClient, myskoda: MySkoda, temperature: float
+        responses: aioresponses,
+        mqtt_client: MQTTClient,
+        myskoda: MySkoda,
+        temperature: float,
+        expected: str
 ) -> None:
     url = f"{BASE_URL_SKODA}/api/v2/air-conditioning/{VIN}/settings/target-temperature"
     responses.post(url=url)
@@ -77,7 +87,7 @@ async def test_set_target_temperature(
         url=url,
         method="POST",
         headers={"authorization": f"Bearer {ACCESS_TOKEN}"},
-        json={"temperatureValue": f"{temperature}", "unitInCar": "CELSIUS"},
+        json={"temperatureValue": f"{expected}", "unitInCar": "CELSIUS"},
     )
 
 
@@ -349,4 +359,58 @@ async def test_unlock(
         method="POST",
         headers={"authorization": f"Bearer {ACCESS_TOKEN}"},
         json={"currentSpin": spin},
+    )
+
+
+@pytest.mark.asyncio
+async def test_stop_auxiliary_heater(
+    responses: aioresponses, mqtt_client: MQTTClient, myskoda: MySkoda
+) -> None:
+    url = f"{BASE_URL_SKODA}/api/v2/air-conditioning/{VIN}/auxiliary-heating/stop"
+    responses.post(url=url)
+
+    future = myskoda.stop_auxiliary_heating(VIN)
+
+    topic = f"{USER_ID}/{VIN}/operation-request/auxiliary-heating/start-stop-auxiliary-heating"
+    await mqtt_client.publish(topic, create_completed_json("stop-auxiliary-heating"), QOS_2)
+
+    await future
+    responses.assert_called_with(
+        url=url,
+        method="POST",
+        headers={"authorization": f"Bearer {ACCESS_TOKEN}"},
+        json=None,
+    )
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize(("temperature", "expected", "spin"),
+                         [(21.5, "21.5", "1234"), (23.2, "23.0", "1234"), (10.01, "10.0", "1234")])
+async def test_start_auxiliary_heater(
+        responses: aioresponses,
+        mqtt_client: MQTTClient,
+        myskoda: MySkoda,
+        temperature: float,
+        expected: str,
+        spin: str
+) -> None:
+    url = f"{BASE_URL_SKODA}/api/v2/air-conditioning/{VIN}/auxiliary-heating/start"
+    responses.post(url=url)
+
+    future = myskoda.start_auxiliary_heating(VIN, temperature, spin)
+
+    topic = f"{USER_ID}/{VIN}/operation-request/auxiliary-heating/start-stop-auxiliary-heating"
+    await mqtt_client.publish(topic, create_completed_json("start-auxiliary-heating"), QOS_2)
+
+    await future
+    responses.assert_called_with(
+        url=url,
+        method="POST",
+        headers={"authorization": f"Bearer {ACCESS_TOKEN}"},
+        json={
+            "heaterSource": "AUTOMATIC",
+            "airConditioningWithoutExternalPower": True,
+            "spin": spin,
+            "targetTemperature": {"temperatureValue": f"{expected}", "unitInCar": "CELSIUS"},
+        },
     )

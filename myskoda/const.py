@@ -17,7 +17,7 @@ MQTT_OPERATION_TOPICS = [
     "air-conditioning/set-air-conditioning-without-external-power",
     "air-conditioning/set-target-temperature",
     "air-conditioning/start-stop-air-conditioning",
-    "air-conditioning/start-stop-auxiliary-heating",
+    "auxiliary-heating/start-stop-auxiliary-heating",
     "air-conditioning/start-stop-window-heating",
     "air-conditioning/windows-heating",
     "charging/start-stop-charging",
@@ -37,6 +37,7 @@ MQTT_OPERATION_TOPICS = [
 MQTT_SERVICE_EVENT_TOPICS = [
     "air-conditioning",
     "charging",
+    "departure",
     "vehicle-status/access",
     "vehicle-status/lights",
 ]

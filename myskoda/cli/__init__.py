@@ -21,13 +21,15 @@ from myskoda.cli.operations import (
     set_reduced_current_limit,
     set_target_temperature,
     start_air_conditioning,
+    start_auxiliary_heating,
     start_window_heating,
     stop_air_conditioning,
+    stop_auxiliary_heating,
     stop_window_heating,
     wakeup,
     lock,
     unlock,
-    honk_flash
+    honk_flash,
 )
 from myskoda.cli.requests import (
     air_conditioning,
@@ -43,6 +45,7 @@ from myskoda.cli.requests import (
     status,
     trip_statistics,
     user,
+    verify_spin,
 )
 from myskoda.cli.utils import Format, print_json, print_yaml
 
@@ -141,6 +144,8 @@ cli.add_command(garage)
 cli.add_command(auth)
 cli.add_command(start_air_conditioning)
 cli.add_command(stop_air_conditioning)
+cli.add_command(start_auxiliary_heating)
+cli.add_command(stop_auxiliary_heating)
 cli.add_command(set_target_temperature)
 cli.add_command(start_window_heating)
 cli.add_command(stop_window_heating)
@@ -153,6 +158,7 @@ cli.add_command(gen_fixtures)
 cli.add_command(lock)
 cli.add_command(unlock)
 cli.add_command(honk_flash)
+cli.add_command(verify_spin)
 
 if __name__ == "__main__":
     cli()

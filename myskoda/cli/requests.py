@@ -116,6 +116,15 @@ async def garage(ctx: Context, anonymize: bool) -> None:
 
 
 @click.command()
+@click.option("spin", "--spin", type=str, required=True)
+@click.option("anonymize", "--anonymize", help="Strip all personal data.", is_flag=True)
+@click.pass_context
+async def verify_spin(ctx: Context, spin: str, anonymize: bool) -> None:
+    """Verify S-PIN."""
+    await handle_request(ctx, ctx.obj["myskoda"].verify_spin, spin, anonymize)
+
+
+@click.command()
 @click.pass_context
 async def auth(ctx: Context) -> None:
     """Extract the auth token."""

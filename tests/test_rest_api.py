@@ -212,3 +212,40 @@ async def test_trip_statistics(
             == trip_statistics_json["overallAverageTravelTimeInMin"]
         )
         assert get_status_result.vehicle_type == VehicleType.HYBRID
+
+@pytest.fixture(name="spin_statuses")
+def load_spin_status() -> list[str]:
+    """Load spin-status fixture."""
+    spin_statuses = []
+    for path in [
+        "superb/verify-spin-correct.json",
+        "superb/verify-spin-incorrect.json",
+    ]:
+        with FIXTURES_DIR.joinpath(path).open() as file:
+            spin_statuses.append(file.read())
+    return spin_statuses
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize("spin", ["1234"])
+async def test_get_spin_status(
+    spin_statuses: list[str], myskoda: MySkoda, responses: aioresponses, spin: str
+) -> None:
+    """Example unit test for RestAPI.get_status(). Needs more work."""
+    for spin_status in spin_statuses:
+        spin_status_json = json.loads(spin_status)
+
+        responses.post(
+            url="https://mysmob.api.connect.skoda-auto.cz/api/v1/spin/verify",
+            body=spin_status,
+        )
+        get_spin_status_result = await myskoda.verify_spin(spin)
+
+        assert get_spin_status_result.verification_status == spin_status_json["verificationStatus"]
+        if get_spin_status_result.spin_status is not None:
+            assert (get_spin_status_result.spin_status.remaining_tries
+                    == spin_status_json["spinStatus"]["remainingTries"])
+            assert (get_spin_status_result.spin_status.locked_waiting_time_in_seconds
+                    == spin_status_json["spinStatus"]["lockedWaitingTimeInSeconds"])
+            assert (get_spin_status_result.spin_status.state
+                    == spin_status_json["spinStatus"]["state"])
