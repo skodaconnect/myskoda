@@ -3,20 +3,21 @@ changelog:
     labels:
       - ignore-for-release
   categories:
-    - title: :boom: Breaking Changes :boom"
+    - title: 💥 Breaking Changes 💥
       labels:
         - breaking
         - major
-    - title: :sparkle: New features
+    - title: ✨ New features
       labels:
         - minor
         - enhancements
-    - title: :bug: Bugfixes
+    - title: 🐛 Bugfixes
       labels:
         - bugfix
-    - title: :hammer_and_wrench: Dependencies
+        - bug
+    - title: 🛠️ Dependencies
       labels:
         - dependencies
-    - title: :spiral_notepad: Other changes
+    - title: 🗒️ Other changes
       labels:
         - '*'
