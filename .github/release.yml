@@ -10,7 +10,7 @@ changelog:
     - title: ✨ New features
       labels:
         - minor
-        - enhancements
+        - enhancement
     - title: 🐛 Bugfixes
       labels:
         - bugfix
