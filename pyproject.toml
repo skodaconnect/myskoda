@@ -22,7 +22,7 @@ pyyaml = "^6"
 termcolor = { version = "^2.4.0", optional = true }
 mashumaro = { extras = ["orjson"], version = "^3.13.1" }
 mkdocs = { extras = ["gen-files"], version = "^1.6.1", optional = true }
-mkdocstrings = { extras = ["python"], version = "^0.26.1", optional = true }
+mkdocstrings = { extras = ["python"], version = ">=0.26.1,<0.28.0", optional = true }
 mkdocs-gen-files = { version = "^0.5.0", optional = true }
 mkdocs-literate-nav = { version = "^0.6.1", optional = true }
 pygments = { version = "^2.18.0", optional = true }
