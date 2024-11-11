@@ -775,13 +775,13 @@ mkdocs = ">=1.0.3"
 
 [[package]]
 name = "mkdocstrings"
-version = "0.26.2"
+version = "0.27.0"
 description = "Automatic documentation from sources, for MkDocs."
 optional = true
 python-versions = ">=3.9"
 files = [
-    {file = "mkdocstrings-0.26.2-py3-none-any.whl", hash = "sha256:1248f3228464f3b8d1a15bd91249ce1701fe3104ac517a5f167a0e01ca850ba5"},
-    {file = "mkdocstrings-0.26.2.tar.gz", hash = "sha256:34a8b50f1e6cfd29546c6c09fbe02154adfb0b361bb758834bf56aa284ba876e"},
+    {file = "mkdocstrings-0.27.0-py3-none-any.whl", hash = "sha256:6ceaa7ea830770959b55a16203ac63da24badd71325b96af950e59fd37366332"},
+    {file = "mkdocstrings-0.27.0.tar.gz", hash = "sha256:16adca6d6b0a1f9e0c07ff0b02ced8e16f228a9d65a37c063ec4c14d7b76a657"},
 ]
 
 [package.dependencies]
@@ -1749,4 +1749,4 @@ docs = ["mkdocs", "mkdocs-gen-files", "mkdocs-literate-nav", "mkdocstrings"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.12.0, <4.0"
-content-hash = "82984cb5613a7aa38b84fad2d765d680026e39284824faa42fbae00322a827ac"
+content-hash = "531faa08af9b38da548d45cfc02f9a815a7819ce390a90b01339c6fa7a690b91"
