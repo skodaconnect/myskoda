@@ -112,7 +112,7 @@ async def trip_statistics(ctx: Context, vin: str, anonymize: bool) -> None:
 @click.pass_context
 async def garage(ctx: Context, anonymize: bool) -> None:
     """Print garage information (list of vehicles with limited information)."""
-    await handle_request(ctx, ctx.obj["myskoda"].get_garage, anonymize)
+    await handle_request(ctx, ctx.obj["myskoda"].rest_api.get_garage, anonymize)
 
 
 @click.command()
