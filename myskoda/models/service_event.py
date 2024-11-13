@@ -14,13 +14,14 @@ from .charging import ChargeMode, ChargingState
 class ServiceEventName(StrEnum):
     """List of known Service EventNames."""
 
-    CHANGE_SOC = "change-soc"
     CHANGE_ACCESS = "change-access"
-    CHANGE_LIGHTS = "change-lights"
-    CLIMATISATION_COMPLETED = "climatisation-completed"
-    CHANGE_REMAINING_TIME = "change-remaining-time"
     CHANGE_CHARGE_MODE = "change-charge-mode"
+    CHANGE_LIGHTS = "change-lights"
+    CHANGE_REMAINING_TIME = "change-remaining-time"
+    CHANGE_SOC = "change-soc"
+    CHARGING_COMPLETED = "charging-completed"
     CHARGING_STATUS_CHANGED = "charging-status-changed"
+    CLIMATISATION_COMPLETED = "climatisation-completed"
 
 
 @dataclass
@@ -75,6 +76,8 @@ def _deserialize_charging_state(value: str) -> ChargingState:
     match value:
         case "charging":
             return ChargingState.CHARGING
+        case "chargePurposeReachedAndConservation":
+            return ChargingState.CONSERVING
         case "chargePurposeReachedAndNotConservationCharging":
             return ChargingState.READY_FOR_CHARGING
         case "notReadyForCharging":
