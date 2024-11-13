@@ -33,14 +33,15 @@ async def test_stop_air_conditioning(
 
 
 @pytest.mark.asyncio
-@pytest.mark.parametrize(("temperature", "expected"),
-                         [(21.5, "21.5"), (23.2, "23.0"), (10.01, "10.0")])
+@pytest.mark.parametrize(
+    ("temperature", "expected"), [(21.5, "21.5"), (23.2, "23.0"), (10.01, "10.0")]
+)
 async def test_start_air_conditioning(
-        responses: aioresponses,
-        mqtt_client: MQTTClient,
-        myskoda: MySkoda,
-        temperature: float,
-        expected: str
+    responses: aioresponses,
+    mqtt_client: MQTTClient,
+    myskoda: MySkoda,
+    temperature: float,
+    expected: str,
 ) -> None:
     url = f"{BASE_URL_SKODA}/api/v2/air-conditioning/{VIN}/start"
     responses.post(url=url)
@@ -63,14 +64,15 @@ async def test_start_air_conditioning(
 
 
 @pytest.mark.asyncio
-@pytest.mark.parametrize(("temperature", "expected"),
-                         [(21.5, "21.5"), (23.2, "23.0"), (10.01, "10.0")])
+@pytest.mark.parametrize(
+    ("temperature", "expected"), [(21.5, "21.5"), (23.2, "23.0"), (10.01, "10.0")]
+)
 async def test_set_target_temperature(
-        responses: aioresponses,
-        mqtt_client: MQTTClient,
-        myskoda: MySkoda,
-        temperature: float,
-        expected: str
+    responses: aioresponses,
+    mqtt_client: MQTTClient,
+    myskoda: MySkoda,
+    temperature: float,
+    expected: str,
 ) -> None:
     url = f"{BASE_URL_SKODA}/api/v2/air-conditioning/{VIN}/settings/target-temperature"
     responses.post(url=url)
@@ -283,17 +285,10 @@ async def test_set_charge_mode(
 
 
 @pytest.mark.asyncio
-@pytest.mark.parametrize(
-    ("honk", "expected", "operation"),
-    [(True, "HONK_AND_FLASH", "start-honk"), (False, "FLASH", "start-flash")],
-)
-async def test_honk_and_flash(  # noqa: PLR0913
+async def test_honk_and_flash(
     responses: aioresponses,
     mqtt_client: MQTTClient,
     myskoda: MySkoda,
-    honk: bool,
-    expected: str,
-    operation: str,
 ) -> None:
     url = f"{BASE_URL_SKODA}/api/v1/vehicle-access/{VIN}/honk-and-flash"
     responses.post(url=url)
@@ -306,18 +301,50 @@ async def test_honk_and_flash(  # noqa: PLR0913
         body=(FIXTURES_DIR / "enyaq" / "positions.json").read_text(),
     )
 
-    future = myskoda.honk_flash(VIN, honk=honk)
+    future = myskoda.honk_flash(VIN)
 
     topic = f"{USER_ID}/{VIN}/operation-request/vehicle-access/honk-and-flash"
-    await mqtt_client.publish(topic, create_completed_json(operation), QOS_2)
+    await mqtt_client.publish(topic, create_completed_json("start-honk"), QOS_2)
 
     await future
     responses.assert_called_with(
         url=url,
         method="POST",
         headers={"authorization": f"Bearer {ACCESS_TOKEN}"},
-        json={"mode": expected, "vehiclePosition": {"latitude": lat, "longitude": lng}},
+        json={"mode": "HONK_AND_FLASH", "vehiclePosition": {"latitude": lat, "longitude": lng}},
     )
+
+
+@pytest.mark.asyncio
+async def test_flash(
+    responses: aioresponses,
+    mqtt_client: MQTTClient,
+    myskoda: MySkoda,
+) -> None:
+    url = f"{BASE_URL_SKODA}/api/v1/vehicle-access/{VIN}/honk-and-flash"
+    responses.post(url=url)
+
+    lat = LOCATION["latitude"]
+    lng = LOCATION["longitude"]
+
+    responses.get(
+        url=f"{BASE_URL_SKODA}/api/v1/maps/positions?vin={VIN}",
+        body=(FIXTURES_DIR / "enyaq" / "positions.json").read_text(),
+    )
+
+    future = myskoda.flash(VIN)
+
+    topic = f"{USER_ID}/{VIN}/operation-request/vehicle-access/honk-and-flash"
+    await mqtt_client.publish(topic, create_completed_json("start-flash"), QOS_2)
+
+    await future
+    responses.assert_called_with(
+        url=url,
+        method="POST",
+        headers={"authorization": f"Bearer {ACCESS_TOKEN}"},
+        json={"mode": "FLASH", "vehiclePosition": {"latitude": lat, "longitude": lng}},
+    )
+
 
 @pytest.mark.asyncio
 @pytest.mark.parametrize("spin", ["1234", "4321"])
@@ -339,6 +366,7 @@ async def test_lock(
         headers={"authorization": f"Bearer {ACCESS_TOKEN}"},
         json={"currentSpin": spin},
     )
+
 
 @pytest.mark.asyncio
 @pytest.mark.parametrize("spin", ["1234", "4321"])
@@ -384,15 +412,17 @@ async def test_stop_auxiliary_heater(
 
 
 @pytest.mark.asyncio
-@pytest.mark.parametrize(("temperature", "expected", "spin"),
-                         [(21.5, "21.5", "1234"), (23.2, "23.0", "1234"), (10.01, "10.0", "1234")])
-async def test_start_auxiliary_heater(
-        responses: aioresponses,
-        mqtt_client: MQTTClient,
-        myskoda: MySkoda,
-        temperature: float,
-        expected: str,
-        spin: str
+@pytest.mark.parametrize(
+    ("temperature", "expected", "spin"),
+    [(21.5, "21.5", "1234"), (23.2, "23.0", "1234"), (10.01, "10.0", "1234")],
+)
+async def test_start_auxiliary_heater(  # noqa: PLR0913
+    responses: aioresponses,
+    mqtt_client: MQTTClient,
+    myskoda: MySkoda,
+    temperature: float,
+    expected: str,
+    spin: str,
 ) -> None:
     url = f"{BASE_URL_SKODA}/api/v2/air-conditioning/{VIN}/auxiliary-heating/start"
     responses.post(url=url)
