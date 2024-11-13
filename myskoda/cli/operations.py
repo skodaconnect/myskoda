@@ -221,7 +221,7 @@ async def honk_flash(ctx: Context, timeout: float, vin: str) -> None:  # noqa: A
 @click.pass_context
 @mqtt_required
 async def flash(ctx: Context, timeout: float, vin: str) -> None:  # noqa: ASYNC109
-    """Honk and/or flash."""
+    """Flash."""
     myskoda: MySkoda = ctx.obj["myskoda"]
     async with asyncio.timeout(timeout):
         await myskoda.flash(vin)
