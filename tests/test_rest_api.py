@@ -213,6 +213,7 @@ async def test_trip_statistics(
         )
         assert get_status_result.vehicle_type == VehicleType.HYBRID
 
+
 @pytest.fixture(name="spin_statuses")
 def load_spin_status() -> list[str]:
     """Load spin-status fixture."""
@@ -243,9 +244,14 @@ async def test_get_spin_status(
 
         assert get_spin_status_result.verification_status == spin_status_json["verificationStatus"]
         if get_spin_status_result.spin_status is not None:
-            assert (get_spin_status_result.spin_status.remaining_tries
-                    == spin_status_json["spinStatus"]["remainingTries"])
-            assert (get_spin_status_result.spin_status.locked_waiting_time_in_seconds
-                    == spin_status_json["spinStatus"]["lockedWaitingTimeInSeconds"])
-            assert (get_spin_status_result.spin_status.state
-                    == spin_status_json["spinStatus"]["state"])
+            assert (
+                get_spin_status_result.spin_status.remaining_tries
+                == spin_status_json["spinStatus"]["remainingTries"]
+            )
+            assert (
+                get_spin_status_result.spin_status.locked_waiting_time_in_seconds
+                == spin_status_json["spinStatus"]["lockedWaitingTimeInSeconds"]
+            )
+            assert (
+                get_spin_status_result.spin_status.state == spin_status_json["spinStatus"]["state"]
+            )

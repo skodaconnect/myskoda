@@ -35,10 +35,10 @@ from .models.health import Health
 from .models.info import Info
 from .models.maintenance import Maintenance
 from .models.position import Positions
+from .models.spin import Spin
 from .models.status import Status
 from .models.trip_statistics import TripStatistics
 from .models.user import User
-from .models.spin import Spin
 
 _LOGGER = logging.getLogger(__name__)
 

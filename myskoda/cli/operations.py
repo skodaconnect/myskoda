@@ -61,6 +61,7 @@ async def start_auxiliary_heating(
     async with asyncio.timeout(timeout):
         await myskoda.start_auxiliary_heating(vin, temperature, spin)
 
+
 @click.command()
 @click.option("timeout", "--timeout", type=float, default=300)
 @click.argument("vin")
@@ -71,6 +72,7 @@ async def stop_auxiliary_heating(ctx: Context, timeout: float, vin: str) -> None
     myskoda: MySkoda = ctx.obj["myskoda"]
     async with asyncio.timeout(timeout):
         await myskoda.stop_auxiliary_heating(vin)
+
 
 @click.command()
 @click.option("timeout", "--timeout", type=float, default=300)
@@ -164,6 +166,7 @@ async def wakeup(ctx: Context, timeout: float, vin: str) -> None:  # noqa: ASYNC
     async with asyncio.timeout(timeout):
         await myskoda.wakeup(vin)
 
+
 @click.command()
 @click.option("spin", "--spin", type=str, required=True)
 @click.option("timeout", "--timeout", type=float, default=300)
@@ -180,6 +183,7 @@ async def lock(
     myskoda: MySkoda = ctx.obj["myskoda"]
     async with asyncio.timeout(timeout):
         await myskoda.lock(vin, spin)
+
 
 @click.command()
 @click.option("spin", "--spin", type=str, required=True)
@@ -198,6 +202,7 @@ async def unlock(
     async with asyncio.timeout(timeout):
         await myskoda.unlock(vin, spin)
 
+
 @click.command()
 @click.option("timeout", "--timeout", type=float, default=300)
 @click.option("honk", "--honk", type=bool, default=False)
@@ -209,4 +214,3 @@ async def honk_flash(ctx: Context, timeout: float, vin: str, honk: bool) -> None
     myskoda: MySkoda = ctx.obj["myskoda"]
     async with asyncio.timeout(timeout):
         await myskoda.honk_flash(vin, honk)
-

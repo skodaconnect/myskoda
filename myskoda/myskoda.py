@@ -34,10 +34,10 @@ from .models.info import CapabilityId, Info
 from .models.maintenance import Maintenance
 from .models.operation_request import OperationName
 from .models.position import Positions
+from .models.spin import Spin
 from .models.status import Status
 from .models.trip_statistics import TripStatistics
 from .models.user import User
-from .models.spin import Spin
 from .mqtt import MySkodaMqttClient
 from .rest_api import GetEndpointResult, RestApi
 from .vehicle import Vehicle

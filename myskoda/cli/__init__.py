@@ -17,6 +17,8 @@ from myskoda import TRACE_CONFIG, MySkoda
 from myskoda.cli.gen_fixtures import gen_fixtures
 from myskoda.cli.mqtt import subscribe, wait_for_operation
 from myskoda.cli.operations import (
+    honk_flash,
+    lock,
     set_charge_limit,
     set_reduced_current_limit,
     set_target_temperature,
@@ -26,10 +28,8 @@ from myskoda.cli.operations import (
     stop_air_conditioning,
     stop_auxiliary_heating,
     stop_window_heating,
-    wakeup,
-    lock,
     unlock,
-    honk_flash,
+    wakeup,
 )
 from myskoda.cli.requests import (
     air_conditioning,
