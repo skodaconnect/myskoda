@@ -31,11 +31,9 @@ class EngineRange(DataClassORJSONMixin):
 
 @dataclass
 class DrivingRange(DataClassORJSONMixin):
+    car_captured_timestamp: datetime = field(metadata=field_options(alias="carCapturedTimestamp"))
     car_type: EngineType = field(metadata=field_options(alias="carType"))
     primary_engine_range: EngineRange = field(metadata=field_options(alias="primaryEngineRange"))
-    car_captured_timestamp: datetime | None = field(
-        default=None, metadata=field_options(alias="carCapturedTimestamp")
-    )
     secondary_engine_range: EngineRange | None = field(
         default=None, metadata=field_options(alias="secondaryEngineRange")
     )
