@@ -285,17 +285,10 @@ async def test_set_charge_mode(
 
 
 @pytest.mark.asyncio
-@pytest.mark.parametrize(
-    ("honk", "expected", "operation"),
-    [(True, "HONK_AND_FLASH", "start-honk"), (False, "FLASH", "start-flash")],
-)
-async def test_honk_and_flash(  # noqa: PLR0913
+async def test_honk_and_flash(
     responses: aioresponses,
     mqtt_client: MQTTClient,
     myskoda: MySkoda,
-    honk: bool,
-    expected: str,
-    operation: str,
 ) -> None:
     url = f"{BASE_URL_SKODA}/api/v1/vehicle-access/{VIN}/honk-and-flash"
     responses.post(url=url)
@@ -308,17 +301,48 @@ async def test_honk_and_flash(  # noqa: PLR0913
         body=(FIXTURES_DIR / "enyaq" / "positions.json").read_text(),
     )
 
-    future = myskoda.honk_flash(VIN, honk=honk)
+    future = myskoda.honk_flash(VIN)
 
     topic = f"{USER_ID}/{VIN}/operation-request/vehicle-access/honk-and-flash"
-    await mqtt_client.publish(topic, create_completed_json(operation), QOS_2)
+    await mqtt_client.publish(topic, create_completed_json("start-honk"), QOS_2)
 
     await future
     responses.assert_called_with(
         url=url,
         method="POST",
         headers={"authorization": f"Bearer {ACCESS_TOKEN}"},
-        json={"mode": expected, "vehiclePosition": {"latitude": lat, "longitude": lng}},
+        json={"mode": "HONK_AND_FLASH", "vehiclePosition": {"latitude": lat, "longitude": lng}},
+    )
+
+
+@pytest.mark.asyncio
+async def test_flash(
+    responses: aioresponses,
+    mqtt_client: MQTTClient,
+    myskoda: MySkoda,
+) -> None:
+    url = f"{BASE_URL_SKODA}/api/v1/vehicle-access/{VIN}/honk-and-flash"
+    responses.post(url=url)
+
+    lat = LOCATION["latitude"]
+    lng = LOCATION["longitude"]
+
+    responses.get(
+        url=f"{BASE_URL_SKODA}/api/v1/maps/positions?vin={VIN}",
+        body=(FIXTURES_DIR / "enyaq" / "positions.json").read_text(),
+    )
+
+    future = myskoda.flash(VIN)
+
+    topic = f"{USER_ID}/{VIN}/operation-request/vehicle-access/honk-and-flash"
+    await mqtt_client.publish(topic, create_completed_json("start-flash"), QOS_2)
+
+    await future
+    responses.assert_called_with(
+        url=url,
+        method="POST",
+        headers={"authorization": f"Bearer {ACCESS_TOKEN}"},
+        json={"mode": "FLASH", "vehiclePosition": {"latitude": lat, "longitude": lng}},
     )
 
 

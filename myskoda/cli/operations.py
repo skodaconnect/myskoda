@@ -205,12 +205,23 @@ async def unlock(
 
 @click.command()
 @click.option("timeout", "--timeout", type=float, default=300)
-@click.option("honk", "--honk", type=bool, default=False)
 @click.argument("vin")
 @click.pass_context
 @mqtt_required
-async def honk_flash(ctx: Context, timeout: float, vin: str, honk: bool) -> None:  # noqa: ASYNC109
+async def honk_flash(ctx: Context, timeout: float, vin: str) -> None:  # noqa: ASYNC109
     """Honk and/or flash."""
     myskoda: MySkoda = ctx.obj["myskoda"]
     async with asyncio.timeout(timeout):
-        await myskoda.honk_flash(vin, honk)
+        await myskoda.honk_flash(vin)
+
+
+@click.command()
+@click.option("timeout", "--timeout", type=float, default=300)
+@click.argument("vin")
+@click.pass_context
+@mqtt_required
+async def flash(ctx: Context, timeout: float, vin: str) -> None:  # noqa: ASYNC109
+    """Flash."""
+    myskoda: MySkoda = ctx.obj["myskoda"]
+    async with asyncio.timeout(timeout):
+        await myskoda.flash(vin)

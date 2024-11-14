@@ -155,13 +155,16 @@ class MySkoda:
         await self.rest_api.set_charge_mode(vin, mode=mode)
         await future
 
-    async def honk_flash(self, vin: str, honk: bool = False) -> None:
-        """Honk and/or flash."""
-        if honk:
-            future = self._wait_for_operation(OperationName.START_HONK)
-        else:
-            future = self._wait_for_operation(OperationName.START_FLASH)
-        await self.rest_api.honk_flash(vin, (await self.get_positions(vin)).positions, honk)
+    async def honk_flash(self, vin: str) -> None:
+        """Honk and flash."""
+        future = self._wait_for_operation(OperationName.START_HONK)
+        await self.rest_api.honk_flash(vin, (await self.get_positions(vin)).positions)
+        await future
+
+    async def flash(self, vin: str) -> None:
+        """Flash lights."""
+        future = self._wait_for_operation(OperationName.START_FLASH)
+        await self.rest_api.flash(vin, (await self.get_positions(vin)).positions)
         await future
 
     async def wakeup(self, vin: str) -> None:

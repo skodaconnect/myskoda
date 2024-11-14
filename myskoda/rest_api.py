@@ -415,12 +415,31 @@ class RestApi:
         self,
         vin: str,
         positions: list[Position],
-        honk: bool = False,
     ) -> None:
-        """Honk and/or flash."""
+        """Emit Honk and flash."""
         position = next(pos for pos in positions if pos.type == PositionType.VEHICLE)
+        # TODO @webspider: Make this a proper class
         json_data = {
-            "mode": "HONK_AND_FLASH" if honk else "FLASH",
+            "mode": "HONK_AND_FLASH",
+            "vehiclePosition": {
+                "latitude": position.gps_coordinates.latitude,
+                "longitude": position.gps_coordinates.longitude,
+            },
+        }
+        await self._make_post_request(
+            url=f"/v1/vehicle-access/{vin}/honk-and-flash", json=json_data
+        )
+
+    async def flash(
+        self,
+        vin: str,
+        positions: list[Position],
+    ) -> None:
+        """Emit flash."""
+        position = next(pos for pos in positions if pos.type == PositionType.VEHICLE)
+        # TODO @webspider: Make this a proper class
+        json_data = {
+            "mode": "FLASH",
             "vehiclePosition": {
                 "latitude": position.gps_coordinates.latitude,
                 "longitude": position.gps_coordinates.longitude,
