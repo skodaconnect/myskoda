@@ -160,9 +160,9 @@ class Authorization:
                 raise_for_status=True,
             ) as auth_response:
                 location = auth_response.headers["Location"]
-                if "terms-and-conditions" in location:
-                    raise TermsAndConditionsError(location)
                 while not location.startswith("myskoda://"):
+                    if "terms-and-conditions" in location:
+                        raise TermsAndConditionsError(location)
                     async with self.session.get(location, allow_redirects=False) as response:
                         location = response.headers["Location"]
                 codes = location.replace("myskoda://redirect/login/#", "")
