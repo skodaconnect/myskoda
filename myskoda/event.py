@@ -16,6 +16,7 @@ class ServiceEventTopic(StrEnum):
     AIR_CONDITIONING = "AIR_CONDITIONING"
     CHARGING = "CHARGING"
     LIGHTS = "LIGHTS"
+    DEPARTURE = "DEPARTURE"
 
 
 class AccountEventTopic(StrEnum):
@@ -70,6 +71,13 @@ class EventLights(BaseEvent):
 
 
 @dataclass
+class EventDeparture(BaseEvent):
+    event: ServiceEvent
+    type: Literal[EventType.SERVICE_EVENT] = EventType.SERVICE_EVENT
+    topic: Literal[ServiceEventTopic.DEPARTURE] = ServiceEventTopic.DEPARTURE
+
+
+@dataclass
 class EventAccountPrivacy(BaseEvent):
     type: Literal[EventType.ACCOUNT_EVENT] = EventType.ACCOUNT_EVENT
     topic: Literal[AccountEventTopic.ACCOUNT_PRIVACY] = AccountEventTopic.ACCOUNT_PRIVACY
@@ -82,4 +90,5 @@ Event = (
     | EventAirConditioning
     | EventCharging
     | EventLights
+    | EventDeparture
 )

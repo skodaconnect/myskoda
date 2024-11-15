@@ -22,6 +22,7 @@ class ServiceEventName(StrEnum):
     CHARGING_COMPLETED = "charging-completed"
     CHARGING_STATUS_CHANGED = "charging-status-changed"
     CLIMATISATION_COMPLETED = "climatisation-completed"
+    DEPARTURE_STATUS_CHANGED = "departure-status-changed"
 
 
 @dataclass

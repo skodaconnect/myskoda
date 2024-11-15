@@ -31,6 +31,7 @@ from .event import (
     EventAccountPrivacy,
     EventAirConditioning,
     EventCharging,
+    EventDeparture,
     EventLights,
     EventOperation,
     EventType,
@@ -179,13 +180,17 @@ class MySkodaMqttClient:
             _LOGGER.warning("Unexpected MQTT topic encountered: %s", topic_match)
             return
 
-        [user_id, vin, event_type, topic] = topic_match.groups()
-        event_type = EventType(event_type)
-
         # Cast the data from binary string, ignoring empty messages.
         data = cast(str, msg.payload)
         if len(data) == 0:
             return
+
+        self._parse_topic(topic_match, data)
+
+    def _parse_topic(self, topic_match: re.Match[str], data: str) -> None:
+        """Parse the topic and extract relevant parts."""
+        [user_id, vin, event_type, topic] = topic_match.groups()
+        event_type = EventType(event_type)
 
         _LOGGER.debug("Message (%s) received for %s on topic %s: %s", event_type, vin, topic, data)
 
@@ -224,6 +229,15 @@ class MySkodaMqttClient:
                         user_id=user_id,
                         timestamp=datetime.now(tz=UTC),
                         event=ServiceEventCharging.from_json(data),
+                    )
+                )
+            elif event_type == EventType.SERVICE_EVENT and topic == "departure":
+                self._emit(
+                    EventDeparture(
+                        vin=vin,
+                        user_id=user_id,
+                        timestamp=datetime.now(tz=UTC),
+                        event=ServiceEvent.from_json(data),
                     )
                 )
             elif event_type == EventType.SERVICE_EVENT and topic == "vehicle-status/access":
