@@ -31,6 +31,7 @@ from .event import (
     EventAccountPrivacy,
     EventAirConditioning,
     EventCharging,
+    EventDeparture,
     EventLights,
     EventOperation,
     EventType,
@@ -224,6 +225,15 @@ class MySkodaMqttClient:
                         user_id=user_id,
                         timestamp=datetime.now(tz=UTC),
                         event=ServiceEventCharging.from_json(data),
+                    )
+                )
+            elif event_type == EventType.SERVICE_EVENT and topic == "departure":
+                self._emit(
+                    EventDeparture(
+                        vin=vin,
+                        user_id=user_id,
+                        timestamp=datetime.now(tz=UTC),
+                        event=ServiceEvent.from_json(data),
                     )
                 )
             elif event_type == EventType.SERVICE_EVENT and topic == "vehicle-status/access":
