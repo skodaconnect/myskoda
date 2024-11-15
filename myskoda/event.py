@@ -72,6 +72,7 @@ class EventLights(BaseEvent):
 
 @dataclass
 class EventDeparture(BaseEvent):
+    event: ServiceEvent
     type: Literal[EventType.SERVICE_EVENT] = EventType.SERVICE_EVENT
     topic: Literal[ServiceEventTopic.DEPARTURE] = ServiceEventTopic.DEPARTURE
 
