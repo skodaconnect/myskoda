@@ -187,7 +187,7 @@ class MySkodaMqttClient:
 
         self._parse_topic(topic_match, data)
 
-    def _parse_topic(self, topic_match: str, data: str) -> None:
+    def _parse_topic(self, topic_match: re.Match[str], data: str) -> None:
         """Parse the topic and extract relevant parts."""
         [user_id, vin, event_type, topic] = topic_match.groups()
         event_type = EventType(event_type)
