@@ -23,7 +23,6 @@ class UserCapability(DataClassORJSONMixin):
 @dataclass
 class User(DataClassORJSONMixin):
     capabilities: list[UserCapability]
-    country: str
     email: str
     first_name: str = field(metadata=field_options(alias="firstName"))
     id: str
@@ -38,3 +37,4 @@ class User(DataClassORJSONMixin):
         default=None, metadata=field_options(alias="preferredContactChannel")
     )
     phone: str | None = None
+    country: str | None = None
