@@ -308,6 +308,7 @@ reports:
     "errors": []}'
   result:
     air_conditioning_at_unlock: true
+    air_conditioning_without_external_power: null
     car_captured_timestamp: '2024-11-05T20:05:07+00:00'
     charger_connection_state: DISCONNECTED
     charger_lock_state: UNLOCKED
@@ -510,6 +511,7 @@ reports:
     "electric", "currentSoCInPercent": 87, "remainingRangeInKm": 428}, "carCapturedTimestamp":
     "2024-11-05T20:04:49Z"}'
   result:
+    ad_blue_range: null
     car_captured_timestamp: '2024-11-05T20:04:49+00:00'
     car_type: electric
     primary_engine_range:
