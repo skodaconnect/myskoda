@@ -25,6 +25,7 @@ from myskoda.cli.operations import (
     set_target_temperature,
     start_air_conditioning,
     start_auxiliary_heating,
+    start_combustion_auxiliary_heating,
     start_window_heating,
     stop_air_conditioning,
     stop_auxiliary_heating,
@@ -145,6 +146,7 @@ cli.add_command(garage)
 cli.add_command(auth)
 cli.add_command(start_air_conditioning)
 cli.add_command(stop_air_conditioning)
+cli.add_command(start_combustion_auxiliary_heating)
 cli.add_command(start_auxiliary_heating)
 cli.add_command(stop_auxiliary_heating)
 cli.add_command(set_target_temperature)
