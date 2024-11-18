@@ -63,6 +63,26 @@ async def start_auxiliary_heating(
 
 
 @click.command()
+@click.option("timer", "--timer", type=int, required=True)
+@click.option("spin", "--spin", type=str, required=True)
+@click.option("timeout", "--timeout", type=float, default=300)
+@click.argument("vin")
+@click.pass_context
+@mqtt_required
+async def start_combustion_auxiliary_heating(
+    ctx: Context,
+    timer: int,
+    spin: str,
+    timeout: float,  # noqa: ASYNC109
+    vin: str,
+) -> None:
+    """Start the auxiliary heating with the provided timer in seconds."""
+    myskoda: MySkoda = ctx.obj["myskoda"]
+    async with asyncio.timeout(timeout):
+        await myskoda.start_combustion_auxiliary_heating(vin, timer, spin)
+
+
+@click.command()
 @click.option("timeout", "--timeout", type=float, default=300)
 @click.argument("vin")
 @click.pass_context

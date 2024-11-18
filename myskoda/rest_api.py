@@ -287,6 +287,22 @@ class RestApi:
         _LOGGER.debug("Stopping auxiliary heating for vehicle %s", vin)
         await self._make_post_request(url=f"/v2/air-conditioning/{vin}/auxiliary-heating/stop")
 
+    async def start_combustion_auxiliary_heating(self, vin: str, timer: int, spin: str) -> None:
+        """Start the auxiliary heating for combustion vehicles."""
+        _LOGGER.debug(
+            "Starting auxiliary heating for vehicle %s with timer = %s s",
+            vin,
+            timer,
+        )
+        json_data = {
+            "spin": spin,
+            "durationInSeconds": str(timer),
+        }
+        await self._make_post_request(
+            url=f"/v2/air-conditioning/{vin}/auxiliary-heating/start",
+            json=json_data,
+        )
+
     async def start_auxiliary_heating(self, vin: str, temperature: float, spin: str) -> None:
         """Start the auxiliary heating."""
         round_temp = f"{round(temperature * 2) / 2:.1f}"
