@@ -221,16 +221,15 @@ class MySkoda:
         await self.rest_api.stop_air_conditioning(vin)
         await future
 
-    async def start_auxiliary_heating(self, vin: str, temperature: float, spin: str) -> None:
-        """Start the auxiliary heating with the provided target temperature in °C."""
+    async def start_auxiliary_heating(
+        self, vin: str, spin: str, temperature: float, duration: int
+    ) -> None:
+        """Start the auxiliary heating with the provided target temperature or duration."""
+        if temperature is not None and duration is not None:
+            _LOGGER.error("temperature and duration not allowed together.")
+            return
         future = self._wait_for_operation(OperationName.START_AUXILIARY_HEATING)
-        await self.rest_api.start_auxiliary_heating(vin, temperature, spin)
-        await future
-
-    async def start_combustion_auxiliary_heating(self, vin: str, timer: int, spin: str) -> None:
-        """Start the auxiliary heating with the provided timer in seconds."""
-        future = self._wait_for_operation(OperationName.START_AUXILIARY_HEATING)
-        await self.rest_api.start_combustion_auxiliary_heating(vin, timer, spin)
+        await self.rest_api.start_auxiliary_heating(vin, temperature, duration, spin)
         await future
 
     async def stop_auxiliary_heating(self, vin: str) -> None:

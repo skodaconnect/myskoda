@@ -287,39 +287,39 @@ class RestApi:
         _LOGGER.debug("Stopping auxiliary heating for vehicle %s", vin)
         await self._make_post_request(url=f"/v2/air-conditioning/{vin}/auxiliary-heating/stop")
 
-    async def start_combustion_auxiliary_heating(self, vin: str, timer: int, spin: str) -> None:
-        """Start the auxiliary heating for combustion vehicles."""
-        _LOGGER.debug(
-            "Starting auxiliary heating for vehicle %s with timer = %s s",
-            vin,
-            timer,
-        )
-        json_data = {
-            "spin": spin,
-            "durationInSeconds": str(timer),
-        }
-        await self._make_post_request(
-            url=f"/v2/air-conditioning/{vin}/auxiliary-heating/start",
-            json=json_data,
-        )
-
-    async def start_auxiliary_heating(self, vin: str, temperature: float, spin: str) -> None:
+    async def start_auxiliary_heating(
+        self, vin: str, spin: str, temperature: float, duration: int
+    ) -> None:
         """Start the auxiliary heating."""
-        round_temp = f"{round(temperature * 2) / 2:.1f}"
-        _LOGGER.debug(
-            "Starting auxiliary heating for vehicle %s with temperature %s",
-            vin,
-            round_temp,
-        )
-        json_data = {
-            "heaterSource": "AUTOMATIC",
-            "airConditioningWithoutExternalPower": True,
-            "spin": spin,
-            "targetTemperature": {
-                "temperatureValue": round_temp,
-                "unitInCar": "CELSIUS",
-            },
-        }
+        if temperature is not None:
+            round_temp = f"{round(temperature * 2) / 2:.1f}"
+            _LOGGER.debug(
+                "Starting auxiliary heating for vehicle %s with temperature %s",
+                vin,
+                round_temp,
+            )
+            json_data = {
+                "heaterSource": "AUTOMATIC",
+                "airConditioningWithoutExternalPower": True,
+                "spin": spin,
+                "targetTemperature": {
+                    "temperatureValue": round_temp,
+                    "unitInCar": "CELSIUS",
+                },
+            }
+        else:
+            if duration is None:
+                duration = 600  # default 10 minutes
+            _LOGGER.debug(
+                "Starting auxiliary heating for vehicle %s with duration %s s",
+                vin,
+                duration,
+            )
+            json_data = {
+                "spin": spin,
+                "durationInSeconds": str(duration),
+            }
+
         await self._make_post_request(
             url=f"/v2/air-conditioning/{vin}/auxiliary-heating/start",
             json=json_data,

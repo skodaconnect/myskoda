@@ -427,7 +427,7 @@ async def test_start_auxiliary_heater(  # noqa: PLR0913
     url = f"{BASE_URL_SKODA}/api/v2/air-conditioning/{VIN}/auxiliary-heating/start"
     responses.post(url=url)
 
-    future = myskoda.start_auxiliary_heating(VIN, temperature, spin)
+    future = myskoda.start_auxiliary_heating(VIN, spin, temperature=temperature)
 
     topic = f"{USER_ID}/{VIN}/operation-request/auxiliary-heating/start-stop-auxiliary-heating"
     await mqtt_client.publish(topic, create_completed_json("start-auxiliary-heating"), QOS_2)
@@ -448,20 +448,20 @@ async def test_start_auxiliary_heater(  # noqa: PLR0913
 
 @pytest.mark.asyncio
 @pytest.mark.parametrize(
-    ("timer", "spin"),
+    ("duration", "spin"),
     [(600, "1234"), (900, "1234"), (1200, "1234")],
 )
-async def test_start_combustion_auxiliary_heater(  # noqa: PLR0913
+async def test_start_combustion_auxiliary_heater(
     responses: aioresponses,
     mqtt_client: MQTTClient,
     myskoda: MySkoda,
-    timer: int,
+    duration: int,
     spin: str,
 ) -> None:
     url = f"{BASE_URL_SKODA}/api/v2/air-conditioning/{VIN}/auxiliary-heating/start"
     responses.post(url=url)
 
-    future = myskoda.start_combustion_auxiliary_heating(VIN, timer, spin)
+    future = myskoda.start_auxiliary_heating(VIN, spin, duration=duration)
 
     topic = f"{USER_ID}/{VIN}/operation-request/auxiliary-heating/start-stop-auxiliary-heating"
     await mqtt_client.publish(topic, create_completed_json("start-auxiliary-heating"), QOS_2)
@@ -473,6 +473,6 @@ async def test_start_combustion_auxiliary_heater(  # noqa: PLR0913
         headers={"authorization": f"Bearer {ACCESS_TOKEN}"},
         json={
             "spin": spin,
-            "durationInSeconds": str(timer),
+            "durationInSeconds": str(duration),
         },
     )

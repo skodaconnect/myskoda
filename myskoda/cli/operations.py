@@ -43,15 +43,17 @@ async def stop_air_conditioning(ctx: Context, timeout: float, vin: str) -> None:
 
 
 @click.command()
-@click.option("temperature", "--temperature", type=float, required=True)
+@click.option("temperature", "--temperature", type=float, required=False)
+@click.option("duration", "--duration", type=int, required=False)
 @click.option("spin", "--spin", type=str, required=True)
 @click.option("timeout", "--timeout", type=float, default=300)
 @click.argument("vin")
 @click.pass_context
 @mqtt_required
-async def start_auxiliary_heating(
+async def start_auxiliary_heating(  # noqa: PLR0913
     ctx: Context,
     temperature: float,
+    duration: int,
     spin: str,
     timeout: float,  # noqa: ASYNC109
     vin: str,
@@ -59,27 +61,7 @@ async def start_auxiliary_heating(
     """Start the auxiliary heating with the provided target temperature in °C."""
     myskoda: MySkoda = ctx.obj["myskoda"]
     async with asyncio.timeout(timeout):
-        await myskoda.start_auxiliary_heating(vin, temperature, spin)
-
-
-@click.command()
-@click.option("timer", "--timer", type=int, required=True)
-@click.option("spin", "--spin", type=str, required=True)
-@click.option("timeout", "--timeout", type=float, default=300)
-@click.argument("vin")
-@click.pass_context
-@mqtt_required
-async def start_combustion_auxiliary_heating(
-    ctx: Context,
-    timer: int,
-    spin: str,
-    timeout: float,  # noqa: ASYNC109
-    vin: str,
-) -> None:
-    """Start the auxiliary heating with the provided timer in seconds."""
-    myskoda: MySkoda = ctx.obj["myskoda"]
-    async with asyncio.timeout(timeout):
-        await myskoda.start_combustion_auxiliary_heating(vin, timer, spin)
+        await myskoda.start_auxiliary_heating(vin, spin, temperature, duration)
 
 
 @click.command()
