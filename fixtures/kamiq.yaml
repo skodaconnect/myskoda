@@ -333,21 +333,21 @@ reports:
     [], "bookingHistory": [{"creationDate": "2024-01-12T10:25:49Z", "confirmationDate":
     "2024-01-12T10:30:23.431Z", "closedDate": "2024-03-13T07:37:00Z", "appointmentDate":
     "2024-03-13T07:37:00Z", "contactedDate": "2024-01-15T08:22:35Z", "updateDate":
-    "2024-03-30T02:11:11.255Z", "servicePartner": {"name": "Garage Korterink", "brand":
-    "C", "partnerNumber": "00156", "id": "NLDC00156", "contact": {"phone": "0522-291206",
-    "email": "werkplaats@korterinkautos.nl"}, "address": {"street": "Oude Rijksweg
-    512", "zipCode": "7954 GG", "city": "Rouveen", "countryCode": "NLD"}, "location":
-    {"latitude": 52.585976, "longitude": 6.192439}, "openingHours": []}, "bookingId":
+    "2024-03-30T02:11:11.255Z", "servicePartner": {"name": "Example Service Partner", "brand":
+    "C", "partnerNumber": "1111", "id": "DEU11111", "contact": {"phone": "+49 1234 567890",
+    "email": "user@example.com"}, "address": {"street": "Example Avenue
+    15", "zipCode": "54321", "city": "Example City", "countryCode": "DEU"}, "location":
+    {"latitude": 53.470636, "longitude": 9.689872}, "openingHours": []}, "bookingId":
     "4b437397-9f76-4bc9-8972-bb4af0fc9d31-1705055157793", "mileageInKm": 58777, "resolution":
     "APPOINTMENT", "type": "AUTO", "extras": [], "addOns": {}, "warnings": [{"iconName":
     "", "messageId": "A644", "notificationId": 42564, "text": "42564"}]}, {"creationDate":
     "2023-08-17T11:32:50Z", "acceptedDate": "2023-08-17T12:32:07Z", "confirmationDate":
     "2023-08-17T11:35:01.656Z", "closedDate": "2023-08-18T05:58:02Z", "updateDate":
-    "2023-08-18T06:00:05.449Z", "servicePartner": {"name": "Garage Korterink", "brand":
-    "C", "partnerNumber": "00156", "id": "NLDC00156", "contact": {"phone": "0522-291206",
-    "email": "werkplaats@korterinkautos.nl"}, "address": {"street": "Oude Rijksweg
-    512", "zipCode": "7954 GG", "city": "Rouveen", "countryCode": "NLD"}, "location":
-    {"latitude": 52.585976, "longitude": 6.192439}, "openingHours": []}, "bookingId":
+    "2023-08-18T06:00:05.449Z", "servicePartner": {"name": "Example Service Partner", "brand":
+    "C", "partnerNumber": "1111", "id": "DEU11111", "contact": {"phone": "+49 1234 567890",
+    "email": "user@example.com"}, "address": {"street": "Example Avenue
+    15", "zipCode": "54321", "city": "Example City", "countryCode": "DEU"}, "location":
+    {"latitude": 53.470636, "longitude": 9.689872}, "openingHours": []}, "bookingId":
     "426ff0a7-8f11-44f9-a235-ebe259c4b52c-1692271996343", "mileageInKm": 49670, "resolution":
     "REJECTED", "type": "AUTO", "extras": [], "addOns": {}, "warnings": [{"iconName":
     "", "messageId": "A224", "notificationId": 41508, "text": "Please add maximum
