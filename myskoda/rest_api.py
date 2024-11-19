@@ -288,7 +288,7 @@ class RestApi:
         await self._make_post_request(url=f"/v2/air-conditioning/{vin}/auxiliary-heating/stop")
 
     async def start_auxiliary_heating(
-        self, vin: str, spin: str, temperature: float, duration: int
+        self, vin: str, spin: str, temperature: float | None = None, duration: int | None = None
     ) -> None:
         """Start the auxiliary heating."""
         if temperature is not None:
