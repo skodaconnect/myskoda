@@ -229,7 +229,7 @@ class MySkoda:
             _LOGGER.error("temperature and duration not allowed together.")
             return
         future = self._wait_for_operation(OperationName.START_AUXILIARY_HEATING)
-        await self.rest_api.start_auxiliary_heating(vin, temperature, duration, spin)
+        await self.rest_api.start_auxiliary_heating(vin, spin, temperature, duration)
         await future
 
     async def stop_auxiliary_heating(self, vin: str) -> None:
