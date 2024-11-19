@@ -26,7 +26,7 @@ from myskoda.models.fixtures import (
 
 from .auth.authorization import Authorization
 from .event import Event
-from .models.air_conditioning import AirConditioning
+from .models.air_conditioning import AirConditioning, AuxiliaryConfig
 from .models.charging import ChargeMode, Charging
 from .models.driving_range import DrivingRange
 from .models.health import Health
@@ -222,14 +222,11 @@ class MySkoda:
         await future
 
     async def start_auxiliary_heating(
-        self, vin: str, spin: str, temperature: float | None = None, duration: int | None = None
+        self, vin: str, spin: str, config: AuxiliaryConfig | None = None
     ) -> None:
-        """Start the auxiliary heating with the provided target temperature or duration."""
-        if temperature is not None and duration is not None:
-            _LOGGER.error("temperature and duration not allowed together.")
-            return
+        """Start the auxiliary heating with the provided configuration."""
         future = self._wait_for_operation(OperationName.START_AUXILIARY_HEATING)
-        await self.rest_api.start_auxiliary_heating(vin, spin, temperature, duration)
+        await self.rest_api.start_auxiliary_heating(vin, spin, config=config)
         await future
 
     async def stop_auxiliary_heating(self, vin: str) -> None:

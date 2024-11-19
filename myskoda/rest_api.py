@@ -28,7 +28,7 @@ from myskoda.models.position import Position, PositionType
 
 from .auth.authorization import Authorization
 from .const import BASE_URL_SKODA, REQUEST_TIMEOUT_IN_SECONDS
-from .models.air_conditioning import AirConditioning
+from .models.air_conditioning import AirConditioning, AuxiliaryConfig
 from .models.charging import Charging
 from .models.driving_range import DrivingRange
 from .models.health import Health
@@ -287,41 +287,35 @@ class RestApi:
         _LOGGER.debug("Stopping auxiliary heating for vehicle %s", vin)
         await self._make_post_request(url=f"/v2/air-conditioning/{vin}/auxiliary-heating/stop")
 
-    async def start_auxiliary_heating(
-        self, vin: str, spin: str, temperature: float | None = None, duration: int | None = None
-    ) -> None:
+    async def start_auxiliary_heating(self, vin: str, spin: str, config: AuxiliaryConfig) -> None:
         """Start the auxiliary heating."""
-        if temperature is not None:
-            round_temp = f"{round(temperature * 2) / 2:.1f}"
-            _LOGGER.debug(
-                "Starting auxiliary heating for vehicle %s with temperature %s",
-                vin,
-                round_temp,
-            )
-            json_data = {
-                "heaterSource": "AUTOMATIC",
-                "airConditioningWithoutExternalPower": True,
-                "spin": spin,
-                "targetTemperature": {
+        _LOGGER.debug("Starting auxiliary heating for vehicle %s", vin)
+        json_data = {"spin": spin}
+        if config is not None:
+            if config.target_temperature is not None:
+                round_temp = f"{round(config.target_temperature * 2) / 2:.1f}"
+                json_data["targetTemperature"] = {
                     "temperatureValue": round_temp,
                     "unitInCar": "CELSIUS",
-                },
-            }
-        else:
-            if duration is None:
-                duration = 600  # default 10 minutes
-            _LOGGER.debug(
-                "Starting auxiliary heating for vehicle %s with duration %s s",
-                vin,
-                duration,
-            )
-            json_data = {
-                "spin": spin,
-                "durationInSeconds": str(duration),
-            }
+                }
+            if config.duration is not None:
+                json_data["durationInSeconds"] = str(config.duration)
+            if config.source is not None:
+                json_data["heaterSource"] = config.source.value
+            if config.mode is not None:
+                json_data["startMode"] = config.mode.value
 
         await self._make_post_request(
             url=f"/v2/air-conditioning/{vin}/auxiliary-heating/start",
+            json=json_data,
+        )
+
+    async def set_ac_without_external_power(self, vin: str, enabled: bool) -> None:
+        """Enable or disable AC without external power."""
+        _LOGGER.debug("Setting AC without external power for vehicle %s to %r", vin, enabled)
+        json_data = {"airConditioningWithoutExternalPowerEnabled": "True" if enabled else "False"}
+        await self._make_put_request(
+            url=f"/v2/air-conditioning/{vin}/settings/ac-without-external-power",
             json=json_data,
         )
 

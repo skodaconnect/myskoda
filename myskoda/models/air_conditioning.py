@@ -37,6 +37,14 @@ class HeaterSource(StrEnum):
 
 
 @dataclass
+class AuxiliaryConfig(DataClassORJSONMixin):
+    target_temperature: float | None = None
+    duration: int | None = None
+    source: HeaterSource | None = None
+    mode: AirConditioningState | None = None
+
+
+@dataclass
 class Timer(DataClassORJSONMixin):
     enabled: bool
     id: int

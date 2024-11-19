@@ -6,6 +6,7 @@ from amqtt.client import QOS_2, MQTTClient
 
 from myskoda.anonymize import ACCESS_TOKEN, LOCATION, USER_ID, VIN
 from myskoda.const import BASE_URL_SKODA
+from myskoda.models.air_conditioning import AirConditioningState, AuxiliaryConfig, HeaterSource
 from myskoda.models.charging import ChargeMode
 from myskoda.myskoda import MySkoda
 from tests.conftest import FIXTURES_DIR, create_completed_json
@@ -413,66 +414,48 @@ async def test_stop_auxiliary_heater(
 
 @pytest.mark.asyncio
 @pytest.mark.parametrize(
-    ("temperature", "expected", "spin"),
-    [(21.5, "21.5", "1234"), (23.2, "23.0", "1234"), (10.01, "10.0", "1234")],
+    ("spin", "config", "expected"),
+    [
+        ("1234", AuxiliaryConfig(target_temperature=22.3), "22.5"),
+        ("1234", AuxiliaryConfig(duration=600), "600"),
+        ("1234", AuxiliaryConfig(mode=AirConditioningState.HEATING), "HEATING"),
+        ("1234", AuxiliaryConfig(source=HeaterSource.AUTOMATIC), "AUTOMATIC"),
+    ],
 )
 async def test_start_auxiliary_heater(  # noqa: PLR0913
     responses: aioresponses,
     mqtt_client: MQTTClient,
     myskoda: MySkoda,
-    temperature: float,
+    spin: str,
+    config: AuxiliaryConfig,
     expected: str,
-    spin: str,
 ) -> None:
     url = f"{BASE_URL_SKODA}/api/v2/air-conditioning/{VIN}/auxiliary-heating/start"
     responses.post(url=url)
 
-    future = myskoda.start_auxiliary_heating(VIN, spin, temperature=temperature)
+    future = myskoda.start_auxiliary_heating(VIN, spin, config)
 
     topic = f"{USER_ID}/{VIN}/operation-request/auxiliary-heating/start-stop-auxiliary-heating"
     await mqtt_client.publish(topic, create_completed_json("start-auxiliary-heating"), QOS_2)
+
+    json_data = {"spin": spin}
+    if config is not None:
+        if config.target_temperature is not None:
+            json_data["targetTemperature"] = {
+                "temperatureValue": expected,
+                "unitInCar": "CELSIUS",
+            }
+        if config.duration is not None:
+            json_data["durationInSeconds"] = expected
+        if config.source is not None:
+            json_data["heaterSource"] = expected
+        if config.mode is not None:
+            json_data["startMode"] = expected
 
     await future
     responses.assert_called_with(
         url=url,
         method="POST",
         headers={"authorization": f"Bearer {ACCESS_TOKEN}"},
-        json={
-            "heaterSource": "AUTOMATIC",
-            "airConditioningWithoutExternalPower": True,
-            "spin": spin,
-            "targetTemperature": {"temperatureValue": f"{expected}", "unitInCar": "CELSIUS"},
-        },
-    )
-
-
-@pytest.mark.asyncio
-@pytest.mark.parametrize(
-    ("duration", "spin"),
-    [(600, "1234"), (900, "1234"), (1200, "1234")],
-)
-async def test_start_combustion_auxiliary_heater(
-    responses: aioresponses,
-    mqtt_client: MQTTClient,
-    myskoda: MySkoda,
-    duration: int,
-    spin: str,
-) -> None:
-    url = f"{BASE_URL_SKODA}/api/v2/air-conditioning/{VIN}/auxiliary-heating/start"
-    responses.post(url=url)
-
-    future = myskoda.start_auxiliary_heating(VIN, spin, duration=duration)
-
-    topic = f"{USER_ID}/{VIN}/operation-request/auxiliary-heating/start-stop-auxiliary-heating"
-    await mqtt_client.publish(topic, create_completed_json("start-auxiliary-heating"), QOS_2)
-
-    await future
-    responses.assert_called_with(
-        url=url,
-        method="POST",
-        headers={"authorization": f"Bearer {ACCESS_TOKEN}"},
-        json={
-            "spin": spin,
-            "durationInSeconds": str(duration),
-        },
+        json=json_data,
     )

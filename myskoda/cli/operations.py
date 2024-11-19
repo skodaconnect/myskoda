@@ -11,6 +11,8 @@ from myskoda.cli.utils import mqtt_required
 if TYPE_CHECKING:
     from myskoda import MySkoda
 
+from myskoda.models.air_conditioning import AirConditioningState, AuxiliaryConfig, HeaterSource
+
 
 @click.command()
 @click.option("temperature", "--temperature", type=float, required=True)
@@ -45,6 +47,12 @@ async def stop_air_conditioning(ctx: Context, timeout: float, vin: str) -> None:
 @click.command()
 @click.option("temperature", "--temperature", type=float, required=False)
 @click.option("duration", "--duration", type=int, required=False)
+@click.option(
+    "mode", "--mode", type=click.Choice([e.value for e in AirConditioningState]), required=False
+)
+@click.option(
+    "source", "--source", type=click.Choice([e.value for e in HeaterSource]), required=False
+)
 @click.option("spin", "--spin", type=str, required=True)
 @click.option("timeout", "--timeout", type=float, default=300)
 @click.argument("vin")
@@ -52,16 +60,24 @@ async def stop_air_conditioning(ctx: Context, timeout: float, vin: str) -> None:
 @mqtt_required
 async def start_auxiliary_heating(  # noqa: PLR0913
     ctx: Context,
-    temperature: float,
-    duration: int,
     spin: str,
     timeout: float,  # noqa: ASYNC109
     vin: str,
+    temperature: float | None = None,
+    duration: int | None = None,
+    mode: AirConditioningState | None = None,
+    source: HeaterSource | None = None,
 ) -> None:
     """Start the auxiliary heating with the provided target temperature in °C."""
     myskoda: MySkoda = ctx.obj["myskoda"]
+    config = AuxiliaryConfig(
+        target_temperature=temperature,
+        duration=duration,
+        mode=AirConditioningState(mode),
+        source=HeaterSource(source),
+    )
     async with asyncio.timeout(timeout):
-        await myskoda.start_auxiliary_heating(vin, spin, temperature, duration)
+        await myskoda.start_auxiliary_heating(vin, spin, config)
 
 
 @click.command()
