@@ -222,7 +222,7 @@ class MySkoda:
         await future
 
     async def start_auxiliary_heating(
-        self, vin: str, spin: str, temperature: float, duration: int
+        self, vin: str, spin: str, temperature: float = None, duration: int = None
     ) -> None:
         """Start the auxiliary heating with the provided target temperature or duration."""
         if temperature is not None and duration is not None:
