@@ -441,10 +441,10 @@ async def test_start_auxiliary_heater(  # noqa: PLR0913
     json_data = {"spin": spin}
     if config is not None:
         if config.target_temperature is not None:
-            json_data["targetTemperature"] = {
+            json_data["targetTemperature"] = json.dumps({
                 "temperatureValue": expected,
                 "unitInCar": "CELSIUS",
-            }
+            })
         if config.duration is not None:
             json_data["durationInSeconds"] = expected
         if config.source is not None:
