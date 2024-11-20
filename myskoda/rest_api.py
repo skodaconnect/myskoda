@@ -293,7 +293,8 @@ class RestApi:
         """Start the auxiliary heating."""
         _LOGGER.debug("Starting auxiliary heating for vehicle %s", vin)
         json_data = {"spin": spin}
-        json_data = json_data | config.json
+        if config is not None:
+            json_data = json_data | config.json
 
         await self._make_post_request(
             url=f"/v2/air-conditioning/{vin}/auxiliary-heating/start",

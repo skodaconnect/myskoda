@@ -438,7 +438,7 @@ async def test_start_auxiliary_heater(  # noqa: PLR0913
     topic = f"{USER_ID}/{VIN}/operation-request/auxiliary-heating/start-stop-auxiliary-heating"
     await mqtt_client.publish(topic, create_completed_json("start-auxiliary-heating"), QOS_2)
 
-    json_data = {"spin": spin}
+    json_data: dict[str, object] = {"spin": spin}
     if config is not None:
         if config.target_temperature is not None:
             json_data["targetTemperature"] = {
