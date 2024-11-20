@@ -490,7 +490,7 @@ async def test_set_ac_without_external_power(
     await future
     responses.assert_called_with(
         url=url,
-        method="PUT",
+        method="POST",
         headers={"authorization": f"Bearer {ACCESS_TOKEN}"},
         json={"airConditioningWithoutExternalPowerEnabled": expected},
     )
