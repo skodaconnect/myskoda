@@ -1,6 +1,5 @@
 """Models for responses of api/v2/air-conditioning endpoint."""
 
-import json
 from dataclasses import dataclass, field
 from datetime import datetime, time
 from enum import StrEnum
