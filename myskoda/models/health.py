@@ -3,7 +3,6 @@
 from dataclasses import dataclass, field
 from datetime import datetime
 from enum import StrEnum
-from typing import Any
 
 from mashumaro import field_options
 from mashumaro.mixins.orjson import DataClassORJSONMixin
@@ -21,9 +20,16 @@ class WarningLightCategory(StrEnum):
 
 
 @dataclass
+class DefectDetails(DataClassORJSONMixin):
+    text: str
+    priority: str
+    icon: str | None = None
+
+
+@dataclass
 class WarningLight(DataClassORJSONMixin):
     category: WarningLightCategory
-    defects: list[Any]
+    defects: list[DefectDetails]
 
 
 @dataclass
