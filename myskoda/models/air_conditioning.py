@@ -6,6 +6,7 @@ from enum import StrEnum
 from typing import Any
 
 from mashumaro import field_options
+from mashumaro.config import BaseConfig
 from mashumaro.mixins.orjson import DataClassORJSONMixin
 
 from .common import ChargerLockedState, ConnectionState, OnOffState, Side, Weekday
@@ -81,33 +82,23 @@ class AuxiliaryConfig(DataClassORJSONMixin):
         default=None, metadata=field_options(alias="startMode")
     )
 
+    class Config(BaseConfig):
+        """Configuration for serialization and deserialization.."""
+
+        serialize_by_alias = True
+        omit_none = True
+
     def get_config(self) -> dict[str, object]:
-        """Get the dict from AuxiliaryConfig without None values and with aliases."""
-        result = {}
-        # Handle fields with aliases and None values
-        for field_name, field_value in self.__dict__.items():
-            field_info = self.__dataclass_fields__.get(field_name)
-
-            # Ensure field_info exists before accessing its metadata
-            if field_info is None:
-                continue
-
-            alias = field_info.metadata.get("alias", field_name)  # Use alias if available
-
-            if field_value is not None:  # Only include non-None values
-                # Special handling for target_temperature
-                if field_name == "target_temperature" and isinstance(
-                    field_value, TargetTemperature
-                ):
-                    round_temp = round(field_value.temperature_value * 2) / 2
-                    result[alias] = {
-                        "temperatureValue": float(round_temp),
-                        "unitInCar": field_value.unit_in_car,
-                    }
-                else:
-                    result[alias] = field_value
-
-        return result
+        """Get the dict from AuxiliaryConfig and round target temp if available."""
+        data = self.to_dict()
+        # round temperature to 0.5 precision
+        if self.target_temperature is not None:
+            round_temp = round(self.target_temperature.temperature_value * 2) / 2
+            data["targetTemperature"] = {
+                "temperatureValue": float(round_temp),
+                "unitInCar": self.target_temperature.unit_in_car.value,
+            }
+        return data
 
 
 @dataclass
