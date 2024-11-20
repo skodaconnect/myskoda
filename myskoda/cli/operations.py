@@ -73,8 +73,8 @@ async def start_auxiliary_heating(  # noqa: PLR0913
     config = AuxiliaryConfig(
         target_temperature=temperature,
         duration=duration,
-        mode=AirConditioningState(mode),
-        source=HeaterSource(source),
+        mode=AirConditioningState(mode) if mode is not None else None,
+        source=HeaterSource(source) if source is not None else None,
     )
     async with asyncio.timeout(timeout):
         await myskoda.start_auxiliary_heating(vin, spin, config)
