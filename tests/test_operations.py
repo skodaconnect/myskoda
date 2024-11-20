@@ -6,7 +6,12 @@ from amqtt.client import QOS_2, MQTTClient
 
 from myskoda.anonymize import ACCESS_TOKEN, LOCATION, USER_ID, VIN
 from myskoda.const import BASE_URL_SKODA
-from myskoda.models.air_conditioning import AirConditioningState, AuxiliaryConfig, HeaterSource
+from myskoda.models.air_conditioning import (
+    AirConditioningState,
+    AuxiliaryConfig,
+    HeaterSource,
+    TargetTemperature,
+)
 from myskoda.models.charging import ChargeMode
 from myskoda.myskoda import MySkoda
 from tests.conftest import FIXTURES_DIR, create_completed_json
@@ -416,10 +421,10 @@ async def test_stop_auxiliary_heater(
 @pytest.mark.parametrize(
     ("spin", "config", "expected"),
     [
-        ("1234", AuxiliaryConfig(target_temperature=22.3), "22.5"),
-        ("1234", AuxiliaryConfig(duration=600), "600"),
-        ("1234", AuxiliaryConfig(mode=AirConditioningState.HEATING), "HEATING"),
-        ("1234", AuxiliaryConfig(source=HeaterSource.AUTOMATIC), "AUTOMATIC"),
+        ("1234", AuxiliaryConfig(TargetTemperature(temperature_value=22.3)), "22.5"),
+        ("1234", AuxiliaryConfig(duration_in_seconds=600), "600"),
+        ("1234", AuxiliaryConfig(start_mode=AirConditioningState.HEATING), "HEATING"),
+        ("1234", AuxiliaryConfig(heater_source=HeaterSource.AUTOMATIC), "AUTOMATIC"),
     ],
 )
 async def test_start_auxiliary_heater(  # noqa: PLR0913
@@ -445,11 +450,11 @@ async def test_start_auxiliary_heater(  # noqa: PLR0913
                 "temperatureValue": float(expected),
                 "unitInCar": "CELSIUS",
             }
-        if config.duration is not None:
+        if config.duration_in_seconds is not None:
             json_data["durationInSeconds"] = int(expected)
-        if config.source is not None:
+        if config.heater_source is not None:
             json_data["heaterSource"] = expected
-        if config.mode is not None:
+        if config.start_mode is not None:
             json_data["startMode"] = expected
 
     await future

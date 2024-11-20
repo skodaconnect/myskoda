@@ -30,47 +30,10 @@ class AirConditioningState(StrEnum):
     INVALID = "INVALID"
 
 
-# Probaly other states than AUTOMATIC are available, to be discovered
+# Probably other states than AUTOMATIC are available, to be discovered
 class HeaterSource(StrEnum):
     AUTOMATIC = "AUTOMATIC"
     ELECTRIC = "ELECTRIC"
-
-
-@dataclass
-class AuxiliaryConfig(DataClassORJSONMixin):
-    target_temperature: float | None = None
-    duration: int | None = None
-    source: HeaterSource | None = None
-    mode: AirConditioningState | None = None
-
-    @property
-    def json(self) -> dict[str, object]:
-        """Build a JSON-compatible dictionary based on the AuxiliaryConfig attributes.
-
-        Returns:
-            Dict[str, Any]: A dictionary containing the serialized configuration.
-            Keys are included only if their corresponding attributes are not None.
-
-        """
-        json_data = {}
-
-        if self.target_temperature is not None:
-            round_temp = round(self.target_temperature * 2) / 2
-            json_data["targetTemperature"] = {
-                "temperatureValue": round_temp,
-                "unitInCar": "CELSIUS",
-            }
-
-        if self.duration is not None:
-            json_data["durationInSeconds"] = self.duration
-
-        if self.source is not None:
-            json_data["heaterSource"] = self.source.value
-
-        if self.mode is not None:
-            json_data["startMode"] = self.mode.value
-
-        return json_data
 
 
 @dataclass
@@ -91,7 +54,9 @@ class SeatHeating(DataClassORJSONMixin):
 @dataclass
 class TargetTemperature(DataClassORJSONMixin):
     temperature_value: float = field(metadata=field_options(alias="temperatureValue"))
-    unit_in_car: TemperatureUnit = field(metadata=field_options(alias="unitInCar"))
+    unit_in_car: TemperatureUnit = field(
+        default=TemperatureUnit.CELSIUS, metadata=field_options(alias="unitInCar")
+    )
 
 
 @dataclass
@@ -99,6 +64,50 @@ class WindowHeatingState(DataClassORJSONMixin):
     front: OnOffState
     rear: OnOffState
     unspecified: Any
+
+
+@dataclass
+class AuxiliaryConfig(DataClassORJSONMixin):
+    target_temperature: TargetTemperature | None = field(
+        default=None, metadata=field_options(alias="targetTemperature")
+    )
+    duration_in_seconds: int | None = field(
+        default=None, metadata=field_options(alias="durationInSeconds")
+    )
+    heater_source: HeaterSource | None = field(
+        default=None, metadata=field_options(alias="heaterSource")
+    )
+    start_mode: AirConditioningState | None = field(
+        default=None, metadata=field_options(alias="startMode")
+    )
+
+    def get_config(self) -> dict[str, object]:
+        """Get the dict from AuxiliaryConfig without None values and with aliases."""
+        result = {}
+        # Handle fields with aliases and None values
+        for field_name, field_value in self.__dict__.items():
+            field_info = self.__dataclass_fields__.get(field_name)
+
+            # Ensure field_info exists before accessing its metadata
+            if field_info is None:
+                continue
+
+            alias = field_info.metadata.get("alias", field_name)  # Use alias if available
+
+            if field_value is not None:  # Only include non-None values
+                # Special handling for target_temperature
+                if field_name == "target_temperature" and isinstance(
+                    field_value, TargetTemperature
+                ):
+                    round_temp = round(field_value.temperature_value * 2) / 2
+                    result[alias] = {
+                        "temperatureValue": float(round_temp),
+                        "unitInCar": field_value.unit_in_car,
+                    }
+                else:
+                    result[alias] = field_value
+
+        return result
 
 
 @dataclass

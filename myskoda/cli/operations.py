@@ -11,7 +11,12 @@ from myskoda.cli.utils import mqtt_required
 if TYPE_CHECKING:
     from myskoda import MySkoda
 
-from myskoda.models.air_conditioning import AirConditioningState, AuxiliaryConfig, HeaterSource
+from myskoda.models.air_conditioning import (
+    AirConditioningState,
+    AuxiliaryConfig,
+    HeaterSource,
+    TargetTemperature,
+)
 
 
 @click.command()
@@ -71,10 +76,12 @@ async def start_auxiliary_heating(  # noqa: PLR0913
     """Start the auxiliary heating with the provided target temperature in °C."""
     myskoda: MySkoda = ctx.obj["myskoda"]
     config = AuxiliaryConfig(
-        target_temperature=temperature,
-        duration=duration,
-        mode=AirConditioningState(mode) if mode is not None else None,
-        source=HeaterSource(source) if source is not None else None,
+        target_temperature=TargetTemperature(temperature_value=temperature)
+        if temperature is not None
+        else None,
+        duration_in_seconds=duration,
+        start_mode=AirConditioningState(mode) if mode is not None else None,
+        heater_source=HeaterSource(source) if source is not None else None,
     )
     async with asyncio.timeout(timeout):
         await myskoda.start_auxiliary_heating(vin, spin, config)
