@@ -1,5 +1,6 @@
 """Models for responses of api/v2/air-conditioning endpoint."""
 
+import json
 from dataclasses import dataclass, field
 from datetime import datetime, time
 from enum import StrEnum
@@ -42,6 +43,35 @@ class AuxiliaryConfig(DataClassORJSONMixin):
     duration: int | None = None
     source: HeaterSource | None = None
     mode: AirConditioningState | None = None
+
+    @property
+    def to_json(self) -> dict[str, Any]:
+        """Build a JSON-compatible dictionary based on the AuxiliaryConfig attributes.
+
+        Returns:
+            Dict[str, Any]: A dictionary containing the serialized configuration.
+            Keys are included only if their corresponding attributes are not None.
+
+        """
+        json_data = {}
+
+        if self.target_temperature is not None:
+            round_temp = f"{round(self.target_temperature * 2) / 2:.1f}"
+            json_data["targetTemperature"] = {
+                "temperatureValue": round_temp,
+                "unitInCar": "CELSIUS",
+            }
+
+        if self.duration is not None:
+            json_data["durationInSeconds"] = str(self.duration)
+
+        if self.source is not None:
+            json_data["heaterSource"] = self.source.value
+
+        if self.mode is not None:
+            json_data["startMode"] = self.mode.value
+
+        return json_data
 
 
 @dataclass

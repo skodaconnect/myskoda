@@ -292,22 +292,7 @@ class RestApi:
     ) -> None:
         """Start the auxiliary heating."""
         _LOGGER.debug("Starting auxiliary heating for vehicle %s", vin)
-        json_data = {"spin": spin}
-        if config is not None:
-            if config.target_temperature is not None:
-                round_temp = f"{round(config.target_temperature * 2) / 2:.1f}"
-                json_data["targetTemperature"] = json.dumps(
-                    {
-                        "temperatureValue": round_temp,
-                        "unitInCar": "CELSIUS",
-                    }
-                )
-            if config.duration is not None:
-                json_data["durationInSeconds"] = str(config.duration)
-            if config.source is not None:
-                json_data["heaterSource"] = config.source.value
-            if config.mode is not None:
-                json_data["startMode"] = config.mode.value
+        json_data = {"spin": spin} | config.to_json
 
         await self._make_post_request(
             url=f"/v2/air-conditioning/{vin}/auxiliary-heating/start",
