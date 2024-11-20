@@ -11,13 +11,14 @@ This Python library can be used to work with the MySkoda API.
 <!-- TOC -->
 
 - [MySkoda](#myskoda)
-    - [Get In Touch](#get-in-touch)
-    - [Quick Start](#quick-start)
-        - [Basic example](#basic-example)
-    - [Documentation](#documentation)
-    - [As Library](#as-library)
-    - [As CLI](#as-cli)
-    - [Contribute your Fixtures](#contribute-your-fixtures)
+  - [Get In Touch](#get-in-touch)
+  - [Quick Start](#quick-start)
+    - [Basic example](#basic-example)
+  - [Documentation](#documentation)
+  - [As Library](#as-library)
+  - [As CLI](#as-cli)
+  - [Contribute your Fixtures](#contribute-your-fixtures)
+  - [Disclaimer](#disclaimer)
 
 <!-- /TOC -->
 
@@ -142,3 +143,11 @@ This will call all the selected get-routes and load all data from your vehicles 
 The data will be anonymized (vin and personal data are replaced) and serves as unit tests.
 
 Please create a pull request with the resulting data to help us cover more vehicles.
+
+## Disclaimer
+
+This project is an unofficial API client for the Skoda API and is not affiliated with, endorsed by, or associated with Skoda Auto or any of its subsidiaries.
+
+Use this project at your own risk. Skoda Auto may update or modify its API without notice, which could render this client inoperative or non-compliant. The maintainers of this project are not responsible for any misuse, legal implications, or damages arising from its use.
+
+Ensure compliance with Skoda Auto's terms of service and any applicable laws when using this software.
