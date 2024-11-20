@@ -475,7 +475,7 @@ async def test_set_ac_without_external_power(
     expected: str,
 ) -> None:
     url = f"{BASE_URL_SKODA}/api/v2/air-conditioning/{VIN}/settings/ac-without-external-power"
-    responses.put(url=url)
+    responses.post(url=url)
 
     future = myskoda.set_ac_without_external_power(VIN, enabled)
 

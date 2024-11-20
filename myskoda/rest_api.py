@@ -318,7 +318,7 @@ class RestApi:
         """Enable or disable AC without external power."""
         _LOGGER.debug("Setting AC without external power for vehicle %s to %r", vin, enabled)
         json_data = {"airConditioningWithoutExternalPowerEnabled": "True" if enabled else "False"}
-        await self._make_put_request(
+        await self._make_post_request(
             url=f"/v2/air-conditioning/{vin}/settings/ac-without-external-power",
             json=json_data,
         )
