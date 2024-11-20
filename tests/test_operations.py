@@ -463,3 +463,34 @@ async def test_start_auxiliary_heater(  # noqa: PLR0913
         headers={"authorization": f"Bearer {ACCESS_TOKEN}"},
         json=json_data,
     )
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize(("enabled", "expected"), [(True, "True"), (False, "False")])
+async def test_set_ac_without_external_power(
+    responses: aioresponses,
+    mqtt_client: MQTTClient,
+    myskoda: MySkoda,
+    enabled: bool,
+    expected: str,
+) -> None:
+    url = f"{BASE_URL_SKODA}/api/v2/air-conditioning/{VIN}/settings/ac-without-external-power"
+    responses.put(url=url)
+
+    future = myskoda.set_ac_without_external_power(VIN, enabled)
+
+    topic = (
+        f"{USER_ID}/{VIN}/operation-request/"
+        "air-conditioning/set-air-conditioning-without-external-power"
+    )
+    await mqtt_client.publish(
+        topic, create_completed_json("set-air-conditioning-without-external-power"), QOS_2
+    )
+
+    await future
+    responses.assert_called_with(
+        url=url,
+        method="PUT",
+        headers={"authorization": f"Bearer {ACCESS_TOKEN}"},
+        json={"airConditioningWithoutExternalPowerEnabled": expected},
+    )

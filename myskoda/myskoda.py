@@ -203,6 +203,12 @@ class MySkoda:
         await self.rest_api.start_window_heating(vin)
         await future
 
+    async def set_ac_without_external_power(self, vin: str, enabled: bool) -> None:
+        """Enable or disable AC without external power."""
+        future = self._wait_for_operation(OperationName.SET_AIR_CONDITIONING_WITHOUT_EXTERNAL_POWER)
+        await self.rest_api.set_ac_without_external_power(vin, enabled)
+        await future
+
     async def set_target_temperature(self, vin: str, temperature: float) -> None:
         """Set the air conditioning's target temperature in °C."""
         future = self._wait_for_operation(OperationName.SET_AIR_CONDITIONING_TARGET_TEMPERATURE)

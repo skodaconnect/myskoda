@@ -20,6 +20,7 @@ from myskoda.cli.operations import (
     flash,
     honk_flash,
     lock,
+    set_ac_without_external_power,
     set_charge_limit,
     set_reduced_current_limit,
     set_target_temperature,
@@ -161,6 +162,7 @@ cli.add_command(unlock)
 cli.add_command(honk_flash)
 cli.add_command(flash)
 cli.add_command(verify_spin)
+cli.add_command(set_ac_without_external_power)
 
 if __name__ == "__main__":
     cli()

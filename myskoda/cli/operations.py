@@ -243,3 +243,21 @@ async def flash(ctx: Context, timeout: float, vin: str) -> None:  # noqa: ASYNC1
     myskoda: MySkoda = ctx.obj["myskoda"]
     async with asyncio.timeout(timeout):
         await myskoda.flash(vin)
+
+
+@click.command()
+@click.option("timeout", "--timeout", type=float, default=300)
+@click.argument("vin")
+@click.option("enabled", "--enabled", type=bool, required=True)
+@click.pass_context
+@mqtt_required
+async def set_ac_without_external_power(
+    ctx: Context,
+    timeout: float,  # noqa: ASYNC109
+    vin: str,
+    enabled: bool,
+) -> None:
+    """Enable or disable AC without external power."""
+    myskoda: MySkoda = ctx.obj["myskoda"]
+    async with asyncio.timeout(timeout):
+        await myskoda.set_ac_without_external_power(vin, enabled)
