@@ -44,7 +44,7 @@ class AuxiliaryConfig(DataClassORJSONMixin):
     mode: AirConditioningState | None = None
 
     @property
-    def to_json(self) -> dict[str, Any]:
+    def json(self) -> dict[str, object]:
         """Build a JSON-compatible dictionary based on the AuxiliaryConfig attributes.
 
         Returns:
@@ -55,14 +55,14 @@ class AuxiliaryConfig(DataClassORJSONMixin):
         json_data = {}
 
         if self.target_temperature is not None:
-            round_temp = f"{round(self.target_temperature * 2) / 2:.1f}"
+            round_temp = round(self.target_temperature * 2) / 2
             json_data["targetTemperature"] = {
                 "temperatureValue": round_temp,
                 "unitInCar": "CELSIUS",
             }
 
         if self.duration is not None:
-            json_data["durationInSeconds"] = str(self.duration)
+            json_data["durationInSeconds"] = self.duration
 
         if self.source is not None:
             json_data["heaterSource"] = self.source.value

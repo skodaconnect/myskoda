@@ -59,7 +59,7 @@ async def test_start_air_conditioning(
         headers={"authorization": f"Bearer {ACCESS_TOKEN}"},
         json={
             "heaterSource": "ELECTRIC",
-            "targetTemperature": {"temperatureValue": f"{expected}", "unitInCar": "CELSIUS"},
+            "targetTemperature": {"temperatureValue": float(expected), "unitInCar": "CELSIUS"},
         },
     )
 
@@ -90,7 +90,7 @@ async def test_set_target_temperature(
         url=url,
         method="POST",
         headers={"authorization": f"Bearer {ACCESS_TOKEN}"},
-        json={"temperatureValue": f"{expected}", "unitInCar": "CELSIUS"},
+        json={"temperatureValue": float(expected), "unitInCar": "CELSIUS"},
     )
 
 
@@ -442,11 +442,11 @@ async def test_start_auxiliary_heater(  # noqa: PLR0913
     if config is not None:
         if config.target_temperature is not None:
             json_data["targetTemperature"] = {
-                "temperatureValue": expected,
+                "temperatureValue": float(expected),
                 "unitInCar": "CELSIUS",
             }
         if config.duration is not None:
-            json_data["durationInSeconds"] = expected
+            json_data["durationInSeconds"] = int(expected)
         if config.source is not None:
             json_data["heaterSource"] = expected
         if config.mode is not None:

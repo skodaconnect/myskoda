@@ -264,9 +264,9 @@ class RestApi:
 
     async def start_air_conditioning(self, vin: str, temperature: float) -> None:
         """Start the air conditioning."""
-        round_temp = f"{round(temperature * 2) / 2:.1f}"
+        round_temp = round(temperature * 2) / 2
         _LOGGER.debug(
-            "Starting air conditioning for vehicle %s with temperature %s",
+            "Starting air conditioning for vehicle %s with temperature %.1f",
             vin,
             round_temp,
         )
@@ -292,7 +292,8 @@ class RestApi:
     ) -> None:
         """Start the auxiliary heating."""
         _LOGGER.debug("Starting auxiliary heating for vehicle %s", vin)
-        json_data = {"spin": spin} | config.to_json
+        json_data = {"spin": spin}
+        json_data = json_data | config.json
 
         await self._make_post_request(
             url=f"/v2/air-conditioning/{vin}/auxiliary-heating/start",
@@ -310,8 +311,8 @@ class RestApi:
 
     async def set_target_temperature(self, vin: str, temperature: float) -> None:
         """Set the air conditioning's target temperature in °C."""
-        round_temp = f"{round(temperature * 2) / 2:.1f}"
-        _LOGGER.debug("Setting target temperature for vehicle %s to %s", vin, round_temp)
+        round_temp = round(temperature * 2) / 2
+        _LOGGER.debug("Setting target temperature for vehicle %s to %.1f", vin, round_temp)
         json_data = {"temperatureValue": round_temp, "unitInCar": "CELSIUS"}
         await self._make_post_request(
             url=f"/v2/air-conditioning/{vin}/settings/target-temperature",
