@@ -423,11 +423,11 @@ reports:
     [{"creationDate": "2024-10-02T11:09:58Z", "acceptedDate": "2024-10-10T12:51:10Z",
     "confirmationDate": "2024-10-02T16:50:06.331Z", "closedDate": "2024-10-14T10:49:19Z",
     "contactedDate": "2024-10-14T10:49:19Z", "updateDate": "2024-10-14T10:50:23.42Z",
-    "servicePartner": {"name": "AUTOCENTRUM Doj\u00e1\u010dek, spol. s r.o.", "brand":
-    "C", "partnerNumber": "21156", "id": "CZEC21156", "contact": {"phone": "+420 222
-    994 301", "email": "info-vw-skoda@dojacek.cz"}, "address": {"street": "U Se\u0159adi\u0161t\u011b
-    65/7", "zipCode": "101 00", "city": "Praha 10", "countryCode": "CZE"}, "location":
-    {"latitude": 50.06329, "longitude": 14.458109}, "openingHours": []}, "bookingId":
+    "servicePartner": {"name": "Example Service Partner", "brand":
+    "C", "partnerNumber": "1111", "id": "DEU11111", "contact": {"phone": "+49 1234 567890",
+    "email": "user@example.com"}, "address": {"street": "Example Avenue",
+    "zipCode": "54321", "city": "Example City", "countryCode": "DEU"}, "location":
+    {"latitude": 53.470636, "longitude": 9.689872}, "openingHours": []}, "bookingId":
     "d2d13797-1b2b-4162-817e-c25863f1f521-1727887595638", "mileageInKm": 7829, "resolution":
     "REJECTED", "type": "AUTO", "extras": [], "addOns": {}, "warnings": [{"iconName":
     "C_1_01", "messageId": "A21C", "notificationId": 41500, "text": "Fault: Wipers"}]}]}}'
