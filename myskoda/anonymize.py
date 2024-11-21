@@ -31,6 +31,19 @@ NICKNAME = "Johnny D."
 PROFILE_PICTURE_URL = "https://example.com/profile.jpg"
 DATE_OF_BIRTH = "2000-01-01"
 
+SERVICE_PARTNER = {
+    "name": PARTNER_NAME,
+    "partnerNumber": PARTNER_NUMBER,
+    "id": SERVICE_PARTNER_ID,
+    "contact": {
+        "phone": PHONE,
+        "url": URL,
+        "email": EMAIL,
+    },
+    "address": ADDRESS,
+    "location": LOCATION,
+}
+
 
 def anonymize_info(data: dict) -> dict:
     data["vin"] = VIN
@@ -44,18 +57,14 @@ def anonymize_info(data: dict) -> dict:
 
 def anonymize_maintenance(data: dict) -> dict:
     if "preferredServicePartner" in data:
-        data["preferredServicePartner"]["name"] = PARTNER_NAME
-        data["preferredServicePartner"]["partnerNumber"] = PARTNER_NUMBER
-        data["preferredServicePartner"]["id"] = SERVICE_PARTNER_ID
-        data["preferredServicePartner"]["contact"]["phone"] = PHONE
-        data["preferredServicePartner"]["contact"]["url"] = URL
-        data["preferredServicePartner"]["contact"]["email"] = EMAIL
-        data["preferredServicePartner"]["address"] = ADDRESS
-        data["preferredServicePartner"]["location"] = LOCATION
+        data["preferredServicePartner"].update(SERVICE_PARTNER)
     if "predictiveMaintenance" in data:
         data["predictiveMaintenance"]["setting"]["email"] = EMAIL
         data["predictiveMaintenance"]["setting"]["phone"] = PHONE
-
+    for booking in data.get("customerService", {}).get("bookingHistory", []):
+        booking["servicePartner"].update(SERVICE_PARTNER)
+    for booking in data.get("customerService", {}).get("bookingHistory", []):
+        booking["servicePartner"].update(SERVICE_PARTNER)
     return data
 
 
