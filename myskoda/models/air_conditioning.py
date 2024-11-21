@@ -6,7 +6,7 @@ from enum import StrEnum
 from typing import Any
 
 from mashumaro import field_options
-from mashumaro.config import BaseConfig
+from mashumaro.config import TO_DICT_ADD_BY_ALIAS_FLAG, TO_DICT_ADD_OMIT_NONE_FLAG, BaseConfig
 from mashumaro.mixins.orjson import DataClassORJSONMixin
 
 from .common import ChargerLockedState, ConnectionState, OnOffState, Side, Weekday
@@ -59,6 +59,11 @@ class TargetTemperature(DataClassORJSONMixin):
         default=TemperatureUnit.CELSIUS, metadata=field_options(alias="unitInCar")
     )
 
+    class Config(BaseConfig):
+        """Configuration for serialization and deserialization.."""
+
+        code_generation_options = [TO_DICT_ADD_BY_ALIAS_FLAG]  # noqa: RUF012
+
 
 @dataclass
 class WindowHeatingState(DataClassORJSONMixin):
@@ -85,20 +90,18 @@ class AuxiliaryConfig(DataClassORJSONMixin):
     class Config(BaseConfig):
         """Configuration for serialization and deserialization.."""
 
-        serialize_by_alias = True
-        omit_none = True
+        code_generation_options = [  # noqa: RUF012
+            TO_DICT_ADD_BY_ALIAS_FLAG,
+            TO_DICT_ADD_OMIT_NONE_FLAG,
+        ]
 
-    def get_config(self) -> dict[str, object]:
-        """Get the dict from AuxiliaryConfig and round target temp if available."""
-        data = self.to_dict()
-        # round temperature to 0.5 precision
+    def __pre_serialize__(self) -> "AuxiliaryConfig":
+        """Round target temperature before serialization to 0.5."""
         if self.target_temperature is not None:
-            round_temp = round(self.target_temperature.temperature_value * 2) / 2
-            data["targetTemperature"] = {
-                "temperatureValue": float(round_temp),
-                "unitInCar": self.target_temperature.unit_in_car.value,
-            }
-        return data
+            self.target_temperature.temperature_value = (
+                round(self.target_temperature.temperature_value * 2) / 2
+            )
+        return self
 
 
 @dataclass

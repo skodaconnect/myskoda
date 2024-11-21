@@ -295,7 +295,7 @@ class RestApi:
 
         json_data: dict[str, object] = {"spin": spin}
         if config is not None:
-            json_data = json_data | config.get_config()
+            json_data = json_data | config.to_dict(omit_none=True, by_alias=True)
 
         await self._make_post_request(
             url=f"/v2/air-conditioning/{vin}/auxiliary-heating/start",
