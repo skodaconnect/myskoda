@@ -10,6 +10,7 @@ from aiohttp import ClientResponseError, ClientSession
 
 from myskoda.anonymize import (
     anonymize_air_conditioning,
+    anonymize_auxiliary_heating,
     anonymize_charging,
     anonymize_driving_range,
     anonymize_garage,
@@ -28,7 +29,8 @@ from myskoda.models.position import Position, PositionType
 
 from .auth.authorization import Authorization
 from .const import BASE_URL_SKODA, REQUEST_TIMEOUT_IN_SECONDS
-from .models.air_conditioning import AirConditioning, AuxiliaryConfig
+from .models.air_conditioning import AirConditioning
+from .models.auxiliary_heating import AuxiliaryConfig, AuxiliaryHeating
 from .models.charging import Charging
 from .models.driving_range import DrivingRange
 from .models.health import Health
@@ -161,6 +163,20 @@ class RestApi:
             anonymization_fn=anonymize_air_conditioning,
         )
         result = self._deserialize(raw, AirConditioning.from_json)
+        url = anonymize_url(url) if anonymize else url
+        return GetEndpointResult(url=url, raw=raw, result=result)
+
+    async def get_auxiliary_heating(
+        self, vin: str, anonymize: bool = False
+    ) -> GetEndpointResult[AuxiliaryHeating]:
+        """Retrieve the current auxiliary heating status for the specified vehicle."""
+        url = f"/v2/air-conditioning/{vin}/auxiliary-heating"
+        raw = self.process_json(
+            data=await self._make_get_request(url),
+            anonymize=anonymize,
+            anonymization_fn=anonymize_auxiliary_heating,
+        )
+        result = self._deserialize(raw, AuxiliaryHeating.from_json)
         url = anonymize_url(url) if anonymize else url
         return GetEndpointResult(url=url, raw=raw, result=result)
 

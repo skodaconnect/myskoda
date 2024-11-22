@@ -125,6 +125,36 @@ async def test_get_air_conditioning(
         )
 
 
+@pytest.fixture(name="auxiliary_heating")
+def load_auxiliary_heating() -> list[str]:
+    """Load auxiliary_heating fixture."""
+    auxiliary_heating = []
+    for path in [
+        "other/auxiliary-heating-idle.json",
+    ]:
+        with FIXTURES_DIR.joinpath(path).open() as file:
+            auxiliary_heating.append(file.read())
+    return auxiliary_heating
+
+
+@pytest.mark.asyncio
+async def test_get_auxiliary_heating(
+    auxiliary_heating: list[str], myskoda: MySkoda, responses: aioresponses
+) -> None:
+    """Example unit test for RestAPI.get_auxiliary_heating(). Needs more work."""
+    for auxiliary_heating_status in auxiliary_heating:
+        auxiliary_heating_status_json = json.loads(auxiliary_heating_status)
+
+        target_vin = "TMBJM0CKV1N12345"
+        responses.get(
+            url=f"https://mysmob.api.connect.skoda-auto.cz/api/v2/air-conditioning/{target_vin}/auxiliary-heating",
+            body=auxiliary_heating_status,
+        )
+        get_status_result = await myskoda.get_auxiliary_heating(target_vin)
+
+        assert get_status_result.state == auxiliary_heating_status_json["state"]
+
+
 @pytest.mark.asyncio
 async def test_get_computed_status(myskoda: MySkoda, responses: aioresponses) -> None:
     """Test case for computed values of doors and windows state."""

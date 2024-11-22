@@ -36,6 +36,7 @@ from myskoda.cli.operations import (
 from myskoda.cli.requests import (
     air_conditioning,
     auth,
+    auxiliary_heating,
     charging,
     driving_range,
     garage,
@@ -135,6 +136,7 @@ cli.add_command(list_vehicles)
 cli.add_command(info)
 cli.add_command(status)
 cli.add_command(air_conditioning)
+cli.add_command(auxiliary_heating)
 cli.add_command(positions)
 cli.add_command(health)
 cli.add_command(charging)

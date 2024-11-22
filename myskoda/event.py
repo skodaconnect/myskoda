@@ -14,6 +14,7 @@ from .models.service_event import ServiceEvent, ServiceEventCharging
 class ServiceEventTopic(StrEnum):
     ACCESS = "ACCESS"
     AIR_CONDITIONING = "AIR_CONDITIONING"
+    AUXILIARY_HEATING = "AUXILIARY_HEATING"
     CHARGING = "CHARGING"
     LIGHTS = "LIGHTS"
     DEPARTURE = "DEPARTURE"
@@ -47,6 +48,13 @@ class EventAirConditioning(BaseEvent):
     event: ServiceEvent
     type: Literal[EventType.SERVICE_EVENT] = EventType.SERVICE_EVENT
     topic: Literal[ServiceEventTopic.AIR_CONDITIONING] = ServiceEventTopic.AIR_CONDITIONING
+
+
+@dataclass
+class EventAuxiliaryHeating(BaseEvent):
+    event: ServiceEvent
+    type: Literal[EventType.SERVICE_EVENT] = EventType.SERVICE_EVENT
+    topic: Literal[ServiceEventTopic.AUXILIARY_HEATING] = ServiceEventTopic.AUXILIARY_HEATING
 
 
 @dataclass
@@ -88,6 +96,7 @@ Event = (
     | EventOperation
     | EventAccess
     | EventAirConditioning
+    | EventAuxiliaryHeating
     | EventCharging
     | EventLights
     | EventDeparture

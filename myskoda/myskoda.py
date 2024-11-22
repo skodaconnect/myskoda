@@ -26,7 +26,8 @@ from myskoda.models.fixtures import (
 
 from .auth.authorization import Authorization
 from .event import Event
-from .models.air_conditioning import AirConditioning, AuxiliaryConfig
+from .models.air_conditioning import AirConditioning
+from .models.auxiliary_heating import AuxiliaryConfig, AuxiliaryHeating
 from .models.charging import ChargeMode, Charging
 from .models.driving_range import DrivingRange
 from .models.health import Health
@@ -276,6 +277,10 @@ class MySkoda:
     async def get_air_conditioning(self, vin: str, anonymize: bool = False) -> AirConditioning:
         """Retrieve the current air conditioning status for the specified vehicle."""
         return (await self.rest_api.get_air_conditioning(vin, anonymize=anonymize)).result
+
+    async def get_auxiliary_heating(self, vin: str, anonymize: bool = False) -> AuxiliaryHeating:
+        """Retrieve the current auxiliary heating status for the specified vehicle."""
+        return (await self.rest_api.get_auxiliary_heating(vin, anonymize=anonymize)).result
 
     async def get_positions(self, vin: str, anonymize: bool = False) -> Positions:
         """Retrieve the current position for the specified vehicle."""

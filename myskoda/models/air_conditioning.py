@@ -6,7 +6,7 @@ from enum import StrEnum
 from typing import Any
 
 from mashumaro import field_options
-from mashumaro.config import TO_DICT_ADD_BY_ALIAS_FLAG, TO_DICT_ADD_OMIT_NONE_FLAG, BaseConfig
+from mashumaro.config import TO_DICT_ADD_BY_ALIAS_FLAG, BaseConfig
 from mashumaro.mixins.orjson import DataClassORJSONMixin
 
 from .common import ChargerLockedState, ConnectionState, OnOffState, Side, Weekday
@@ -70,38 +70,6 @@ class WindowHeatingState(DataClassORJSONMixin):
     front: OnOffState
     rear: OnOffState
     unspecified: Any
-
-
-@dataclass
-class AuxiliaryConfig(DataClassORJSONMixin):
-    target_temperature: TargetTemperature | None = field(
-        default=None, metadata=field_options(alias="targetTemperature")
-    )
-    duration_in_seconds: int | None = field(
-        default=None, metadata=field_options(alias="durationInSeconds")
-    )
-    heater_source: HeaterSource | None = field(
-        default=None, metadata=field_options(alias="heaterSource")
-    )
-    start_mode: AirConditioningState | None = field(
-        default=None, metadata=field_options(alias="startMode")
-    )
-
-    class Config(BaseConfig):
-        """Configuration for serialization and deserialization.."""
-
-        code_generation_options = [  # noqa: RUF012
-            TO_DICT_ADD_BY_ALIAS_FLAG,
-            TO_DICT_ADD_OMIT_NONE_FLAG,
-        ]
-
-    def __pre_serialize__(self) -> "AuxiliaryConfig":
-        """Round target temperature before serialization to 0.5."""
-        if self.target_temperature is not None:
-            self.target_temperature.temperature_value = (
-                round(self.target_temperature.temperature_value * 2) / 2
-            )
-        return self
 
 
 @dataclass

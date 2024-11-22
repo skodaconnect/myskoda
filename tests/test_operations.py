@@ -6,12 +6,8 @@ from amqtt.client import QOS_2, MQTTClient
 
 from myskoda.anonymize import ACCESS_TOKEN, LOCATION, USER_ID, VIN
 from myskoda.const import BASE_URL_SKODA
-from myskoda.models.air_conditioning import (
-    AirConditioningState,
-    AuxiliaryConfig,
-    HeaterSource,
-    TargetTemperature,
-)
+from myskoda.models.air_conditioning import HeaterSource, TargetTemperature
+from myskoda.models.auxiliary_heating import AuxiliaryConfig, AuxiliaryStartMode
 from myskoda.models.charging import ChargeMode
 from myskoda.myskoda import MySkoda
 from tests.conftest import FIXTURES_DIR, create_completed_json
@@ -423,7 +419,7 @@ async def test_stop_auxiliary_heater(
     [
         ("1234", AuxiliaryConfig(TargetTemperature(temperature_value=22.3)), "22.5"),
         ("1234", AuxiliaryConfig(duration_in_seconds=600), "600"),
-        ("1234", AuxiliaryConfig(start_mode=AirConditioningState.HEATING), "HEATING"),
+        ("1234", AuxiliaryConfig(start_mode=AuxiliaryStartMode.HEATING), "HEATING"),
         ("1234", AuxiliaryConfig(heater_source=HeaterSource.AUTOMATIC), "AUTOMATIC"),
     ],
 )
