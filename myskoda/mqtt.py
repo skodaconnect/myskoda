@@ -14,7 +14,7 @@ from typing import Any, cast
 import aiomqtt
 
 from myskoda.auth.authorization import Authorization
-from myskoda.models.service_event import ServiceEvent, ServiceEventCharging
+from myskoda.models.service_event import ServiceEvent
 
 from .const import (
     MQTT_ACCOUNT_EVENT_TOPICS,
@@ -228,7 +228,7 @@ class MySkodaMqttClient:
                         vin=vin,
                         user_id=user_id,
                         timestamp=datetime.now(tz=UTC),
-                        event=ServiceEventCharging.from_json(data),
+                        event=ServiceEvent.from_json(data),
                     )
                 )
             elif event_type == EventType.SERVICE_EVENT and topic == "departure":
