@@ -11,6 +11,9 @@ from myskoda.cli.utils import mqtt_required
 if TYPE_CHECKING:
     from myskoda import MySkoda
 
+from myskoda.models.air_conditioning import HeaterSource, TargetTemperature
+from myskoda.models.auxiliary_heating import AuxiliaryConfig, AuxiliaryStartMode
+
 
 @click.command()
 @click.option("temperature", "--temperature", type=float, required=True)
@@ -43,23 +46,41 @@ async def stop_air_conditioning(ctx: Context, timeout: float, vin: str) -> None:
 
 
 @click.command()
-@click.option("temperature", "--temperature", type=float, required=True)
+@click.option("temperature", "--temperature", type=float, required=False)
+@click.option("duration", "--duration", type=int, required=False)
+@click.option(
+    "mode", "--mode", type=click.Choice([e.value for e in AuxiliaryStartMode]), required=False
+)
+@click.option(
+    "source", "--source", type=click.Choice([e.value for e in HeaterSource]), required=False
+)
 @click.option("spin", "--spin", type=str, required=True)
 @click.option("timeout", "--timeout", type=float, default=300)
 @click.argument("vin")
 @click.pass_context
 @mqtt_required
-async def start_auxiliary_heating(
+async def start_auxiliary_heating(  # noqa: PLR0913
     ctx: Context,
-    temperature: float,
     spin: str,
     timeout: float,  # noqa: ASYNC109
     vin: str,
+    temperature: float | None = None,
+    duration: int | None = None,
+    mode: AuxiliaryStartMode | None = None,
+    source: HeaterSource | None = None,
 ) -> None:
     """Start the auxiliary heating with the provided target temperature in °C."""
     myskoda: MySkoda = ctx.obj["myskoda"]
+    config = AuxiliaryConfig(
+        target_temperature=TargetTemperature(temperature_value=temperature)
+        if temperature is not None
+        else None,
+        duration_in_seconds=duration,
+        start_mode=AuxiliaryStartMode(mode) if mode is not None else None,
+        heater_source=HeaterSource(source) if source is not None else None,
+    )
     async with asyncio.timeout(timeout):
-        await myskoda.start_auxiliary_heating(vin, temperature, spin)
+        await myskoda.start_auxiliary_heating(vin, spin, config)
 
 
 @click.command()
@@ -225,3 +246,21 @@ async def flash(ctx: Context, timeout: float, vin: str) -> None:  # noqa: ASYNC1
     myskoda: MySkoda = ctx.obj["myskoda"]
     async with asyncio.timeout(timeout):
         await myskoda.flash(vin)
+
+
+@click.command()
+@click.option("timeout", "--timeout", type=float, default=300)
+@click.argument("vin")
+@click.option("enabled", "--enabled", type=bool, required=True)
+@click.pass_context
+@mqtt_required
+async def set_ac_without_external_power(
+    ctx: Context,
+    timeout: float,  # noqa: ASYNC109
+    vin: str,
+    enabled: bool,
+) -> None:
+    """Enable or disable AC without external power."""
+    myskoda: MySkoda = ctx.obj["myskoda"]
+    async with asyncio.timeout(timeout):
+        await myskoda.set_ac_without_external_power(vin, enabled)

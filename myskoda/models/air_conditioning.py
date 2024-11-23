@@ -6,6 +6,7 @@ from enum import StrEnum
 from typing import Any
 
 from mashumaro import field_options
+from mashumaro.config import TO_DICT_ADD_BY_ALIAS_FLAG, BaseConfig
 from mashumaro.mixins.orjson import DataClassORJSONMixin
 
 from .common import ChargerLockedState, ConnectionState, OnOffState, Side, Weekday
@@ -30,7 +31,7 @@ class AirConditioningState(StrEnum):
     INVALID = "INVALID"
 
 
-# Probaly other states than AUTOMATIC are available, to be discovered
+# Probably other states than AUTOMATIC are available, to be discovered
 class HeaterSource(StrEnum):
     AUTOMATIC = "AUTOMATIC"
     ELECTRIC = "ELECTRIC"
@@ -54,7 +55,14 @@ class SeatHeating(DataClassORJSONMixin):
 @dataclass
 class TargetTemperature(DataClassORJSONMixin):
     temperature_value: float = field(metadata=field_options(alias="temperatureValue"))
-    unit_in_car: TemperatureUnit = field(metadata=field_options(alias="unitInCar"))
+    unit_in_car: TemperatureUnit = field(
+        default=TemperatureUnit.CELSIUS, metadata=field_options(alias="unitInCar")
+    )
+
+    class Config(BaseConfig):
+        """Configuration for serialization and deserialization.."""
+
+        code_generation_options = [TO_DICT_ADD_BY_ALIAS_FLAG]  # noqa: RUF012
 
 
 @dataclass

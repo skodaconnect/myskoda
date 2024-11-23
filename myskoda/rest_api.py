@@ -10,6 +10,7 @@ from aiohttp import ClientResponseError, ClientSession
 
 from myskoda.anonymize import (
     anonymize_air_conditioning,
+    anonymize_auxiliary_heating,
     anonymize_charging,
     anonymize_driving_range,
     anonymize_garage,
@@ -29,6 +30,7 @@ from myskoda.models.position import Position, PositionType
 from .auth.authorization import Authorization
 from .const import BASE_URL_SKODA, REQUEST_TIMEOUT_IN_SECONDS
 from .models.air_conditioning import AirConditioning
+from .models.auxiliary_heating import AuxiliaryConfig, AuxiliaryHeating
 from .models.charging import Charging
 from .models.driving_range import DrivingRange
 from .models.health import Health
@@ -164,6 +166,20 @@ class RestApi:
         url = anonymize_url(url) if anonymize else url
         return GetEndpointResult(url=url, raw=raw, result=result)
 
+    async def get_auxiliary_heating(
+        self, vin: str, anonymize: bool = False
+    ) -> GetEndpointResult[AuxiliaryHeating]:
+        """Retrieve the current auxiliary heating status for the specified vehicle."""
+        url = f"/v2/air-conditioning/{vin}/auxiliary-heating"
+        raw = self.process_json(
+            data=await self._make_get_request(url),
+            anonymize=anonymize,
+            anonymization_fn=anonymize_auxiliary_heating,
+        )
+        result = self._deserialize(raw, AuxiliaryHeating.from_json)
+        url = anonymize_url(url) if anonymize else url
+        return GetEndpointResult(url=url, raw=raw, result=result)
+
     async def get_positions(
         self, vin: str, anonymize: bool = False
     ) -> GetEndpointResult[Positions]:
@@ -264,9 +280,9 @@ class RestApi:
 
     async def start_air_conditioning(self, vin: str, temperature: float) -> None:
         """Start the air conditioning."""
-        round_temp = f"{round(temperature * 2) / 2:.1f}"
+        round_temp = round(temperature * 2) / 2
         _LOGGER.debug(
-            "Starting air conditioning for vehicle %s with temperature %s",
+            "Starting air conditioning for vehicle %s with temperature %.1f",
             vin,
             round_temp,
         )
@@ -287,32 +303,34 @@ class RestApi:
         _LOGGER.debug("Stopping auxiliary heating for vehicle %s", vin)
         await self._make_post_request(url=f"/v2/air-conditioning/{vin}/auxiliary-heating/stop")
 
-    async def start_auxiliary_heating(self, vin: str, temperature: float, spin: str) -> None:
+    async def start_auxiliary_heating(
+        self, vin: str, spin: str, config: AuxiliaryConfig | None = None
+    ) -> None:
         """Start the auxiliary heating."""
-        round_temp = f"{round(temperature * 2) / 2:.1f}"
-        _LOGGER.debug(
-            "Starting auxiliary heating for vehicle %s with temperature %s",
-            vin,
-            round_temp,
-        )
-        json_data = {
-            "heaterSource": "AUTOMATIC",
-            "airConditioningWithoutExternalPower": True,
-            "spin": spin,
-            "targetTemperature": {
-                "temperatureValue": round_temp,
-                "unitInCar": "CELSIUS",
-            },
-        }
+        _LOGGER.debug("Starting auxiliary heating for vehicle %s", vin)
+
+        json_data: dict[str, object] = {"spin": spin}
+        if config is not None:
+            json_data = json_data | config.to_dict(omit_none=True, by_alias=True)
+
         await self._make_post_request(
             url=f"/v2/air-conditioning/{vin}/auxiliary-heating/start",
             json=json_data,
         )
 
+    async def set_ac_without_external_power(self, vin: str, enabled: bool) -> None:
+        """Enable or disable AC without external power."""
+        _LOGGER.debug("Setting AC without external power for vehicle %s to %r", vin, enabled)
+        json_data = {"airConditioningWithoutExternalPowerEnabled": "True" if enabled else "False"}
+        await self._make_post_request(
+            url=f"/v2/air-conditioning/{vin}/settings/ac-without-external-power",
+            json=json_data,
+        )
+
     async def set_target_temperature(self, vin: str, temperature: float) -> None:
         """Set the air conditioning's target temperature in °C."""
-        round_temp = f"{round(temperature * 2) / 2:.1f}"
-        _LOGGER.debug("Setting target temperature for vehicle %s to %s", vin, round_temp)
+        round_temp = round(temperature * 2) / 2
+        _LOGGER.debug("Setting target temperature for vehicle %s to %.1f", vin, round_temp)
         json_data = {"temperatureValue": round_temp, "unitInCar": "CELSIUS"}
         await self._make_post_request(
             url=f"/v2/air-conditioning/{vin}/settings/target-temperature",

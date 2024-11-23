@@ -18,6 +18,7 @@ class Endpoint(StrEnum):
     INFO = "info"
     STATUS = "status"
     AIR_CONDITIONING = "air_conditioning"
+    AUXILIARY_HEATING = "auxiliary_heating"
     POSITIONS = "positions"
     HEALTH = "health"
     CHARGING = "charging"

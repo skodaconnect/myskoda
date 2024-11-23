@@ -30,6 +30,7 @@ from .event import (
     EventAccess,
     EventAccountPrivacy,
     EventAirConditioning,
+    EventAuxiliaryHeating,
     EventCharging,
     EventDeparture,
     EventLights,
@@ -216,6 +217,15 @@ class MySkodaMqttClient:
             elif event_type == EventType.SERVICE_EVENT and topic == "air-conditioning":
                 self._emit(
                     EventAirConditioning(
+                        vin=vin,
+                        user_id=user_id,
+                        timestamp=datetime.now(tz=UTC),
+                        event=ServiceEvent.from_json(data),
+                    )
+                )
+            elif event_type == EventType.SERVICE_EVENT and topic == "auxiliary-heating":
+                self._emit(
+                    EventAuxiliaryHeating(
                         vin=vin,
                         user_id=user_id,
                         timestamp=datetime.now(tz=UTC),

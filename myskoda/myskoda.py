@@ -27,6 +27,7 @@ from myskoda.models.fixtures import (
 from .auth.authorization import Authorization
 from .event import Event
 from .models.air_conditioning import AirConditioning
+from .models.auxiliary_heating import AuxiliaryConfig, AuxiliaryHeating
 from .models.charging import ChargeMode, Charging
 from .models.driving_range import DrivingRange
 from .models.health import Health
@@ -203,6 +204,12 @@ class MySkoda:
         await self.rest_api.start_window_heating(vin)
         await future
 
+    async def set_ac_without_external_power(self, vin: str, enabled: bool) -> None:
+        """Enable or disable AC without external power."""
+        future = self._wait_for_operation(OperationName.SET_AIR_CONDITIONING_WITHOUT_EXTERNAL_POWER)
+        await self.rest_api.set_ac_without_external_power(vin, enabled)
+        await future
+
     async def set_target_temperature(self, vin: str, temperature: float) -> None:
         """Set the air conditioning's target temperature in °C."""
         future = self._wait_for_operation(OperationName.SET_AIR_CONDITIONING_TARGET_TEMPERATURE)
@@ -221,16 +228,16 @@ class MySkoda:
         await self.rest_api.stop_air_conditioning(vin)
         await future
 
-    async def start_auxiliary_heating(self, vin: str, temperature: float, spin: str) -> None:
-        """Start the auxiliary heating with the provided target temperature in °C."""
-        # NOTE: 08/11/2024 - no response is published in MQTT (maybe bug in api?) so we don't wait
+    async def start_auxiliary_heating(
+        self, vin: str, spin: str, config: AuxiliaryConfig | None = None
+    ) -> None:
+        """Start the auxiliary heating with the provided configuration."""
         future = self._wait_for_operation(OperationName.START_AUXILIARY_HEATING)
-        await self.rest_api.start_auxiliary_heating(vin, temperature, spin)
+        await self.rest_api.start_auxiliary_heating(vin, spin, config=config)
         await future
 
     async def stop_auxiliary_heating(self, vin: str) -> None:
         """Stop the auxiliary heating."""
-        # NOTE: 08/11/2024 - no response is published in MQTT (maybe bug in api?) so we don't wait
         future = self._wait_for_operation(OperationName.STOP_AUXILIARY_HEATING)
         await self.rest_api.stop_auxiliary_heating(vin)
         await future
@@ -270,6 +277,10 @@ class MySkoda:
     async def get_air_conditioning(self, vin: str, anonymize: bool = False) -> AirConditioning:
         """Retrieve the current air conditioning status for the specified vehicle."""
         return (await self.rest_api.get_air_conditioning(vin, anonymize=anonymize)).result
+
+    async def get_auxiliary_heating(self, vin: str, anonymize: bool = False) -> AuxiliaryHeating:
+        """Retrieve the current auxiliary heating status for the specified vehicle."""
+        return (await self.rest_api.get_auxiliary_heating(vin, anonymize=anonymize)).result
 
     async def get_positions(self, vin: str, anonymize: bool = False) -> Positions:
         """Retrieve the current position for the specified vehicle."""
