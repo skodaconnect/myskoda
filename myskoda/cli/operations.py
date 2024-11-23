@@ -307,8 +307,6 @@ async def set_windows_heating(
 @click.argument("vin")
 @click.option("front_left", "--frontLeft", type=bool, required=False)
 @click.option("front_right", "--frontRight", type=bool, required=False)
-@click.option("rear_left", "--rearLeft", type=bool, required=False)
-@click.option("rear_right", "--rearRight", type=bool, required=False)
 @click.pass_context
 @mqtt_required
 async def set_seats_heating(  # noqa: PLR0913
@@ -317,16 +315,12 @@ async def set_seats_heating(  # noqa: PLR0913
     vin: str,
     front_left: bool | None = None,
     front_right: bool | None = None,
-    rear_left: bool | None = None,
-    rear_right: bool | None = None,
 ) -> None:
     """Enable or disable seats heating with AC."""
     myskoda: MySkoda = ctx.obj["myskoda"]
     seat_config = SeatHeating(
         front_left=front_left,
         front_right=front_right,
-        rear_left=rear_left,
-        rear_right=rear_right,
     )
     async with asyncio.timeout(timeout):
         await myskoda.set_seats_heating(vin, seat_config)

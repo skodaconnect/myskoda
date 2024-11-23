@@ -54,8 +54,6 @@ class Timer(DataClassORJSONMixin):
 class SeatHeating(DataClassORJSONMixin):
     front_left: bool | None = field(default=None, metadata=field_options(alias="frontLeft"))
     front_right: bool | None = field(default=None, metadata=field_options(alias="frontRight"))
-    rear_left: bool | None = field(default=None, metadata=field_options(alias="rearLeft"))
-    rear_right: bool | None = field(default=None, metadata=field_options(alias="rearRight"))
 
     class Config(BaseConfig):
         """Configuration for serialization and deserialization.."""
