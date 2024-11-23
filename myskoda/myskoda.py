@@ -218,7 +218,7 @@ class MySkoda:
 
     async def set_windows_heating(self, vin: str, enabled: bool) -> None:
         """Enable or disable windows heating with AC."""
-        future = self._wait_for_operation(OperationName.WINDOWS_HEATING) # TODO
+        future = self._wait_for_operation(OperationName.WINDOWS_HEATING)
         await self.rest_api.set_windows_heating(vin, enabled)
         await future
 

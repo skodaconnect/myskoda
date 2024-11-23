@@ -11,7 +11,7 @@ from myskoda.cli.utils import mqtt_required
 if TYPE_CHECKING:
     from myskoda import MySkoda
 
-from myskoda.models.air_conditioning import HeaterSource, TargetTemperature
+from myskoda.models.air_conditioning import HeaterSource, SeatHeating, TargetTemperature
 from myskoda.models.auxiliary_heating import AuxiliaryConfig, AuxiliaryStartMode
 
 
@@ -311,7 +311,7 @@ async def set_windows_heating(
 @click.option("rear_right", "--rearRight", type=bool, required=False)
 @click.pass_context
 @mqtt_required
-async def set_seats_heating(
+async def set_seats_heating(  # noqa: PLR0913
     ctx: Context,
     timeout: float,  # noqa: ASYNC109
     vin: str,
@@ -323,10 +323,10 @@ async def set_seats_heating(
     """Enable or disable seats heating with AC."""
     myskoda: MySkoda = ctx.obj["myskoda"]
     seat_config = SeatHeating(
-        front_left = front_left,
-        front_right = front_right,
-        rear_left = rear_left,
-        rear_right = rear_right,
+        front_left=front_left,
+        front_right=front_right,
+        rear_left=rear_left,
+        rear_right=rear_right,
     )
     async with asyncio.timeout(timeout):
         await myskoda.set_seats_heating(vin, seat_config)

@@ -52,18 +52,10 @@ class Timer(DataClassORJSONMixin):
 
 @dataclass
 class SeatHeating(DataClassORJSONMixin):
-    front_left: bool | None = field(
-        default=None, metadata=field_options(alias="frontLeft")
-    )
-    front_right: bool | None = field(
-        default=None, metadata=field_options(alias="frontRight")
-    )
-    rear_left: bool | None = field(
-        default=None, metadata=field_options(alias="rearLeft")
-    )
-    rear_right: bool | None = field(
-        default=None, metadata=field_options(alias="rearRight")
-    )
+    front_left: bool | None = field(default=None, metadata=field_options(alias="frontLeft"))
+    front_right: bool | None = field(default=None, metadata=field_options(alias="frontRight"))
+    rear_left: bool | None = field(default=None, metadata=field_options(alias="rearLeft"))
+    rear_right: bool | None = field(default=None, metadata=field_options(alias="rearRight"))
 
     class Config(BaseConfig):
         """Configuration for serialization and deserialization.."""
@@ -72,6 +64,7 @@ class SeatHeating(DataClassORJSONMixin):
             TO_DICT_ADD_BY_ALIAS_FLAG,
             TO_DICT_ADD_OMIT_NONE_FLAG,
         ]
+
 
 @dataclass
 class TargetTemperature(DataClassORJSONMixin):
