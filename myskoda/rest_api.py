@@ -29,7 +29,7 @@ from myskoda.models.position import Position, PositionType
 
 from .auth.authorization import Authorization
 from .const import BASE_URL_SKODA, REQUEST_TIMEOUT_IN_SECONDS
-from .models.air_conditioning import AirConditioning
+from .models.air_conditioning import AirConditioning, SeatHeating
 from .models.auxiliary_heating import AuxiliaryConfig, AuxiliaryHeating
 from .models.charging import Charging
 from .models.driving_range import DrivingRange
@@ -324,6 +324,33 @@ class RestApi:
         json_data = {"airConditioningWithoutExternalPowerEnabled": "True" if enabled else "False"}
         await self._make_post_request(
             url=f"/v2/air-conditioning/{vin}/settings/ac-without-external-power",
+            json=json_data,
+        )
+
+    async def set_ac_at_unlock(self, vin: str, enabled: bool) -> None:
+        """Enable or disable AC at unlock."""
+        _LOGGER.debug("Setting AC at at unlock for vehicle %s to %r", vin, enabled)
+        json_data = {"airConditioningAtUnlockEnabled": "True" if enabled else "False"}
+        await self._make_post_request(
+            url=f"/v2/air-conditioning/{vin}/settings/ac-at-unlock",
+            json=json_data,
+        )
+
+    async def set_windows_heating(self, vin: str, enabled: bool) -> None:
+        """Enable or disable windows heating with AC."""
+        _LOGGER.debug("Setting windows heating with AC for vehicle %s to %r", vin, enabled)
+        json_data = {"windowHeatingEnabled": "True" if enabled else "False"}
+        await self._make_post_request(
+            url=f"/v2/air-conditioning/{vin}/settings/windows-heating",
+            json=json_data,
+        )
+
+    async def set_seats_heating(self, vin: str, seat_heating: SeatHeating) -> None:
+        """Enable or disable seats heating with AC."""
+        json_data = seat_heating.to_dict(omit_none=True, by_alias=True)
+        _LOGGER.debug("Setting seats heating with AC for vehicle %s: %s", vin, json_data)
+        await self._make_post_request(
+            url=f"/v2/air-conditioning/{vin}/settings/seats-heating",
             json=json_data,
         )
 

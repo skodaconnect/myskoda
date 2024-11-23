@@ -26,7 +26,7 @@ from myskoda.models.fixtures import (
 
 from .auth.authorization import Authorization
 from .event import Event
-from .models.air_conditioning import AirConditioning
+from .models.air_conditioning import AirConditioning, SeatHeating
 from .models.auxiliary_heating import AuxiliaryConfig, AuxiliaryHeating
 from .models.charging import ChargeMode, Charging
 from .models.driving_range import DrivingRange
@@ -208,6 +208,24 @@ class MySkoda:
         """Enable or disable AC without external power."""
         future = self._wait_for_operation(OperationName.SET_AIR_CONDITIONING_WITHOUT_EXTERNAL_POWER)
         await self.rest_api.set_ac_without_external_power(vin, enabled)
+        await future
+
+    async def set_ac_at_unlock(self, vin: str, enabled: bool) -> None:
+        """Enable or disable AC at unlock."""
+        future = self._wait_for_operation(OperationName.SET_AIR_CONDITIONING_AT_UNLOCK)
+        await self.rest_api.set_ac_at_unlock(vin, enabled)
+        await future
+
+    async def set_windows_heating(self, vin: str, enabled: bool) -> None:
+        """Enable or disable windows heating with AC."""
+        future = self._wait_for_operation(OperationName.WINDOWS_HEATING) # TODO
+        await self.rest_api.set_windows_heating(vin, enabled)
+        await future
+
+    async def set_seats_heating(self, vin: str, seats_config: SeatHeating) -> None:
+        """Enable or disable seats heating with AC."""
+        future = self._wait_for_operation(OperationName.SET_AIR_CONDITIONING_SEATS_HEATING)
+        await self.rest_api.set_seats_heating(vin, seats_config)
         await future
 
     async def set_target_temperature(self, vin: str, temperature: float) -> None:

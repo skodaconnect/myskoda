@@ -264,3 +264,69 @@ async def set_ac_without_external_power(
     myskoda: MySkoda = ctx.obj["myskoda"]
     async with asyncio.timeout(timeout):
         await myskoda.set_ac_without_external_power(vin, enabled)
+
+
+@click.command()
+@click.option("timeout", "--timeout", type=float, default=300)
+@click.argument("vin")
+@click.option("enabled", "--enabled", type=bool, required=True)
+@click.pass_context
+@mqtt_required
+async def set_ac_at_unlock(
+    ctx: Context,
+    timeout: float,  # noqa: ASYNC109
+    vin: str,
+    enabled: bool,
+) -> None:
+    """Enable or disable AC at unlock."""
+    myskoda: MySkoda = ctx.obj["myskoda"]
+    async with asyncio.timeout(timeout):
+        await myskoda.set_ac_at_unlock(vin, enabled)
+
+
+@click.command()
+@click.option("timeout", "--timeout", type=float, default=300)
+@click.argument("vin")
+@click.option("enabled", "--enabled", type=bool, required=True)
+@click.pass_context
+@mqtt_required
+async def set_windows_heating(
+    ctx: Context,
+    timeout: float,  # noqa: ASYNC109
+    vin: str,
+    enabled: bool,
+) -> None:
+    """Enable or disable windows heating with AC."""
+    myskoda: MySkoda = ctx.obj["myskoda"]
+    async with asyncio.timeout(timeout):
+        await myskoda.set_windows_heating(vin, enabled)
+
+
+@click.command()
+@click.option("timeout", "--timeout", type=float, default=300)
+@click.argument("vin")
+@click.option("front_left", "--frontLeft", type=bool, required=False)
+@click.option("front_right", "--frontRight", type=bool, required=False)
+@click.option("rear_left", "--rearLeft", type=bool, required=False)
+@click.option("rear_right", "--rearRight", type=bool, required=False)
+@click.pass_context
+@mqtt_required
+async def set_seats_heating(
+    ctx: Context,
+    timeout: float,  # noqa: ASYNC109
+    vin: str,
+    front_left: bool | None = None,
+    front_right: bool | None = None,
+    rear_left: bool | None = None,
+    rear_right: bool | None = None,
+) -> None:
+    """Enable or disable seats heating with AC."""
+    myskoda: MySkoda = ctx.obj["myskoda"]
+    seat_config = SeatHeating(
+        front_left = front_left,
+        front_right = front_right,
+        rear_left = rear_left,
+        rear_right = rear_right,
+    )
+    async with asyncio.timeout(timeout):
+        await myskoda.set_seats_heating(vin, seat_config)

@@ -6,7 +6,11 @@ from enum import StrEnum
 from typing import Any
 
 from mashumaro import field_options
-from mashumaro.config import TO_DICT_ADD_BY_ALIAS_FLAG, BaseConfig
+from mashumaro.config import (
+    TO_DICT_ADD_BY_ALIAS_FLAG,
+    TO_DICT_ADD_OMIT_NONE_FLAG,
+    BaseConfig,
+)
 from mashumaro.mixins.orjson import DataClassORJSONMixin
 
 from .common import ChargerLockedState, ConnectionState, OnOffState, Side, Weekday
@@ -48,9 +52,26 @@ class Timer(DataClassORJSONMixin):
 
 @dataclass
 class SeatHeating(DataClassORJSONMixin):
-    front_left: bool = field(metadata=field_options(alias="frontLeft"))
-    front_right: bool = field(metadata=field_options(alias="frontRight"))
+    front_left: bool | None = field(
+        default=None, metadata=field_options(alias="frontLeft")
+    )
+    front_right: bool | None = field(
+        default=None, metadata=field_options(alias="frontRight")
+    )
+    rear_left: bool | None = field(
+        default=None, metadata=field_options(alias="rearLeft")
+    )
+    rear_right: bool | None = field(
+        default=None, metadata=field_options(alias="rearRight")
+    )
 
+    class Config(BaseConfig):
+        """Configuration for serialization and deserialization.."""
+
+        code_generation_options = [  # noqa: RUF012
+            TO_DICT_ADD_BY_ALIAS_FLAG,
+            TO_DICT_ADD_OMIT_NONE_FLAG,
+        ]
 
 @dataclass
 class TargetTemperature(DataClassORJSONMixin):
