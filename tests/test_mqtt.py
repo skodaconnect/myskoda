@@ -14,8 +14,10 @@ from myskoda.event import Event, EventAccess, EventCharging, EventLights, EventO
 from myskoda.models.charging import ChargeMode, ChargingState
 from myskoda.models.operation_request import OperationName, OperationRequest, OperationStatus
 from myskoda.models.service_event import (
-    ServiceEvent,
-    ServiceEventCharging,
+    ServiceEventChangeAccess,
+    ServiceEventChangeLights,
+    ServiceEventChangeSoc,
+    ServiceEventChargingCompleted,
     ServiceEventChargingData,
     ServiceEventData,
     ServiceEventName,
@@ -188,7 +190,7 @@ async def test_subscribe_event(
             vin=VIN,
             user_id=USER_ID,
             timestamp=ANY,
-            event=ServiceEvent(
+            event=ServiceEventChangeLights(
                 version=1,
                 trace_id=trace_id,
                 timestamp=timestamp,
@@ -201,7 +203,7 @@ async def test_subscribe_event(
             vin=VIN,
             user_id=USER_ID,
             timestamp=ANY,
-            event=ServiceEvent(
+            event=ServiceEventChangeAccess(
                 version=1,
                 trace_id=trace_id,
                 timestamp=timestamp,
@@ -214,7 +216,7 @@ async def test_subscribe_event(
             vin=VIN,
             user_id=USER_ID,
             timestamp=ANY,
-            event=ServiceEventCharging(
+            event=ServiceEventChangeSoc(
                 version=1,
                 trace_id=trace_id,
                 timestamp=timestamp,
@@ -235,7 +237,7 @@ async def test_subscribe_event(
             vin=VIN,
             user_id=USER_ID,
             timestamp=ANY,
-            event=ServiceEventCharging(
+            event=ServiceEventChargingCompleted(
                 version=1,
                 trace_id=trace_id,
                 timestamp=timestamp,

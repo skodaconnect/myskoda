@@ -6,7 +6,9 @@ from enum import StrEnum
 from typing import Generic, TypeVar
 
 from mashumaro import field_options
+from mashumaro.config import BaseConfig
 from mashumaro.mixins.orjson import DataClassORJSONMixin
+from mashumaro.types import Discriminator
 
 from .charging import ChargeMode, ChargingState
 
@@ -27,7 +29,7 @@ class ServiceEventName(StrEnum):
 
 @dataclass
 class ServiceEventData(DataClassORJSONMixin):
-    """Data for Service Events."""
+    """Base class for data in service events."""
 
     user_id: str = field(metadata=field_options(alias="userId"))
     vin: str
@@ -42,6 +44,14 @@ class ServiceEvent(Generic[T], DataClassORJSONMixin):
 
     Service Events are unsolicited events emitted by the MQTT bus towards the client.
     """
+
+    class Config(BaseConfig):
+        """Configuration class for altering the behavior of discriminator."""
+
+        discriminator = Discriminator(
+            field="name",
+            include_subtypes=True,
+        )
 
     version: int
     producer: str
@@ -99,29 +109,79 @@ def _deserialize_time_to_finish(value: int | str) -> int | None:
 
 @dataclass
 class ServiceEventChargingData(ServiceEventData):
-    """Charging Data inside a Service Event."""
+    """Charging data inside charging service event change-soc."""
 
-    mode: ChargeMode | None = field(
-        default=None,
-        metadata=field_options(deserialize=_deserialize_mode),
-    )
-    state: ChargingState | None = field(
-        default=None,
-        metadata=field_options(deserialize=_deserialize_charging_state),
-    )
-    soc: int | None = field(default=None)
-    charged_range: int | None = field(default=None, metadata=field_options(alias="chargedRange"))
+    mode: ChargeMode = field(metadata=field_options(deserialize=_deserialize_mode))
+    state: ChargingState = field(metadata=field_options(deserialize=_deserialize_charging_state))
+    soc: int
+    charged_range: int = field(metadata=field_options(alias="chargedRange"))
     time_to_finish: int | None = field(
         default=None,
         metadata=field_options(alias="timeToFinish", deserialize=_deserialize_time_to_finish),
     )
 
 
-@dataclass
-class ServiceEventCharging(ServiceEvent, DataClassORJSONMixin):
-    """Charging details of a Service Event."""
+class ServiceEventChangeAccess(ServiceEvent):
+    """Event class for change-access service event."""
 
+    name = ServiceEventName.CHANGE_ACCESS
+    data: ServiceEventData
+
+
+class ServiceEventChangeChargeMode(ServiceEvent):
+    """Event class for change-charge-mode service event."""
+
+    name = ServiceEventName.CHANGE_CHARGE_MODE
+    data: ServiceEventData
+
+
+class ServiceEventChangeLights(ServiceEvent):
+    """Event class for change-lights service event."""
+
+    name = ServiceEventName.CHANGE_LIGHTS
+    data: ServiceEventData
+
+
+class ServiceEventChangeRemainingTime(ServiceEvent):
+    """Event class for change-remaining-time service event."""
+
+    name = ServiceEventName.CHANGE_REMAINING_TIME
+    data: ServiceEventData
+
+
+class ServiceEventChangeSoc(ServiceEvent):
+    """Event class for change-soc service event."""
+
+    name = ServiceEventName.CHANGE_SOC
     data: ServiceEventChargingData
+
+
+class ServiceEventChargingCompleted(ServiceEvent):
+    """Event class for charging-completed service event."""
+
+    name = ServiceEventName.CHARGING_COMPLETED
+    data: ServiceEventChargingData
+
+
+class ServiceEventChargingStatusChanged(ServiceEvent):
+    """Event class for charging-status-changed service event."""
+
+    name = ServiceEventName.CHARGING_STATUS_CHANGED
+    data: ServiceEventData
+
+
+class ServiceEventClimatisationCompleted(ServiceEvent):
+    """Event class for climatisation-completed service event."""
+
+    name = ServiceEventName.CLIMATISATION_COMPLETED
+    data: ServiceEventData
+
+
+class ServiceEventDepartureStatusChanged(ServiceEvent):
+    """Event class for depature-status-changed service event."""
+
+    name = ServiceEventName.DEPARTURE_STATUS_CHANGED
+    data: ServiceEventData
 
 
 class UnexpectedChargeModeError(Exception):
