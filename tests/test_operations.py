@@ -6,7 +6,14 @@ from amqtt.client import QOS_2, MQTTClient
 
 from myskoda.anonymize import ACCESS_TOKEN, LOCATION, USER_ID, VIN
 from myskoda.const import BASE_URL_SKODA
-from myskoda.models.air_conditioning import HeaterSource, SeatHeating, TargetTemperature
+from myskoda.models.air_conditioning import (
+    AirConditioningAtUnlock,
+    AirConditioningWithoutExternalPower,
+    HeaterSource,
+    SeatHeating,
+    TargetTemperature,
+    WindowHeating,
+)
 from myskoda.models.auxiliary_heating import AuxiliaryConfig, AuxiliaryStartMode
 from myskoda.models.charging import ChargeMode
 from myskoda.myskoda import MySkoda
@@ -463,18 +470,34 @@ async def test_start_auxiliary_heater(  # noqa: PLR0913
 
 
 @pytest.mark.asyncio
-@pytest.mark.parametrize(("enabled", "expected"), [(True, "True"), (False, "False")])
+@pytest.mark.parametrize(
+    ("settings", "expected"),
+    [
+        (
+            AirConditioningWithoutExternalPower(
+                air_conditioning_without_external_power_enabled=True
+            ),
+            True,
+        ),
+        (
+            AirConditioningWithoutExternalPower(
+                air_conditioning_without_external_power_enabled=False
+            ),
+            False,
+        ),
+    ],
+)
 async def test_set_ac_without_external_power(
     responses: aioresponses,
     mqtt_client: MQTTClient,
     myskoda: MySkoda,
-    enabled: bool,
-    expected: str,
+    settings: AirConditioningWithoutExternalPower,
+    expected: bool,
 ) -> None:
     url = f"{BASE_URL_SKODA}/api/v2/air-conditioning/{VIN}/settings/ac-without-external-power"
     responses.post(url=url)
 
-    future = myskoda.set_ac_without_external_power(VIN, enabled)
+    future = myskoda.set_ac_without_external_power(VIN, settings)
 
     topic = (
         f"{USER_ID}/{VIN}/operation-request/"
@@ -494,18 +517,24 @@ async def test_set_ac_without_external_power(
 
 
 @pytest.mark.asyncio
-@pytest.mark.parametrize(("enabled", "expected"), [(True, "True"), (False, "False")])
+@pytest.mark.parametrize(
+    ("settings", "expected"),
+    [
+        (AirConditioningAtUnlock(air_conditioning_at_unlock_enabled=True), True),
+        (AirConditioningAtUnlock(air_conditioning_at_unlock_enabled=False), False),
+    ],
+)
 async def test_set_ac_at_unlock(
     responses: aioresponses,
     mqtt_client: MQTTClient,
     myskoda: MySkoda,
-    enabled: bool,
-    expected: str,
+    settings: AirConditioningAtUnlock,
+    expected: bool,
 ) -> None:
     url = f"{BASE_URL_SKODA}/api/v2/air-conditioning/{VIN}/settings/ac-at-unlock"
     responses.post(url=url)
 
-    future = myskoda.set_ac_at_unlock(VIN, enabled)
+    future = myskoda.set_ac_at_unlock(VIN, settings)
 
     topic = f"{USER_ID}/{VIN}/operation-request/" "air-conditioning/set-air-conditioning-at-unlock"
     await mqtt_client.publish(topic, create_completed_json("set-air-conditioning-at-unlock"), QOS_2)
@@ -520,18 +549,24 @@ async def test_set_ac_at_unlock(
 
 
 @pytest.mark.asyncio
-@pytest.mark.parametrize(("enabled", "expected"), [(True, "True"), (False, "False")])
+@pytest.mark.parametrize(
+    ("settings", "expected"),
+    [
+        (WindowHeating(window_heating_enabled=True), True),
+        (WindowHeating(window_heating_enabled=False), False),
+    ],
+)
 async def test_set_windows_heating(
     responses: aioresponses,
     mqtt_client: MQTTClient,
     myskoda: MySkoda,
-    enabled: bool,
-    expected: str,
+    settings: WindowHeating,
+    expected: bool,
 ) -> None:
     url = f"{BASE_URL_SKODA}/api/v2/air-conditioning/{VIN}/settings/windows-heating"
     responses.post(url=url)
 
-    future = myskoda.set_windows_heating(VIN, enabled)
+    future = myskoda.set_windows_heating(VIN, settings)
 
     topic = f"{USER_ID}/{VIN}/operation-request/" "air-conditioning/windows-heating"
     await mqtt_client.publish(topic, create_completed_json("windows-heating"), QOS_2)
@@ -547,7 +582,7 @@ async def test_set_windows_heating(
 
 @pytest.mark.asyncio
 @pytest.mark.parametrize(
-    ("seat_config", "expected"),
+    ("settings", "expected"),
     [
         (SeatHeating(front_left=True), True),
         (SeatHeating(front_right=True), True),
@@ -558,13 +593,13 @@ async def test_set_seats_heating(
     responses: aioresponses,
     mqtt_client: MQTTClient,
     myskoda: MySkoda,
-    seat_config: SeatHeating,
+    settings: SeatHeating,
     expected: bool,
 ) -> None:
     url = f"{BASE_URL_SKODA}/api/v2/air-conditioning/{VIN}/settings/seats-heating"
     responses.post(url=url)
 
-    future = myskoda.set_seats_heating(VIN, seat_config)
+    future = myskoda.set_seats_heating(VIN, settings)
 
     topic = (
         f"{USER_ID}/{VIN}/operation-request/" "air-conditioning/set-air-conditioning-seats-heating"
@@ -574,10 +609,10 @@ async def test_set_seats_heating(
     )
 
     json_data: dict[str, object] = {}
-    if seat_config is not None:
-        if seat_config.front_left is not None:
+    if settings is not None:
+        if settings.front_left is not None:
             json_data["frontLeft"] = expected
-        if seat_config.front_right is not None:
+        if settings.front_right is not None:
             json_data["frontRight"] = expected
 
     await future

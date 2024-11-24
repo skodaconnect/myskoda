@@ -11,7 +11,14 @@ from myskoda.cli.utils import mqtt_required
 if TYPE_CHECKING:
     from myskoda import MySkoda
 
-from myskoda.models.air_conditioning import HeaterSource, SeatHeating, TargetTemperature
+from myskoda.models.air_conditioning import (
+    AirConditioningAtUnlock,
+    AirConditioningWithoutExternalPower,
+    HeaterSource,
+    SeatHeating,
+    TargetTemperature,
+    WindowHeating,
+)
 from myskoda.models.auxiliary_heating import AuxiliaryConfig, AuxiliaryStartMode
 
 
@@ -263,7 +270,12 @@ async def set_ac_without_external_power(
     """Enable or disable AC without external power."""
     myskoda: MySkoda = ctx.obj["myskoda"]
     async with asyncio.timeout(timeout):
-        await myskoda.set_ac_without_external_power(vin, enabled)
+        await myskoda.set_ac_without_external_power(
+            vin,
+            AirConditioningWithoutExternalPower(
+                air_conditioning_without_external_power_enabled=enabled
+            ),
+        )
 
 
 @click.command()
@@ -281,7 +293,9 @@ async def set_ac_at_unlock(
     """Enable or disable AC at unlock."""
     myskoda: MySkoda = ctx.obj["myskoda"]
     async with asyncio.timeout(timeout):
-        await myskoda.set_ac_at_unlock(vin, enabled)
+        await myskoda.set_ac_at_unlock(
+            vin, AirConditioningAtUnlock(air_conditioning_at_unlock_enabled=enabled)
+        )
 
 
 @click.command()
@@ -299,7 +313,7 @@ async def set_windows_heating(
     """Enable or disable windows heating with AC."""
     myskoda: MySkoda = ctx.obj["myskoda"]
     async with asyncio.timeout(timeout):
-        await myskoda.set_windows_heating(vin, enabled)
+        await myskoda.set_windows_heating(vin, WindowHeating(window_heating_enabled=enabled))
 
 
 @click.command()
@@ -309,7 +323,7 @@ async def set_windows_heating(
 @click.option("front_right", "--frontRight", type=bool, required=False)
 @click.pass_context
 @mqtt_required
-async def set_seats_heating(  # noqa: PLR0913
+async def set_seats_heating(
     ctx: Context,
     timeout: float,  # noqa: ASYNC109
     vin: str,
@@ -318,9 +332,9 @@ async def set_seats_heating(  # noqa: PLR0913
 ) -> None:
     """Enable or disable seats heating with AC."""
     myskoda: MySkoda = ctx.obj["myskoda"]
-    seat_config = SeatHeating(
+    settings = SeatHeating(
         front_left=front_left,
         front_right=front_right,
     )
     async with asyncio.timeout(timeout):
-        await myskoda.set_seats_heating(vin, seat_config)
+        await myskoda.set_seats_heating(vin, settings)

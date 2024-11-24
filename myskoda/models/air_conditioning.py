@@ -85,6 +85,46 @@ class WindowHeatingState(DataClassORJSONMixin):
 
 
 @dataclass
+class AirConditioningAtUnlock(DataClassORJSONMixin):
+    """AirConditioningAtUnlock setting."""
+
+    air_conditioning_at_unlock_enabled: bool = field(
+        metadata=field_options(alias="airConditioningAtUnlockEnabled")
+    )
+
+    class Config(BaseConfig):
+        """Configuration for serialization and deserialization.."""
+
+        serialize_by_alias = True
+
+
+@dataclass
+class AirConditioningWithoutExternalPower(DataClassORJSONMixin):
+    """AirConditioningWithoutExternalPower setting."""
+
+    air_conditioning_without_external_power_enabled: bool = field(
+        metadata=field_options(alias="airConditioningWithoutExternalPowerEnabled")
+    )
+
+    class Config(BaseConfig):
+        """Configuration for serialization and deserialization.."""
+
+        serialize_by_alias = True
+
+
+@dataclass
+class WindowHeating(DataClassORJSONMixin):
+    """WindowHeating setting."""
+
+    window_heating_enabled: bool = field(metadata=field_options(alias="windowHeatingEnabled"))
+
+    class Config(BaseConfig):
+        """Configuration for serialization and deserialization.."""
+
+        serialize_by_alias = True
+
+
+@dataclass
 class AirConditioning(DataClassORJSONMixin):
     """Information related to air conditioning."""
 
