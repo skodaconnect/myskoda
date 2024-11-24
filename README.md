@@ -77,7 +77,7 @@ The MySkoda package features a CLI.
 You will have to install it with extras `cli`:
 
 ```sh
-pip install myskoda[cli]
+pip install "myskoda[cli]"
 ```
 
 Afterwards, the CLI is available in your current environment by invoking `myskoda`.
