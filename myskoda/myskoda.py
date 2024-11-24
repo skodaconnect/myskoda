@@ -371,34 +371,34 @@ class MySkoda:
                 result=result.result.to_dict(),
             )
 
+
     async def get_endpoint(
         self, vin: str, endpoint: Endpoint, anonymize: bool = False
     ) -> GetEndpointResult[Any]:
         """Invoke a get endpoint by endpoint enum."""
-        result = GetEndpointResult(url="", result=None, raw="")
+        # Mapping of endpoints to corresponding methods
+        endpoint_method_map = {
+            Endpoint.INFO: self.rest_api.get_info,
+            Endpoint.STATUS: self.rest_api.get_status,
+            Endpoint.AIR_CONDITIONING: self.rest_api.get_air_conditioning,
+            Endpoint.AUXILIARY_HEATING: self.rest_api.get_auxiliary_heating,
+            Endpoint.POSITIONS: self.rest_api.get_positions,
+            Endpoint.HEALTH: self.rest_api.get_health,
+            Endpoint.CHARGING: self.rest_api.get_charging,
+            Endpoint.MAINTENANCE: self.rest_api.get_maintenance,
+            Endpoint.DRIVING_RANGE: self.rest_api.get_driving_range,
+            Endpoint.TRIP_STATISTICS: self.rest_api.get_trip_statistics,
+        }
 
-        if endpoint == Endpoint.INFO:
-            result = await self.rest_api.get_info(vin, anonymize=anonymize)
-        elif endpoint == Endpoint.STATUS:
-            result = await self.rest_api.get_status(vin, anonymize=anonymize)
-        elif endpoint == Endpoint.AIR_CONDITIONING:
-            result = await self.rest_api.get_air_conditioning(vin, anonymize=anonymize)
-        elif endpoint == Endpoint.POSITIONS:
-            result = await self.rest_api.get_positions(vin, anonymize=anonymize)
-        elif endpoint == Endpoint.HEALTH:
-            result = await self.rest_api.get_health(vin, anonymize=anonymize)
-        elif endpoint == Endpoint.CHARGING:
-            result = await self.rest_api.get_charging(vin, anonymize=anonymize)
-        elif endpoint == Endpoint.MAINTENANCE:
-            result = await self.rest_api.get_maintenance(vin, anonymize=anonymize)
-        elif endpoint == Endpoint.DRIVING_RANGE:
-            result = await self.rest_api.get_driving_range(vin, anonymize=anonymize)
-        elif endpoint == Endpoint.TRIP_STATISTICS:
-            result = await self.rest_api.get_trip_statistics(vin, anonymize=anonymize)
-        else:
-            raise UnsupportedEndpointError
+        # Look up the method, or raise an error if unsupported
+        method = endpoint_method_map.get(endpoint)
+        if not method:
+            error_message = f"Unsupported endpoint: {endpoint}"
+            raise UnsupportedEndpointError(error_message)
 
-        return result
+        # Call the method and return the result
+        return await method(vin, anonymize=anonymize)
+
 
     async def generate_get_fixture(
         self, name: str, description: str, vins: list[str], endpoint: Endpoint
