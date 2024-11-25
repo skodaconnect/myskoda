@@ -13,8 +13,12 @@ from .common import Address, Coordinates, Weekday
 @dataclass
 class MaintenanceReport(DataClassORJSONMixin):
     captured_at: datetime = field(metadata=field_options(alias="capturedAt"))
-    inspection_due_in_days: int = field(metadata=field_options(alias="inspectionDueInDays"))
-    mileage_in_km: int | None = field(default=None, metadata=field_options(alias="mileageInKm"))
+    mileage_in_km: int | None = field(
+        default=None, metadata=field_options(alias="mileageInKm")
+    )
+    inspection_due_in_days: int | None = field(
+        default=None, metadata=field_options(alias="inspectionDueInDays")
+    )
     inspection_due_in_km: int | None = field(
         default=None, metadata=field_options(alias="inspectionDueInKm")
     )
@@ -75,7 +79,9 @@ class ServicePartner(DataClassORJSONMixin):
     id: str
     location: Coordinates
     name: str
-    opening_hours: list[OpeningHoursPeriod] = field(metadata=field_options(alias="openingHours"))
+    opening_hours: list[OpeningHoursPeriod] = field(
+        metadata=field_options(alias="openingHours")
+    )
     partner_number: str = field(metadata=field_options(alias="partnerNumber"))
 
 
