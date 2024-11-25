@@ -73,5 +73,6 @@ class Fixture(DataClassORJSONMixin, DataClassYAMLMixin):
     name: str
     description: str | None
     generation_time: datetime
+    library_version: str
     vehicles: list[FixtureVehicle]
     reports: list[FixtureReportGet] | None
