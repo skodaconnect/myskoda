@@ -7,6 +7,7 @@ import logging
 from asyncio import gather
 from collections.abc import Awaitable, Callable
 from datetime import UTC, datetime
+from importlib.metadata import version
 from ssl import SSLContext
 from traceback import format_exc
 from types import SimpleNamespace
@@ -452,6 +453,7 @@ class MySkoda:
             generation_time=datetime.now(tz=UTC),
             vehicles=[vehicle for (_, vehicle) in vehicles],
             reports=reports,
+            library_version=version("MySkoda"),
         )
 
 
