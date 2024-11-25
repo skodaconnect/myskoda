@@ -6,7 +6,11 @@ from enum import StrEnum
 from typing import Any
 
 from mashumaro import field_options
-from mashumaro.config import TO_DICT_ADD_BY_ALIAS_FLAG, BaseConfig
+from mashumaro.config import (
+    TO_DICT_ADD_BY_ALIAS_FLAG,
+    TO_DICT_ADD_OMIT_NONE_FLAG,
+    BaseConfig,
+)
 from mashumaro.mixins.orjson import DataClassORJSONMixin
 
 from .common import ChargerLockedState, ConnectionState, OnOffState, Side, Weekday
@@ -48,8 +52,16 @@ class Timer(DataClassORJSONMixin):
 
 @dataclass
 class SeatHeating(DataClassORJSONMixin):
-    front_left: bool = field(metadata=field_options(alias="frontLeft"))
-    front_right: bool = field(metadata=field_options(alias="frontRight"))
+    front_left: bool | None = field(default=None, metadata=field_options(alias="frontLeft"))
+    front_right: bool | None = field(default=None, metadata=field_options(alias="frontRight"))
+
+    class Config(BaseConfig):
+        """Configuration for serialization and deserialization.."""
+
+        code_generation_options = [  # noqa: RUF012
+            TO_DICT_ADD_BY_ALIAS_FLAG,
+            TO_DICT_ADD_OMIT_NONE_FLAG,
+        ]
 
 
 @dataclass
@@ -70,6 +82,46 @@ class WindowHeatingState(DataClassORJSONMixin):
     front: OnOffState
     rear: OnOffState
     unspecified: Any
+
+
+@dataclass
+class AirConditioningAtUnlock(DataClassORJSONMixin):
+    """AirConditioningAtUnlock setting."""
+
+    air_conditioning_at_unlock_enabled: bool = field(
+        metadata=field_options(alias="airConditioningAtUnlockEnabled")
+    )
+
+    class Config(BaseConfig):
+        """Configuration for serialization and deserialization.."""
+
+        serialize_by_alias = True
+
+
+@dataclass
+class AirConditioningWithoutExternalPower(DataClassORJSONMixin):
+    """AirConditioningWithoutExternalPower setting."""
+
+    air_conditioning_without_external_power_enabled: bool = field(
+        metadata=field_options(alias="airConditioningWithoutExternalPowerEnabled")
+    )
+
+    class Config(BaseConfig):
+        """Configuration for serialization and deserialization.."""
+
+        serialize_by_alias = True
+
+
+@dataclass
+class WindowHeating(DataClassORJSONMixin):
+    """WindowHeating setting."""
+
+    window_heating_enabled: bool = field(metadata=field_options(alias="windowHeatingEnabled"))
+
+    class Config(BaseConfig):
+        """Configuration for serialization and deserialization.."""
+
+        serialize_by_alias = True
 
 
 @dataclass

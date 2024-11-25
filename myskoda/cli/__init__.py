@@ -20,10 +20,13 @@ from myskoda.cli.operations import (
     flash,
     honk_flash,
     lock,
+    set_ac_at_unlock,
     set_ac_without_external_power,
     set_charge_limit,
     set_reduced_current_limit,
+    set_seats_heating,
     set_target_temperature,
+    set_windows_heating,
     start_air_conditioning,
     start_auxiliary_heating,
     start_window_heating,
@@ -165,6 +168,9 @@ cli.add_command(honk_flash)
 cli.add_command(flash)
 cli.add_command(verify_spin)
 cli.add_command(set_ac_without_external_power)
+cli.add_command(set_ac_at_unlock)
+cli.add_command(set_windows_heating)
+cli.add_command(set_seats_heating)
 
 if __name__ == "__main__":
     cli()
