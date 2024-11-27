@@ -398,7 +398,6 @@ class MySkoda:
                 result=result.result.to_dict(),
             )
 
-
     async def get_endpoint(
         self, vin: str, endpoint: Endpoint, anonymize: bool = False
     ) -> GetEndpointResult[Any]:
@@ -425,7 +424,6 @@ class MySkoda:
 
         # Call the method and return the result
         return await method(vin, anonymize=anonymize)
-
 
     async def generate_get_fixture(
         self, name: str, description: str, vins: list[str], endpoint: Endpoint
