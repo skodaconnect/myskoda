@@ -60,6 +60,8 @@ reports:
       capabilities:
       - id: ACCESS
         statuses: []
+      - id: ACTIVE_VENTILATION
+        statuses: []
       - id: DEALER_APPOINTMENT
         statuses: []
       - id: GEO_FENCE
@@ -546,6 +548,8 @@ reports:
 vehicles:
 - capabilities:
   - id: ACCESS
+    statuses: []
+  - id: ACTIVE_VENTILATION
     statuses: []
   - id: DEALER_APPOINTMENT
     statuses: []
