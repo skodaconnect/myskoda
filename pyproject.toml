@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "myskoda"
-version = "0.13.0"
+version = "0.0.0"
 description = "Library for interaction with the MySkoda APIs."
 authors = [
     "Frederick Gnodtke <frederick@gnodtke.net>",
@@ -44,9 +44,14 @@ myskoda = "myskoda.cli:cli"
 cli = ["asyncclick", "coloredlogs", "termcolor", "pygments"]
 docs = ["mkdocs", "mkdocstrings", "mkdocs-gen-files", "mkdocs-literate-nav"]
 
+[tool.poetry-dynamic-versioning]
+enable = true
+vcs = "git"
+style = "semver"
+
 [build-system]
-build-backend = "poetry.core.masonry.api"
-requires = ["poetry-core"]
+requires = ["poetry-core>=1.0.0", "poetry-dynamic-versioning>=1.0.0,<2.0.0"]
+build-backend = "poetry_dynamic_versioning.backend"
 
 [tool.ruff]
 line-length = 100

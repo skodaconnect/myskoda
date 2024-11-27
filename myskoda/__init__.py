@@ -1,5 +1,6 @@
 """A library for interacting with the MySkoda APIs."""
 
+from .__version__ import __version__
 from .auth.authorization import (
     Authorization,
     AuthorizationError,
@@ -35,6 +36,7 @@ __all__ = [
     "MySkodaMqttClient",
     "RestApi",
     "Vehicle",
+    "__version__",
     "air_conditioning",
     "charging",
     "common",
