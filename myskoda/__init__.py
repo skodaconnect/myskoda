@@ -1,5 +1,6 @@
 """A library for interacting with the MySkoda APIs."""
 
+from .__version__ import __version__ as version
 from .auth.authorization import (
     Authorization,
     AuthorizationError,
@@ -25,24 +26,26 @@ from .rest_api import RestApi
 from .vehicle import Vehicle
 
 __all__ = [
+    "TRACE_CONFIG",
     "Authorization",
     "AuthorizationError",
     "AuthorizationFailedError",
     "IDKAuthorizationCode",
     "IDKSession",
+    "MySkoda",
+    "MySkodaMqttClient",
+    "RestApi",
+    "Vehicle",
     "air_conditioning",
     "charging",
     "common",
     "health",
     "info",
-    "position",
-    "status",
-    "RestApi",
-    "MySkoda",
     "operation_request",
+    "position",
     "service_event",
-    "MySkodaMqttClient",
-    "Vehicle",
+    "status",
     "user",
-    "TRACE_CONFIG",
 ]
+
+__version__ = version
