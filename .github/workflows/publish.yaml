@@ -28,6 +28,9 @@ jobs:
           python-version-file: pyproject.toml
           cache: "poetry"
 
+      - name: Install Poetry Dynamic Versioning
+        run: pipx inject poetry "poetry-dynamic-versioning[plugin]"
+
       - name: Update Poetry configuration
         run: poetry config virtualenvs.create false
 
