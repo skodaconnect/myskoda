@@ -46,6 +46,5 @@ __all__ = [
     "service_event",
     "status",
     "user",
+    "__version__",
 ]
-
-__version__ = version
