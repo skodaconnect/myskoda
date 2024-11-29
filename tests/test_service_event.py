@@ -27,7 +27,8 @@ def load_service_events() -> list[str]:
     for path in [
         "events/service_event_charging_change_soc.json",
         "events/service_event_charging_charging_status_changed.json",
-        "events/service_event_departure.json",
+        "events/service_event_departure_ready.json",
+        "events/service_event_departure_status_changed.json",
     ]:
         json_file = FIXTURES_DIR / path
         service_events.append(json_file.read_text())
