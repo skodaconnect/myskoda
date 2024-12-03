@@ -246,6 +246,8 @@ reports:
               - LICENSE_EXPIRED
           - id: CHARGING_MQB
             statuses: []
+          - id: FLEET_SUPPORTED
+            statuses: []
           - id: LOYALTY_PROGRAM_WORLDWIDE
             statuses: []
           - id: OUTSIDE_TEMPERATURE

@@ -55,6 +55,8 @@ vehicles:
         statuses: []
       - id: DESTINATIONS
         statuses: []
+      - id: FLEET_SUPPORTED
+        statuses: []
       - id: LOYALTY_PROGRAM_WORLDWIDE
         statuses: []
       - id: OUTSIDE_TEMPERATURE
@@ -228,6 +230,8 @@ reports:
           - id: SUBSCRIPTIONS
             statuses: []
           - id: DESTINATIONS
+            statuses: []
+          - id: FLEET_SUPPORTED
             statuses: []
           - id: LOYALTY_PROGRAM_WORLDWIDE
             statuses: []
