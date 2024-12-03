@@ -171,7 +171,7 @@ reports:
         engine:
           power: 206
           type: TSI
-          capacity_in_liters: 2
+          capacity_in_liters: 2.0
         model: Superb
         title: Škoda Superb
         manufacturing_date: '2023-08-23'
@@ -248,6 +248,8 @@ reports:
           - id: MISUSE_PROTECTION
             statuses: []
           - id: CARE_AND_INSURANCE
+            statuses: []
+          - id: AUXILIARY_HEATING_BASIC
             statuses: []
       renders:
         - url: >-
@@ -507,6 +509,9 @@ reports:
       target_temperature: null
       car_captured_timestamp: '2024-11-27T07:06:35+00:00'
       estimated_date_time_to_reach_target_temperature: null
+      outside_temperature:
+        temperature_value: 3.0
+        unit_in_car: CELSIUS      
     error: null
   - type: get
     vehicle_id: 0
