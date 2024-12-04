@@ -354,6 +354,9 @@ class MySkoda:
         if info.is_capability_available(CapabilityId.AIR_CONDITIONING):
             vehicle.air_conditioning = await self.get_air_conditioning(vin)
 
+        if info.is_capability_available(CapabilityId.AUXILIARY_HEATING):
+            vehicle.auxiliary_heating = await self.get_auxiliary_heating(vin)
+
         if info.is_capability_available(CapabilityId.PARKING_POSITION):
             vehicle.positions = await self.get_positions(vin)
 

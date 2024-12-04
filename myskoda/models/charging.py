@@ -87,7 +87,9 @@ class Settings(DataClassORJSONMixin):
 
 @dataclass
 class Battery(DataClassORJSONMixin):
-    state_of_charge_in_percent: int = field(metadata=field_options(alias="stateOfChargeInPercent"))
+    state_of_charge_in_percent: int | None = field(
+        default=None, metadata=field_options(alias="stateOfChargeInPercent")
+    )
     remaining_cruising_range_in_meters: int | None = field(
         default=None, metadata=field_options(alias="remainingCruisingRangeInMeters")
     )

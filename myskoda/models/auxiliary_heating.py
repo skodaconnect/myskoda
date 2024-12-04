@@ -83,3 +83,6 @@ class AuxiliaryHeating(DataClassORJSONMixin):
     estimated_date_time_to_reach_target_temperature: datetime | None = field(
         default=None, metadata=field_options(alias="estimatedDateTimeToReachTargetTemperature")
     )
+    outside_temperature: TargetTemperature | None = field(
+        default=None, metadata=field_options(alias="outsideTemperature")
+    )

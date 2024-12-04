@@ -1,6 +1,7 @@
 """Represents a whole vehicle."""
 
 from .models.air_conditioning import AirConditioning
+from .models.auxiliary_heating import AuxiliaryHeating
 from .models.charging import Charging
 from .models.driving_range import DrivingRange
 from .models.health import Health
@@ -18,6 +19,7 @@ class Vehicle:
     charging: Charging | None = None
     status: Status | None = None
     air_conditioning: AirConditioning | None = None
+    auxiliary_heating: AuxiliaryHeating | None = None
     positions: Positions | None = None
     driving_range: DrivingRange | None = None
     trip_statistics: TripStatistics | None = None
