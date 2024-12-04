@@ -515,7 +515,8 @@ reports:
       estimated_date_time_to_reach_target_temperature: null
       outside_temperature:
         temperature_value: 3.0
-        unit_in_car: CELSIUS      
+        unit_in_car: CELSIUS
+        carCapturedTimestamp: null      
     error: null
   - type: get
     vehicle_id: 0

@@ -9,7 +9,7 @@ from mashumaro import field_options
 from mashumaro.config import TO_DICT_ADD_BY_ALIAS_FLAG, TO_DICT_ADD_OMIT_NONE_FLAG, BaseConfig
 from mashumaro.mixins.orjson import DataClassORJSONMixin
 
-from .air_conditioning import HeaterSource, TargetTemperature, Timer
+from .air_conditioning import HeaterSource, TargetTemperature, Timer, OutsideTemperature
 
 
 class AuxiliaryState(StrEnum):
@@ -83,6 +83,6 @@ class AuxiliaryHeating(DataClassORJSONMixin):
     estimated_date_time_to_reach_target_temperature: datetime | None = field(
         default=None, metadata=field_options(alias="estimatedDateTimeToReachTargetTemperature")
     )
-    outside_temperature: TargetTemperature | None = field(
+    outside_temperature: OutsideTemperature | None = field(
         default=None, metadata=field_options(alias="outsideTemperature")
     )
