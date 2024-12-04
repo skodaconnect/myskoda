@@ -9,7 +9,7 @@ from mashumaro import field_options
 from mashumaro.config import TO_DICT_ADD_BY_ALIAS_FLAG, TO_DICT_ADD_OMIT_NONE_FLAG, BaseConfig
 from mashumaro.mixins.orjson import DataClassORJSONMixin
 
-from .air_conditioning import HeaterSource, TargetTemperature, Timer, OutsideTemperature
+from .air_conditioning import HeaterSource, OutsideTemperature, TargetTemperature, Timer
 
 
 class AuxiliaryState(StrEnum):
