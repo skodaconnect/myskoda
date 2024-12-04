@@ -70,6 +70,9 @@ class TargetTemperature(DataClassORJSONMixin):
     unit_in_car: TemperatureUnit = field(
         default=TemperatureUnit.CELSIUS, metadata=field_options(alias="unitInCar")
     )
+    car_captured_timestamp: datetime | None = field(
+        default=None, metadata=field_options(alias="carCapturedTimestamp")
+    )
 
     class Config(BaseConfig):
         """Configuration for serialization and deserialization.."""
