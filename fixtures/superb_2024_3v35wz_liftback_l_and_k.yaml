@@ -472,6 +472,7 @@ reports:
       target_temperature: null
       window_heating_enabled: null
       air_conditioning_without_external_power: null
+        outside_teperature: null
     error: null
   - type: get
     vehicle_id: 0
