@@ -78,6 +78,13 @@ class TargetTemperature(DataClassORJSONMixin):
 
 
 @dataclass
+class OutsideTemperature(TargetTemperature):
+    car_captured_timestamp: datetime | None = field(
+        default=None, metadata=field_options(alias="carCapturedTimestamp")
+    )
+
+
+@dataclass
 class WindowHeatingState(DataClassORJSONMixin):
     front: OnOffState
     rear: OnOffState
@@ -164,4 +171,7 @@ class AirConditioning(DataClassORJSONMixin):
     )
     air_conditioning_without_external_power: bool | None = field(
         default=None, metadata=field_options(alias="airConditioningWithoutExternalPower")
+    )
+    outside_temperature: OutsideTemperature | None = field(
+        default=None, metadata=field_options(alias="outsideTemperature")
     )

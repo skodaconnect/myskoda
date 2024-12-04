@@ -339,6 +339,7 @@ reports:
       front: 'OFF'
       rear: 'OFF'
       unspecified: INVALID
+    outside_temperature: null
   success: true
   type: get
   url: /v2/air-conditioning/TMOCKAA0AA000000

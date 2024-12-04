@@ -462,6 +462,7 @@ reports:
         unit_in_car: CELSIUS
       window_heating_enabled: null
       air_conditioning_without_external_power: true
+      outside_temperature: null
     error: null
   - type: get
     vehicle_id: 0
