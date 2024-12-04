@@ -458,6 +458,7 @@ reports:
       heater_source: ELECTRIC
       seat_heating_activated: null
       target_temperature:
+        car_captured_timestamp: null
         temperature_value: 21
         unit_in_car: CELSIUS
       window_heating_enabled: null

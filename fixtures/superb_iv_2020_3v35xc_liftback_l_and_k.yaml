@@ -305,6 +305,7 @@ reports:
     state: 'OFF'
     steering_wheel_position: LEFT
     target_temperature:
+      car_captured_timestamp: null
       temperature_value: 16.0
       unit_in_car: CELSIUS
     timers: []

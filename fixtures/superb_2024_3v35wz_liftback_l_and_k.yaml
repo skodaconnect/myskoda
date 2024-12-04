@@ -514,6 +514,7 @@ reports:
       car_captured_timestamp: '2024-11-27T07:06:35+00:00'
       estimated_date_time_to_reach_target_temperature: null
       outside_temperature:
+        car_captured_timestamp: null
         temperature_value: 3.0
         unit_in_car: CELSIUS      
     error: null

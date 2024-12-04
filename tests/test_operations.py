@@ -452,6 +452,7 @@ async def test_start_auxiliary_heater(  # noqa: PLR0913
             json_data["targetTemperature"] = {
                 "temperatureValue": float(expected),
                 "unitInCar": "CELSIUS",
+                "carCapturedTimestamp": None,
             }
         if config.duration_in_seconds is not None:
             json_data["durationInSeconds"] = int(expected)

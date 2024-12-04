@@ -291,6 +291,7 @@ reports:
     state: INVALID
     steering_wheel_position: LEFT
     target_temperature:
+      car_captured_timestamp: null
       temperature_value: 22.0
       unit_in_car: CELSIUS
     timers:
