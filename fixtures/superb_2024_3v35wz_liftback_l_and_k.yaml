@@ -472,6 +472,7 @@ reports:
       target_temperature: null
       window_heating_enabled: null
       air_conditioning_without_external_power: null
+      outside_temperature: null
     error: null
   - type: get
     vehicle_id: 0
@@ -515,7 +516,8 @@ reports:
       estimated_date_time_to_reach_target_temperature: null
       outside_temperature:
         temperature_value: 3.0
-        unit_in_car: CELSIUS      
+        unit_in_car: CELSIUS
+        car_captured_timestamp: null      
     error: null
   - type: get
     vehicle_id: 0
