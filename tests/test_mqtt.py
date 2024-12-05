@@ -158,6 +158,22 @@ async def test_subscribe_event(
                 }
             ),
         ),
+        (
+            f"{base_topic}/service-event/charging",
+            json.dumps(
+                {
+                    "version": 1,
+                    "traceId": trace_id,
+                    "timestamp": timestamp_str,
+                    "producer": "SKODA_MHUB",
+                    "name": "charging-completed",
+                    "data": {
+                        "userId": USER_ID,
+                        "vin": VIN,
+                    },
+                }
+            ),
+        ),
     ]
 
     def on_event(event: Event) -> None:
@@ -251,6 +267,22 @@ async def test_subscribe_event(
                     state=ChargingState.CONSERVING,
                     mode=ChargeMode.MANUAL,
                     time_to_finish=0,
+                ),
+            ),
+        ),
+        EventCharging(
+            vin=VIN,
+            user_id=USER_ID,
+            timestamp=ANY,
+            event=ServiceEventChargingCompleted(
+                version=1,
+                trace_id=trace_id,
+                timestamp=timestamp,
+                producer="SKODA_MHUB",
+                name=ServiceEventName.CHARGING_COMPLETED,
+                data=ServiceEventData(
+                    user_id=USER_ID,
+                    vin=VIN,
                 ),
             ),
         ),
