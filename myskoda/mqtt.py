@@ -100,6 +100,7 @@ class MySkodaMqttClient:
         self._listener_task = None
         self._running = False
         self._subscribed = asyncio.Event()
+        self._reconnect_delay = MQTT_RECONNECT_DELAY
 
     async def connect(self, user_id: str, vehicle_vins: list[str]) -> None:
         """Connect to the MQTT broker and listen for messages for the given user_id and VINs."""
@@ -143,7 +144,6 @@ class MySkodaMqttClient:
         _LOGGER.debug("Starting _connect_and_listen")
         self._running = True
         while self._running:
-            self._reconnect_delay = MQTT_RECONNECT_DELAY
             try:
                 async with aiomqtt.Client(
                     hostname=self.hostname,
@@ -167,6 +167,7 @@ class MySkodaMqttClient:
                             await client.subscribe(f"{self.user_id}/{vin}/account-event/{topic}")
 
                     self._subscribed.set()
+                    self._reconnect_delay = MQTT_RECONNECT_DELAY
                     async for message in client.messages:
                         self._on_message(message)
             except aiomqtt.MqttError as exc:
