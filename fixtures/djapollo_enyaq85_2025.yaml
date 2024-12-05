@@ -1,7 +1,7 @@
-library_version: legacy
-description: My cars in no specific state.
-generation_time: '2024-11-05T23:23:13.284963+00:00'
-name: my_cars
+description: Fixture for Skoda Enyaq 85 2025.
+generation_time: '2024-12-04T20:25:58.288990+00:00'
+library_version: 0.14.2
+name: djapollo_enyaq85_2025
 reports:
 - endpoint: info
   error: null
@@ -49,15 +49,16 @@ reports:
     "statuses": []}, {"id": "MAP_UPDATE", "statuses": []}, {"id": "MEASUREMENTS",
     "statuses": []}, {"id": "PARKING_INFORMATION", "statuses": []}, {"id": "PARKING_POSITION",
     "statuses": []}, {"id": "PLUG_AND_CHARGE", "statuses": []}, {"id": "POI_SEARCH",
-    "statuses": []}, {"id": "ROADSIDE_ASSISTANT", "statuses": []}, {"id": "ROUTING",
-    "statuses": []}, {"id": "STATE", "statuses": []}, {"id": "TRAFFIC_INFORMATION",
-    "statuses": []}, {"id": "VEHICLE_HEALTH_INSPECTION", "statuses": []}, {"id": "WARNING_LIGHTS",
-    "statuses": []}, {"id": "AIR_CONDITIONING_TIMERS", "statuses": []}, {"id": "PREDICTIVE_WAKE_UP",
-    "statuses": []}, {"id": "AIR_CONDITIONING_SMART_SETTINGS", "statuses": []}, {"id":
-    "POWERPASS_TARIFFS", "statuses": []}, {"id": "AIR_CONDITIONING_SAVE_AND_ACTIVATE",
+    "statuses": []}, {"id": "READINESS", "statuses": []}, {"id": "ROADSIDE_ASSISTANT",
+    "statuses": []}, {"id": "ROUTING", "statuses": []}, {"id": "STATE", "statuses":
+    []}, {"id": "TRAFFIC_INFORMATION", "statuses": []}, {"id": "VEHICLE_HEALTH_INSPECTION",
+    "statuses": []}, {"id": "WARNING_LIGHTS", "statuses": []}, {"id": "AIR_CONDITIONING_TIMERS",
+    "statuses": []}, {"id": "PREDICTIVE_WAKE_UP", "statuses": []}, {"id": "AIR_CONDITIONING_SMART_SETTINGS",
+    "statuses": []}, {"id": "POWERPASS_TARIFFS", "statuses": []}, {"id": "AIR_CONDITIONING_SAVE_AND_ACTIVATE",
     "statuses": []}, {"id": "CUBIC", "statuses": []}, {"id": "SUBSCRIPTIONS", "statuses":
     []}, {"id": "DESTINATIONS", "statuses": []}, {"id": "CHARGING_MEB", "statuses":
-    []}, {"id": "VEHICLE_SERVICES_BACKUPS", "statuses": []}, {"id": "EV_ROUTE_PLANNING",
+    []}, {"id": "VEHICLE_SERVICES_BACKUPS", "statuses": []}, {"id": "LOYALTY_PROGRAM_WORLDWIDE",
+    "statuses": []}, {"id": "OUTSIDE_TEMPERATURE", "statuses": []}, {"id": "EV_ROUTE_PLANNING",
     "statuses": []}, {"id": "CHARGE_MODE_SELECTION", "statuses": []}, {"id": "DIGICERT",
     "statuses": []}, {"id": "VEHICLE_HEALTH_WARNINGS", "statuses": []}, {"id": "PAY_TO_PARK",
     "statuses": []}, {"id": "ONLINE_SPEECH_GPS", "statuses": []}, {"id": "GUEST_USER_MANAGEMENT",
@@ -97,6 +98,8 @@ reports:
         statuses: []
       - id: POI_SEARCH
         statuses: []
+      - id: READINESS
+        statuses: []
       - id: ROADSIDE_ASSISTANT
         statuses: []
       - id: ROUTING
@@ -128,6 +131,10 @@ reports:
       - id: CHARGING_MEB
         statuses: []
       - id: VEHICLE_SERVICES_BACKUPS
+        statuses: []
+      - id: LOYALTY_PROGRAM_WORLDWIDE
+        statuses: []
+      - id: OUTSIDE_TEMPERATURE
         statuses: []
       - id: EV_ROUTE_PLANNING
         statuses: []
@@ -259,17 +266,17 @@ reports:
   error: null
   raw: '{"overall": {"doorsLocked": "YES", "locked": "YES", "doors": "CLOSED", "windows":
     "CLOSED", "lights": "OFF"}, "detail": {"sunroof": "UNSUPPORTED", "trunk": "CLOSED",
-    "bonnet": "CLOSED"}, "renders": {"lightMode": {"oneX": "https://mysmob.api.connect.skoda-auto.cz/api/v2/vehicle-status/render?carType=SUV&vehicleState=1-1-1-1-0-0-0-0-0&lastModifiedAt=1729086727&dimension=1x&theme=LIGHT",
-    "oneAndHalfX": "https://mysmob.api.connect.skoda-auto.cz/api/v2/vehicle-status/render?carType=SUV&vehicleState=1-1-1-1-0-0-0-0-0&lastModifiedAt=1729086727&dimension=1-5x&theme=LIGHT",
-    "twoX": "https://mysmob.api.connect.skoda-auto.cz/api/v2/vehicle-status/render?carType=SUV&vehicleState=1-1-1-1-0-0-0-0-0&lastModifiedAt=1729086727&dimension=2x&theme=LIGHT",
-    "threeX": "https://mysmob.api.connect.skoda-auto.cz/api/v2/vehicle-status/render?carType=SUV&vehicleState=1-1-1-1-0-0-0-0-0&lastModifiedAt=1729086727&dimension=3x&theme=LIGHT"},
-    "darkMode": {"oneX": "https://mysmob.api.connect.skoda-auto.cz/api/v2/vehicle-status/render?carType=SUV&vehicleState=1-1-1-1-0-0-0-0-0&lastModifiedAt=1729086727&dimension=1x&theme=DARK",
-    "oneAndHalfX": "https://mysmob.api.connect.skoda-auto.cz/api/v2/vehicle-status/render?carType=SUV&vehicleState=1-1-1-1-0-0-0-0-0&lastModifiedAt=1729086727&dimension=1-5x&theme=DARK",
-    "twoX": "https://mysmob.api.connect.skoda-auto.cz/api/v2/vehicle-status/render?carType=SUV&vehicleState=1-1-1-1-0-0-0-0-0&lastModifiedAt=1729086727&dimension=2x&theme=DARK",
-    "threeX": "https://mysmob.api.connect.skoda-auto.cz/api/v2/vehicle-status/render?carType=SUV&vehicleState=1-1-1-1-0-0-0-0-0&lastModifiedAt=1729086727&dimension=3x&theme=DARK"}},
-    "carCapturedTimestamp": "2024-11-05T20:05:05.323Z"}'
+    "bonnet": "CLOSED"}, "renders": {"lightMode": {"oneX": "https://mysmob.api.connect.skoda-auto.cz/api/v2/vehicle-status/render?carType=SUV&vehicleState=1-1-1-1-0-0-0-0-0&lastModifiedAt=1730291332&dimension=1x&theme=LIGHT",
+    "oneAndHalfX": "https://mysmob.api.connect.skoda-auto.cz/api/v2/vehicle-status/render?carType=SUV&vehicleState=1-1-1-1-0-0-0-0-0&lastModifiedAt=1730291332&dimension=1-5x&theme=LIGHT",
+    "twoX": "https://mysmob.api.connect.skoda-auto.cz/api/v2/vehicle-status/render?carType=SUV&vehicleState=1-1-1-1-0-0-0-0-0&lastModifiedAt=1730291332&dimension=2x&theme=LIGHT",
+    "threeX": "https://mysmob.api.connect.skoda-auto.cz/api/v2/vehicle-status/render?carType=SUV&vehicleState=1-1-1-1-0-0-0-0-0&lastModifiedAt=1730291332&dimension=3x&theme=LIGHT"},
+    "darkMode": {"oneX": "https://mysmob.api.connect.skoda-auto.cz/api/v2/vehicle-status/render?carType=SUV&vehicleState=1-1-1-1-0-0-0-0-0&lastModifiedAt=1730291332&dimension=1x&theme=DARK",
+    "oneAndHalfX": "https://mysmob.api.connect.skoda-auto.cz/api/v2/vehicle-status/render?carType=SUV&vehicleState=1-1-1-1-0-0-0-0-0&lastModifiedAt=1730291332&dimension=1-5x&theme=DARK",
+    "twoX": "https://mysmob.api.connect.skoda-auto.cz/api/v2/vehicle-status/render?carType=SUV&vehicleState=1-1-1-1-0-0-0-0-0&lastModifiedAt=1730291332&dimension=2x&theme=DARK",
+    "threeX": "https://mysmob.api.connect.skoda-auto.cz/api/v2/vehicle-status/render?carType=SUV&vehicleState=1-1-1-1-0-0-0-0-0&lastModifiedAt=1730291332&dimension=3x&theme=DARK"}},
+    "carCapturedTimestamp": "2024-12-04T17:45:51.863Z"}'
   result:
-    car_captured_timestamp: '2024-11-05T20:05:05.323000+00:00'
+    car_captured_timestamp: '2024-12-04T17:45:51.863000+00:00'
     detail:
       bonnet: CLOSED
       sunroof: UNSUPPORTED
@@ -282,40 +289,45 @@ reports:
       windows: CLOSED
     renders:
       dark_mode:
-        one_and_half_x: https://mysmob.api.connect.skoda-auto.cz/api/v2/vehicle-status/render?carType=SUV&vehicleState=1-1-1-1-0-0-0-0-0&lastModifiedAt=1729086727&dimension=1-5x&theme=DARK
-        one_x: https://mysmob.api.connect.skoda-auto.cz/api/v2/vehicle-status/render?carType=SUV&vehicleState=1-1-1-1-0-0-0-0-0&lastModifiedAt=1729086727&dimension=1x&theme=DARK
-        three_x: https://mysmob.api.connect.skoda-auto.cz/api/v2/vehicle-status/render?carType=SUV&vehicleState=1-1-1-1-0-0-0-0-0&lastModifiedAt=1729086727&dimension=3x&theme=DARK
-        two_x: https://mysmob.api.connect.skoda-auto.cz/api/v2/vehicle-status/render?carType=SUV&vehicleState=1-1-1-1-0-0-0-0-0&lastModifiedAt=1729086727&dimension=2x&theme=DARK
+        one_and_half_x: https://mysmob.api.connect.skoda-auto.cz/api/v2/vehicle-status/render?carType=SUV&vehicleState=1-1-1-1-0-0-0-0-0&lastModifiedAt=1730291332&dimension=1-5x&theme=DARK
+        one_x: https://mysmob.api.connect.skoda-auto.cz/api/v2/vehicle-status/render?carType=SUV&vehicleState=1-1-1-1-0-0-0-0-0&lastModifiedAt=1730291332&dimension=1x&theme=DARK
+        three_x: https://mysmob.api.connect.skoda-auto.cz/api/v2/vehicle-status/render?carType=SUV&vehicleState=1-1-1-1-0-0-0-0-0&lastModifiedAt=1730291332&dimension=3x&theme=DARK
+        two_x: https://mysmob.api.connect.skoda-auto.cz/api/v2/vehicle-status/render?carType=SUV&vehicleState=1-1-1-1-0-0-0-0-0&lastModifiedAt=1730291332&dimension=2x&theme=DARK
       light_mode:
-        one_and_half_x: https://mysmob.api.connect.skoda-auto.cz/api/v2/vehicle-status/render?carType=SUV&vehicleState=1-1-1-1-0-0-0-0-0&lastModifiedAt=1729086727&dimension=1-5x&theme=LIGHT
-        one_x: https://mysmob.api.connect.skoda-auto.cz/api/v2/vehicle-status/render?carType=SUV&vehicleState=1-1-1-1-0-0-0-0-0&lastModifiedAt=1729086727&dimension=1x&theme=LIGHT
-        three_x: https://mysmob.api.connect.skoda-auto.cz/api/v2/vehicle-status/render?carType=SUV&vehicleState=1-1-1-1-0-0-0-0-0&lastModifiedAt=1729086727&dimension=3x&theme=LIGHT
-        two_x: https://mysmob.api.connect.skoda-auto.cz/api/v2/vehicle-status/render?carType=SUV&vehicleState=1-1-1-1-0-0-0-0-0&lastModifiedAt=1729086727&dimension=2x&theme=LIGHT
+        one_and_half_x: https://mysmob.api.connect.skoda-auto.cz/api/v2/vehicle-status/render?carType=SUV&vehicleState=1-1-1-1-0-0-0-0-0&lastModifiedAt=1730291332&dimension=1-5x&theme=LIGHT
+        one_x: https://mysmob.api.connect.skoda-auto.cz/api/v2/vehicle-status/render?carType=SUV&vehicleState=1-1-1-1-0-0-0-0-0&lastModifiedAt=1730291332&dimension=1x&theme=LIGHT
+        three_x: https://mysmob.api.connect.skoda-auto.cz/api/v2/vehicle-status/render?carType=SUV&vehicleState=1-1-1-1-0-0-0-0-0&lastModifiedAt=1730291332&dimension=3x&theme=LIGHT
+        two_x: https://mysmob.api.connect.skoda-auto.cz/api/v2/vehicle-status/render?carType=SUV&vehicleState=1-1-1-1-0-0-0-0-0&lastModifiedAt=1730291332&dimension=2x&theme=LIGHT
   success: true
   type: get
   url: /v2/vehicle-status/TMOCKAA0AA000000
   vehicle_id: 0
 - endpoint: air_conditioning
   error: null
-  raw: '{"estimatedDateTimeToReachTargetTemperature": "2024-11-05T23:23:11.959177626Z",
+  raw: '{"estimatedDateTimeToReachTargetTemperature": "2024-12-04T20:25:56.600939572Z",
     "state": "OFF", "runningRequests": [], "targetTemperature": {"temperatureValue":
     20.0, "unitInCar": "CELSIUS"}, "airConditioningAtUnlock": true, "windowHeatingEnabled":
     true, "steeringWheelPosition": "LEFT", "seatHeatingActivated": {"frontLeft": true,
     "frontRight": false}, "chargerConnectionState": "DISCONNECTED", "chargerLockState":
     "UNLOCKED", "windowHeatingState": {"front": "OFF", "rear": "OFF", "unspecified":
-    "INVALID"}, "timers": [{"id": 1, "enabled": true, "time": "08:00", "type": "RECURRING",
-    "selectedDays": ["WEDNESDAY"]}, {"id": 2, "enabled": false, "time": "05:55", "type":
-    "ONE_OFF", "selectedDays": ["THURSDAY"]}], "carCapturedTimestamp": "2024-11-05T20:05:07Z",
-    "errors": []}'
+    "INVALID"}, "timers": [{"id": 1, "enabled": true, "time": "06:55", "type": "ONE_OFF",
+    "selectedDays": ["THURSDAY"]}, {"id": 2, "enabled": false, "time": "08:15", "type":
+    "ONE_OFF", "selectedDays": ["WEDNESDAY"]}], "carCapturedTimestamp": "2024-12-04T17:46:00Z",
+    "outsideTemperature": {"temperatureValue": 7.0, "temperatureUnit": "CELSIUS",
+    "carCapturedTimestamp": "2024-12-04T17:45:51.047Z"}, "errors": []}'
   result:
     air_conditioning_at_unlock: true
     air_conditioning_without_external_power: null
-    car_captured_timestamp: '2024-11-05T20:05:07+00:00'
+    car_captured_timestamp: '2024-12-04T17:46:00+00:00'
     charger_connection_state: DISCONNECTED
     charger_lock_state: UNLOCKED
     errors: []
-    estimated_date_time_to_reach_target_temperature: '2024-11-05T23:23:11.959177+00:00'
+    estimated_date_time_to_reach_target_temperature: '2024-12-04T20:25:56.600939+00:00'
     heater_source: null
+    outside_temperature:
+      car_captured_timestamp: '2024-12-04T17:45:51.047000+00:00'
+      temperature_value: 7.0
+      unit_in_car: CELSIUS
     seat_heating_activated:
       front_left: true
       front_right: false
@@ -328,24 +340,43 @@ reports:
     - enabled: true
       id: 1
       selected_days:
-      - WEDNESDAY
-      time: 08:00:00
-      type: RECURRING
+      - THURSDAY
+      time: 06:55:00
+      type: ONE_OFF
     - enabled: false
       id: 2
       selected_days:
-      - THURSDAY
-      time: 05:55:00
+      - WEDNESDAY
+      time: 08:15:00
       type: ONE_OFF
     window_heating_enabled: true
     window_heating_state:
       front: 'OFF'
       rear: 'OFF'
       unspecified: INVALID
-    outside_temperature: null
   success: true
   type: get
   url: /v2/air-conditioning/TMOCKAA0AA000000
+  vehicle_id: 0
+- endpoint: auxiliary_heating
+  error: "Traceback (most recent call last):\n  File \"/root/.local/share/pipx/venvs/myskoda/lib/python3.12/site-packages/myskoda/myskoda.py\",
+    line 384, in generate_fixture_report\n    result = await self.get_endpoint(vin,
+    endpoint, anonymize=True)\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n
+    \ File \"/root/.local/share/pipx/venvs/myskoda/lib/python3.12/site-packages/myskoda/myskoda.py\",
+    line 429, in get_endpoint\n    return await method(vin, anonymize=anonymize)\n
+    \          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/root/.local/share/pipx/venvs/myskoda/lib/python3.12/site-packages/myskoda/rest_api.py\",
+    line 181, in get_auxiliary_heating\n    data=await self._make_get_request(url),\n
+    \        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/root/.local/share/pipx/venvs/myskoda/lib/python3.12/site-packages/myskoda/rest_api.py\",
+    line 104, in _make_get_request\n    return await self._make_request(url=url, method=\"GET\")\n
+    \          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/root/.local/share/pipx/venvs/myskoda/lib/python3.12/site-packages/myskoda/rest_api.py\",
+    line 94, in _make_request\n    response.raise_for_status()\n  File \"/root/.local/share/pipx/venvs/myskoda/lib/python3.12/site-packages/aiohttp/client_reqrep.py\",
+    line 1157, in raise_for_status\n    raise ClientResponseError(\naiohttp.client_exceptions.ClientResponseError:
+    500, message='Internal Server Error', url='https://mysmob.api.connect.skoda-auto.cz/api/v2/air-conditioning/TMOCKAA0AA000000/auxiliary-heating'\n"
+  raw: null
+  result: null
+  success: false
+  type: get
+  url: null
   vehicle_id: 0
 - endpoint: positions
   error: null
@@ -373,14 +404,14 @@ reports:
   vehicle_id: 0
 - endpoint: health
   error: null
-  raw: '{"capturedAt": "2024-11-05T18:38:54.076Z", "mileageInKm": 1128, "warningLights":
+  raw: '{"capturedAt": "2024-12-04T17:24:30.947Z", "mileageInKm": 3085, "warningLights":
     [{"category": "ASSISTANCE", "defects": []}, {"category": "COMFORT", "defects":
     []}, {"category": "BRAKE", "defects": []}, {"category": "ELECTRIC_ENGINE", "defects":
     []}, {"category": "LIGHTING", "defects": []}, {"category": "TIRE", "defects":
     []}, {"category": "OTHER", "defects": []}]}'
   result:
-    captured_at: '2024-11-05T18:38:54.076000+00:00'
-    mileage_in_km: 1128
+    captured_at: '2024-12-04T17:24:30.947000+00:00'
+    mileage_in_km: 3085
     warning_lights:
     - category: ASSISTANCE
       defects: []
@@ -404,13 +435,13 @@ reports:
   error: null
   raw: '{"isVehicleInSavedLocation": false, "status": {"chargingRateInKilometersPerHour":
     0.0, "chargePowerInKw": 0.0, "remainingTimeToFullyChargedInMinutes": 0, "state":
-    "CONNECT_CABLE", "battery": {"remainingCruisingRangeInMeters": 428000, "stateOfChargeInPercent":
-    87}}, "settings": {"targetStateOfChargeInPercent": 80, "preferredChargeMode":
-    "MANUAL", "availableChargeModes": ["MANUAL"], "chargingCareMode": "DEACTIVATED",
+    "CONNECT_CABLE", "battery": {"remainingCruisingRangeInMeters": 230000, "stateOfChargeInPercent":
+    53}}, "settings": {"targetStateOfChargeInPercent": 80, "preferredChargeMode":
+    "MANUAL", "availableChargeModes": ["MANUAL"], "chargingCareMode": "ACTIVATED",
     "autoUnlockPlugWhenCharged": "OFF", "maxChargeCurrentAc": "MAXIMUM", "batterySupport":
-    "ENABLED"}, "carCapturedTimestamp": "2024-11-05T20:04:49Z", "errors": []}'
+    "ENABLED"}, "carCapturedTimestamp": "2024-12-04T17:46:02Z", "errors": []}'
   result:
-    car_captured_timestamp: '2024-11-05T20:04:49+00:00'
+    car_captured_timestamp: '2024-12-04T17:46:02+00:00'
     errors: []
     is_vehicle_in_saved_location: false
     settings:
@@ -418,14 +449,14 @@ reports:
       available_charge_modes:
       - MANUAL
       battery_support: ENABLED
-      charging_care_mode: DEACTIVATED
+      charging_care_mode: ACTIVATED
       max_charge_current_ac: MAXIMUM
       preferred_charge_mode: MANUAL
       target_state_of_charge_in_percent: 80
     status:
       battery:
-        remaining_cruising_range_in_meters: 428000
-        state_of_charge_in_percent: 87
+        remaining_cruising_range_in_meters: 230000
+        state_of_charge_in_percent: 53
       charge_power_in_kw: 0.0
       charge_type: null
       charging_rate_in_kilometers_per_hour: 0.0
@@ -438,8 +469,8 @@ reports:
   vehicle_id: 0
 - endpoint: maintenance
   error: null
-  raw: '{"maintenanceReport": {"capturedAt": "2024-11-05T20:04:48.17Z", "inspectionDueInDays":
-    702, "mileageInKm": 1128}, "preferredServicePartner": {"name": "Example Service
+  raw: '{"maintenanceReport": {"capturedAt": "2024-12-04T17:55:47.917Z", "inspectionDueInDays":
+    673, "mileageInKm": 3085}, "preferredServicePartner": {"name": "Example Service
     Partner", "brand": "C", "partnerNumber": "1111", "id": "DEU11111", "contact":
     {"phone": "+49 1234 567890", "url": "https://example.com", "email": "user@example.com"},
     "address": {"city": "Example City", "street": "Example Avenue", "houseNumber":
@@ -453,10 +484,10 @@ reports:
     true, "email": "user@example.com", "phone": "+49 1234 567890"}}}'
   result:
     maintenance_report:
-      captured_at: '2024-11-05T20:04:48.170000+00:00'
-      inspection_due_in_days: 702
+      captured_at: '2024-12-04T17:55:47.917000+00:00'
+      inspection_due_in_days: 673
       inspection_due_in_km: null
-      mileage_in_km: 1128
+      mileage_in_km: 3085
       oil_service_due_in_days: null
       oil_service_due_in_km: null
     predictive_maintenance:
@@ -509,37 +540,36 @@ reports:
   vehicle_id: 0
 - endpoint: driving_range
   error: null
-  raw: '{"carType": "electric", "totalRangeInKm": 428, "primaryEngineRange": {"engineType":
-    "electric", "currentSoCInPercent": 87, "remainingRangeInKm": 428}, "carCapturedTimestamp":
-    "2024-11-05T20:04:49Z"}'
+  raw: '{"carType": "electric", "totalRangeInKm": 230, "primaryEngineRange": {"engineType":
+    "electric", "currentSoCInPercent": 53, "remainingRangeInKm": 230}, "carCapturedTimestamp":
+    "2024-12-04T17:46:02Z"}'
   result:
     ad_blue_range: null
-    car_captured_timestamp: '2024-11-05T20:04:49+00:00'
+    car_captured_timestamp: '2024-12-04T17:46:02+00:00'
     car_type: electric
     primary_engine_range:
       current_fuel_level_in_percent: null
-      current_soc_in_percent: 87
+      current_soc_in_percent: 53
       engine_type: electric
-      remaining_range_in_km: 428
+      remaining_range_in_km: 230
     secondary_engine_range: null
-    total_range_in_km: 428
+    total_range_in_km: 230
   success: true
   type: get
   url: /v2/vehicle-status/TMOCKAA0AA000000/driving-range
   vehicle_id: 0
 - endpoint: trip_statistics
   error: "Traceback (most recent call last):\n  File \"/root/.local/share/pipx/venvs/myskoda/lib/python3.12/site-packages/myskoda/myskoda.py\",
-    line 309, in generate_fixture_report\n    result = await self.get_endpoint(vin,
+    line 384, in generate_fixture_report\n    result = await self.get_endpoint(vin,
     endpoint, anonymize=True)\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n
     \ File \"/root/.local/share/pipx/venvs/myskoda/lib/python3.12/site-packages/myskoda/myskoda.py\",
-    line 352, in get_endpoint\n    result = await self.rest_api.get_trip_statistics(vin,
-    anonymize=anonymize)\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n
-    \ File \"/root/.local/share/pipx/venvs/myskoda/lib/python3.12/site-packages/myskoda/rest_api.py\",
-    line 187, in get_trip_statistics\n    data=await self._make_get_request(url),\n
+    line 429, in get_endpoint\n    return await method(vin, anonymize=anonymize)\n
+    \          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/root/.local/share/pipx/venvs/myskoda/lib/python3.12/site-packages/myskoda/rest_api.py\",
+    line 223, in get_trip_statistics\n    data=await self._make_get_request(url),\n
     \        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/root/.local/share/pipx/venvs/myskoda/lib/python3.12/site-packages/myskoda/rest_api.py\",
-    line 95, in _make_get_request\n    return await self._make_request(url=url, method=\"GET\")\n
+    line 104, in _make_get_request\n    return await self._make_request(url=url, method=\"GET\")\n
     \          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/root/.local/share/pipx/venvs/myskoda/lib/python3.12/site-packages/myskoda/rest_api.py\",
-    line 85, in _make_request\n    response.raise_for_status()\n  File \"/root/.local/share/pipx/venvs/myskoda/lib/python3.12/site-packages/aiohttp/client_reqrep.py\",
+    line 94, in _make_request\n    response.raise_for_status()\n  File \"/root/.local/share/pipx/venvs/myskoda/lib/python3.12/site-packages/aiohttp/client_reqrep.py\",
     line 1157, in raise_for_status\n    raise ClientResponseError(\naiohttp.client_exceptions.ClientResponseError:
     404, message='Not Found', url='https://mysmob.api.connect.skoda-auto.cz/api/v1/trip-statistics/TMOCKAA0AA000000?offsetType=week&offset=0&timezone=Europe/Berlin'\n"
   raw: null
@@ -578,6 +608,8 @@ vehicles:
     statuses: []
   - id: POI_SEARCH
     statuses: []
+  - id: READINESS
+    statuses: []
   - id: ROADSIDE_ASSISTANT
     statuses: []
   - id: ROUTING
@@ -609,6 +641,10 @@ vehicles:
   - id: CHARGING_MEB
     statuses: []
   - id: VEHICLE_SERVICES_BACKUPS
+    statuses: []
+  - id: LOYALTY_PROGRAM_WORLDWIDE
+    statuses: []
+  - id: OUTSIDE_TEMPERATURE
     statuses: []
   - id: EV_ROUTE_PLANNING
     statuses: []
