@@ -9,6 +9,7 @@ import re
 import ssl
 from collections.abc import Awaitable, Callable
 from datetime import UTC, datetime
+from random import uniform
 from typing import Any, cast
 
 import aiomqtt
@@ -99,6 +100,7 @@ class MySkodaMqttClient:
         self._listener_task = None
         self._running = False
         self._subscribed = asyncio.Event()
+        self._reconnect_delay = MQTT_RECONNECT_DELAY
 
     async def connect(self, user_id: str, vehicle_vins: list[str]) -> None:
         """Connect to the MQTT broker and listen for messages for the given user_id and VINs."""
@@ -165,11 +167,17 @@ class MySkodaMqttClient:
                             await client.subscribe(f"{self.user_id}/{vin}/account-event/{topic}")
 
                     self._subscribed.set()
+                    self._reconnect_delay = MQTT_RECONNECT_DELAY
                     async for message in client.messages:
                         self._on_message(message)
             except aiomqtt.MqttError as exc:
-                _LOGGER.info("Connection lost (%s); reconnecting in %ss", exc, MQTT_RECONNECT_DELAY)
-                await asyncio.sleep(MQTT_RECONNECT_DELAY)
+                _LOGGER.info(
+                    "Connection lost (%s); reconnecting in %ss", exc, self._reconnect_delay
+                )
+                await asyncio.sleep(self._reconnect_delay)
+                self._reconnect_delay *= 2
+                self._reconnect_delay += uniform(0, 1)  # noqa: S311
+                _LOGGER.debug("Increased reconnect backoff to %s", self._reconnect_delay)
 
     def _on_message(self, msg: aiomqtt.Message) -> None:
         """Deserialize received MQTT message and emit Event to subscribed callbacks."""

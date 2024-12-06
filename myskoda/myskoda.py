@@ -132,7 +132,7 @@ class MySkoda:
             user = await self.get_user()
             vehicles = await self.list_vehicle_vins()
             await self.mqtt.connect(user.id, vehicles)
-        _LOGGER.debug("Myskoda ready.")
+        _LOGGER.debug("MySkoda ready.")
 
     def subscribe(self, callback: Callable[[Event], None | Awaitable[None]]) -> None:
         """Listen for events emitted by MySkoda's MQTT broker."""
