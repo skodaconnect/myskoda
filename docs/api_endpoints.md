@@ -46,8 +46,8 @@
 | sonar98 | POST   | api/v1/maps/route-url                                                      |       |         |
 | sonar98 | PUT    | api/v1/maps/{vin}/route                                                    |       |         |
 | sonar98 | PUT    | api/v1/maps/places/favourites/{id}                                         |       |         |
-| sonar98 | POST   | api/v1/vehicle-access/{vin}/lock                                           |       |         |
-| sonar98 | POST   | api/v1/vehicle-access/{vin}/unlock                                         |       |         |
+| sonar98 | POST   | api/v1/vehicle-access/{vin}/lock                                           | ✅      |         |
+| sonar98 | POST   | api/v1/vehicle-access/{vin}/unlock                                         | ✅      |         |
 | sonar98 | GET    | api/v1/charging/{vin}/certificates                                         |       |         |
 | sonar98 | GET    | api/v1/charging/{vin}/profiles                                             |       |         |
 | sonar98 | POST   | api/v1/charging/{vin}/certificates/{certificateId}                         |       |         |
@@ -101,7 +101,7 @@
 | sonar98 | GET    | api/v1/spin/status                                                         |       |         |
 | sonar98 | PUT    | api/v1/spin                                                                |       |         |
 | sonar98 | POST   | api/v1/spin                                                                |       |         |
-| sonar98 | POST   | api/v1/spin/verify                                                         |       |         |
+| sonar98 | POST   | api/v1/spin/verify                                                         | ✅      |         |
 | sonar98 | POST   | api/v1/trip-statistics/{vin}/fuel-prices                                   |       |         |
 | sonar98 | DELETE | api/v1/trip-statistics/{vin}/fuel-prices/{fuelPriceId}                     |       |         |
 | sonar98 | PUT    | api/v1/trip-statistics/{vin}/fuel-prices/{fuelPriceId}                     |       |         |
@@ -193,6 +193,6 @@
 | EnergyX | PUT    | api/v3/vehicle-maintenance/vehicles/{vin}/service-partner                  |       |         |
 | EnergyX | GET    | api/v2/test-drives/dealers                                                 |       |         |
 | EnergyX | GET    | api/v2/test-drives/form-definition                                         |       |         |
-| EnergyX | GET    | api/v2/vehicle-status/{vin}/driving-range                                  |       |         |
+| EnergyX | GET    | api/v2/vehicle-status/{vin}/driving-range                                  | ✅      |         |
 | EnergyX | GET    | api/v2/vehicle-status/render                                               |       |         |
-| EnergyX | GET    | api/v2/vehicle-status/{vin}                                                |       |         |
+| EnergyX | GET    | api/v2/vehicle-status/{vin}                                                | ✅      |         |
