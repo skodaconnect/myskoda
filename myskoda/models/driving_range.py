@@ -13,6 +13,7 @@ class EngineType(StrEnum):
     ELECTRIC = "electric"
     GASOLINE = "gasoline"
     HYBRID = "hybrid"
+    CNG = "cng"
 
 
 @dataclass
