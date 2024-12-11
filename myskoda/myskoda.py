@@ -342,32 +342,43 @@ class MySkoda:
 
     async def get_vehicle(self, vin: str) -> Vehicle:
         """Load a full vehicle based on its capabilities."""
+        all_capabilities = [
+            CapabilityId.AIR_CONDITIONING,
+            CapabilityId.AUXILIARY_HEATING,
+            CapabilityId.CHARGING,
+            CapabilityId.PARKING_POSITION,
+            CapabilityId.STATE,
+            CapabilityId.TRIP_STATISTICS,
+            CapabilityId.VEHICLE_HEALTH_INSPECTION,
+        ]
+
+        return await self.get_partial_vehicle(vin, all_capabilities)
+
+    async def get_partial_vehicle(self, vin: str, capabilities: list[CapabilityId]) -> Vehicle:
+        """Load a partial vehicle, based on list of capabilities."""
         info = await self.get_info(vin)
         maintenance = await self.get_maintenance(vin)
 
         vehicle = Vehicle(info, maintenance)
 
-        if info.is_capability_available(CapabilityId.STATE):
-            vehicle.status = await self.get_status(vin)
-            vehicle.driving_range = await self.get_driving_range(vin)
-
-        if info.is_capability_available(CapabilityId.AIR_CONDITIONING):
-            vehicle.air_conditioning = await self.get_air_conditioning(vin)
-
-        if info.is_capability_available(CapabilityId.AUXILIARY_HEATING):
-            vehicle.auxiliary_heating = await self.get_auxiliary_heating(vin)
-
-        if info.is_capability_available(CapabilityId.PARKING_POSITION):
-            vehicle.positions = await self.get_positions(vin)
-
-        if info.is_capability_available(CapabilityId.TRIP_STATISTICS):
-            vehicle.trip_statistics = await self.get_trip_statistics(vin)
-
-        if info.is_capability_available(CapabilityId.CHARGING):
-            vehicle.charging = await self.get_charging(vin)
-
-        if info.is_capability_available(CapabilityId.VEHICLE_HEALTH_INSPECTION):
-            vehicle.health = await self.get_health(vin)
+        for capa in capabilities:
+            if info.is_capability_available(capa):
+                match capa:
+                    case CapabilityId.AIR_CONDITIONING:
+                        vehicle.air_conditioning = await self.get_air_conditioning(vin)
+                    case CapabilityId.AUXILIARY_HEATING:
+                        vehicle.auxiliary_heating = await self.get_auxiliary_heating(vin)
+                    case CapabilityId.CHARGING:
+                        vehicle.charging = await self.get_charging(vin)
+                    case CapabilityId.PARKING_POSITION:
+                        vehicle.positions = await self.get_positions(vin)
+                    case CapabilityId.STATE:
+                        vehicle.status = await self.get_status(vin)
+                        vehicle.driving_range = await self.get_driving_range(vin)
+                    case CapabilityId.TRIP_STATISTICS:
+                        vehicle.trip_statistics = await self.get_trip_statistics(vin)
+                    case CapabilityId.VEHICLE_HEALTH_INSPECTION:
+                        vehicle.health = await self.get_health(vin)
 
         return vehicle
 
