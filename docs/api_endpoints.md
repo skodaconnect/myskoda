@@ -152,24 +152,24 @@
 | EnergyX | POST   | api/v2/consents                                                            |       |         |
 | EnergyX | PUT    | api/v2/consents/{id}                                                       |       |         |
 | EnergyX | GET    | api/v2/air-conditioning/{vin}/active-ventilation                           |       |         |
-| EnergyX | GET    | api/v2/air-conditioning/{vin}                                              |       |         |
-| EnergyX | GET    | api/v2/air-conditioning/{vin}/auxiliary-heating                            |       |         |
+| EnergyX | GET    | api/v2/air-conditioning/{vin}                                              |  ✅     |         |
+| EnergyX | GET    | api/v2/air-conditioning/{vin}/auxiliary-heating                            |  ✅     |         |
 | EnergyX | POST   | api/v2/air-conditioning/{vin}/active-ventilation/timers                    |       |         |
-| EnergyX | POST   | api/v2/air-conditioning/{vin}/settings/ac-at-unlock                        |       |         |
-| EnergyX | POST   | api/v2/air-conditioning/{vin}/settings/seats-heating                       |       |         |
+| EnergyX | POST   | api/v2/air-conditioning/{vin}/settings/ac-at-unlock                        |  ✅     |         |
+| EnergyX | POST   | api/v2/air-conditioning/{vin}/settings/seats-heating                       |  ✅     |         |
 | EnergyX | POST   | api/v2/air-conditioning/{vin}/settings/target-temperature                  |       |         |
 | EnergyX | POST   | api/v2/air-conditioning/{vin}/timers                                       |       |         |
-| EnergyX | POST   | api/v2/air-conditioning/{vin}/settings/windows-heating                     |       |         |
-| EnergyX | POST   | api/v2/air-conditioning/{vin}/settings/ac-without-external-power           |       |         |
+| EnergyX | POST   | api/v2/air-conditioning/{vin}/settings/windows-heating                     |  ✅     |         |
+| EnergyX | POST   | api/v2/air-conditioning/{vin}/settings/ac-without-external-power           |  ✅     |         |
 | EnergyX | POST   | api/v2/air-conditioning/{vin}/auxiliary-heating/timers                     |       |         |
 | EnergyX | POST   | api/v2/air-conditioning/{vin}/active-ventilation/start                     |       |         |
-| EnergyX | POST   | api/v2/air-conditioning/{vin}/start                                        |       |         |
-| EnergyX | POST   | api/v2/air-conditioning/{vin}/auxiliary-heating/start                      |       |         |
-| EnergyX | POST   | api/v2/air-conditioning/{vin}/start-window-heating                         |       |         |
+| EnergyX | POST   | api/v2/air-conditioning/{vin}/start                                        |  ✅     |         |
+| EnergyX | POST   | api/v2/air-conditioning/{vin}/auxiliary-heating/start                      |  ✅     |         |
+| EnergyX | POST   | api/v2/air-conditioning/{vin}/start-window-heating                         |  ✅     |         |
 | EnergyX | POST   | api/v2/air-conditioning/{vin}/active-ventilation/stop                      |       |         |
-| EnergyX | POST   | api/v2/air-conditioning/{vin}/stop                                         |       |         |
-| EnergyX | POST   | api/v2/air-conditioning/{vin}/auxiliary-heating/stop                       |       |         |
-| EnergyX | POST   | api/v2/air-conditioning/{vin}/stop-window-heating                          |       |         |
+| EnergyX | POST   | api/v2/air-conditioning/{vin}/stop                                         |  ✅     |         |
+| EnergyX | POST   | api/v2/air-conditioning/{vin}/auxiliary-heating/stop                       |  ✅     |         |
+| EnergyX | POST   | api/v2/air-conditioning/{vin}/stop-window-heating                          |  ✅     |         |
 | EnergyX | POST   | api/v3/maps/places/favourites                                              |       |         |
 | EnergyX | DELETE | api/v3/maps/places/favourites/{id}                                         |       |         |
 | EnergyX | GET    | api/v3/maps/places/favourites                                              |       |         |
