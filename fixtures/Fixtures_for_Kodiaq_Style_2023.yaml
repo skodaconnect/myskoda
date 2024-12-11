@@ -308,6 +308,7 @@ reports:
       charger_lock_state:
       estimated_date_time_to_reach_target_temperature:
       heater_source:
+      outside_temperature:
       seat_heating_activated:
       target_temperature:
       window_heating_enabled:
