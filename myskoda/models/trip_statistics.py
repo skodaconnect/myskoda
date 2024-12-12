@@ -12,6 +12,7 @@ class VehicleType(StrEnum):
     FUEL = "FUEL"
     HYBRID = "HYBRID"
     ELECTRIC = "ELECTRIC"
+    GAS = "GAS"
 
 
 @dataclass
@@ -19,6 +20,9 @@ class StatisticsEntry(DataClassORJSONMixin):
     date: date
     average_fuel_consumption: float | None = field(
         default=None, metadata=field_options(alias="averageFuelConsumption")
+    )
+    average_gas_consumption: float | None = field(
+        default=None, metadata=field_options(alias="averageGasConsumption")
     )
     average_speed_in_kmph: int | None = field(
         default=None, metadata=field_options(alias="averageSpeedInKmph")
@@ -50,6 +54,9 @@ class TripStatistics(DataClassORJSONMixin):
     )
     overall_average_fuel_consumption: float | None = field(
         default=None, metadata=field_options(alias="overallAverageFuelConsumption")
+    )
+    overall_average_gas_consumption: float | None = field(
+        default=None, metadata=field_options(alias="overallAverageGasConsumption")
     )
     overall_average_mileage_in_km: int | None = field(
         default=None, metadata=field_options(alias="overallAverageMileageInKm")

@@ -513,6 +513,7 @@ reports:
   result:
     detailed_statistics:
     - average_fuel_consumption: 5.1
+      average_gas_consumption: null
       average_aux_consumption: null
       average_electric_consumption: null
       average_recuperation: null
@@ -523,6 +524,7 @@ reports:
       trip_ids:
       - 3423108886
     - average_fuel_consumption: null
+      average_gas_consumption: null
       average_speed_in_kmph: null
       average_aux_consumption: null
       average_electric_consumption: null
@@ -532,6 +534,7 @@ reports:
       travel_time_in_min: null
       trip_ids: null
     - average_fuel_consumption: null
+      average_gas_consumption: null
       average_speed_in_kmph: null
       average_aux_consumption: null
       average_electric_consumption: null
@@ -541,6 +544,7 @@ reports:
       travel_time_in_min: null
       trip_ids: null
     - average_fuel_consumption: null
+      average_gas_consumption: null
       average_speed_in_kmph: null
       average_aux_consumption: null
       average_electric_consumption: null
@@ -550,6 +554,7 @@ reports:
       travel_time_in_min: null
       trip_ids: null
     - average_fuel_consumption: null
+      average_gas_consumption: null
       average_speed_in_kmph: null
       average_aux_consumption: null
       average_electric_consumption: null
@@ -559,6 +564,7 @@ reports:
       travel_time_in_min: null
       trip_ids: null
     - average_fuel_consumption: null
+      average_gas_consumption: null
       average_speed_in_kmph: null
       average_aux_consumption: null
       average_electric_consumption: null
@@ -568,6 +574,7 @@ reports:
       travel_time_in_min: null
       trip_ids: null
     - average_fuel_consumption: null
+      average_gas_consumption: null
       average_speed_in_kmph: null
       average_aux_consumption: null
       average_electric_consumption: null
@@ -578,6 +585,7 @@ reports:
       trip_ids: null
     overall_average_electric_consumption: null
     overall_average_fuel_consumption: 5.1
+    overall_average_gas_consumption: null
     overall_average_mileage_in_km: 58
     overall_average_speed_in_kmph: 51
     overall_average_travel_time_in_min: 69

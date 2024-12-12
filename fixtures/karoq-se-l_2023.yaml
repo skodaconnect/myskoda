@@ -425,6 +425,7 @@ reports:
     - average_aux_consumption: null
       average_electric_consumption: null
       average_fuel_consumption: null
+      average_gas_consumption: null
       average_recuperation: null
       average_speed_in_kmph: null
       date: '2024-11-04'
@@ -434,6 +435,7 @@ reports:
     - average_aux_consumption: null
       average_electric_consumption: null
       average_fuel_consumption: null
+      average_gas_consumption: null
       average_recuperation: null
       average_speed_in_kmph: null
       date: '2024-11-05'
@@ -443,6 +445,7 @@ reports:
     - average_aux_consumption: null
       average_electric_consumption: null
       average_fuel_consumption: 7.22
+      average_gas_consumption: null
       average_recuperation: null
       average_speed_in_kmph: 40
       date: '2024-11-06'
@@ -454,6 +457,7 @@ reports:
     - average_aux_consumption: null
       average_electric_consumption: null
       average_fuel_consumption: null
+      average_gas_consumption: null
       average_recuperation: null
       average_speed_in_kmph: null
       date: '2024-11-07'
@@ -463,6 +467,7 @@ reports:
     - average_aux_consumption: null
       average_electric_consumption: null
       average_fuel_consumption: null
+      average_gas_consumption: null
       average_recuperation: null
       average_speed_in_kmph: null
       date: '2024-11-08'
@@ -472,6 +477,7 @@ reports:
     - average_aux_consumption: null
       average_electric_consumption: null
       average_fuel_consumption: null
+      average_gas_consumption: null
       average_recuperation: null
       average_speed_in_kmph: null
       date: '2024-11-09'
@@ -481,6 +487,7 @@ reports:
     - average_aux_consumption: null
       average_electric_consumption: null
       average_fuel_consumption: null
+      average_gas_consumption: null
       average_recuperation: null
       average_speed_in_kmph: null
       date: '2024-11-10'
@@ -489,6 +496,7 @@ reports:
       trip_ids: null
     overall_average_electric_consumption: null
     overall_average_fuel_consumption: 7.22
+    overall_average_gas_consumption: null
     overall_average_mileage_in_km: 14
     overall_average_speed_in_kmph: 40
     overall_average_travel_time_in_min: 24
