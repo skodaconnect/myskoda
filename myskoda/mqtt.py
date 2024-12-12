@@ -7,6 +7,7 @@ import asyncio
 import logging
 import re
 import ssl
+import uuid
 from collections.abc import Awaitable, Callable
 from datetime import UTC, datetime
 from random import uniform
@@ -148,7 +149,8 @@ class MySkodaMqttClient:
                 async with aiomqtt.Client(
                     hostname=self.hostname,
                     port=self.port,
-                    username=self.user_id,
+                    username="android-app",  # Explicit username from working payload
+                    identifier=str(uuid.uuid4()),  # Dynamically generate a UUID-based client ID
                     password=await self.authorization.get_access_token(),
                     logger=_LOGGER,
                     tls_context=_SSL_CONTEXT if self.enable_ssl else None,
