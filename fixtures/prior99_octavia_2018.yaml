@@ -393,6 +393,7 @@ reports:
   result:
     detailed_statistics:
     - average_fuel_consumption: 8.48
+      average_gas_consumption: null
       average_speed_in_kmph: 75
       average_aux_consumption: null
       average_recuperation: null
@@ -404,6 +405,7 @@ reports:
       - 2804340647
       - 2804697197
     - average_fuel_consumption: 4.89
+      average_gas_consumption: null
       average_speed_in_kmph: 49
       average_aux_consumption: null
       average_recuperation: null
@@ -415,6 +417,7 @@ reports:
       - 2804930587
       - 2805168290
     - average_fuel_consumption: null
+      average_gas_consumption: null
       average_speed_in_kmph: null
       average_aux_consumption: null
       average_recuperation: null
@@ -424,6 +427,7 @@ reports:
       travel_time_in_min: null
       trip_ids: null
     - average_fuel_consumption: null
+      average_gas_consumption: null
       average_speed_in_kmph: null
       average_aux_consumption: null
       average_recuperation: null
@@ -433,6 +437,7 @@ reports:
       travel_time_in_min: null
       trip_ids: null
     - average_fuel_consumption: null
+      average_gas_consumption: null
       average_speed_in_kmph: null
       average_aux_consumption: null
       average_recuperation: null
@@ -442,6 +447,7 @@ reports:
       travel_time_in_min: null
       trip_ids: null
     - average_fuel_consumption: null
+      average_gas_consumption: null
       average_speed_in_kmph: null
       average_aux_consumption: null
       average_recuperation: null
@@ -451,6 +457,7 @@ reports:
       travel_time_in_min: null
       trip_ids: null
     - average_fuel_consumption: null
+      average_gas_consumption: null
       average_speed_in_kmph: null
       average_aux_consumption: null
       average_recuperation: null
@@ -461,6 +468,7 @@ reports:
       trip_ids: null
     overall_average_electric_consumption: null
     overall_average_fuel_consumption: 7.36
+    overall_average_gas_consumption: null
     overall_average_mileage_in_km: 27
     overall_average_speed_in_kmph: 67
     overall_average_travel_time_in_min: 25

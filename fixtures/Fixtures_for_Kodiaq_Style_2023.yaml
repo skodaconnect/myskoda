@@ -518,6 +518,7 @@ reports:
       detailed_statistics:
         - date: "2024-12-02"
           average_fuel_consumption: 12.53
+          average_gas_consumption:
           average_speed_in_kmph: 20
           average_electric_consumption:
           average_recuperation:
@@ -530,6 +531,7 @@ reports:
             - 3622867909
         - date: "2024-12-03"
           average_fuel_consumption:
+          average_gas_consumption:
           average_speed_in_kmph:
           average_electric_consumption:
           average_recuperation:
@@ -539,6 +541,7 @@ reports:
           trip_ids:
         - date: "2024-12-04"
           average_fuel_consumption:
+          average_gas_consumption:
           average_speed_in_kmph:
           average_electric_consumption:
           average_recuperation:
@@ -548,6 +551,7 @@ reports:
           trip_ids:
         - date: "2024-12-05"
           average_fuel_consumption:
+          average_gas_consumption:
           average_speed_in_kmph:
           average_electric_consumption:
           average_recuperation:
@@ -557,6 +561,7 @@ reports:
           trip_ids:
         - date: "2024-12-06"
           average_fuel_consumption:
+          average_gas_consumption:
           average_speed_in_kmph:
           average_electric_consumption:
           average_recuperation:
@@ -566,6 +571,7 @@ reports:
           trip_ids:
         - date: "2024-12-07"
           average_fuel_consumption:
+          average_gas_consumption:
           average_speed_in_kmph:
           average_electric_consumption:
           average_recuperation:
@@ -575,6 +581,7 @@ reports:
           trip_ids:
         - date: "2024-12-08"
           average_fuel_consumption:
+          average_gas_consumption:
           average_speed_in_kmph:
           average_electric_consumption:
           average_recuperation:
@@ -584,6 +591,7 @@ reports:
           trip_ids:
       overall_average_electric_consumption:
       overall_average_fuel_consumption: 12.53
+      overall_average_gas_consumption:
       overall_average_mileage_in_km: 26
       overall_average_speed_in_kmph: 20
       overall_average_travel_time_in_min: 81
