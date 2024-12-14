@@ -15,6 +15,7 @@ from myskoda.models.service_event import (
     ServiceEventChargingData,
     ServiceEventData,
     ServiceEventName,
+    ServiceEventWithChargingData,
 )
 
 FIXTURES_DIR = Path(__file__).parent.joinpath("fixtures")
@@ -37,7 +38,10 @@ def load_service_events() -> list[str]:
 
 def test_parse_service_events(service_events: list[str]) -> None:
     for service_event in service_events:
-        event = ServiceEvent.from_json(service_event)
+        try:
+            event = ServiceEventWithChargingData.from_json(service_event)
+        except ValueError:
+            event = ServiceEvent.from_json(service_event)
 
         if event.name == ServiceEventName.CHANGE_SOC:
             assert event.data == ServiceEventChargingData(

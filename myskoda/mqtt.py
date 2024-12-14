@@ -16,7 +16,7 @@ from typing import Any, cast
 import aiomqtt
 
 from myskoda.auth.authorization import Authorization
-from myskoda.models.service_event import ServiceEvent
+from myskoda.models.service_event import ServiceEvent, ServiceEventWithChargingData
 
 from .const import (
     MQTT_ACCOUNT_EVENT_TOPICS,
@@ -206,6 +206,14 @@ class MySkodaMqttClient:
 
         self._parse_topic(topic_match, data)
 
+    @staticmethod
+    def _get_charging_event(data: str) -> ServiceEvent:
+        try:
+            event = ServiceEventWithChargingData.from_json(data)
+        except ValueError:
+            event = ServiceEvent.from_json(data)
+        return event
+
     def _parse_topic(self, topic_match: re.Match[str], data: str) -> None:
         """Parse the topic and extract relevant parts."""
         [user_id, vin, event_type, topic] = topic_match.groups()
@@ -256,7 +264,7 @@ class MySkodaMqttClient:
                         vin=vin,
                         user_id=user_id,
                         timestamp=datetime.now(tz=UTC),
-                        event=ServiceEvent.from_json(data),
+                        event=self._get_charging_event(data),
                     )
                 )
             elif event_type == EventType.SERVICE_EVENT and topic == "departure":
