@@ -30,12 +30,14 @@ class CarWindowDoorStates(IntEnum):
     ALL_CLOSED = 1
     WINDOW_OPEN = 2
     DOOR_OPEN = 3
+    ALL_OPEN = 4
 
 
 class DoorWindowState(StrEnum):
     CLOSED = "Closed"
     DOOR_OPEN = "Door opened"
     WINDOW_OPEN = "Window opened"
+    ALL_OPEN = "Door and Window opened"
 
 
 @dataclass
@@ -107,6 +109,8 @@ class Status(DataClassORJSONMixin):
             return DoorWindowState.DOOR_OPEN
         if state == CarWindowDoorStates.WINDOW_OPEN.value:
             return DoorWindowState.WINDOW_OPEN
+        if state == CarWindowDoorStates.ALL_OPEN.value:
+            return DoorWindowState.ALL_OPEN
         _LOGGER.debug("Unknown door state: %d", state)
         # Return default as being closed
         return DoorWindowState.CLOSED
