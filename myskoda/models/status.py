@@ -3,7 +3,7 @@
 import logging
 from dataclasses import dataclass, field
 from datetime import datetime
-from enum import IntEnum, StrEnum
+from enum import IntEnum
 from urllib.parse import parse_qs, urlparse
 
 from mashumaro import field_options
@@ -26,16 +26,12 @@ class CarBodyElements(IntEnum):
     SUNROOF = 8
 
 
-class CarWindowDoorStates(IntEnum):
-    ALL_CLOSED = 1
+class DoorWindowState(IntEnum):
+    CLOSED = 1
     WINDOW_OPEN = 2
     DOOR_OPEN = 3
-
-
-class DoorWindowState(StrEnum):
-    CLOSED = "Closed"
-    DOOR_OPEN = "Door opened"
-    WINDOW_OPEN = "Window opened"
+    ALL_OPEN = 4
+    UNKNOWN = 0  # default state for invalid values
 
 
 @dataclass
@@ -91,25 +87,32 @@ class Status(DataClassORJSONMixin):
             parsed_url = urlparse(self.renders.light_mode.one_x)
             parsed_query = parse_qs(parsed_url.query)
             split_values = parsed_query["vehicleState"][0].split("-")
-            integer_map = list(map(int, split_values))
+
+            # Convert values to integers, replacing invalid ones with default
+            integer_map = []
+            for value in split_values:
+                try:
+                    integer_map.append(int(value))
+                except ValueError:
+                    _LOGGER.warning("Invalid DoorWindowState: '%s', defaulting to UNKNOWN", value)
+                    integer_map.append(0)  # Default to UNKNOWN state
         except (IndexError, KeyError, ValueError):
             # Return default if mapping fails
             _LOGGER.exception("Unable to deduct doors/windows state from vehicle status url")
-            return [1, 1, 1, 1]
+            return [0, 0, 0, 0]
         return integer_map[:4]
 
     def _get_door_window_state(self, element: CarBodyElements) -> DoorWindowState:
         door_states = self._extract_window_door_state_list_from_url()
         state = door_states[element.value]
-        if state == CarWindowDoorStates.ALL_CLOSED.value:
-            return DoorWindowState.CLOSED
-        if state == CarWindowDoorStates.DOOR_OPEN.value:
-            return DoorWindowState.DOOR_OPEN
-        if state == CarWindowDoorStates.WINDOW_OPEN.value:
-            return DoorWindowState.WINDOW_OPEN
-        _LOGGER.debug("Unknown door state: %d", state)
-        # Return default as being closed
-        return DoorWindowState.CLOSED
+        if state in (
+            DoorWindowState.CLOSED,
+            DoorWindowState.DOOR_OPEN,
+            DoorWindowState.WINDOW_OPEN,
+            DoorWindowState.ALL_OPEN,
+        ):
+            return state
+        return DoorWindowState.UNKNOWN
 
     @property
     def left_front_door(self) -> DoorWindowState:
