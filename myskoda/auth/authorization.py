@@ -164,7 +164,7 @@ class Authorization:
                     if "terms-and-conditions" in location:
                         raise TermsAndConditionsError(location)
                     if "consent/marketing" in location:
-                        raise MarketingConstentError(location)
+                        raise MarketingConsentError(location)
                     async with self.session.get(location, allow_redirects=False) as response:
                         location = response.headers["Location"]
                 codes = location.replace("myskoda://redirect/login/#", "")
@@ -327,5 +327,5 @@ class AuthorizationFailedError(Exception):
 class TermsAndConditionsError(Exception):
     """Redirect to Terms and Conditions was encountered."""
 
-class MarketingConstentError(Exception):
+class MarketingConsentError(Exception):
     """Redirect to Marketing Consent encountered."""
