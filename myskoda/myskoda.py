@@ -36,6 +36,7 @@ from .models.air_conditioning import (
 )
 from .models.auxiliary_heating import AuxiliaryConfig, AuxiliaryHeating
 from .models.charging import ChargeMode, Charging
+from .models.departure import DepartureInfo, DepartureTimer
 from .models.driving_range import DrivingRange
 from .models.health import Health
 from .models.info import CapabilityId, Info
@@ -281,6 +282,16 @@ class MySkoda:
         await self.rest_api.unlock(vin, spin)
         await future
 
+    async def set_departure_timer(self, vin: str, timer: DepartureTimer) -> None:
+        """Send provided departure timer to the vehicle."""
+        future = self._wait_for_operation(OperationName.UPDATE_DEPARTURE_TIMERS)
+        await self.rest_api.set_departure_timer(vin, timer)
+        await future
+
+    async def get_departure_timers(self, vin: str, anonymize: bool = False) -> DepartureInfo:
+        """Retrieve departure timers for the specified vehicle."""
+        return (await self.rest_api.get_departure_timers(vin, anonymize=anonymize)).result
+
     async def get_auth_token(self) -> str:
         """Retrieve the main access token for the IDK session."""
         return await self.rest_api.authorization.get_access_token()
@@ -350,6 +361,7 @@ class MySkoda:
             CapabilityId.STATE,
             CapabilityId.TRIP_STATISTICS,
             CapabilityId.VEHICLE_HEALTH_INSPECTION,
+            CapabilityId.DEPARTURE_TIMERS,
         ]
 
         return await self.get_partial_vehicle(vin, all_capabilities)
@@ -363,24 +375,30 @@ class MySkoda:
 
         for capa in capabilities:
             if info.is_capability_available(capa):
-                match capa:
-                    case CapabilityId.AIR_CONDITIONING:
-                        vehicle.air_conditioning = await self.get_air_conditioning(vin)
-                    case CapabilityId.AUXILIARY_HEATING:
-                        vehicle.auxiliary_heating = await self.get_auxiliary_heating(vin)
-                    case CapabilityId.CHARGING:
-                        vehicle.charging = await self.get_charging(vin)
-                    case CapabilityId.PARKING_POSITION:
-                        vehicle.positions = await self.get_positions(vin)
-                    case CapabilityId.STATE:
-                        vehicle.status = await self.get_status(vin)
-                        vehicle.driving_range = await self.get_driving_range(vin)
-                    case CapabilityId.TRIP_STATISTICS:
-                        vehicle.trip_statistics = await self.get_trip_statistics(vin)
-                    case CapabilityId.VEHICLE_HEALTH_INSPECTION:
-                        vehicle.health = await self.get_health(vin)
+                await self._load_capability(vehicle, vin, capa)
 
         return vehicle
+
+    async def _load_capability(self, vehicle: Vehicle, vin: str, capa: CapabilityId) -> None:
+        """Load specific capability into the vehicle."""
+        match capa:
+            case CapabilityId.AIR_CONDITIONING:
+                vehicle.air_conditioning = await self.get_air_conditioning(vin)
+            case CapabilityId.AUXILIARY_HEATING:
+                vehicle.auxiliary_heating = await self.get_auxiliary_heating(vin)
+            case CapabilityId.CHARGING:
+                vehicle.charging = await self.get_charging(vin)
+            case CapabilityId.PARKING_POSITION:
+                vehicle.positions = await self.get_positions(vin)
+            case CapabilityId.STATE:
+                vehicle.status = await self.get_status(vin)
+                vehicle.driving_range = await self.get_driving_range(vin)
+            case CapabilityId.TRIP_STATISTICS:
+                vehicle.trip_statistics = await self.get_trip_statistics(vin)
+            case CapabilityId.VEHICLE_HEALTH_INSPECTION:
+                vehicle.health = await self.get_health(vin)
+            case CapabilityId.DEPARTURE_TIMERS:
+                vehicle.departure_info = await self.get_departure_timers(vin)
 
     async def get_all_vehicles(self) -> list[Vehicle]:
         """Load all vehicles based on their capabilities."""
@@ -428,6 +446,7 @@ class MySkoda:
             Endpoint.MAINTENANCE: self.rest_api.get_maintenance,
             Endpoint.DRIVING_RANGE: self.rest_api.get_driving_range,
             Endpoint.TRIP_STATISTICS: self.rest_api.get_trip_statistics,
+            Endpoint.DEPARTURE_INFO: self.rest_api.get_departure_timers,
         }
 
         # Look up the method, or raise an error if unsupported

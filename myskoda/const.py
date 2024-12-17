@@ -28,6 +28,7 @@ MQTT_OPERATION_TOPICS = [
     "charging/update-charge-mode",
     "charging/update-charging-profiles",
     "charging/update-charging-current",
+    "departure/update-departure-timers",
     "vehicle-access/honk-and-flash",
     "vehicle-access/lock-vehicle",
     "vehicle-services-backup/apply-backup",

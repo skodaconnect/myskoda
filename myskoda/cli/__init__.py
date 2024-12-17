@@ -23,6 +23,7 @@ from myskoda.cli.operations import (
     set_ac_at_unlock,
     set_ac_without_external_power,
     set_charge_limit,
+    set_departure_timer,
     set_reduced_current_limit,
     set_seats_heating,
     set_target_temperature,
@@ -41,6 +42,7 @@ from myskoda.cli.requests import (
     auth,
     auxiliary_heating,
     charging,
+    departure_timers,
     driving_range,
     garage,
     health,
@@ -171,6 +173,9 @@ cli.add_command(set_ac_without_external_power)
 cli.add_command(set_ac_at_unlock)
 cli.add_command(set_windows_heating)
 cli.add_command(set_seats_heating)
+cli.add_command(departure_timers)
+cli.add_command(set_departure_timer)
+
 
 if __name__ == "__main__":
     cli()
