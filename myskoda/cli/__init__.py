@@ -22,6 +22,7 @@ from myskoda.cli.operations import (
     lock,
     set_ac_at_unlock,
     set_ac_without_external_power,
+    set_auto_unlock_plug,
     set_charge_limit,
     set_reduced_current_limit,
     set_seats_heating,
@@ -171,6 +172,7 @@ cli.add_command(set_ac_without_external_power)
 cli.add_command(set_ac_at_unlock)
 cli.add_command(set_windows_heating)
 cli.add_command(set_seats_heating)
+cli.add_command(set_auto_unlock_plug)
 
 if __name__ == "__main__":
     cli()
