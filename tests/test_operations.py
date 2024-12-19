@@ -192,6 +192,28 @@ async def test_set_battery_care_mode(
 
 
 @pytest.mark.asyncio
+@pytest.mark.parametrize(("enabled", "expected"), [(True, "PERMANENT"), (False, "OFF")])
+async def test_set_auto_unlock_plug(
+    responses: aioresponses, mqtt_client: MQTTClient, myskoda: MySkoda, enabled: bool, expected: str
+) -> None:
+    url = f"{BASE_URL_SKODA}/api/v1/charging/{VIN}/set-auto-unlock-plug"
+    responses.put(url=url)
+
+    future = myskoda.set_auto_unlock_plug(VIN, enabled)
+
+    topic = f"{USER_ID}/{VIN}/operation-request/charging/update-auto-unlock-plug"
+    await mqtt_client.publish(topic, create_completed_json("update-auto-unlock-plug"), QOS_2)
+
+    await future
+    responses.assert_called_with(
+        url=url,
+        method="PUT",
+        headers={"authorization": f"Bearer {ACCESS_TOKEN}"},
+        json={"autoUnlockPlug": expected},
+    )
+
+
+@pytest.mark.asyncio
 @pytest.mark.parametrize(("reduced", "expected"), [(True, "REDUCED"), (False, "MAXIMUM")])
 async def test_set_reduced_current_limit(
     responses: aioresponses, mqtt_client: MQTTClient, myskoda: MySkoda, reduced: bool, expected: str

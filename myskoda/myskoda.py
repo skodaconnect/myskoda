@@ -194,6 +194,12 @@ class MySkoda:
         await self.rest_api.set_battery_care_mode(vin, enabled)
         await future
 
+    async def set_auto_unlock_plug(self, vin: str, enabled: bool) -> None:
+        """Enable or disable auto unlock plug when charged."""
+        future = self._wait_for_operation(OperationName.UPDATE_AUTO_UNLOCK_PLUG)
+        await self.rest_api.set_auto_unlock_plug(vin, enabled)
+        await future
+
     async def set_charge_limit(self, vin: str, limit: int) -> None:
         """Set the maximum charge limit in percent."""
         future = self._wait_for_operation(OperationName.UPDATE_CHARGE_LIMIT)
