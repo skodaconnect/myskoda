@@ -84,6 +84,10 @@ def anonymize_auxiliary_heating(data: dict) -> dict:
     return data
 
 
+def anonymize_departure_timers(data: dict) -> dict:
+    return data
+
+
 def anonymize_positions(data: dict) -> dict:
     if "positions" in data:
         for position in data["positions"]:

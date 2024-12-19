@@ -3,6 +3,7 @@
 from .models.air_conditioning import AirConditioning
 from .models.auxiliary_heating import AuxiliaryHeating
 from .models.charging import Charging
+from .models.departure import DepartureInfo
 from .models.driving_range import DrivingRange
 from .models.health import Health
 from .models.info import CapabilityId, Info
@@ -25,6 +26,7 @@ class Vehicle:
     trip_statistics: TripStatistics | None = None
     maintenance: Maintenance
     health: Health | None = None
+    departure_info: DepartureInfo | None = None
 
     def __init__(self, info: Info, maintenance: Maintenance) -> None:  # noqa: D107
         self.info = info

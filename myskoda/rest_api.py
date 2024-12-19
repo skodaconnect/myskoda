@@ -5,6 +5,7 @@ import json
 import logging
 from collections.abc import Callable
 from dataclasses import dataclass
+from datetime import UTC, datetime
 
 from aiohttp import ClientResponseError, ClientSession
 
@@ -12,6 +13,7 @@ from myskoda.anonymize import (
     anonymize_air_conditioning,
     anonymize_auxiliary_heating,
     anonymize_charging,
+    anonymize_departure_timers,
     anonymize_driving_range,
     anonymize_garage,
     anonymize_health,
@@ -38,6 +40,7 @@ from .models.air_conditioning import (
 )
 from .models.auxiliary_heating import AuxiliaryConfig, AuxiliaryHeating
 from .models.charging import Charging
+from .models.departure import DepartureInfo, DepartureTimer
 from .models.driving_range import DrivingRange
 from .models.health import Health
 from .models.info import Info
@@ -276,6 +279,19 @@ class RestApi:
         result = self._deserialize(raw, Garage.from_json)
         return GetEndpointResult(url=url, raw=raw, result=result)
 
+    async def get_departure_timers(
+        self, vin: str, anonymize: bool = False
+    ) -> GetEndpointResult[DepartureInfo]:
+        """Retrieve departure timers for the vehicle."""
+        url = f"/v1/vehicle-automatization/{vin}/departure/timers"
+        raw = self.process_json(
+            data=await self._make_get_request(url),
+            anonymize=anonymize,
+            anonymization_fn=anonymize_departure_timers,
+        )
+        result = self._deserialize(raw, DepartureInfo.from_json)
+        return GetEndpointResult(url=url, raw=raw, result=result)
+
     async def _headers(self) -> dict[str, str]:
         return {"authorization": f"Bearer {await self.authorization.get_access_token()}"}
 
@@ -418,6 +434,16 @@ class RestApi:
         )
 
     # TODO @dvx76: Maybe refactor for FBT001
+    async def set_auto_unlock_plug(self, vin: str, enabled: bool) -> None:
+        """Enable or disable auto unlock plug when charged."""
+        _LOGGER.debug("Setting auto unlock plug for vehicle %s to %r", vin, enabled)
+        json_data = {"autoUnlockPlug": "PERMANENT" if enabled else "OFF"}
+        await self._make_put_request(
+            url=f"/v1/charging/{vin}/set-auto-unlock-plug",
+            json=json_data,
+        )
+
+    # TODO @dvx76: Maybe refactor for FBT001
     async def set_reduced_current_limit(self, vin: str, reduced: bool) -> None:
         """Enable reducing the current limit by which the car is charged."""
         _LOGGER.debug("Setting reduced charging for vehicle %s to %r", vin, reduced)
@@ -512,6 +538,21 @@ class RestApi:
         }
         await self._make_post_request(
             url=f"/v1/vehicle-access/{vin}/honk-and-flash", json=json_data
+        )
+
+    async def set_departure_timer(self, vin: str, timer: DepartureTimer) -> None:
+        """Set departure timer."""
+        _LOGGER.debug(
+            "Setting departure timer #%i for vehicle %s to %r", timer.id, vin, timer.enabled
+        )
+
+        now = datetime.now(UTC)
+        datetime_str = now.isoformat()
+
+        json_data = {"deviceDateTime": datetime_str, "timers": [timer.to_dict()]}
+        await self._make_post_request(
+            url=f"/v1/vehicle-automatization/{vin}/departure/timers",
+            json=json_data,
         )
 
     def _deserialize[T](self, text: str, deserialize: Callable[[str], T]) -> T:

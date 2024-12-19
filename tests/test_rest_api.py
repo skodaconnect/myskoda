@@ -7,6 +7,7 @@ import pytest
 from aioresponses import aioresponses
 
 from myskoda.models.common import OpenState
+from myskoda.models.departure import DepartureInfo
 from myskoda.models.status import DoorWindowState
 from myskoda.models.trip_statistics import VehicleType
 from myskoda.myskoda import MySkoda
@@ -285,3 +286,31 @@ async def test_get_spin_status(
             assert (
                 get_spin_status_result.spin_status.state == spin_status_json["spinStatus"]["state"]
             )
+
+
+@pytest.fixture(name="departure_timers")
+def load_departure_timers() -> list[str]:
+    """Load charging fixture."""
+    departure_timers = []
+    for path in [
+        "other/departure-timers.json",
+    ]:
+        with FIXTURES_DIR.joinpath(path).open() as file:
+            departure_timers.append(file.read())
+    return departure_timers
+
+
+@pytest.mark.asyncio
+async def test_get_departure_timers(
+    departure_timers: list[str], myskoda: MySkoda, responses: aioresponses
+) -> None:
+    """Example unit test for RestAPI.charging(). Needs more work."""
+    for departure_timer in departure_timers:
+        target_vin = "TMBJM0CKV1N12345"
+        responses.get(
+            url=f"https://mysmob.api.connect.skoda-auto.cz/api/v1/vehicle-automatization/{target_vin}/departure/timers",
+            body=departure_timer,
+        )
+        get_departure_timers_result = await myskoda.get_departure_timers(target_vin)
+
+        assert get_departure_timers_result == DepartureInfo.from_json(departure_timer)
