@@ -375,12 +375,12 @@ class MySkoda:
 
         for capa in capabilities:
             if info.is_capability_available(capa):
-                await self._load_capability(vehicle, vin, capa)
+                await self._request_capability_data(vehicle, vin, capa)
 
         return vehicle
 
-    async def _load_capability(self, vehicle: Vehicle, vin: str, capa: CapabilityId) -> None:
-        """Load specific capability into the vehicle."""
+    async def _request_capability_data(self, vehicle: Vehicle, vin: str, capa: CapabilityId) -> None:
+        """Request specific capability data from MySkoda API."""
         match capa:
             case CapabilityId.AIR_CONDITIONING:
                 vehicle.air_conditioning = await self.get_air_conditioning(vin)
