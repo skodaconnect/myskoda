@@ -1,5 +1,7 @@
 """Baseic unit tests for operations."""
 
+from unittest.mock import AsyncMock, patch
+
 import pytest
 from aioresponses import aioresponses
 from amqtt.client import QOS_2, MQTTClient
@@ -16,6 +18,7 @@ from myskoda.models.air_conditioning import (
 )
 from myskoda.models.auxiliary_heating import AuxiliaryConfig, AuxiliaryStartMode
 from myskoda.models.charging import ChargeMode
+from myskoda.models.departure import DepartureInfo
 from myskoda.myskoda import MySkoda
 from tests.conftest import FIXTURES_DIR, create_completed_json
 
@@ -644,3 +647,40 @@ async def test_set_seats_heating(
         headers={"authorization": f"Bearer {ACCESS_TOKEN}"},
         json=json_data,
     )
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize(("timer_id", "enabled"), [(1, True), (2, False)])
+async def test_set_departure_timer(
+    responses: aioresponses, mqtt_client: MQTTClient, myskoda: MySkoda, timer_id: int, enabled: bool
+) -> None:
+    url = f"{BASE_URL_SKODA}/api/v1/vehicle-automatization/{VIN}/departure/timers"
+    responses.post(url=url)
+
+    departure_info_json = FIXTURES_DIR.joinpath("other/departure-timers.json").read_text()
+    departure_info = DepartureInfo.from_json(departure_info_json)
+
+    selected_timer = (
+        next((timer for timer in departure_info.timers if timer.id == timer_id), None)
+        if departure_info.timers
+        else None
+    )
+    assert selected_timer is not None
+
+    with patch("aiohttp.ClientSession._request", new_callable=AsyncMock) as mock_request:
+        mock_request.return_value = AsyncMock(status=200)
+        selected_timer.enabled = enabled
+        future = myskoda.set_departure_timer(VIN, selected_timer)
+
+        topic = f"{USER_ID}/{VIN}/operation-request/departure/update-departure-timers"
+        await mqtt_client.publish(topic, create_completed_json("update-departure-timers"), QOS_2)
+
+        await future
+
+        # Extract and assert the captured request body
+        assert mock_request.called
+        request_args, request_kwargs = mock_request.call_args
+        body = request_kwargs.get("data") or request_kwargs.get("json")
+        assert body is not None
+        # check only the timer as deviceDateTime can't be verified
+        assert body["timers"][0] == selected_timer.to_dict()

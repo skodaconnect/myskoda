@@ -356,3 +356,38 @@ async def set_auto_unlock_plug(
     myskoda: MySkoda = ctx.obj["myskoda"]
     async with asyncio.timeout(timeout):
         await myskoda.set_auto_unlock_plug(vin, enabled)
+
+
+@click.command()
+@click.option("timeout", "--timeout", type=float, default=300)
+@click.argument("vin")
+@click.option("timer", "--timer", type=click.Choice(["1", "2", "3"]), required=True)
+@click.option("enabled", "--enabled", type=bool, required=True)
+@click.pass_context
+@mqtt_required
+async def set_departure_timer(
+    ctx: Context,
+    timeout: float,  # noqa: ASYNC109
+    vin: str,
+    timer: str,
+    enabled: bool,
+) -> None:
+    """Enable or disable selected departure timer."""
+    timer_id = int(timer)
+    myskoda: MySkoda = ctx.obj["myskoda"]
+    async with asyncio.timeout(timeout):
+        # Get all timers from vehicle first
+        departure_info = await myskoda.get_departure_timers(vin)
+        if departure_info is not None:
+            selected_timer = (
+                next((t for t in departure_info.timers if t.id == timer_id), None)
+                if departure_info.timers
+                else None
+            )
+            if selected_timer is not None:
+                selected_timer.enabled = enabled
+                await myskoda.set_departure_timer(vin, selected_timer)
+            else:
+                print(f"No timer found with ID {timer_id}.")
+        else:
+            print("No DepartureInfo found for the given VIN.")

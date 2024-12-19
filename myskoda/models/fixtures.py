@@ -25,6 +25,7 @@ class Endpoint(StrEnum):
     MAINTENANCE = "maintenance"
     DRIVING_RANGE = "driving_range"
     TRIP_STATISTICS = "trip_statistics"
+    DEPARTURE_INFO = "departure_info"
     ALL = "all"
 
 
