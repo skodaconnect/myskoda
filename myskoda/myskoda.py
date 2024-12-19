@@ -379,7 +379,9 @@ class MySkoda:
 
         return vehicle
 
-    async def _request_capability_data(self, vehicle: Vehicle, vin: str, capa: CapabilityId) -> None:
+    async def _request_capability_data(
+        self, vehicle: Vehicle, vin: str, capa: CapabilityId
+    ) -> None:
         """Request specific capability data from MySkoda API."""
         match capa:
             case CapabilityId.AIR_CONDITIONING:
