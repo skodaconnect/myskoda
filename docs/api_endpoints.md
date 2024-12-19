@@ -28,7 +28,7 @@
 | sonar98 | POST   | api/v1/authentication/revoke-token                                         |       |         |
 | sonar98 | GET    | api/v1/vehicle-automatization/{vin}/departure/timers                       |       |         |
 | sonar98 | POST   | api/v1/vehicle-automatization/{vin}/departure/timers                       |       |         |
-| sonar98 | POST   | api/v1/vehicle-automatization/{vin}/departure/timers/settings              |       |         |
+| sonar98 | POST   | api/v1/vehicle-automatization/{vin}/departure/timers/settings              | ✅      |         |
 | sonar98 | GET    | api/v1/discover-news                                                       |       |         |
 | sonar98 | GET    | api/v1/service-partners/{servicePartnerId}/encoded-url                     |       |         |
 | sonar98 | GET    | api/v1/service-partners                                                    |       |         |

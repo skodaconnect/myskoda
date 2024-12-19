@@ -170,6 +170,28 @@ async def test_set_charge_limit(
 
 
 @pytest.mark.asyncio
+@pytest.mark.parametrize("limit", [0, 20, 30, 50])
+async def test_set_minimum_charge_limit(
+    responses: aioresponses, mqtt_client: MQTTClient, myskoda: MySkoda, limit: int
+) -> None:
+    url = f"{BASE_URL_SKODA}/api/v1/vehicle-automatization/{VIN}/departure/timers/settings"
+    responses.post(url=url)
+
+    future = myskoda.set_minimum_charge_limit(VIN, limit)
+
+    topic = f"{USER_ID}/{VIN}/operation-request/departure/update-minimal-soc"
+    await mqtt_client.publish(topic, create_completed_json("update-minimal-soc"), QOS_2)
+
+    await future
+    responses.assert_called_with(
+        url=url,
+        method="POST",
+        headers={"authorization": f"Bearer {ACCESS_TOKEN}"},
+        json={"minimumBatteryStateOfChargeInPercent": limit},
+    )
+
+
+@pytest.mark.asyncio
 @pytest.mark.parametrize(("enabled", "expected"), [(True, "ACTIVATED"), (False, "DEACTIVATED")])
 async def test_set_battery_care_mode(
     responses: aioresponses, mqtt_client: MQTTClient, myskoda: MySkoda, enabled: bool, expected: str

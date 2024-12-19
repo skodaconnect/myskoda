@@ -160,6 +160,19 @@ async def set_charge_limit(ctx: Context, timeout: float, vin: str, limit: int) -
 @click.command()
 @click.option("timeout", "--timeout", type=float, default=300)
 @click.argument("vin")
+@click.option("limit", "--limit", type=float, required=True)
+@click.pass_context
+@mqtt_required
+async def set_minimum_charge_limit(ctx: Context, timeout: float, vin: str, limit: int) -> None:  # noqa: ASYNC109
+    """Set the minimum charge limit in percent."""
+    myskoda: MySkoda = ctx.obj["myskoda"]
+    async with asyncio.timeout(timeout):
+        await myskoda.set_minimum_charge_limit(vin, limit)
+
+
+@click.command()
+@click.option("timeout", "--timeout", type=float, default=300)
+@click.argument("vin")
 @click.option("enabled", "--enabled", type=bool, required=True)
 @click.pass_context
 @mqtt_required

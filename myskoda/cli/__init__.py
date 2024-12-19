@@ -25,6 +25,7 @@ from myskoda.cli.operations import (
     set_auto_unlock_plug,
     set_charge_limit,
     set_departure_timer,
+    set_minimum_charge_limit,
     set_reduced_current_limit,
     set_seats_heating,
     set_target_temperature,
@@ -160,6 +161,7 @@ cli.add_command(set_target_temperature)
 cli.add_command(start_window_heating)
 cli.add_command(stop_window_heating)
 cli.add_command(set_charge_limit)
+cli.add_command(set_minimum_charge_limit)
 cli.add_command(set_reduced_current_limit)
 cli.add_command(wakeup)
 cli.add_command(wait_for_operation)
