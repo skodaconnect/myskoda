@@ -418,6 +418,16 @@ class RestApi:
         )
 
     # TODO @dvx76: Maybe refactor for FBT001
+    async def set_auto_unlock_plug(self, vin: str, enabled: bool) -> None:
+        """Enable or disable auto unlock plug when charged."""
+        _LOGGER.debug("Setting auto unlock plug for vehicle %s to %r", vin, enabled)
+        json_data = {"autoUnlockPlug": "PERMANENT" if enabled else "OFF"}
+        await self._make_put_request(
+            url=f"/v1/charging/{vin}/set-auto-unlock-plug",
+            json=json_data,
+        )
+
+    # TODO @dvx76: Maybe refactor for FBT001
     async def set_reduced_current_limit(self, vin: str, reduced: bool) -> None:
         """Enable reducing the current limit by which the car is charged."""
         _LOGGER.debug("Setting reduced charging for vehicle %s to %r", vin, reduced)

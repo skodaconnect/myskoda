@@ -338,3 +338,21 @@ async def set_seats_heating(
     )
     async with asyncio.timeout(timeout):
         await myskoda.set_seats_heating(vin, settings)
+
+
+@click.command()
+@click.option("timeout", "--timeout", type=float, default=300)
+@click.argument("vin")
+@click.option("enabled", "--enabled", type=bool, required=True)
+@click.pass_context
+@mqtt_required
+async def set_auto_unlock_plug(
+    ctx: Context,
+    timeout: float,  # noqa: ASYNC109
+    vin: str,
+    enabled: bool,
+) -> None:
+    """Enable or disable auto unlock plug when charged."""
+    myskoda: MySkoda = ctx.obj["myskoda"]
+    async with asyncio.timeout(timeout):
+        await myskoda.set_auto_unlock_plug(vin, enabled)

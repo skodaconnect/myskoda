@@ -327,5 +327,6 @@ class AuthorizationFailedError(Exception):
 class TermsAndConditionsError(Exception):
     """Redirect to Terms and Conditions was encountered."""
 
+
 class MarketingConsentError(Exception):
     """Redirect to Marketing Consent encountered."""
