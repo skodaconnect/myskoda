@@ -26,8 +26,8 @@
 | sonar98 | GET    | api/v1/vehicle-information/{vin}                                           |       |         |
 | sonar98 | GET    | api/v1/vehicle-information/{vin}/renders                                   |       |         |
 | sonar98 | POST   | api/v1/authentication/revoke-token                                         |       |         |
-| sonar98 | GET    | api/v1/vehicle-automatization/{vin}/departure/timers                       |       |         |
-| sonar98 | POST   | api/v1/vehicle-automatization/{vin}/departure/timers                       |       |         |
+| sonar98 | GET    | api/v1/vehicle-automatization/{vin}/departure/timers                       | ✅      |         |
+| sonar98 | POST   | api/v1/vehicle-automatization/{vin}/departure/timers                       | ✅      |         |
 | sonar98 | POST   | api/v1/vehicle-automatization/{vin}/departure/timers/settings              | ✅      |         |
 | sonar98 | GET    | api/v1/discover-news                                                       |       |         |
 | sonar98 | GET    | api/v1/service-partners/{servicePartnerId}/encoded-url                     |       |         |
@@ -52,9 +52,9 @@
 | sonar98 | GET    | api/v1/charging/{vin}/profiles                                             |       |         |
 | sonar98 | POST   | api/v1/charging/{vin}/certificates/{certificateId}                         |       |         |
 | sonar98 | DELETE | api/v1/charging/{vin}/certificates/{certificateId}                         |       |         |
-| sonar98 | PUT    | api/v1/charging/{vin}/set-auto-unlock-plug                                 |       |         |
+| sonar98 | PUT    | api/v1/charging/{vin}/set-auto-unlock-plug                                 | ✅      |         |
 | sonar98 | PUT    | api/v1/charging/{vin}/battery-support                                      |       |         |
-| sonar98 | PUT    | api/v1/charging/{vin}/set-charging-current                                 |       |         |
+| sonar98 | PUT    | api/v1/charging/{vin}/set-charging-current                                 | ✅      |         |
 | sonar98 | PUT    | api/v1/charging/{vin}/profiles/{id}                                        |       |         |
 | sonar98 | POST   | api/v1/shop/loyalty-products/{productCode}                                 |       |         |
 | sonar98 | GET    | api/v1/shop/loyalty-products/{productCode}/image                           |       |         |
@@ -109,10 +109,10 @@
 | EnergyX | GET    | api/v2/car-configurator/url                                                |       |         |
 | EnergyX | POST   | api/v2/garage/vehicles/{vin}/capabilities/change-user-capability           |       |         |
 | EnergyX | GET    | api/v2/garage/first-vehicle                                                |       |         |
-| EnergyX | GET    | api/v2/garage                                                              |       |         |
+| EnergyX | GET    | api/v2/garage                                                              | ✅      |         |
 | EnergyX | GET    | api/v2/garage/initial-vehicle                                              |       |         |
 | EnergyX | GET    | api/v2/garage/vehicles/ordered/{commissionId}                              |       |         |
-| EnergyX | GET    | api/v2/garage/vehicles/{vin}                                               |       |         |
+| EnergyX | GET    | api/v2/garage/vehicles/{vin}                                               | ✅      |         |
 | EnergyX | GET    | api/v2/garage/vehicles/{vin}/users/guests                                  |       |         |
 | EnergyX | GET    | api/v2/garage/vehicles/{vin}/users/guests/count                            |       |         |
 | EnergyX | GET    | api/v2/garage/vehicles/{vin}/users/primary                                 |       |         |
@@ -157,7 +157,7 @@
 | EnergyX | POST   | api/v2/air-conditioning/{vin}/active-ventilation/timers                    |       |         |
 | EnergyX | POST   | api/v2/air-conditioning/{vin}/settings/ac-at-unlock                        |  ✅     |         |
 | EnergyX | POST   | api/v2/air-conditioning/{vin}/settings/seats-heating                       |  ✅     |         |
-| EnergyX | POST   | api/v2/air-conditioning/{vin}/settings/target-temperature                  |       |         |
+| EnergyX | POST   | api/v2/air-conditioning/{vin}/settings/target-temperature                  |  ✅     |         |
 | EnergyX | POST   | api/v2/air-conditioning/{vin}/timers                                       |       |         |
 | EnergyX | POST   | api/v2/air-conditioning/{vin}/settings/windows-heating                     |  ✅     |         |
 | EnergyX | POST   | api/v2/air-conditioning/{vin}/settings/ac-without-external-power           |  ✅     |         |
@@ -189,7 +189,7 @@
 | EnergyX | GET    | api/v3/vehicle-maintenance/service-partners/{servicePartnerId}             |       |         |
 | EnergyX | GET    | api/v3/vehicle-maintenance/service-partners                                |       |         |
 | EnergyX | GET    | api/v3/vehicle-maintenance/vehicles/{vin}/report                           |       |         |
-| EnergyX | GET    | api/v3/vehicle-maintenance/vehicles/{vin}                                  |       |         |
+| EnergyX | GET    | api/v3/vehicle-maintenance/vehicles/{vin}                                  | ✅      |         |
 | EnergyX | PUT    | api/v3/vehicle-maintenance/vehicles/{vin}/service-partner                  |       |         |
 | EnergyX | GET    | api/v2/test-drives/dealers                                                 |       |         |
 | EnergyX | GET    | api/v2/test-drives/form-definition                                         |       |         |
