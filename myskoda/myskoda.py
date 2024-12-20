@@ -206,6 +206,12 @@ class MySkoda:
         await self.rest_api.set_charge_limit(vin, limit)
         await future
 
+    async def set_minimum_charge_limit(self, vin: str, limit: int) -> None:
+        """Set minimum battery SoC in percent for departure timer."""
+        future = self._wait_for_operation(OperationName.UPDATE_MINIMAL_SOC)
+        await self.rest_api.set_minimum_charge_limit(vin, limit)
+        await future
+
     async def stop_window_heating(self, vin: str) -> None:
         """Stop heating both the front and rear window."""
         future = self._wait_for_operation(OperationName.STOP_WINDOW_HEATING)

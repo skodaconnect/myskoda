@@ -423,6 +423,20 @@ class RestApi:
             json=json_data,
         )
 
+    async def set_minimum_charge_limit(self, vin: str, limit: int) -> None:
+        """Set minimum battery SoC in percent for departure timer."""
+        _LOGGER.debug(
+            "Setting minimum SoC for departure timers for vehicle %s to %r",
+            vin,
+            limit,
+        )
+
+        json_data = {"minimumBatteryStateOfChargeInPercent": limit}
+        await self._make_post_request(
+            url=f"/v1/vehicle-automatization/{vin}/departure/timers/settings",
+            json=json_data,
+        )
+
     # TODO @dvx76: Maybe refactor for FBT001
     async def set_battery_care_mode(self, vin: str, enabled: bool) -> None:
         """Enable or disable the battery care mode."""
