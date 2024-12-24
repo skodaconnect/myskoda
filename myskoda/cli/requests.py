@@ -147,4 +147,4 @@ async def departure_timers(ctx: Context, vin: str, anonymize: bool) -> None:
 async def auth(ctx: Context) -> None:
     """Extract the auth token."""
     myskoda: MySkoda = ctx.obj["myskoda"]
-    print(myskoda.get_auth_token())
+    print(await myskoda.get_auth_token())
