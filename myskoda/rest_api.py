@@ -6,6 +6,7 @@ import logging
 from collections.abc import Callable
 from dataclasses import dataclass
 from datetime import UTC, datetime
+from urllib.parse import quote
 
 from aiohttp import ClientResponseError, ClientSession
 
@@ -283,7 +284,20 @@ class RestApi:
         self, vin: str, anonymize: bool = False
     ) -> GetEndpointResult[DepartureInfo]:
         """Retrieve departure timers for the vehicle."""
-        url = f"/v1/vehicle-automatization/{vin}/departure/timers"
+        # Get the current local time with timezone
+        now = datetime.now().astimezone()
+        # Format the datetime string with timezone
+        formatted_time = (
+            now.strftime("%Y-%m-%dT%H:%M:%S.%f")
+            + now.strftime("%z")[:3]
+            + ":"
+            + now.strftime("%z")[3:]
+        )
+
+        url = (
+            f"/v1/vehicle-automatization/{vin}/departure/timers"
+            f"?deviceDateTime={quote(formatted_time, safe='')}"
+        )
         raw = self.process_json(
             data=await self._make_get_request(url),
             anonymize=anonymize,
