@@ -23,6 +23,7 @@ from .const import (
     MQTT_BROKER_HOST,
     MQTT_BROKER_PORT,
     MQTT_KEEPALIVE,
+    MQTT_FAST_RETRY,
     MQTT_OPERATION_TOPICS,
     MQTT_RECONNECT_DELAY,
     MQTT_SERVICE_EVENT_TOPICS,
@@ -43,7 +44,7 @@ from .models.operation_request import OperationName, OperationRequest, Operation
 
 _LOGGER = logging.getLogger(__name__)
 TOPIC_RE = re.compile("^(.*?)/(.*?)/(.*?)/(.*?)$")
-
+app_uuid = uuid.uuid4()
 
 def _create_ssl_context() -> ssl.SSLContext:
     """Create a SSL context for the MQTT connection."""
@@ -144,17 +145,20 @@ class MySkodaMqttClient:
         """
         _LOGGER.debug("Starting _connect_and_listen")
         self._running = True
+        retry_count = 0  # Track the number of retries
+        self._reconnect_delay = MQTT_RECONNECT_DELAY  # Initial delay for backoff
         while self._running:
             try:
                 async with aiomqtt.Client(
                     hostname=self.hostname,
                     port=self.port,
                     username="android-app",  # Explicit username from working payload
-                    identifier=str(uuid.uuid4()),  # Dynamically generate a UUID-based client ID
+                    identifier=str(app_uuid),
                     password=await self.authorization.get_access_token(),
                     logger=_LOGGER,
                     tls_context=_SSL_CONTEXT if self.enable_ssl else None,
                     keepalive=MQTT_KEEPALIVE,
+                    clean_session=True,
                 ) as client:
                     _LOGGER.info("Connected to MQTT")
                     _LOGGER.debug("using MQTT client %s", client)
@@ -170,16 +174,19 @@ class MySkodaMqttClient:
 
                     self._subscribed.set()
                     self._reconnect_delay = MQTT_RECONNECT_DELAY
+                    retry_count = 0  # Reset retry count on successful connection
                     async for message in client.messages:
                         self._on_message(message)
             except aiomqtt.MqttError as exc:
+                retry_count += 1
                 _LOGGER.info(
                     "Connection lost (%s); reconnecting in %ss", exc, self._reconnect_delay
                 )
                 await asyncio.sleep(self._reconnect_delay)
-                self._reconnect_delay *= 2
-                self._reconnect_delay += uniform(0, 1)  # noqa: S311
-                _LOGGER.debug("Increased reconnect backoff to %s", self._reconnect_delay)
+                if retry_count > MQTT_FAST_RETRY: # first x retries are not exponential
+                    self._reconnect_delay *= 2
+                    self._reconnect_delay += uniform(0, 1)  # noqa: S311
+                    _LOGGER.debug("Increased reconnect backoff to %s", self._reconnect_delay)
 
     def _on_message(self, msg: aiomqtt.Message) -> None:
         """Deserialize received MQTT message and emit Event to subscribed callbacks."""
