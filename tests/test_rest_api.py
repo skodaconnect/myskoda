@@ -1,7 +1,6 @@
 """Unit tests for myskoda.rest_api."""
 
 import json
-import re
 from pathlib import Path
 
 import pytest
@@ -308,12 +307,8 @@ async def test_get_departure_timers(
     """Example unit test for RestAPI.charging(). Needs more work."""
     for departure_timer in departure_timers:
         target_vin = "TMBJM0CKV1N12345"
-        base_url = f"https://mysmob.api.connect.skoda-auto.cz/api/v1/vehicle-automatization/{target_vin}/departure/timers"
-        # Add a regular expression for the dynamic timestamp query parameter
-        url_pattern = re.compile(rf"{base_url}\?deviceDateTime=.*")
-
         responses.get(
-            url=url_pattern,
+            url=f"https://mysmob.api.connect.skoda-auto.cz/api/v1/vehicle-automatization/{target_vin}/departure/timers",
             body=departure_timer,
         )
         get_departure_timers_result = await myskoda.get_departure_timers(target_vin)
