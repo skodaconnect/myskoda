@@ -774,7 +774,7 @@ reports:
     raw: >-
       {"targetTemperature": {"celsius": 20.0, "fahrenheit": 68.0,
       "unitInCar": "CELSIUS"}, "timers": []}
-    url: /v1/vehicle-automatization/TMOCKAA0AA000000/departure/timers
+    url: /v1/vehicle-automatization/TMOCKAA0AA000000/departure/timers?deviceDateTime=2024-12-28T11:15:09.434%2B01:00
     result:
       car_captured_timestamp: null
       first_occurring_timer_id: null
