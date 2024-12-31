@@ -304,6 +304,7 @@ class RestApi:
             anonymization_fn=anonymize_departure_timers,
         )
         result = self._deserialize(raw, DepartureInfo.from_json)
+        url = anonymize_url(url) if anonymize else url
         return GetEndpointResult(url=url, raw=raw, result=result)
 
     async def _headers(self) -> dict[str, str]:
