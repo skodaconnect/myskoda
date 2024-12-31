@@ -22,8 +22,8 @@ from .const import (
     MQTT_ACCOUNT_EVENT_TOPICS,
     MQTT_BROKER_HOST,
     MQTT_BROKER_PORT,
-    MQTT_KEEPALIVE,
     MQTT_FAST_RETRY,
+    MQTT_KEEPALIVE,
     MQTT_OPERATION_TOPICS,
     MQTT_RECONNECT_DELAY,
     MQTT_SERVICE_EVENT_TOPICS,
@@ -45,6 +45,7 @@ from .models.operation_request import OperationName, OperationRequest, Operation
 _LOGGER = logging.getLogger(__name__)
 TOPIC_RE = re.compile("^(.*?)/(.*?)/(.*?)/(.*?)$")
 app_uuid = uuid.uuid4()
+
 
 def _create_ssl_context() -> ssl.SSLContext:
     """Create a SSL context for the MQTT connection."""
@@ -183,7 +184,7 @@ class MySkodaMqttClient:
                     "Connection lost (%s); reconnecting in %ss", exc, self._reconnect_delay
                 )
                 await asyncio.sleep(self._reconnect_delay)
-                if retry_count > MQTT_FAST_RETRY: # first x retries are not exponential
+                if retry_count > MQTT_FAST_RETRY:  # first x retries are not exponential
                     self._reconnect_delay *= 2
                     self._reconnect_delay += uniform(0, 1)  # noqa: S311
                     _LOGGER.debug("Increased reconnect backoff to %s", self._reconnect_delay)

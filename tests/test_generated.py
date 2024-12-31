@@ -1,5 +1,6 @@
 """Unit tests for generated fixtures."""
 
+import re
 from pathlib import Path
 
 import pytest
@@ -17,7 +18,13 @@ FIXTURES_DIR = Path(__file__).parent.parent / "fixtures"
 async def test_report_get(
     report: FixtureReportGet, responses: aioresponses, myskoda: MySkoda
 ) -> None:
-    responses.get(url=f"{BASE_URL_SKODA}/api{report.url}", body=report.raw)
+    # Check if the URL contains a query string
+    if report.url and "?" in report.url:
+        url_pattern = re.compile(rf"{BASE_URL_SKODA}/api{report.url.split('?')[0]}\?.*")
+    else:
+        url_pattern = re.compile(rf"{BASE_URL_SKODA}/api{report.url}")
+    responses.get(url=url_pattern, body=report.raw)
+
     result = await myskoda.get_endpoint(VIN, report.endpoint, anonymize=True)
 
     assert result.result.to_dict() == report.result
