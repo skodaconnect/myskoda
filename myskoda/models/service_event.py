@@ -161,7 +161,11 @@ class ServiceEventChargingCompleted(ServiceEvent):
     """Event class for charging-completed service event."""
 
     name = ServiceEventName.CHARGING_COMPLETED
-    data: ServiceEventChargingData
+    # ServiceEventChargingData should be given first in the union list
+    # because the ServiceEventData is a subset of the ServiceEventChargingData
+    # and will be recognized as valid parser but then it will miss the rest of
+    # the data
+    data: ServiceEventChargingData | ServiceEventData
 
 
 class ServiceEventChargingStatusChanged(ServiceEvent):
