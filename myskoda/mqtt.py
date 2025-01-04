@@ -151,7 +151,7 @@ class MySkodaMqttClient:
         while self._running:
             try:
                 # client_id = Id + session_uuid4 + # + random_uuid4
-                client_id = "Id"+str(app_uuid)+"#"+str(uuid.uuid4())
+                client_id = "Id" + str(app_uuid) + "#" + str(uuid.uuid4())
                 async with aiomqtt.Client(
                     hostname=self.hostname,
                     port=self.port,
