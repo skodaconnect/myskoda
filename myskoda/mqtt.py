@@ -150,11 +150,13 @@ class MySkodaMqttClient:
         self._reconnect_delay = MQTT_RECONNECT_DELAY  # Initial delay for backoff
         while self._running:
             try:
+                # client_id = Id + session_uuid4 + # + random_uuid4
+                client_id = "Id"+str(app_uuid)+"#"+str(uuid.uuid4())
                 async with aiomqtt.Client(
                     hostname=self.hostname,
                     port=self.port,
                     username="android-app",  # Explicit username from working payload
-                    identifier=str(app_uuid),
+                    identifier=client_id,
                     password=await self.authorization.get_access_token(),
                     logger=_LOGGER,
                     tls_context=_SSL_CONTEXT if self.enable_ssl else None,
