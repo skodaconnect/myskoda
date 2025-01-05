@@ -44,7 +44,7 @@ from .models.operation_request import OperationName, OperationRequest, Operation
 
 _LOGGER = logging.getLogger(__name__)
 TOPIC_RE = re.compile("^(.*?)/(.*?)/(.*?)/(.*?)$")
-app_uuid = uuid.uuid4()
+app_uuid = '2940a48-3881-43c2-be46-c4cf53e7fc7b'
 
 
 def _create_ssl_context() -> ssl.SSLContext:
