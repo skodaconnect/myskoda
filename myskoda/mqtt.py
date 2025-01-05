@@ -193,6 +193,7 @@ class MySkodaMqttClient:
                 ):  # first x retries are not exponential
                     self._reconnect_delay *= 2
                     self._reconnect_delay += uniform(0, 1)  # noqa: S311
+                    self._reconnect_delay = min(self._reconnect_delay, MQTT_MAX_RECONNECT_DELAY)
                     _LOGGER.debug("Increased reconnect backoff to %s", self._reconnect_delay)
 
     def _on_message(self, msg: aiomqtt.Message) -> None:
