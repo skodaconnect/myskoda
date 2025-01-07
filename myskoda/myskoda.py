@@ -389,11 +389,12 @@ class MySkoda:
             # Only request vehicle health data if we do not need to wakeup the car
             # This avoids triggering battery protection, such as in Skoda Karoq
             # https://github.com/skodaconnect/homeassistant-myskoda/issues/468
-            if (
-                info.is_capability_available(capa)
-                and capa == CapabilityId.VEHICLE_HEALTH_INSPECTION
-                and CapabilityId.VEHICLE_HEALTH_WARNINGS_WITH_WAKE_UP not in capabilities
-            ):
+            if info.is_capability_available(capa):
+                if (
+                    capa == CapabilityId.VEHICLE_HEALTH_INSPECTION
+                    and CapabilityId.VEHICLE_HEALTH_WARNINGS_WITH_WAKE_UP in capabilities
+                ):
+                    continue
                 await self._request_capability_data(vehicle, vin, capa)
 
         return vehicle
