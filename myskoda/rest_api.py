@@ -35,9 +35,9 @@ from .const import BASE_URL_SKODA, REQUEST_TIMEOUT_IN_SECONDS
 from .models.air_conditioning import (
     AirConditioning,
     AirConditioningAtUnlock,
+    AirConditioningTimer,
     AirConditioningWithoutExternalPower,
     SeatHeating,
-    Timer,
     WindowHeating,
 )
 from .models.auxiliary_heating import AuxiliaryConfig, AuxiliaryHeating
@@ -585,7 +585,7 @@ class RestApi:
             json=json_data,
         )
 
-    async def set_ac_timer(self, vin: str, timer: Timer) -> None:
+    async def set_ac_timer(self, vin: str, timer: AirConditioningTimer) -> None:
         """Set air-conditioning timer."""
         _LOGGER.debug(
             "Setting air-conditioning timer #%i for vehicle %s to %r", timer.id, vin, timer.enabled

@@ -9,7 +9,12 @@ from mashumaro import field_options
 from mashumaro.config import TO_DICT_ADD_BY_ALIAS_FLAG, TO_DICT_ADD_OMIT_NONE_FLAG, BaseConfig
 from mashumaro.mixins.orjson import DataClassORJSONMixin
 
-from .air_conditioning import HeaterSource, OutsideTemperature, TargetTemperature, Timer
+from .air_conditioning import (
+    AirConditioningTimer,
+    HeaterSource,
+    OutsideTemperature,
+    TargetTemperature,
+)
 
 
 class AuxiliaryState(StrEnum):
@@ -65,7 +70,7 @@ class AuxiliaryConfig(DataClassORJSONMixin):
 class AuxiliaryHeating(DataClassORJSONMixin):
     """Information related to auxiliary heating."""
 
-    timers: list[Timer]
+    timers: list[AirConditioningTimer]
     errors: list[Any]
     state: AuxiliaryState | None = field(default=None, metadata=field_options(alias="state"))
     start_mode: AuxiliaryStartMode | None = field(

@@ -42,7 +42,7 @@ class HeaterSource(StrEnum):
 
 
 @dataclass
-class Timer(DataClassORJSONMixin):
+class AirConditioningTimer(DataClassORJSONMixin):
     enabled: bool
     id: int
     time: time
@@ -148,7 +148,7 @@ class WindowHeating(DataClassORJSONMixin):
 class AirConditioning(DataClassORJSONMixin):
     """Information related to air conditioning."""
 
-    timers: list[Timer]
+    timers: list[AirConditioningTimer]
     errors: list[Any]
     state: AirConditioningState
     steering_wheel_position: Side = field(metadata=field_options(alias="steeringWheelPosition"))
