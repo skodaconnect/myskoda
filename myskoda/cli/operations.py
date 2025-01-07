@@ -409,7 +409,7 @@ async def set_departure_timer(
 @click.command()
 @click.option("timeout", "--timeout", type=float, default=300)
 @click.argument("vin")
-@click.option("timer", "--timer", type=click.Choice(["1", "2"]), required=True)
+@click.option("timer", "--timer", type=click.Choice(["1", "2", "3"]), required=True)
 @click.option("enabled", "--enabled", type=bool, required=True)
 @click.pass_context
 @mqtt_required

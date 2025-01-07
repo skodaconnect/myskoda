@@ -591,7 +591,7 @@ class RestApi:
             "Setting air-conditioning timer #%i for vehicle %s to %r", timer.id, vin, timer.enabled
         )
 
-        json_data = {"timers": [timer.to_dict()]}
+        json_data = {"timers": [timer.to_dict(by_alias=True)]}
         await self._make_post_request(
             url=f"/v2/air-conditioning/{vin}/timers",
             json=json_data,

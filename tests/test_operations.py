@@ -733,7 +733,7 @@ async def test_set_ac_timer(
     topic = f"{USER_ID}/{VIN}/operation-request/air-conditioning/set-air-conditioning-timers"
     await mqtt_client.publish(topic, create_completed_json("set-air-conditioning-timers"), QOS_2)
 
-    json_data = {"timers": [selected_timer.to_dict()]}
+    json_data = {"timers": [selected_timer.to_dict(by_alias=True)]}
 
     await future
     responses.assert_called_with(

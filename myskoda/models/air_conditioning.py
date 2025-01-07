@@ -49,6 +49,19 @@ class Timer(DataClassORJSONMixin):
     type: TimerMode
     selected_days: list[Weekday] = field(metadata=field_options(alias="selectedDays"))
 
+    class Config(BaseConfig):
+        """Configuration for serialization and deserialization.."""
+
+        code_generation_options = [  # noqa: RUF012
+            TO_DICT_ADD_BY_ALIAS_FLAG
+        ]
+
+    def __post_serialize__(self, d: dict[Any, Any]) -> dict[Any, Any]:
+        """Post-process the data before serialization."""
+        if self.time:
+            d["time"] = self.time.strftime("%H:%M")  # Format to hh:mm
+        return d
+
 
 @dataclass
 class SeatHeating(DataClassORJSONMixin):
