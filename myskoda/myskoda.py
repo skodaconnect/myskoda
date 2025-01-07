@@ -392,7 +392,8 @@ class MySkoda:
             if info.is_capability_available(capa):
                 if (
                     capa == CapabilityId.VEHICLE_HEALTH_INSPECTION
-                    and CapabilityId.VEHICLE_HEALTH_WARNINGS_WITH_WAKE_UP in capabilities
+                    and CapabilityId.VEHICLE_HEALTH_WARNINGS_WITH_WAKE_UP
+                    in vehicle.info.capabilities.capabilities
                 ):
                     continue
                 await self._request_capability_data(vehicle, vin, capa)
