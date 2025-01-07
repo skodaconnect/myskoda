@@ -37,6 +37,7 @@ from .models.air_conditioning import (
     AirConditioningAtUnlock,
     AirConditioningWithoutExternalPower,
     SeatHeating,
+    Timer,
     WindowHeating,
 )
 from .models.auxiliary_heating import AuxiliaryConfig, AuxiliaryHeating
@@ -581,6 +582,18 @@ class RestApi:
         json_data = {"deviceDateTime": datetime_str, "timers": [timer.to_dict()]}
         await self._make_post_request(
             url=f"/v1/vehicle-automatization/{vin}/departure/timers",
+            json=json_data,
+        )
+
+    async def set_ac_timer(self, vin: str, timer: Timer) -> None:
+        """Set air-conditioning timer."""
+        _LOGGER.debug(
+            "Setting air-conditioning timer #%i for vehicle %s to %r", timer.id, vin, timer.enabled
+        )
+
+        json_data = {"timers": [timer.to_dict()]}
+        await self._make_post_request(
+            url=f"/v2/air-conditioning/{vin}/timers",
             json=json_data,
         )
 

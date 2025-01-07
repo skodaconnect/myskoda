@@ -9,6 +9,7 @@ from amqtt.client import QOS_2, MQTTClient
 from myskoda.anonymize import ACCESS_TOKEN, LOCATION, USER_ID, VIN
 from myskoda.const import BASE_URL_SKODA
 from myskoda.models.air_conditioning import (
+    AirConditioning,
     AirConditioningAtUnlock,
     AirConditioningWithoutExternalPower,
     HeaterSource,
@@ -706,3 +707,38 @@ async def test_set_departure_timer(
         assert body is not None
         # check only the timer as deviceDateTime can't be verified
         assert body["timers"][0] == selected_timer.to_dict()
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize(("timer_id", "enabled"), [(1, True), (2, False)])
+async def test_set_ac_timer(
+    responses: aioresponses, mqtt_client: MQTTClient, myskoda: MySkoda, timer_id: int, enabled: bool
+) -> None:
+    url = f"{BASE_URL_SKODA}/api/v2/air-conditioning/{VIN}/timers"
+    responses.post(url=url)
+
+    ac_info_json = FIXTURES_DIR.joinpath("other/air-conditioning-idle.json").read_text()
+    ac_info = AirConditioning.from_json(ac_info_json)
+
+    selected_timer = (
+        next((timer for timer in ac_info.timers if timer.id == timer_id), None)
+        if ac_info.timers
+        else None
+    )
+    assert selected_timer is not None
+
+    selected_timer.enabled = enabled
+    future = myskoda.set_ac_timer(VIN, selected_timer)
+
+    topic = f"{USER_ID}/{VIN}/operation-request/air-conditioning/set-air-conditioning-timers"
+    await mqtt_client.publish(topic, create_completed_json("set-air-conditioning-timers"), QOS_2)
+
+    json_data = {"timers": [selected_timer.to_dict()]}
+
+    await future
+    responses.assert_called_with(
+        url=url,
+        method="POST",
+        headers={"authorization": f"Bearer {ACCESS_TOKEN}"},
+        json=json_data,
+    )

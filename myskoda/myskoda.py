@@ -32,6 +32,7 @@ from .models.air_conditioning import (
     AirConditioningAtUnlock,
     AirConditioningWithoutExternalPower,
     SeatHeating,
+    Timer,
     WindowHeating,
 )
 from .models.auxiliary_heating import AuxiliaryConfig, AuxiliaryHeating
@@ -280,6 +281,12 @@ class MySkoda:
         """Stop the auxiliary heating."""
         future = self._wait_for_operation(OperationName.STOP_AUXILIARY_HEATING)
         await self.rest_api.stop_auxiliary_heating(vin)
+        await future
+
+    async def set_ac_timer(self, vin: str, timer: Timer) -> None:
+        """Send provided air-conditioning timer to the vehicle."""
+        future = self._wait_for_operation(OperationName.SET_AIR_CONDITIONING_TIMERS)
+        await self.rest_api.set_ac_timer(vin, timer)
         await future
 
     async def lock(self, vin: str, spin: str) -> None:
