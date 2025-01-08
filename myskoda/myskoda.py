@@ -395,6 +395,7 @@ class MySkoda:
                     and CapabilityId.VEHICLE_HEALTH_WARNINGS_WITH_WAKE_UP
                     in vehicle.info.capabilities.capabilities
                 ):
+                    _LOGGER.debug("Skipping request for capability %s.", capa)
                     continue
                 await self._request_capability_data(vehicle, vin, capa)
 
