@@ -467,13 +467,13 @@ reports:
       timers:
         - enabled: false
           id: 1
-          time: '00:00:00'
+          time: '00:00'
           type: ONE_OFF
           selected_days:
             - SATURDAY
         - enabled: false
           id: 2
-          time: '00:00:00'
+          time: '00:00'
           type: ONE_OFF
           selected_days:
             - SATURDAY

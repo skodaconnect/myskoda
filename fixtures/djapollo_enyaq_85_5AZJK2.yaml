@@ -333,13 +333,13 @@ reports:
       id: 1
       selected_days:
       - THURSDAY
-      time: 06:55:00
+      time: '06:55'
       type: ONE_OFF
     - enabled: false
       id: 2
       selected_days:
       - WEDNESDAY
-      time: '17:00:00'
+      time: '17:00'
       type: ONE_OFF
     window_heating_enabled: true
     window_heating_state:

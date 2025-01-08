@@ -30,6 +30,7 @@ from .event import Event
 from .models.air_conditioning import (
     AirConditioning,
     AirConditioningAtUnlock,
+    AirConditioningTimer,
     AirConditioningWithoutExternalPower,
     SeatHeating,
     WindowHeating,
@@ -282,6 +283,12 @@ class MySkoda:
         await self.rest_api.stop_auxiliary_heating(vin)
         await future
 
+    async def set_ac_timer(self, vin: str, timer: AirConditioningTimer) -> None:
+        """Send provided air-conditioning timer to the vehicle."""
+        future = self._wait_for_operation(OperationName.SET_AIR_CONDITIONING_TIMERS)
+        await self.rest_api.set_ac_timer(vin, timer)
+        await future
+
     async def lock(self, vin: str, spin: str) -> None:
         """Lock the car."""
         future = self._wait_for_operation(OperationName.LOCK)
@@ -386,7 +393,17 @@ class MySkoda:
         vehicle = Vehicle(info, maintenance)
 
         for capa in capabilities:
+            # Only request vehicle health data if we do not need to wakeup the car
+            # This avoids triggering battery protection, such as in Skoda Karoq
+            # https://github.com/skodaconnect/homeassistant-myskoda/issues/468
             if info.is_capability_available(capa):
+                if (
+                    capa == CapabilityId.VEHICLE_HEALTH_INSPECTION
+                    and CapabilityId.VEHICLE_HEALTH_WARNINGS_WITH_WAKE_UP
+                    in vehicle.info.capabilities.capabilities
+                ):
+                    _LOGGER.debug("Skipping request for capability %s.", capa)
+                    continue
                 await self._request_capability_data(vehicle, vin, capa)
 
         return vehicle
