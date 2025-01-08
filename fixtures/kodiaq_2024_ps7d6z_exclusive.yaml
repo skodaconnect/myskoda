@@ -298,19 +298,19 @@ reports:
       id: 1
       selected_days:
       - SATURDAY
-      time: 00:00:00
+      time: 00:00
       type: ONE_OFF
     - enabled: false
       id: 2
       selected_days:
       - SATURDAY
-      time: 00:00:00
+      time: 00:00
       type: ONE_OFF
     - enabled: false
       id: 3
       selected_days:
       - SATURDAY
-      time: 00:00:00
+      time: 00:00
       type: ONE_OFF
     window_heating_enabled: null
     window_heating_state:

@@ -289,7 +289,7 @@ reports:
       - FRIDAY
       - SATURDAY
       - SUNDAY
-      time: 00:00:00
+      time: 00:00
       type: RECURRING
     - enabled: false
       id: 2
@@ -301,7 +301,7 @@ reports:
       - FRIDAY
       - SATURDAY
       - SUNDAY
-      time: 00:00:00
+      time: 00:00
       type: RECURRING
     - enabled: false
       id: 3
@@ -313,7 +313,7 @@ reports:
       - FRIDAY
       - SATURDAY
       - SUNDAY
-      time: 00:00:00
+      time: 00:00
       type: RECURRING
     window_heating_enabled: null
     window_heating_state:
