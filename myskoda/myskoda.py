@@ -35,7 +35,7 @@ from .models.air_conditioning import (
     SeatHeating,
     WindowHeating,
 )
-from .models.auxiliary_heating import AuxiliaryConfig, AuxiliaryHeating
+from .models.auxiliary_heating import AuxiliaryConfig, AuxiliaryHeating, AuxiliaryHeatingTimer
 from .models.charging import ChargeMode, Charging
 from .models.departure import DepartureInfo, DepartureTimer
 from .models.driving_range import DrivingRange
@@ -287,6 +287,14 @@ class MySkoda:
         """Send provided air-conditioning timer to the vehicle."""
         future = self._wait_for_operation(OperationName.SET_AIR_CONDITIONING_TIMERS)
         await self.rest_api.set_ac_timer(vin, timer)
+        await future
+
+    async def set_auxiliary_heating_timer(
+        self, vin: str, timer: AuxiliaryHeatingTimer, spin: str
+    ) -> None:
+        """Send provided auxiliary heating timer to the vehicle."""
+        future = self._wait_for_operation(OperationName.SET_AIR_CONDITIONING_TIMERS)
+        await self.rest_api.set_auxiliary_heating_timer(vin, timer, spin)
         await future
 
     async def lock(self, vin: str, spin: str) -> None:

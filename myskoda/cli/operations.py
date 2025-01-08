@@ -439,3 +439,40 @@ async def set_ac_timer(
                 print(f"No timer found with ID {timer_id}.")
         else:
             print("No AirConditioning found for the given VIN.")
+
+
+@click.command()
+@click.option("timeout", "--timeout", type=float, default=300)
+@click.argument("vin")
+@click.option("timer", "--timer", type=click.Choice(["1", "2", "3"]), required=True)
+@click.option("enabled", "--enabled", type=bool, required=True)
+@click.option("spin", "--spin", type=str, required=True)
+@click.pass_context
+@mqtt_required
+async def set_aux_timer(  # noqa: PLR0913
+    ctx: Context,
+    timeout: float,  # noqa: ASYNC109
+    vin: str,
+    timer: str,
+    enabled: bool,
+    spin: str,
+) -> None:
+    """Enable or disable selected auxiliary-heating timer."""
+    timer_id = int(timer)
+    myskoda: MySkoda = ctx.obj["myskoda"]
+    async with asyncio.timeout(timeout):
+        # Get all timers from vehicle first
+        auxiliary_heating = await myskoda.get_auxiliary_heating(vin)
+        if auxiliary_heating is not None:
+            selected_timer = (
+                next((t for t in auxiliary_heating.timers if t.id == timer_id), None)
+                if auxiliary_heating.timers
+                else None
+            )
+            if selected_timer is not None:
+                selected_timer.enabled = enabled
+                await myskoda.set_auxiliary_heating_timer(vin, selected_timer, spin)
+            else:
+                print(f"No timer found with ID {timer_id}.")
+        else:
+            print("No AuxiliaryHeating found for the given VIN.")
