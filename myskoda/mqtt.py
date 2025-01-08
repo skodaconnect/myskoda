@@ -24,6 +24,7 @@ from .const import (
     MQTT_BROKER_PORT,
     MQTT_FAST_RETRY,
     MQTT_KEEPALIVE,
+    MQTT_MAX_RECONNECT_DELAY,
     MQTT_OPERATION_TOPICS,
     MQTT_RECONNECT_DELAY,
     MQTT_SERVICE_EVENT_TOPICS,
@@ -186,9 +187,13 @@ class MySkodaMqttClient:
                     "Connection lost (%s); reconnecting in %ss", exc, self._reconnect_delay
                 )
                 await asyncio.sleep(self._reconnect_delay)
-                if retry_count > MQTT_FAST_RETRY:  # first x retries are not exponential
+                if (
+                    retry_count > MQTT_FAST_RETRY
+                    and self._reconnect_delay < MQTT_MAX_RECONNECT_DELAY
+                ):  # first x retries are not exponential
                     self._reconnect_delay *= 2
                     self._reconnect_delay += uniform(0, 1)  # noqa: S311
+                    self._reconnect_delay = min(self._reconnect_delay, MQTT_MAX_RECONNECT_DELAY)
                     _LOGGER.debug("Increased reconnect backoff to %s", self._reconnect_delay)
 
     def _on_message(self, msg: aiomqtt.Message) -> None:

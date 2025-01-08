@@ -291,7 +291,7 @@ async def test_get_spin_status(
 
 @pytest.fixture(name="departure_timers")
 def load_departure_timers() -> list[str]:
-    """Load charging fixture."""
+    """Load departure timers fixture."""
     departure_timers = []
     for path in [
         "other/departure-timers.json",

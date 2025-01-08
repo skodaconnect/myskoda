@@ -412,7 +412,7 @@ reports:
     timers:
     - enabled: true
       id: 1
-      time: '08:05:00'
+      time: '08:05'
       type: RECURRING
       selected_days:
       - MONDAY
@@ -422,7 +422,7 @@ reports:
       - FRIDAY
     - enabled: false
       id: 2
-      time: '07:30:00'
+      time: '07:30'
       type: ONE_OFF
       selected_days:
       - SATURDAY
