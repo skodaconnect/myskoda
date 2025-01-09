@@ -125,16 +125,23 @@ class MySkoda:
             return
         await self.mqtt.wait_for_operation(operation)
 
-    async def connect(self, email: str, password: str) -> None:
+    async def connect(
+        self, email: str | None, password: str | None, refresh_token: str | None = None
+    ) -> None:
         """Authenticate on the rest api and connect to the MQTT broker."""
-        await self.authorization.authorize(email, password)
-        _LOGGER.debug("IDK Authorization was successful.")
+        if email and password:
+            await self.authorization.authorize(email=email, password=password)
+        elif refresh_token:
+            await self.authorization.authorize(refresh_token=refresh_token)
+        else:
+            raise InvalidLoginDetailsError
 
+        _LOGGER.debug("IDK Authorization was successful.")
         if self.mqtt:
             user = await self.get_user()
             vehicles = await self.list_vehicle_vins()
             await self.mqtt.connect(user.id, vehicles)
-        _LOGGER.debug("MySkoda ready.")
+        _LOGGER.debug("MySkoda connected.")
 
     def subscribe(self, callback: Callable[[Event], None | Awaitable[None]]) -> None:
         """Listen for events emitted by MySkoda's MQTT broker."""
@@ -525,3 +532,7 @@ class MqttDisabledError(Exception):
 
 class UnsupportedEndpointError(Exception):
     """Endpoint not implemented."""
+
+
+class InvalidLoginDetailsError(Exception):
+    """Did not supply correct credentials. Supply user/password or refresh_token in JWT format."""
