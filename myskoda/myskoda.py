@@ -412,24 +412,27 @@ class MySkoda:
         self, vehicle: Vehicle, vin: str, capa: CapabilityId
     ) -> None:
         """Request specific capability data from MySkoda API."""
-        match capa:
-            case CapabilityId.AIR_CONDITIONING:
-                vehicle.air_conditioning = await self.get_air_conditioning(vin)
-            case CapabilityId.AUXILIARY_HEATING:
-                vehicle.auxiliary_heating = await self.get_auxiliary_heating(vin)
-            case CapabilityId.CHARGING:
-                vehicle.charging = await self.get_charging(vin)
-            case CapabilityId.PARKING_POSITION:
-                vehicle.positions = await self.get_positions(vin)
-            case CapabilityId.STATE:
-                vehicle.status = await self.get_status(vin)
-                vehicle.driving_range = await self.get_driving_range(vin)
-            case CapabilityId.TRIP_STATISTICS:
-                vehicle.trip_statistics = await self.get_trip_statistics(vin)
-            case CapabilityId.VEHICLE_HEALTH_INSPECTION:
-                vehicle.health = await self.get_health(vin)
-            case CapabilityId.DEPARTURE_TIMERS:
-                vehicle.departure_info = await self.get_departure_timers(vin)
+        try:
+            match capa:
+                case CapabilityId.AIR_CONDITIONING:
+                    vehicle.air_conditioning = await self.get_air_conditioning(vin)
+                case CapabilityId.AUXILIARY_HEATING:
+                    vehicle.auxiliary_heating = await self.get_auxiliary_heating(vin)
+                case CapabilityId.CHARGING:
+                    vehicle.charging = await self.get_charging(vin)
+                case CapabilityId.PARKING_POSITION:
+                    vehicle.positions = await self.get_positions(vin)
+                case CapabilityId.STATE:
+                    vehicle.status = await self.get_status(vin)
+                    vehicle.driving_range = await self.get_driving_range(vin)
+                case CapabilityId.TRIP_STATISTICS:
+                    vehicle.trip_statistics = await self.get_trip_statistics(vin)
+                case CapabilityId.VEHICLE_HEALTH_INSPECTION:
+                    vehicle.health = await self.get_health(vin)
+                case CapabilityId.DEPARTURE_TIMERS:
+                    vehicle.departure_info = await self.get_departure_timers(vin)
+        except Exception as err:  # noqa: BLE001
+            _LOGGER.warning("Requesting %s failed: %s, continue", capa, err)
 
     async def get_all_vehicles(self) -> list[Vehicle]:
         """Load all vehicles based on their capabilities."""
