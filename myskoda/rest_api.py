@@ -6,6 +6,7 @@ import logging
 from collections.abc import Callable
 from dataclasses import dataclass
 from datetime import UTC, datetime
+from urllib.parse import quote
 
 from aiohttp import ClientResponseError, ClientSession
 
@@ -34,6 +35,7 @@ from .const import BASE_URL_SKODA, REQUEST_TIMEOUT_IN_SECONDS
 from .models.air_conditioning import (
     AirConditioning,
     AirConditioningAtUnlock,
+    AirConditioningTimer,
     AirConditioningWithoutExternalPower,
     SeatHeating,
     WindowHeating,
@@ -283,13 +285,27 @@ class RestApi:
         self, vin: str, anonymize: bool = False
     ) -> GetEndpointResult[DepartureInfo]:
         """Retrieve departure timers for the vehicle."""
-        url = f"/v1/vehicle-automatization/{vin}/departure/timers"
+        # Get the current local time with timezone
+        now = datetime.now().astimezone()
+        # Format the datetime string with timezone
+        formatted_time = (
+            now.strftime("%Y-%m-%dT%H:%M:%S.%f")
+            + now.strftime("%z")[:3]
+            + ":"
+            + now.strftime("%z")[3:]
+        )
+
+        url = (
+            f"/v1/vehicle-automatization/{vin}/departure/timers"
+            f"?deviceDateTime={quote(formatted_time, safe='')}"
+        )
         raw = self.process_json(
             data=await self._make_get_request(url),
             anonymize=anonymize,
             anonymization_fn=anonymize_departure_timers,
         )
         result = self._deserialize(raw, DepartureInfo.from_json)
+        url = anonymize_url(url) if anonymize else url
         return GetEndpointResult(url=url, raw=raw, result=result)
 
     async def _headers(self) -> dict[str, str]:
@@ -566,6 +582,18 @@ class RestApi:
         json_data = {"deviceDateTime": datetime_str, "timers": [timer.to_dict()]}
         await self._make_post_request(
             url=f"/v1/vehicle-automatization/{vin}/departure/timers",
+            json=json_data,
+        )
+
+    async def set_ac_timer(self, vin: str, timer: AirConditioningTimer) -> None:
+        """Set air-conditioning timer."""
+        _LOGGER.debug(
+            "Setting air-conditioning timer #%i for vehicle %s to %r", timer.id, vin, timer.enabled
+        )
+
+        json_data = {"timers": [timer.to_dict(by_alias=True)]}
+        await self._make_post_request(
+            url=f"/v2/air-conditioning/{vin}/timers",
             json=json_data,
         )
 
