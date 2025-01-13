@@ -194,17 +194,18 @@ trio = ["trio (>=0.26.1)"]
 
 [[package]]
 name = "asyncclick"
-version = "8.1.7.2"
-description = "Composable command line interface toolkit, async version"
+version = "8.1.8"
+description = "Composable command line interface toolkit,"
 optional = true
-python-versions = ">=3.7"
+python-versions = ">=3.9"
 files = [
-    {file = "asyncclick-8.1.7.2-py3-none-any.whl", hash = "sha256:1ab940b04b22cb89b5b400725132b069d01b0c3472a9702c7a2c9d5d007ded02"},
-    {file = "asyncclick-8.1.7.2.tar.gz", hash = "sha256:219ea0f29ccdc1bb4ff43bcab7ce0769ac6d48a04f997b43ec6bee99a222daa0"},
+    {file = "asyncclick-8.1.8-py3-none-any.whl", hash = "sha256:eb1ccb44bc767f8f0695d592c7806fdf5bd575605b4ee246ffd5fadbcfdbd7c6"},
+    {file = "asyncclick-8.1.8.0-py3-none-any.whl", hash = "sha256:be146a2d8075d4fe372ff4e877f23c8b5af269d16705c1948123b9415f6fd678"},
+    {file = "asyncclick-8.1.8.tar.gz", hash = "sha256:0f0eb0f280e04919d67cf71b9fcdfb4db2d9ff7203669c40284485c149578e4c"},
 ]
 
 [package.dependencies]
-anyio = "*"
+anyio = ">=4.0,<5.0"
 colorama = {version = "*", markers = "platform_system == \"Windows\""}
 
 [[package]]
