@@ -67,10 +67,15 @@ class AuxiliaryConfig(DataClassORJSONMixin):
 
 
 @dataclass
+class AuxiliaryHeatingTimer(AirConditioningTimer):
+    """Timer for auxiliary heating."""
+
+
+@dataclass
 class AuxiliaryHeating(DataClassORJSONMixin):
     """Information related to auxiliary heating."""
 
-    timers: list[AirConditioningTimer]
+    timers: list[AuxiliaryHeatingTimer]
     errors: list[Any]
     state: AuxiliaryState | None = field(default=None, metadata=field_options(alias="state"))
     start_mode: AuxiliaryStartMode | None = field(

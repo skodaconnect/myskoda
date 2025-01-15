@@ -24,6 +24,7 @@ from myskoda.cli.operations import (
     set_ac_timer,
     set_ac_without_external_power,
     set_auto_unlock_plug,
+    set_aux_timer,
     set_charge_limit,
     set_departure_timer,
     set_minimum_charge_limit,
@@ -181,6 +182,7 @@ cli.add_command(set_auto_unlock_plug)
 cli.add_command(departure_timers)
 cli.add_command(set_departure_timer)
 cli.add_command(set_ac_timer)
+cli.add_command(set_aux_timer)
 
 
 if __name__ == "__main__":

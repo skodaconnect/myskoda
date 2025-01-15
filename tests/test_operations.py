@@ -17,7 +17,7 @@ from myskoda.models.air_conditioning import (
     TargetTemperature,
     WindowHeating,
 )
-from myskoda.models.auxiliary_heating import AuxiliaryConfig, AuxiliaryStartMode
+from myskoda.models.auxiliary_heating import AuxiliaryConfig, AuxiliaryHeating, AuxiliaryStartMode
 from myskoda.models.charging import ChargeMode
 from myskoda.models.departure import DepartureInfo
 from myskoda.myskoda import MySkoda
@@ -734,6 +734,46 @@ async def test_set_ac_timer(
     await mqtt_client.publish(topic, create_completed_json("set-air-conditioning-timers"), QOS_2)
 
     json_data = {"timers": [selected_timer.to_dict(by_alias=True)]}
+
+    await future
+    responses.assert_called_with(
+        url=url,
+        method="POST",
+        headers={"authorization": f"Bearer {ACCESS_TOKEN}"},
+        json=json_data,
+    )
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize(("timer_id", "enabled", "spin"), [(1, True, "1234"), (2, False, "4321")])
+async def test_set_auxiliary_heating_timer(  # noqa: PLR0913
+    responses: aioresponses,
+    mqtt_client: MQTTClient,
+    myskoda: MySkoda,
+    timer_id: int,
+    enabled: bool,
+    spin: str,
+) -> None:
+    url = f"{BASE_URL_SKODA}/api/v2/air-conditioning/{VIN}/auxiliary-heating/timers"
+    responses.post(url=url)
+
+    aux_info_json = FIXTURES_DIR.joinpath("other/auxiliary-heating-idle.json").read_text()
+    aux_info = AuxiliaryHeating.from_json(aux_info_json)
+
+    selected_timer = (
+        next((timer for timer in aux_info.timers if timer.id == timer_id), None)
+        if aux_info.timers
+        else None
+    )
+    assert selected_timer is not None
+
+    selected_timer.enabled = enabled
+    future = myskoda.set_auxiliary_heating_timer(VIN, selected_timer, spin)
+
+    topic = f"{USER_ID}/{VIN}/operation-request/air-conditioning/set-air-conditioning-timers"
+    await mqtt_client.publish(topic, create_completed_json("set-air-conditioning-timers"), QOS_2)
+
+    json_data = {"spin": spin, "timers": [selected_timer.to_dict(by_alias=True)]}
 
     await future
     responses.assert_called_with(
