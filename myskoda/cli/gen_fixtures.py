@@ -29,7 +29,7 @@ async def gen_fixtures(
     """Interact with the MySkoda API."""
     myskoda: MySkoda = ctx.obj["myskoda"]
 
-    default_filename = Path("fixtures") / f"{name.replace(" ", "_").lower()}.yaml"
+    default_filename = Path("fixtures") / f"{name.replace(' ', '_').lower()}.yaml"
 
     ctx.obj["vins"] = await get_vin_list(myskoda, vehicle)
     ctx.obj["name"] = name

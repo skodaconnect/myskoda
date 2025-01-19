@@ -26,7 +26,7 @@ async def wait_for_operation(ctx: Context, operation: OperationName) -> None:
     if myskoda.mqtt is None:
         raise MqttDisabledError
 
-    print(f"Waiting for an operation {colored(operation,"green")} to start and complete...")
+    print(f"Waiting for an operation {colored(operation, 'green')} to start and complete...")
 
     await myskoda.mqtt.wait_for_operation(operation)
     print("Completed.")
