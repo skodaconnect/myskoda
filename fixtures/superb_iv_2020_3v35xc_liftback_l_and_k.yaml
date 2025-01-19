@@ -132,6 +132,7 @@ reports:
         statuses: []
       - id: AIR_CONDITIONING
         statuses: []
+      errors: null 
     composite_renders:
     - layers:
       - order: 0

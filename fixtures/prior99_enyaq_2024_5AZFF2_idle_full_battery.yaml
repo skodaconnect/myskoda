@@ -156,6 +156,7 @@ reports:
         statuses: []
       - id: VEHICLE_WAKE_UP_TRIGGER
         statuses: []
+      errors: null 
     composite_renders:
     - layers:
       - order: 0

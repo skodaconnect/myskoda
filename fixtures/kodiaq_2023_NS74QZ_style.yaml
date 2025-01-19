@@ -197,6 +197,7 @@ reports:
             statuses: []
           - id: CARE_AND_INSURANCE
             statuses: []
+        errors: null 
       renders:
         - url: https://iprenders.blob.core.windows.net/basens7v23200004/5X5XDSLGPW-65-Rvio3t1p5gk9_-8s1bgIP.oW_j3BxMlT-qfP3M.TJG0inswacXCg-B0vtg8.XZU6n1mbPqrJdN-OCJWIYSEALQV-19201080dayvext_side1080.png
           type: REAL

@@ -255,6 +255,7 @@ reports:
             statuses: []
           - id: AUXILIARY_HEATING_BASIC
             statuses: []
+        errors: null 
       renders:
         - url: >-
             https://iprenders.blob.core.windows.net/base3v3v23200002/0F0FWBQ-6-RemtP8.jqZy0-ZqEczfhG_n50.tUwX-CWwFuhHKJkNPz40df893ms-Has5qeWchF.UzAl13y8jCtnK-CKFEIA-19201080dayvext_front1080.png

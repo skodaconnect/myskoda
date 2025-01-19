@@ -189,6 +189,7 @@ reports:
             statuses: []
           - id: AIR_CONDITIONING
             statuses: []
+        errors: null 
       renders: []
       device_platform: MBB
       workshop_mode_enabled: false

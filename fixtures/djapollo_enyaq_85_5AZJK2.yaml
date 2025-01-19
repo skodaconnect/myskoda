@@ -166,6 +166,7 @@ reports:
         statuses: []
       - id: ROUTE_PLANNING_10_CHARGERS
         statuses: []
+      errors: null 
     composite_renders:
     - layers:
       - order: 0

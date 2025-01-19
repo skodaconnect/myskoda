@@ -266,6 +266,7 @@ reports:
             statuses: []
           - id: AIR_CONDITIONING
             statuses: []
+        errors: null 
       renders:
         - url: >-
             https://skodavinimagecache.blob.core.windows.net/cachenx3s22200316/8X8X4gqAbYIOe-i2DnaWx.ms6g-9BdYgTS5F_HJyjWb-clCgEXNvK_1i4QIswoY-.mPu_UpbAHEyMv4T61hBY0jk-EFCI-19201080dayvext_side1080.png

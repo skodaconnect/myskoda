@@ -120,6 +120,7 @@ reports:
         statuses: []
       - id: CARE_AND_INSURANCE
         statuses: []
+      errors: null 
     composite_renders:
     - layers:
       - order: 0
