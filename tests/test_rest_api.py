@@ -27,6 +27,7 @@ def load_vehicle_info() -> list[str]:
         "enyaq/garage_vehicles_iv80.json",
         "enyaq/garage_vehicles_iv80_coupe.json",
         "superb/garage_vehicles_LK_liftback.json",
+        "superb/garage_with_429_error.json",
     ]:
         with FIXTURES_DIR.joinpath(path).open() as file:
             vehicle_infos.append(file.read())

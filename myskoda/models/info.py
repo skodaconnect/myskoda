@@ -158,6 +158,7 @@ class Capabilities(DataClassORJSONMixin):
     capabilities: list[Capability] = field(
         metadata=field_options(deserialize=drop_unknown_capabilities)
     )
+    errors: list[Error] | None = field(default=None)
 
 
 @dataclass

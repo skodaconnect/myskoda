@@ -584,7 +584,7 @@ async def test_set_ac_at_unlock(
 
     future = myskoda.set_ac_at_unlock(VIN, settings)
 
-    topic = f"{USER_ID}/{VIN}/operation-request/" "air-conditioning/set-air-conditioning-at-unlock"
+    topic = f"{USER_ID}/{VIN}/operation-request/air-conditioning/set-air-conditioning-at-unlock"
     await mqtt_client.publish(topic, create_completed_json("set-air-conditioning-at-unlock"), QOS_2)
 
     await future
@@ -616,7 +616,7 @@ async def test_set_windows_heating(
 
     future = myskoda.set_windows_heating(VIN, settings)
 
-    topic = f"{USER_ID}/{VIN}/operation-request/" "air-conditioning/windows-heating"
+    topic = f"{USER_ID}/{VIN}/operation-request/air-conditioning/windows-heating"
     await mqtt_client.publish(topic, create_completed_json("windows-heating"), QOS_2)
 
     await future
@@ -649,9 +649,7 @@ async def test_set_seats_heating(
 
     future = myskoda.set_seats_heating(VIN, settings)
 
-    topic = (
-        f"{USER_ID}/{VIN}/operation-request/" "air-conditioning/set-air-conditioning-seats-heating"
-    )
+    topic = f"{USER_ID}/{VIN}/operation-request/air-conditioning/set-air-conditioning-seats-heating"
     await mqtt_client.publish(
         topic, create_completed_json("set-air-conditioning-seats-heating"), QOS_2
     )

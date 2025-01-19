@@ -112,6 +112,7 @@ reports:
         statuses: []
       - id: MISUSE_PROTECTION
         statuses: []
+      errors: null 
     composite_renders:
     - layers:
       - order: 0

@@ -310,6 +310,7 @@ reports:
             statuses: []
           - id: VEHICLE_WAKE_UP_TRIGGER
             statuses: []
+        errors: null 
       renders: []
       device_platform: WCAR
       workshop_mode_enabled: false

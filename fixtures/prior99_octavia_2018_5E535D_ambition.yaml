@@ -87,6 +87,7 @@ reports:
         statuses: []
       - id: VEHICLE_HEALTH_WARNINGS_WITH_WAKE_UP
         statuses: []
+      errors: null 
     composite_renders: []
     device_platform: MBB
     errors:
