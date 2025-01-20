@@ -272,15 +272,21 @@ async def test_subscribe_event(
             vin=VIN,
             user_id=USER_ID,
             timestamp=ANY,
-            event=ServiceEvent(
+            event=ServiceEventWithChargingData(
                 version=1,
                 trace_id=trace_id,
                 timestamp=timestamp,
                 producer="SKODA_MHUB",
                 name=ServiceEventName.CHARGING_COMPLETED,
-                data=ServiceEventData(
+                data=ServiceEventChargingData(
                     user_id=USER_ID,
                     vin=VIN,
+                    mode=None,
+                    state=None,
+                    soc=None,
+                    charged_range=None,
+                    time_to_finish=None,
+                    error_code=None,
                 ),
             ),
         ),

@@ -8,7 +8,7 @@ from typing import Generic, TypeVar
 from mashumaro import field_options
 from mashumaro.mixins.orjson import DataClassORJSONMixin
 
-from .charging import ChargeMode, ChargingState
+from .charging import ChargeMode, ChargingState, ServiceEventChargingError
 
 
 class ServiceEventName(StrEnum):
@@ -20,6 +20,7 @@ class ServiceEventName(StrEnum):
     CHANGE_REMAINING_TIME = "change-remaining-time"
     CHANGE_SOC = "change-soc"
     CHARGING_COMPLETED = "charging-completed"
+    CHARGING_ERROR = "charging-error"
     CHARGING_STATUS_CHANGED = "charging-status-changed"
     CLIMATISATION_COMPLETED = "climatisation-completed"
     DEPARTURE_READY = "departure-ready"
@@ -102,13 +103,20 @@ def _deserialize_time_to_finish(value: int | str) -> int | None:
 class ServiceEventChargingData(ServiceEventData):
     """Charging data inside charging service event change-soc."""
 
-    mode: ChargeMode = field(metadata=field_options(deserialize=_deserialize_mode))
-    state: ChargingState = field(metadata=field_options(deserialize=_deserialize_charging_state))
-    soc: int
-    charged_range: int = field(metadata=field_options(alias="chargedRange"))
+    mode: ChargeMode | None = field(
+        default=None, metadata=field_options(deserialize=_deserialize_mode)
+    )
+    state: ChargingState | None = field(
+        default=None, metadata=field_options(deserialize=_deserialize_charging_state)
+    )
+    soc: int | None = field(default=None)
+    charged_range: int | None = field(default=None, metadata=field_options(alias="chargedRange"))
     time_to_finish: int | None = field(
         default=None,
         metadata=field_options(alias="timeToFinish", deserialize=_deserialize_time_to_finish),
+    )
+    error_code: ServiceEventChargingError | None = field(
+        default=None, metadata=field_options(alias="errorCode")
     )
 
 
