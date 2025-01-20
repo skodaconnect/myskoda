@@ -60,7 +60,7 @@ class PlugUnlockMode(StrEnum):
     OFF = "OFF"
 
 
-class MqttChargingError(StrEnum):
+class ServiceEventChargingError(StrEnum):
     STOPPED_DEVICE = "STOPPED_DEVICE"
 
 

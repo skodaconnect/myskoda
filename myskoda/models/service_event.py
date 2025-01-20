@@ -8,7 +8,7 @@ from typing import Generic, TypeVar
 from mashumaro import field_options
 from mashumaro.mixins.orjson import DataClassORJSONMixin
 
-from .charging import ChargeMode, ChargingState, MqttChargingError
+from .charging import ChargeMode, ChargingState, ServiceEventChargingError
 
 
 class ServiceEventName(StrEnum):
@@ -115,7 +115,7 @@ class ServiceEventChargingData(ServiceEventData):
         default=None,
         metadata=field_options(alias="timeToFinish", deserialize=_deserialize_time_to_finish),
     )
-    error_code: MqttChargingError | None = field(
+    error_code: ServiceEventChargingError | None = field(
         default=None, metadata=field_options(alias="errorCode")
     )
 

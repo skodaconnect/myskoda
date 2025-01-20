@@ -13,6 +13,7 @@ from myskoda.models.service_event import (
     ChargingState,
     ServiceEvent,
     ServiceEventChargingData,
+    ServiceEventChargingError,
     ServiceEventData,
     ServiceEventName,
     ServiceEventWithChargingData,
@@ -28,6 +29,7 @@ def load_service_events() -> list[str]:
     for path in [
         "events/service_event_charging_change_soc.json",
         "events/service_event_charging_charging_status_changed.json",
+        "events/service_event_charging_charging_error.json",
         "events/service_event_departure_ready.json",
         "events/service_event_departure_status_changed.json",
     ]:
@@ -38,21 +40,39 @@ def load_service_events() -> list[str]:
 
 def test_parse_service_events(service_events: list[str]) -> None:
     for service_event in service_events:
-        try:
-            event = ServiceEventWithChargingData.from_json(service_event)
-        except ValueError:
-            event = ServiceEvent.from_json(service_event)
+        event = ServiceEvent.from_json(service_event)
 
-        if event.name == ServiceEventName.CHANGE_SOC:
-            assert event.data == ServiceEventChargingData(
-                charged_range=195,
-                mode=ChargeMode.MANUAL,
-                soc=50,
-                state=ChargingState.CHARGING,
-                time_to_finish=440,
-                user_id="ad0d7945-4814-43d0-801f-change-soc",
-                vin="TMBAXXXXXXXXXXXXX",
-            )
+        if event.name in [
+            ServiceEventName.CHANGE_SOC,
+            ServiceEventName.CHARGING_STATUS_CHANGED,
+            ServiceEventName.CHARGING_ERROR,
+        ]:
+            try:
+                event = ServiceEventWithChargingData.from_json(service_event)
+            except ValueError:
+                event = ServiceEvent.from_json(service_event)
+
+            if event.name == ServiceEventName.CHANGE_SOC:
+                assert event.data == ServiceEventChargingData(
+                    charged_range=195,
+                    mode=ChargeMode.MANUAL,
+                    soc=50,
+                    state=ChargingState.CHARGING,
+                    time_to_finish=440,
+                    user_id="ad0d7945-4814-43d0-801f-change-soc",
+                    vin="TMBAXXXXXXXXXXXXX",
+                )
+            elif event.name == ServiceEventName.CHARGING_STATUS_CHANGED:
+                assert event.data == ServiceEventChargingData(
+                    user_id=f"ad0d7945-4814-43d0-801f-{event.name.value}",
+                    vin="TMBAXXXXXXXXXXXXX",
+                )
+            elif event.name == ServiceEventName.CHARGING_ERROR:
+                assert event.data == ServiceEventChargingData(
+                    user_id=f"ad0d7945-4814-43d0-801f-{event.name.value}",
+                    vin="TMBAXXXXXXXXXXXXX",
+                    error_code=ServiceEventChargingError.STOPPED_DEVICE,
+                )
         else:
             assert event.data == ServiceEventData(
                 user_id=f"ad0d7945-4814-43d0-801f-{event.name.value}",
