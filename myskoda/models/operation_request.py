@@ -1,6 +1,7 @@
 """Models for operation requests, returned by the MQTT broker."""
 
 from dataclasses import dataclass, field
+from datetime import datetime
 from enum import StrEnum
 
 from mashumaro import field_options
@@ -59,3 +60,4 @@ class OperationRequest(DataClassORJSONMixin):
     operation: OperationName
     status: OperationStatus
     error_code: str | None = field(default=None, metadata=field_options(alias="errorCode"))
+    timestamp: datetime | None = field(default=None)

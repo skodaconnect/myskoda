@@ -74,6 +74,7 @@ class Status(DataClassORJSONMixin):
     car_captured_timestamp: datetime | None = field(
         default=None, metadata=field_options(alias="carCapturedTimestamp")
     )
+    timestamp: datetime | None = field(default=None)
 
     def _extract_window_door_state_list_from_url(self) -> list[int]:
         """Extract window/door states from renders url.

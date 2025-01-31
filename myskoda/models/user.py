@@ -1,7 +1,7 @@
 """User that is using the API."""
 
 from dataclasses import dataclass, field
-from datetime import date
+from datetime import date, datetime
 from enum import StrEnum
 
 from mashumaro import field_options
@@ -42,3 +42,4 @@ class User(DataClassORJSONMixin):
     )
     phone: str | None = None
     country: str | None = None
+    timestamp: datetime | None = field(default=None)

@@ -42,3 +42,4 @@ class DrivingRange(DataClassORJSONMixin):
         default=None, metadata=field_options(alias="totalRangeInKm")
     )
     ad_blue_range: int | None = field(default=None, metadata=field_options(alias="adBlueRange"))
+    timestamp: datetime | None = field(default=None)
