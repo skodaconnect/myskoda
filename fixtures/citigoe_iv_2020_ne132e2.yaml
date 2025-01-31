@@ -5,11 +5,13 @@ library_version: 0.15.4
 vehicles:
   - id: 0
     device_platform: MBB
+    timestamp: null
     system_model_id: NE13E2
     model: CitigoE iV
     model_year: '2020'
     trim_level: null
     software_version: null
+    timestamp: null
     capabilities:
       - id: AUTOMATION
         statuses: []
@@ -187,6 +189,7 @@ reports:
       renders: []
       device_platform: MBB
       workshop_mode_enabled: false
+      timestamp: null
       composite_renders:
         - layers:
             - url: >-
@@ -288,6 +291,7 @@ reports:
       "carCapturedTimestamp": "2024-12-17T07:53:01Z"}
     url: /v2/vehicle-status/TMOCKAA0AA000000
     result:
+      timestamp: null
       detail:
         bonnet: CLOSED
         sunroof: UNSUPPORTED
@@ -319,6 +323,7 @@ reports:
             https://mysmob.api.connect.skoda-auto.cz/api/v2/vehicle-status/render?carType=HATCHBACK&vehicleState=1-1-1-1-0-0-0-0-0&lastModifiedAt=1733938917&dimension=3x&theme=DARK
       car_captured_timestamp: '2024-12-17T07:53:01+00:00'
     error: null
+    timestamp: null
   - type: get
     vehicle_id: 0
     success: true
@@ -363,6 +368,7 @@ reports:
         unit_in_car: CELSIUS
       window_heating_enabled: null
       air_conditioning_without_external_power: true
+      timestamp: null
       outside_temperature:
         temperature_value: 8.5
         unit_in_car: CELSIUS
@@ -411,6 +417,7 @@ reports:
     url: /v1/maps/positions?vin=TMOCKAA0AA000000
     result:
       errors: []
+      timestamp: null
       positions:
         - address:
             country_code: DEU
@@ -437,6 +444,7 @@ reports:
       []}]}
     url: /v1/vehicle-health-report/warning-lights/TMOCKAA0AA000000
     result:
+      timestamp: null
       warning_lights:
         - category: ASSISTANCE
           defects: []
@@ -489,6 +497,7 @@ reports:
         target_state_of_charge_in_percent: null
       is_vehicle_in_saved_location: false
       car_captured_timestamp: '2024-12-17T04:56:43+00:00'
+      timestamp: null
       status:
         battery:
           state_of_charge_in_percent: 65
@@ -518,6 +527,7 @@ reports:
       "SATURDAY", "periodEnd": "SUNDAY", "openingTimes": []}]}}
     url: /v3/vehicle-maintenance/vehicles/TMOCKAA0AA000000
     result:
+      timestamp: null
       maintenance_report:
         captured_at: '2024-12-17T06:53:00+00:00'
         mileage_in_km: 25938
@@ -576,6 +586,7 @@ reports:
       secondary_engine_range: null
       total_range_in_km: 114
       ad_blue_range: null
+      timestamp: null
     error: null
   - type: get
     vehicle_id: 0
@@ -677,4 +688,5 @@ reports:
       overall_average_travel_time_in_min: 13
       overall_mileage_in_km: 12
       overall_travel_time_in_min: 26
+      timestamp: null
     error: null

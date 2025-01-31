@@ -166,6 +166,7 @@ reports:
     service_partner:
       id: DEU11111
     software_version: null
+    timestamp: null
     specification:
       battery:
         capacity: 36
@@ -185,6 +186,7 @@ reports:
     state: ACTIVATED
     vin: TMOCKAA0AA000000
     workshop_mode_enabled: false
+    timestamp: null
   success: true
   type: get
   url: /v2/garage/vehicles/TMOCKAA0AA000000?connectivityGenerations=MOD1&connectivityGenerations=MOD2&connectivityGenerations=MOD3&connectivityGenerations=MOD4
@@ -204,6 +206,7 @@ reports:
     "carCapturedTimestamp": "2024-11-26T15:10:17Z"}'
   result:
     car_captured_timestamp: '2024-11-26T15:10:17+00:00'
+    timestamp: null
     detail:
       bonnet: CLOSED
       sunroof: UNSUPPORTED
@@ -242,6 +245,7 @@ reports:
   result:
     air_conditioning_at_unlock: null
     air_conditioning_without_external_power: true
+    timestamp: null
     car_captured_timestamp: '2024-11-26T07:17:32+00:00'
     charger_connection_state: DISCONNECTED
     charger_lock_state: LOCKED
@@ -297,6 +301,7 @@ reports:
     []}'
   result:
     errors: []
+    timestamp: null
     positions:
     - address:
         city: Example City
@@ -323,6 +328,7 @@ reports:
   result:
     captured_at: '2024-11-26T15:10:17+00:00'
     mileage_in_km: 38965
+    timestamp: null
     warning_lights:
     - category: ASSISTANCE
       defects: []
@@ -354,6 +360,7 @@ reports:
     available."}]}'
   result:
     car_captured_timestamp: '2024-11-26T13:33:53+00:00'
+    timestamp: null
     errors:
     - description: Care mode is not available.
       type: CARE_MODE_IS_NOT_AVAILABLE
@@ -399,6 +406,7 @@ reports:
     {"from": "13:10:00", "to": "16:00:00"}]}, {"periodStart": "SATURDAY", "periodEnd":
     "SUNDAY", "openingTimes": []}]}}'
   result:
+    timestamp: null
     maintenance_report:
       captured_at: '2024-11-26T14:10:15+00:00'
       inspection_due_in_days: 681
@@ -464,6 +472,7 @@ reports:
       remaining_range_in_km: 88
     secondary_engine_range: null
     total_range_in_km: 88
+    timestamp: null
   success: true
   type: get
   url: /v2/vehicle-status/TMOCKAA0AA000000/driving-range
@@ -560,6 +569,7 @@ reports:
     overall_mileage_in_km: 26
     overall_travel_time_in_min: 25
     vehicle_type: ELECTRIC
+    timestamp: null
   success: true
   type: get
   url: /v1/trip-statistics/TMOCKAA0AA000000?offsetType=week&offset=0&timezone=Europe%2FBerlin
@@ -605,6 +615,7 @@ vehicles:
   - id: AIR_CONDITIONING
     statuses: []
   device_platform: MBB
+  timestamp: null
   id: 0
   model: CitigoE iV
   model_year: '2021'

@@ -175,6 +175,7 @@ reports:
         view_point: exterior_side
       view_type: PLUGGED_IN_DARK
     device_platform: MBB_ODP
+    timestamp: null
     errors: null
     license_plate: HH AA 1234
     name: Example Car
@@ -231,6 +232,7 @@ reports:
     "carCapturedTimestamp": "2024-11-19T12:19:43Z"}'
   result:
     car_captured_timestamp: '2024-11-19T12:19:43+00:00'
+    timestamp: null
     detail:
       bonnet: CLOSED
       sunroof: UNSUPPORTED
@@ -272,6 +274,7 @@ reports:
   result:
     air_conditioning_at_unlock: null
     air_conditioning_without_external_power: null
+    timestamp: null
     car_captured_timestamp: '2024-11-19T12:19:15+00:00'
     charger_connection_state: null
     charger_lock_state: null
@@ -336,6 +339,7 @@ reports:
     []}'
   result:
     errors: []
+    timestamp: null
     positions:
     - address:
         city: Example City
@@ -362,6 +366,7 @@ reports:
   result:
     captured_at: '2024-11-19T12:19:16+00:00'
     mileage_in_km: 52122
+    timestamp: null
     warning_lights:
     - category: ASSISTANCE
       defects: []
@@ -391,6 +396,7 @@ reports:
     "description": "Charge limit is not available."}]}'
   result:
     car_captured_timestamp: null
+    timestamp: null
     errors:
     - description: Care mode is not available.
       type: CARE_MODE_IS_NOT_AVAILABLE
@@ -439,6 +445,7 @@ reports:
     "mileageInKm": 36863, "resolution": "REJECTED", "type": "MANUAL", "extras": [{"notificationId":
     "OTHERS", "text": "Other"}], "addOns": {}, "warnings": []}]}}'
   result:
+    timestamp: null
     maintenance_report:
       captured_at: '2024-11-19T12:19:16+00:00'
       inspection_due_in_days: 233
@@ -491,6 +498,7 @@ reports:
     520}, "carCapturedTimestamp": "2024-11-19T12:19:43Z"}'
   result:
     ad_blue_range: null
+    timestamp: null
     car_captured_timestamp: '2024-11-19T12:19:43+00:00'
     car_type: gasoline
     primary_engine_range:
@@ -597,6 +605,7 @@ reports:
     overall_average_travel_time_in_min: 2
     overall_mileage_in_km: 1
     overall_travel_time_in_min: 4
+    timestamp: null
     vehicle_type: FUEL
   success: true
   type: get
@@ -665,6 +674,7 @@ vehicles:
   - id: CARE_AND_INSURANCE
     statuses: []
   device_platform: MBB_ODP
+  timestamp: null
   id: 0
   model: Octavia
   model_year: '2022'

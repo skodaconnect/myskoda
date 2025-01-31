@@ -5,6 +5,7 @@ library_version: 0.16.0
 vehicles:
   - id: 0
     device_platform: WCAR
+    timestamp: null
     system_model_id: 5AZJJ2
     model: Enyaq
     model_year: '2023'
@@ -385,6 +386,7 @@ reports:
       service_partner:
         id: DEU11111
       software_version: '3.2'
+      timestamp: null
       license_plate: HH AA 1234
       errors: null
     error: null
@@ -415,6 +417,7 @@ reports:
       "carCapturedTimestamp": "2024-12-27T16:33:13.354Z"}
     url: /v2/vehicle-status/TMOCKAA0AA000000
     result:
+      timestamp: null
       detail:
         bonnet: CLOSED
         sunroof: UNSUPPORTED
@@ -499,6 +502,7 @@ reports:
         unit_in_car: CELSIUS
       window_heating_enabled: false
       air_conditioning_without_external_power: null
+      timestamp: null
       outside_temperature: null
     error: null
   - type: get
@@ -544,6 +548,7 @@ reports:
     url: /v1/maps/positions?vin=TMOCKAA0AA000000
     result:
       errors: []
+      timestamp: null
       positions:
         - address:
             country_code: DEU
@@ -572,6 +577,7 @@ reports:
       []}, {"category": "TIRE", "defects": []}]}
     url: /v1/vehicle-health-report/warning-lights/TMOCKAA0AA000000
     result:
+      timestamp: null
       warning_lights:
         - category: OTHER
           defects:
@@ -622,6 +628,7 @@ reports:
         preferred_charge_mode: MANUAL
         target_state_of_charge_in_percent: 100
       is_vehicle_in_saved_location: false
+      timestamp: null
       car_captured_timestamp: '2024-12-27T16:33:47+00:00'
       status:
         battery:
@@ -659,6 +666,7 @@ reports:
       "email": "user@example.com", "phone": "+49 1234 567890"}}}
     url: /v3/vehicle-maintenance/vehicles/TMOCKAA0AA000000
     result:
+      timestamp: null
       maintenance_report:
         captured_at: '2024-12-27T16:30:14.304000+00:00'
         mileage_in_km: 27640
@@ -736,6 +744,7 @@ reports:
       secondary_engine_range: null
       total_range_in_km: 247
       ad_blue_range: null
+      timestamp: null
     error: null
   - type: get
     vehicle_id: 0
@@ -785,4 +794,5 @@ reports:
         fahrenheit: 68
         unit_in_car: CELSIUS
       timers: []
+      timestamp: null
     error: null

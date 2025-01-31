@@ -216,6 +216,7 @@ reports:
     service_partner:
       id: DEU11111
     software_version: null
+    timestamp: null
     specification:
       battery:
         capacity: 13
@@ -254,6 +255,7 @@ reports:
     "carCapturedTimestamp": "2024-10-16T17:40:53Z"}'
   result:
     car_captured_timestamp: '2024-10-16T17:40:53+00:00'
+    timestamp: null
     detail:
       bonnet: CLOSED
       sunroof: CLOSED
@@ -292,6 +294,7 @@ reports:
   result:
     air_conditioning_at_unlock: null
     air_conditioning_without_external_power: false
+    timestamp: null
     car_captured_timestamp: '2024-10-16T17:39:43+00:00'
     charger_connection_state: DISCONNECTED
     charger_lock_state: UNLOCKED
@@ -327,6 +330,7 @@ reports:
     []}'
   result:
     errors: []
+    timestamp: null
     positions:
     - address:
         city: Example City
@@ -353,6 +357,7 @@ reports:
   result:
     captured_at: '2024-10-16T17:40:52+00:00'
     mileage_in_km: 46949
+    timestamp: null
     warning_lights:
     - category: ASSISTANCE
       defects: []
@@ -391,6 +396,7 @@ reports:
     - description: Charge limit is not available.
       type: CHARGE_LIMIT_IS_NOT_AVAILABLE
     is_vehicle_in_saved_location: false
+    timestamp: null
     settings:
       auto_unlock_plug_when_charged: null
       available_charge_modes: []
@@ -450,6 +456,7 @@ reports:
     [{"iconName": "H_2_19", "messageId": "A2CB", "notificationId": 41675, "text":
     "Error: Emergency call function. Please service vehicle."}]}]}}'
   result:
+    timestamp: null
     maintenance_report:
       captured_at: '2024-10-16T17:40:52+00:00'
       inspection_due_in_days: 265
@@ -503,6 +510,7 @@ reports:
     63, "remainingRangeInKm": 23}, "carCapturedTimestamp": "2024-10-16T17:40:53Z"}'
   result:
     ad_blue_range: null
+    timestamp: null
     car_captured_timestamp: '2024-10-16T17:40:53+00:00'
     car_type: hybrid
     primary_engine_range:
@@ -618,6 +626,7 @@ reports:
     overall_average_travel_time_in_min: 24
     overall_mileage_in_km: 41
     overall_travel_time_in_min: 73
+    timestamp: null
     vehicle_type: HYBRID
   success: true
   type: get
@@ -693,9 +702,11 @@ vehicles:
   - id: AIR_CONDITIONING
     statuses: []
   device_platform: MBB_ODP
+  timestamp: null
   id: 0
   model: Superb
   model_year: '2020'
   software_version: null
+  timestamp: null
   system_model_id: 3V35XC
   trim_level: L&K iV
