@@ -92,3 +92,4 @@ class Maintenance(DataClassORJSONMixin):
     preferred_service_partner: ServicePartner | None = field(
         default=None, metadata=field_options(alias="preferredServicePartner")
     )
+    timestamp: datetime | None = field(default=None)

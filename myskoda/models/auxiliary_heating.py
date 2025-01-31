@@ -96,3 +96,4 @@ class AuxiliaryHeating(DataClassORJSONMixin):
     outside_temperature: OutsideTemperature | None = field(
         default=None, metadata=field_options(alias="outsideTemperature")
     )
+    timestamp: datetime | None = field(default=None)

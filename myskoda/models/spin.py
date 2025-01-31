@@ -1,6 +1,7 @@
 """Models for responses of api/v1/spin/verify."""
 
 from dataclasses import dataclass, field
+from datetime import datetime
 from enum import StrEnum
 
 from mashumaro import field_options
@@ -29,3 +30,4 @@ class Spin(DataClassORJSONMixin):
         metadata=field_options(alias="verificationStatus")
     )
     spin_status: SpinStatus | None = field(default=None, metadata=field_options(alias="spinStatus"))
+    timestamp: datetime | None = field(default=None)

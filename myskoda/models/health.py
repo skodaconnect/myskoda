@@ -39,3 +39,4 @@ class Health(DataClassORJSONMixin):
     warning_lights: list[WarningLight] = field(metadata=field_options(alias="warningLights"))
     mileage_in_km: int | None = field(default=None, metadata=field_options(alias="mileageInKm"))
     captured_at: datetime | None = field(default=None, metadata=field_options(alias="capturedAt"))
+    timestamp: datetime | None = field(default=None)

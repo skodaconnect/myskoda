@@ -2,7 +2,7 @@
 
 import logging
 from dataclasses import dataclass, field
-from datetime import date
+from datetime import date, datetime
 from enum import StrEnum
 
 from mashumaro import field_options
@@ -285,6 +285,7 @@ class Info(DataClassORJSONMixin):
     )
     license_plate: str | None = field(default=None, metadata=field_options(alias="licensePlate"))
     errors: list[Error] | None = field(default=None)
+    timestamp: datetime | None = field(default=None)
 
     def has_capability(self, cap: CapabilityId) -> bool:
         """Check for a capability.

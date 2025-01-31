@@ -5,11 +5,13 @@ library_version: 0.13.0
 vehicles:
   - id: 0
     device_platform: MBB_ODP
+    timestamp: null
     system_model_id: 3V35WZ
     model: Superb
     model_year: '2024'
     trim_level: L&K
     software_version: null
+    timestamp: null
     capabilities:
       - id: ACCESS
         statuses: []
@@ -352,6 +354,7 @@ reports:
       service_partner:
         id: DEU11111
       software_version: null
+      timestamp: null
       license_plate: null
       errors: null
     error: null
@@ -381,6 +384,7 @@ reports:
       "carCapturedTimestamp": "2024-11-27T07:07:33Z"}
     url: /v2/vehicle-status/TMOCKAA0AA000000
     result:
+      timestamp: null
       detail:
         bonnet: CLOSED
         sunroof: CLOSED
@@ -473,6 +477,7 @@ reports:
       target_temperature: null
       window_heating_enabled: null
       air_conditioning_without_external_power: null
+      timestamp: null
       outside_temperature: null
     error: null
   - type: get
@@ -512,6 +517,7 @@ reports:
       state: 'OFF'
       start_mode: HEATING
       duration_in_seconds: 1800
+      timestamp: null
       target_temperature: null
       car_captured_timestamp: '2024-11-27T07:06:35+00:00'
       estimated_date_time_to_reach_target_temperature: null
@@ -532,6 +538,7 @@ reports:
     url: /v1/maps/positions?vin=TMOCKAA0AA000000
     result:
       errors: []
+      timestamp: null
       positions:
         - address:
             country_code: DEU
@@ -558,6 +565,7 @@ reports:
       []}]}
     url: /v1/vehicle-health-report/warning-lights/TMOCKAA0AA000000
     result:
+      timestamp: null
       warning_lights:
         - category: ASSISTANCE
           defects: []
@@ -608,6 +616,7 @@ reports:
         preferred_charge_mode: null
         target_state_of_charge_in_percent: null
       is_vehicle_in_saved_location: false
+      timestamp: null
       car_captured_timestamp: null
       status: null
     error: null
@@ -634,6 +643,7 @@ reports:
       "user@example.com", "phone": "+49 1234 567890"}}}
     url: /v3/vehicle-maintenance/vehicles/TMOCKAA0AA000000
     result:
+      timestamp: null
       maintenance_report:
         captured_at: '2024-11-27T07:07:32+00:00'
         mileage_in_km: 26199
@@ -702,6 +712,7 @@ reports:
       secondary_engine_range: null
       total_range_in_km: 590
       ad_blue_range: null
+      timestamp: null
     error: null
   - type: get
     vehicle_id: 0
@@ -812,4 +823,5 @@ reports:
       overall_average_travel_time_in_min: 50
       overall_mileage_in_km: 49
       overall_travel_time_in_min: 149
+      timestamp: null
     error: null

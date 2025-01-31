@@ -175,6 +175,7 @@ reports:
       view_point: main
     service_partner: null
     software_version: null
+    timestamp: null
     specification:
       battery: null
       body: SUV
@@ -211,6 +212,7 @@ reports:
     "threeX": "https://mysmob.api.connect.skoda-auto.cz/api/v2/vehicle-status/render?carType=SUV&vehicleState=9-9-9-9-0-0-3-3-0&lastModifiedAt=1729086727&dimension=3x&theme=DARK"}}}'
   result:
     car_captured_timestamp: null
+    timestamp: null
     detail:
       bonnet: UNKNOWN
       sunroof: UNSUPPORTED
@@ -248,6 +250,7 @@ reports:
   result:
     air_conditioning_at_unlock: null
     air_conditioning_without_external_power: null
+    timestamp: null
     car_captured_timestamp: null
     charger_connection_state: null
     charger_lock_state: null
@@ -282,6 +285,7 @@ reports:
   result:
     errors: []
     positions: []
+    timestamp: null
   success: true
   type: get
   url: /v1/maps/positions?vin=TMOCKAA0AA000000
@@ -296,6 +300,7 @@ reports:
   result:
     captured_at: '2024-10-22T21:30:09+00:00'
     mileage_in_km: 21119
+    timestamp: null
     warning_lights:
     - category: ASSISTANCE
       defects: []
@@ -335,6 +340,7 @@ reports:
     - description: Charge limit is not available.
       type: CHARGE_LIMIT_IS_NOT_AVAILABLE
     is_vehicle_in_saved_location: false
+    timestamp: null
     settings:
       auto_unlock_plug_when_charged: null
       available_charge_modes: []
@@ -353,6 +359,7 @@ reports:
   raw: '{"predictiveMaintenance": {"setting": {"serviceActivated": false, "email":
     "user@example.com", "phone": "+49 1234 567890"}}}'
   result:
+    timestamp: null
     maintenance_report: null
     predictive_maintenance:
       setting:
@@ -500,6 +507,7 @@ vehicles:
   - id: CARE_AND_INSURANCE
     statuses: []
   device_platform: MBB_ODP
+  timestamp: null
   id: 0
   model: Karoq
   model_year: '2022'

@@ -107,3 +107,4 @@ class DepartureInfo(DataClassORJSONMixin):
     timers: list[DepartureTimer] | None = field(
         default=None, metadata=field_options(alias="timers")
     )
+    timestamp: datetime | None = field(default=None)

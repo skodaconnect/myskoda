@@ -1,7 +1,7 @@
 """Models for responses of api/v2/vehicle-status/{vin}."""
 
 from dataclasses import dataclass, field
-from datetime import date
+from datetime import date, datetime
 from enum import StrEnum
 
 from mashumaro import field_options
@@ -73,3 +73,4 @@ class TripStatistics(DataClassORJSONMixin):
     overall_travel_time_in_min: int | None = field(
         default=None, metadata=field_options(alias="overallTravelTimeInMin")
     )
+    timestamp: datetime | None = field(default=None)

@@ -199,6 +199,7 @@ reports:
     service_partner:
       id: DEU11111
     software_version: null
+    timestamp: null
     specification:
       battery: null
       body: SUV
@@ -236,6 +237,7 @@ reports:
     "carCapturedTimestamp": "2024-11-08T09:30:13Z"}'
   result:
     car_captured_timestamp: '2024-11-08T09:30:13+00:00'
+    timestamp: null
     detail:
       bonnet: CLOSED
       sunroof: CLOSED
@@ -277,6 +279,7 @@ reports:
   result:
     air_conditioning_at_unlock: null
     air_conditioning_without_external_power: null
+    timestamp: null
     car_captured_timestamp: '2024-11-04T16:43:12+00:00'
     charger_connection_state: null
     charger_lock_state: null
@@ -331,6 +334,7 @@ reports:
     []}'
   result:
     errors: []
+    timestamp: null
     positions:
     - address:
         city: Example City
@@ -357,6 +361,7 @@ reports:
   result:
     captured_at: '2024-11-08T09:30:02+00:00'
     mileage_in_km: 9647
+    timestamp: null
     warning_lights:
     - category: ASSISTANCE
       defects: []
@@ -396,6 +401,7 @@ reports:
     - description: Charge limit is not available.
       type: CHARGE_LIMIT_IS_NOT_AVAILABLE
     is_vehicle_in_saved_location: false
+    timestamp: null
     settings:
       auto_unlock_plug_when_charged: null
       available_charge_modes: []
@@ -435,6 +441,7 @@ reports:
     "REJECTED", "type": "AUTO", "extras": [], "addOns": {}, "warnings": [{"iconName":
     "C_1_01", "messageId": "A21C", "notificationId": 41500, "text": "Fault: Wipers"}]}]}}'
   result:
+    timestamp: null
     maintenance_report:
       captured_at: '2024-11-08T09:30:02+00:00'
       inspection_due_in_days: 576
@@ -496,6 +503,7 @@ reports:
       remaining_range_in_km: 650
     secondary_engine_range: null
     total_range_in_km: 650
+    timestamp: null
   success: true
   type: get
   url: /v2/vehicle-status/TMOCKAA0AA000000/driving-range
@@ -586,6 +594,7 @@ vehicles:
   - id: EXTENDED_CHARGING_SETTINGS
     statuses: []
   device_platform: MBB_ODP
+  timestamp: null
   id: 0
   model: Kodiaq
   model_year: '2024'

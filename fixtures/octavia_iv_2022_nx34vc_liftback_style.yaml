@@ -5,6 +5,7 @@ library_version: 0.13.4
 vehicles:
   - id: 0
     device_platform: MBB_ODP
+    timestamp: null
     system_model_id: NX34VC
     model: Octavia
     model_year: '2022'
@@ -351,6 +352,7 @@ reports:
       service_partner:
         id: DEU11111
       software_version: null
+      timestamp: null
       license_plate: HH AA 1234
       errors: null
     error: null
@@ -380,6 +382,7 @@ reports:
       "carCapturedTimestamp": "2024-12-05T18:27:30Z"}
     url: /v2/vehicle-status/TMOCKAA0AA000000
     result:
+      timestamp: null
       detail:
         bonnet: CLOSED
         sunroof: UNSUPPORTED
@@ -455,6 +458,7 @@ reports:
         unit_in_car: CELSIUS
       window_heating_enabled: null
       air_conditioning_without_external_power: true
+      timestamp: null
       outside_temperature:
         temperature_value: 5.0
         unit_in_car: CELSIUS
@@ -503,6 +507,7 @@ reports:
     url: /v1/maps/positions?vin=TMOCKAA0AA000000
     result:
       errors: []
+      timestamp: null
       positions:
         - address:
             country_code: DEU
@@ -529,6 +534,7 @@ reports:
       []}]}
     url: /v1/vehicle-health-report/warning-lights/TMOCKAA0AA000000
     result:
+      timestamp: null
       warning_lights:
         - category: ASSISTANCE
           defects: []
@@ -580,6 +586,7 @@ reports:
         preferred_charge_mode: null
         target_state_of_charge_in_percent: null
       is_vehicle_in_saved_location: false
+      timestamp: null
       car_captured_timestamp: '2024-12-05T19:32:44+00:00'
       status:
         battery:
@@ -646,6 +653,7 @@ reports:
       41568)"}]}]}}
     url: /v3/vehicle-maintenance/vehicles/TMOCKAA0AA000000
     result:
+      timestamp: null
       maintenance_report:
         captured_at: '2024-12-05T18:27:20+00:00'
         mileage_in_km: 45073
@@ -720,6 +728,7 @@ reports:
         remaining_range_in_km: 0
       total_range_in_km: 700
       ad_blue_range: null
+      timestamp: null
     error: null
   - type: get
     vehicle_id: 0
@@ -829,4 +838,5 @@ reports:
       overall_average_travel_time_in_min: 45
       overall_mileage_in_km: 117
       overall_travel_time_in_min: 181
+      timestamp: null
     error: null

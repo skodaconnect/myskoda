@@ -5,6 +5,7 @@ library_version: 0.16.2
 vehicles:
   - id: 0
     device_platform: MBB_ODP
+    timestamp: null
     system_model_id: PS7DYC
     model: Kodiaq
     model_year: '2024'
@@ -321,6 +322,7 @@ reports:
       service_partner:
         id: DEU11111
       software_version: null
+      timestamp: null
       license_plate: HH AA 1234
       errors: null
     error: null
@@ -350,6 +352,7 @@ reports:
       "carCapturedTimestamp": "2025-01-12T08:14:22Z"}
     url: /v2/vehicle-status/TMOCKAA0AA000000
     result:
+      timestamp: null
       detail:
         bonnet: CLOSED
         sunroof: CLOSED
@@ -423,6 +426,7 @@ reports:
         unit_in_car: CELSIUS
       window_heating_enabled: false
       air_conditioning_without_external_power: true
+      timestamp: null
       outside_temperature: null
     error: null
   - type: get
@@ -468,6 +472,7 @@ reports:
     url: /v1/maps/positions?vin=TMOCKAA0AA000000
     result:
       errors: []
+      timestamp: null
       positions:
         - address:
             country_code: DEU
@@ -493,6 +498,7 @@ reports:
       "defects": []}, {"category": "OTHER", "defects": []}]}
     url: /v1/vehicle-health-report/warning-lights/TMOCKAA0AA000000
     result:
+      timestamp: null
       warning_lights:
         - category: ASSISTANCE
           defects: []
@@ -541,6 +547,7 @@ reports:
         preferred_charge_mode: MANUAL
         target_state_of_charge_in_percent: 100
       is_vehicle_in_saved_location: false
+      timestamp: null
       car_captured_timestamp: '2025-01-12T09:25:58+00:00'
       status:
         battery:
@@ -577,6 +584,7 @@ reports:
       "phone": "+49 1234 567890"}}}
     url: /v3/vehicle-maintenance/vehicles/TMOCKAA0AA000000
     result:
+      timestamp: null
       maintenance_report:
         captured_at: '2025-01-12T08:13:58+00:00'
         mileage_in_km: null
@@ -655,6 +663,7 @@ reports:
         remaining_range_in_km: 15
       total_range_in_km: 215
       ad_blue_range: null
+      timestamp: null
     error: null
   - type: get
     vehicle_id: 0
@@ -697,6 +706,7 @@ reports:
       /v1/trip-statistics/TMOCKAA0AA000000?offsetType=week&offset=0&timezone=Europe%2FBerlin
     result:
       vehicle_type: HYBRID
+      timestamp: null
       detailed_statistics:
         - date: '2025-01-06'
           average_fuel_consumption: 0
@@ -783,6 +793,7 @@ reports:
       overall_average_travel_time_in_min: 31
       overall_mileage_in_km: 246
       overall_travel_time_in_min: 218
+      timestamp: null
     error: null
   - type: get
     vehicle_id: 0
@@ -802,4 +813,5 @@ reports:
         fahrenheit: 72
         unit_in_car: CELSIUS
       timers: []
+      timestamp: null
     error: null

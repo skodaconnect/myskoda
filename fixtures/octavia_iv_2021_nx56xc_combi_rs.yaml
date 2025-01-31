@@ -5,6 +5,7 @@ library_version: 0.13.2
 vehicles:
   - id: 0
     device_platform: MBB_ODP
+    timestamp: null
     system_model_id: NX56XC
     model: Octavia
     model_year: '2021'
@@ -361,6 +362,7 @@ reports:
       service_partner:
         id: DEU11111
       software_version: null
+      timestamp: null
       license_plate: HH AA 1234
       errors: null
     error: null
@@ -390,6 +392,7 @@ reports:
       "carCapturedTimestamp": "2024-11-29T06:57:10Z"}
     url: /v2/vehicle-status/TMOCKAA0AA000000
     result:
+      timestamp: null
       detail:
         bonnet: CLOSED
         sunroof: CLOSED
@@ -463,6 +466,7 @@ reports:
         unit_in_car: CELSIUS
       window_heating_enabled: null
       air_conditioning_without_external_power: true
+      timestamp: null
       outside_temperature: null
     error: null
   - type: get
@@ -485,6 +489,7 @@ reports:
     url: /v1/maps/positions?vin=TMOCKAA0AA000000
     result:
       errors: []
+      timestamp: null
       positions:
         - address:
             country_code: DEU
@@ -511,6 +516,7 @@ reports:
       []}]}
     url: /v1/vehicle-health-report/warning-lights/TMOCKAA0AA000000
     result:
+      timestamp: null
       warning_lights:
         - category: ASSISTANCE
           defects: []
@@ -561,6 +567,7 @@ reports:
         preferred_charge_mode: null
         target_state_of_charge_in_percent: null
       is_vehicle_in_saved_location: false
+      timestamp: null
       car_captured_timestamp: '2024-11-29T06:55:43+00:00'
       status:
         battery:
@@ -592,6 +599,7 @@ reports:
       567890"}}}
     url: /v3/vehicle-maintenance/vehicles/TMOCKAA0AA000000
     result:
+      timestamp: null
       maintenance_report:
         captured_at: '2024-11-29T06:57:10+00:00'
         mileage_in_km: 54263
@@ -653,6 +661,7 @@ reports:
         remaining_range_in_km: 31
       total_range_in_km: 291
       ad_blue_range: null
+      timestamp: null
     error: null
   - type: get
     vehicle_id: 0
@@ -759,4 +768,5 @@ reports:
       overall_average_travel_time_in_min: 16
       overall_mileage_in_km: 56
       overall_travel_time_in_min: 82
+      timestamp: null
     error: null

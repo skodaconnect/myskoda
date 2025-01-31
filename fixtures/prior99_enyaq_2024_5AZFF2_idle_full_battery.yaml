@@ -230,6 +230,7 @@ reports:
     service_partner:
       id: DEU11111
     software_version: '3.7'
+    timestamp: null
     specification:
       battery:
         capacity: 58
@@ -268,6 +269,7 @@ reports:
     "carCapturedTimestamp": "2024-10-14T23:11:45.725Z"}'
   result:
     car_captured_timestamp: '2024-10-14T23:11:45.725000+00:00'
+    timestamp: null
     detail:
       bonnet: CLOSED
       sunroof: UNSUPPORTED
@@ -308,6 +310,7 @@ reports:
   result:
     air_conditioning_at_unlock: true
     air_conditioning_without_external_power: null
+    timestamp: null
     car_captured_timestamp: '2024-10-14T23:11:50+00:00'
     charger_connection_state: DISCONNECTED
     charger_lock_state: UNLOCKED
@@ -353,6 +356,7 @@ reports:
     []}'
   result:
     errors: []
+    timestamp: null
     positions:
     - address:
         city: Example City
@@ -379,6 +383,7 @@ reports:
   result:
     captured_at: '2024-10-14T16:08:00.382000+00:00'
     mileage_in_km: 9092
+    timestamp: null
     warning_lights:
     - category: ASSISTANCE
       defects: []
@@ -411,6 +416,7 @@ reports:
     car_captured_timestamp: '2024-10-14T23:11:50+00:00'
     errors: []
     is_vehicle_in_saved_location: false
+    timestamp: null
     settings:
       auto_unlock_plug_when_charged: 'OFF'
       available_charge_modes:
@@ -449,6 +455,7 @@ reports:
     []}]}, "predictiveMaintenance": {"setting": {"serviceActivated": true, "preferredChannel":
     "EMAIL", "email": "user@example.com", "phone": "+49 1234 567890"}}}'
   result:
+    timestamp: null
     maintenance_report:
       captured_at: '2024-10-14T23:11:45.933000+00:00'
       inspection_due_in_days: 591
@@ -506,6 +513,7 @@ reports:
     "2024-10-14T16:15:14Z"}'
   result:
     ad_blue_range: null
+    timestamp: null
     car_captured_timestamp: '2024-10-14T16:15:14+00:00'
     car_type: electric
     primary_engine_range:
@@ -630,6 +638,7 @@ vehicles:
   - id: VEHICLE_WAKE_UP_TRIGGER
     statuses: []
   device_platform: WCAR
+  timestamp: null
   id: 0
   model: Enyaq
   model_year: '2024'

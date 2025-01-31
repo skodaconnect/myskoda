@@ -90,6 +90,7 @@ reports:
       errors: null 
     composite_renders: []
     device_platform: MBB
+    timestamp: null
     errors:
     - description: Getting render of view point {exterior_side} for vehicle VIN {TMOCKAA0AA000000}
         failed with message {404 Not Found from GET http://render-service/api/v1/renders/TMOCKAA0AA000000}
@@ -144,6 +145,7 @@ reports:
     "carCapturedTimestamp": "2024-10-16T17:46:58Z"}'
   result:
     car_captured_timestamp: '2024-10-16T17:46:58+00:00'
+    timestamp: null
     detail:
       bonnet: CLOSED
       sunroof: UNSUPPORTED
@@ -181,6 +183,7 @@ reports:
   result:
     air_conditioning_at_unlock: null
     air_conditioning_without_external_power: null
+    timestamp: null
     car_captured_timestamp: null
     charger_connection_state: null
     charger_lock_state: null
@@ -217,6 +220,7 @@ reports:
     []}'
   result:
     errors: []
+    timestamp: null
     positions:
     - address:
         city: Example City
@@ -242,6 +246,7 @@ reports:
   result:
     captured_at: null
     mileage_in_km: null
+    timestamp: null
     warning_lights:
     - category: ASSISTANCE
       defects: []
@@ -281,6 +286,7 @@ reports:
     - description: Charge limit is not available.
       type: CHARGE_LIMIT_IS_NOT_AVAILABLE
     is_vehicle_in_saved_location: false
+    timestamp: null
     settings:
       auto_unlock_plug_when_charged: null
       available_charge_modes: []
@@ -310,6 +316,7 @@ reports:
     []}]}, "predictiveMaintenance": {"setting": {"serviceActivated": true, "preferredChannel":
     "EMAIL", "email": "user@example.com", "phone": "+49 1234 567890"}}}'
   result:
+    timestamp: null
     maintenance_report:
       captured_at: '2024-10-16T17:46:55+00:00'
       inspection_due_in_days: 137
@@ -367,6 +374,7 @@ reports:
     530}, "carCapturedTimestamp": "2024-10-16T17:46:58Z"}'
   result:
     ad_blue_range: null
+    timestamp: null
     car_captured_timestamp: '2024-10-16T17:46:58+00:00'
     car_type: diesel
     primary_engine_range:
@@ -475,6 +483,7 @@ reports:
     overall_average_travel_time_in_min: 25
     overall_mileage_in_km: 80
     overall_travel_time_in_min: 75
+    timestamp: null
     vehicle_type: FUEL
   success: true
   type: get
@@ -535,6 +544,7 @@ vehicles:
   - id: VEHICLE_HEALTH_WARNINGS_WITH_WAKE_UP
     statuses: []
   device_platform: MBB
+  timestamp: null
   id: 0
   model: Octavia
   model_year: '2018'

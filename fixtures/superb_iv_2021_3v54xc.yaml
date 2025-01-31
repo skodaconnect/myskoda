@@ -225,6 +225,7 @@ reports:
     service_partner:
       id: DEU11111
     software_version: null
+    timestamp: null
     specification:
       battery:
         capacity: 13
@@ -263,6 +264,7 @@ reports:
     "carCapturedTimestamp": "2024-11-11T05:44:40Z"}'
   result:
     car_captured_timestamp: '2024-11-11T05:44:40+00:00'
+    timestamp: null
     detail:
       bonnet: CLOSED
       sunroof: UNSUPPORTED
@@ -301,6 +303,7 @@ reports:
   result:
     air_conditioning_at_unlock: null
     air_conditioning_without_external_power: true
+    timestamp: null
     car_captured_timestamp: '2024-11-09T18:06:32+00:00'
     charger_connection_state: DISCONNECTED
     charger_lock_state: UNLOCKED
@@ -336,6 +339,7 @@ reports:
     []}'
   result:
     errors: []
+    timestamp: null
     positions:
     - address:
         city: Example City
@@ -362,6 +366,7 @@ reports:
   result:
     captured_at: '2024-11-11T05:44:37+00:00'
     mileage_in_km: 104348
+    timestamp: null
     warning_lights:
     - category: ASSISTANCE
       defects: []
@@ -400,6 +405,7 @@ reports:
     - description: Charge limit is not available.
       type: CHARGE_LIMIT_IS_NOT_AVAILABLE
     is_vehicle_in_saved_location: false
+    timestamp: null
     settings:
       auto_unlock_plug_when_charged: null
       available_charge_modes: []
@@ -437,6 +443,7 @@ reports:
     {"setting": {"serviceActivated": true, "email": "user@example.com", "phone": "+49
     1234 567890"}}}'
   result:
+    timestamp: null
     maintenance_report:
       captured_at: '2024-11-11T05:44:37+00:00'
       inspection_due_in_days: 524
@@ -488,6 +495,7 @@ reports:
     20, "currentFuelLevelInPercent": 20}, "carCapturedTimestamp": "2024-11-11T05:44:40Z"}'
   result:
     ad_blue_range: null
+    timestamp: null
     car_captured_timestamp: '2024-11-11T05:44:40+00:00'
     car_type: gasoline
     primary_engine_range:
@@ -586,6 +594,7 @@ reports:
     overall_average_travel_time_in_min: null
     overall_mileage_in_km: null
     overall_travel_time_in_min: null
+    timestamp: null
     vehicle_type: HYBRID
   success: true
   type: get
@@ -667,6 +676,7 @@ vehicles:
   - id: AIR_CONDITIONING
     statuses: []
   device_platform: MBB_ODP
+  timestamp: null
   id: 0
   model: Superb
   model_year: '2021'
