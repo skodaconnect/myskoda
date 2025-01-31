@@ -1,11 +1,14 @@
 """User that is using the API."""
 
+import logging
 from dataclasses import dataclass, field
 from datetime import date, datetime
 from enum import StrEnum
 
 from mashumaro import field_options
 from mashumaro.mixins.orjson import DataClassORJSONMixin
+
+_LOGGER = logging.getLogger(__name__)
 
 
 class UserCapabilityId(StrEnum):
@@ -24,9 +27,19 @@ class UserCapability(DataClassORJSONMixin):
     id: UserCapabilityId
 
 
+def drop_unknown_capabilities(value: list[dict]) -> list[UserCapability]:
+    """Drop any unknown usercapabilities and log a message."""
+    unknown_capabilities = [c for c in value if c["id"] not in UserCapabilityId]
+    if unknown_capabilities:
+        _LOGGER.info("Dropping unknown capabilities: %s", unknown_capabilities)
+    return [UserCapability.from_dict(c) for c in value if c["id"] in UserCapabilityId]
+
+
 @dataclass
 class User(DataClassORJSONMixin):
-    capabilities: list[UserCapability]
+    capabilities: list[UserCapability] = field(
+        metadata=field_options(deserialize=drop_unknown_capabilities)
+    )
     email: str
     first_name: str = field(metadata=field_options(alias="firstName"))
     id: str
