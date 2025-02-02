@@ -5,6 +5,7 @@ library_version: 0.13.4
 vehicles:
   - id: 0
     device_platform: MBB_ODP
+    timestamp: null
     system_model_id: NS74QZ
     model: Kodiaq
     model_year: "2023"
@@ -229,6 +230,7 @@ reports:
       service_partner:
         id: DEU11111
       software_version:
+      timestamp: null
       license_plate: HH AA 1234
       errors:
     error:
@@ -250,6 +252,7 @@ reports:
       "carCapturedTimestamp": "2024-12-02T16:46:09Z"}'
     url: "/v2/vehicle-status/TMOCKAA0AA000000"
     result:
+      timestamp: null
       detail:
         bonnet: CLOSED
         sunroof: UNSUPPORTED
@@ -314,6 +317,7 @@ reports:
       target_temperature:
       window_heating_enabled:
       air_conditioning_without_external_power:
+      timestamp: null
     error:
   - type: get
     vehicle_id: 0
@@ -353,6 +357,7 @@ reports:
     url: "/v1/maps/positions?vin=TMOCKAA0AA000000"
     result:
       errors: []
+      timestamp: null
       positions:
         - address:
             country_code: DEU
@@ -378,6 +383,7 @@ reports:
       {"category": "OTHER", "defects": []}]}'
     url: "/v1/vehicle-health-report/warning-lights/TMOCKAA0AA000000"
     result:
+      timestamp: null
       warning_lights:
         - category: ASSISTANCE
           defects: []
@@ -429,6 +435,7 @@ reports:
       is_vehicle_in_saved_location: false
       car_captured_timestamp:
       status:
+      timestamp: null
     error:
   - type: get
     vehicle_id: 0
@@ -446,6 +453,7 @@ reports:
       {"serviceActivated": true, "email": "user@example.com", "phone": "+49 1234 567890"}}}'
     url: "/v3/vehicle-maintenance/vehicles/TMOCKAA0AA000000"
     result:
+      timestamp: null
       maintenance_report:
         captured_at: "2024-12-02T16:46:08+00:00"
         mileage_in_km: 37711
@@ -499,7 +507,8 @@ reports:
         remaining_range_in_km: 70
       secondary_engine_range:
       total_range_in_km: 70
-      ad_blue_range:
+      ad_blue_range: null
+      timestamp: null
     error:
   - type: get
     vehicle_id: 0
@@ -516,6 +525,7 @@ reports:
     url: "/v1/trip-statistics/TMOCKAA0AA000000?offsetType=week&offset=0&timezone=Europe%2FBerlin"
     result:
       vehicle_type: FUEL
+      timestamp: null
       detailed_statistics:
         - date: "2024-12-02"
           average_fuel_consumption: 12.53
@@ -598,4 +608,5 @@ reports:
       overall_average_travel_time_in_min: 81
       overall_mileage_in_km: 26
       overall_travel_time_in_min: 81
+      timestamp: null
     error:

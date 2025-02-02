@@ -135,6 +135,7 @@ reports:
     service_partner:
       id: DEU11111
     software_version: null
+    timestamp: null
     specification:
       battery: null
       body: SUV
@@ -172,6 +173,7 @@ reports:
     "carCapturedTimestamp": "2024-11-07T15:16:22Z"}'
   result:
     car_captured_timestamp: '2024-11-07T15:16:22+00:00'
+    timestamp: null
     detail:
       bonnet: CLOSED
       sunroof: UNSUPPORTED
@@ -209,6 +211,7 @@ reports:
   result:
     air_conditioning_at_unlock: null
     air_conditioning_without_external_power: null
+    timestamp: null
     car_captured_timestamp: null
     charger_connection_state: null
     charger_lock_state: null
@@ -245,6 +248,7 @@ reports:
     []}'
   result:
     errors: []
+    timestamp: null
     positions:
     - address:
         city: Example City
@@ -271,6 +275,7 @@ reports:
   result:
     captured_at: '2024-11-07T15:16:19+00:00'
     mileage_in_km: 10238
+    timestamp: null
     warning_lights:
     - category: ASSISTANCE
       defects: []
@@ -310,6 +315,7 @@ reports:
     - description: Charge limit is not available.
       type: CHARGE_LIMIT_IS_NOT_AVAILABLE
     is_vehicle_in_saved_location: false
+    timestamp: null
     settings:
       auto_unlock_plug_when_charged: null
       available_charge_modes: []
@@ -340,6 +346,7 @@ reports:
     {"serviceActivated": true, "preferredChannel": "EMAIL", "email": "user@example.com",
     "phone": "+49 1234 567890"}}}'
   result:
+    timestamp: null
     maintenance_report:
       captured_at: '2024-11-07T15:16:19+00:00'
       inspection_due_in_days: 642
@@ -408,6 +415,7 @@ reports:
       remaining_range_in_km: 209
     secondary_engine_range: null
     total_range_in_km: 209
+    timestamp: null
   success: true
   type: get
   url: /v2/vehicle-status/TMOCKAA0AA000000/driving-range
@@ -504,6 +512,7 @@ reports:
     overall_mileage_in_km: 57
     overall_travel_time_in_min: 95
     vehicle_type: FUEL
+    timestamp: null
   success: true
   type: get
   url: /v1/trip-statistics/TMOCKAA0AA000000?offsetType=week&offset=0&timezone=Europe%2FBerlin
@@ -570,6 +579,7 @@ vehicles:
   - id: CARE_AND_INSURANCE
     statuses: []
   device_platform: MBB_ODP
+  timestamp: null
   id: 0
   model: Karoq
   model_year: '2023'

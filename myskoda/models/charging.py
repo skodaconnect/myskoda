@@ -129,3 +129,4 @@ class Charging(DataClassORJSONMixin):
         default=None, metadata=field_options(alias="carCapturedTimestamp")
     )
     status: ChargingStatus | None = field(default=None)
+    timestamp: datetime | None = field(default=None)

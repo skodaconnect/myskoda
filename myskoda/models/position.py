@@ -1,6 +1,7 @@
 """Models for responses of api/v2/vehicle-status/{vin}/driving-range."""
 
 from dataclasses import dataclass, field
+from datetime import datetime
 from enum import StrEnum
 
 from mashumaro import field_options
@@ -37,3 +38,4 @@ class Positions(DataClassORJSONMixin):
 
     errors: list[Error]
     positions: list[Position]
+    timestamp: datetime | None = field(default=None)

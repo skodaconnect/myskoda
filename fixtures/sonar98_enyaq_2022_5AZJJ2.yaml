@@ -230,6 +230,7 @@ reports:
       view_point: main
     service_partner:
       id: DEU11111
+    timestamp: null
     software_version: '3.0'
     specification:
       battery:
@@ -269,6 +270,7 @@ reports:
     "carCapturedTimestamp": "2024-12-04T13:31:07.28Z"}'
   result:
     car_captured_timestamp: '2024-12-04T13:31:07.280000+00:00'
+    timestamp: null
     detail:
       bonnet: CLOSED
       sunroof: UNSUPPORTED
@@ -309,6 +311,7 @@ reports:
   result:
     air_conditioning_at_unlock: false
     air_conditioning_without_external_power: null
+    timestamp: null
     car_captured_timestamp: '2024-12-04T13:31:12+00:00'
     charger_connection_state: CONNECTED
     charger_lock_state: LOCKED
@@ -376,6 +379,7 @@ reports:
     []}'
   result:
     errors: []
+    timestamp: null
     positions:
     - address:
         city: Example City
@@ -402,6 +406,7 @@ reports:
   result:
     captured_at: '2024-12-04T13:31:33.083000+00:00'
     mileage_in_km: 44028
+    timestamp: null
     warning_lights:
     - category: ASSISTANCE
       defects: []
@@ -434,6 +439,7 @@ reports:
     car_captured_timestamp: '2024-12-04T13:32:15+00:00'
     errors: []
     is_vehicle_in_saved_location: false
+    timestamp: null
     settings:
       auto_unlock_plug_when_charged: 'OFF'
       available_charge_modes:
@@ -469,6 +475,7 @@ reports:
     "FRIDAY", "openingTimes": [{"from": "08:00:00", "to": "17:00:00"}]}, {"periodStart":
     "SATURDAY", "periodEnd": "SUNDAY", "openingTimes": []}]}}'
   result:
+    timestamp: null
     maintenance_report:
       captured_at: '2024-12-04T13:31:07.296000+00:00'
       inspection_due_in_days: -26
@@ -516,6 +523,7 @@ reports:
     "2024-12-04T13:32:15Z"}'
   result:
     ad_blue_range: null
+    timestamp: null
     car_captured_timestamp: '2024-12-04T13:32:15+00:00'
     car_type: electric
     primary_engine_range:
@@ -642,6 +650,7 @@ vehicles:
   - id: VEHICLE_WAKE_UP_TRIGGER
     statuses: []
   device_platform: WCAR
+  timestamp: null
   id: 0
   model: Enyaq
   model_year: '2022'

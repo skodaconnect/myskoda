@@ -196,6 +196,7 @@ reports:
     service_partner:
       id: DEU11111
     software_version: null
+    timestamp: null
     specification:
       battery: null
       body: Liftback
@@ -233,6 +234,7 @@ reports:
     "carCapturedTimestamp": "2024-11-13T14:06:23Z"}'
   result:
     car_captured_timestamp: '2024-11-13T14:06:23+00:00'
+    timestamp: null
     detail:
       bonnet: CLOSED
       sunroof: UNSUPPORTED
@@ -275,6 +277,7 @@ reports:
   result:
     air_conditioning_at_unlock: null
     air_conditioning_without_external_power: null
+    timestamp: null
     car_captured_timestamp: '2024-11-13T14:05:44+00:00'
     charger_connection_state: null
     charger_lock_state: null
@@ -345,6 +348,7 @@ reports:
     []}'
   result:
     errors: []
+    timestamp: null
     positions:
     - address:
         city: Example City
@@ -371,6 +375,7 @@ reports:
   result:
     captured_at: '2024-11-13T14:06:24+00:00'
     mileage_in_km: 10776
+    timestamp: null
     warning_lights:
     - category: ASSISTANCE
       defects: []
@@ -410,6 +415,7 @@ reports:
     - description: Charge limit is not available.
       type: CHARGE_LIMIT_IS_NOT_AVAILABLE
     is_vehicle_in_saved_location: false
+    timestamp: null
     settings:
       auto_unlock_plug_when_charged: null
       available_charge_modes: []
@@ -438,6 +444,7 @@ reports:
     {"setting": {"serviceActivated": true, "preferredChannel": "EMAIL", "email": "user@example.com",
     "phone": "+49 1234 567890"}}}'
   result:
+    timestamp: null
     maintenance_report:
       captured_at: '2024-11-13T14:06:24+00:00'
       inspection_due_in_days: 99
@@ -490,6 +497,7 @@ reports:
     590}, "carCapturedTimestamp": "2024-11-13T14:06:23Z"}'
   result:
     ad_blue_range: null
+    timestamp: null
     car_captured_timestamp: '2024-11-13T14:06:23+00:00'
     car_type: gasoline
     primary_engine_range:
@@ -600,6 +608,7 @@ reports:
     overall_average_travel_time_in_min: 27
     overall_mileage_in_km: 35
     overall_travel_time_in_min: 80
+    timestamp: null
     vehicle_type: FUEL
   success: true
   type: get
@@ -670,6 +679,7 @@ vehicles:
   - id: CARE_AND_INSURANCE
     statuses: []
   device_platform: MBB_ODP
+  timestamp: null
   id: 0
   model: Octavia
   model_year: '2023'

@@ -232,6 +232,7 @@ reports:
     service_partner:
       id: DEU11111
     software_version: '5.2'
+    timestamp: null
     specification:
       battery:
         capacity: 77
@@ -270,6 +271,7 @@ reports:
     "carCapturedTimestamp": "2025-01-04T08:55:40.569Z"}'
   result:
     car_captured_timestamp: '2025-01-04T08:55:40.569000+00:00'
+    timestamp: null
     detail:
       bonnet: CLOSED
       sunroof: UNSUPPORTED
@@ -311,6 +313,7 @@ reports:
   result:
     air_conditioning_at_unlock: false
     air_conditioning_without_external_power: null
+    timestamp: null
     car_captured_timestamp: '2025-01-04T08:52:32+00:00'
     charger_connection_state: DISCONNECTED
     charger_lock_state: UNLOCKED
@@ -379,6 +382,7 @@ reports:
     []}'
   result:
     errors: []
+    timestamp: null
     positions:
     - address:
         city: Example City
@@ -405,6 +409,7 @@ reports:
   result:
     captured_at: '2025-01-04T08:47:50.688000+00:00'
     mileage_in_km: 5453
+    timestamp: null
     warning_lights:
     - category: ASSISTANCE
       defects: []
@@ -437,6 +442,7 @@ reports:
     car_captured_timestamp: '2025-01-04T08:52:34+00:00'
     errors: []
     is_vehicle_in_saved_location: false
+    timestamp: null
     settings:
       auto_unlock_plug_when_charged: 'OFF'
       available_charge_modes:
@@ -476,6 +482,7 @@ reports:
     "SUNDAY", "openingTimes": []}]}, "predictiveMaintenance": {"setting": {"serviceActivated":
     true, "email": "user@example.com", "phone": "+49 1234 567890"}}}'
   result:
+    timestamp: null
     maintenance_report:
       captured_at: '2025-01-04T08:55:40.703000+00:00'
       inspection_due_in_days: 642
@@ -547,6 +554,7 @@ reports:
       remaining_range_in_km: 310
     secondary_engine_range: null
     total_range_in_km: 310
+    timestamp: null
   success: true
   type: get
   url: /v2/vehicle-status/TMOCKAA0AA000000/driving-range
@@ -584,6 +592,7 @@ reports:
       fahrenheit: 68.0
       unit_in_car: CELSIUS
     timers: []
+    timestamp: null
   success: true
   type: get
   url: /v1/vehicle-automatization/TMOCKAA0AA000000/departure/timers?deviceDateTime=2025-01-04T12%3A24%3A53.420813%2B01%3A00
@@ -689,6 +698,7 @@ vehicles:
   - id: ROUTE_PLANNING_10_CHARGERS
     statuses: []
   device_platform: WCAR
+  timestamp: null
   id: 0
   model: Enyaq
   model_year: '2025'

@@ -290,6 +290,7 @@ reports:
       errors: null 
     renders: []
     device_platform: WCAR
+    timestamp: null
     workshop_mode_enabled: false
     composite_renders:
     - layers:
@@ -371,6 +372,7 @@ reports:
     "carCapturedTimestamp": "2025-01-05T22:51:46.49Z"}'
   url: "/v2/vehicle-status/TMOCKAA0AA000000"
   result:
+    timestamp: null
     detail:
       bonnet: CLOSED
       sunroof: CLOSED
@@ -448,6 +450,7 @@ reports:
       unit_in_car: CELSIUS
     window_heating_enabled: true
     air_conditioning_without_external_power: 
+    timestamp: null
     outside_temperature: 
   error: 
 - type: get
@@ -489,6 +492,7 @@ reports:
     []}'
   url: "/v1/maps/positions?vin=TMOCKAA0AA000000"
   result:
+    timestamp: null
     errors: []
     positions:
     - address:
@@ -514,6 +518,7 @@ reports:
     []}, {"category": "OTHER", "defects": []}]}'
   url: "/v1/vehicle-health-report/warning-lights/TMOCKAA0AA000000"
   result:
+    timestamp: null
     warning_lights:
     - category: ASSISTANCE
       defects: []
@@ -556,6 +561,7 @@ reports:
       preferred_charge_mode: MANUAL
       target_state_of_charge_in_percent: 80
     is_vehicle_in_saved_location: false
+    timestamp: null
     car_captured_timestamp: '2025-01-05T22:52:08+00:00'
     status:
       battery:
@@ -586,6 +592,7 @@ reports:
     "user@example.com", "phone": "+49 1234 567890"}}}'
   url: "/v3/vehicle-maintenance/vehicles/TMOCKAA0AA000000"
   result:
+    timestamp: null
     maintenance_report:
       captured_at: '2025-01-05T22:51:46.580000+00:00'
       mileage_in_km: 87776
@@ -652,6 +659,7 @@ reports:
     secondary_engine_range: 
     total_range_in_km: 136
     ad_blue_range: 
+    timestamp: null
   error: 
 - type: get
   vehicle_id: 0
@@ -690,6 +698,7 @@ reports:
     "timers": []}'
   url: "/v1/vehicle-automatization/TMOCKAA0AA000000/departure/timers?deviceDateTime=2025-01-05T23%3A58%3A39.916266%2B01%3A00"
   result:
+    timestamp: null
     car_captured_timestamp: 
     first_occurring_timer_id: 
     minimum_battery_state_of_charge_in_percent: 

@@ -2,6 +2,7 @@
 
 import logging
 from dataclasses import dataclass, field
+from datetime import datetime
 from enum import StrEnum
 
 from mashumaro import field_options
@@ -51,3 +52,4 @@ class Garage(DataClassORJSONMixin):
 
     vehicles: list[GarageEntry] | None = field(default=None)
     errors: list[GarageError] | None = field(default=None)
+    timestamp: datetime | None = field(default=None)
