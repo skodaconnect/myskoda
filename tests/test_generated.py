@@ -27,6 +27,10 @@ async def test_report_get(
 
     result = await myskoda.get_endpoint(VIN, report.endpoint, anonymize=True)
 
+    # Remove any timestamps
+    if result.result.timestamp:
+        result.result.timestamp = None
+
     assert result.result.to_dict() == report.result
 
 
