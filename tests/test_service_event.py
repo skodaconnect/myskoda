@@ -13,6 +13,7 @@ from myskoda.models.service_event import (
     ChargingState,
     ServiceEvent,
     ServiceEventChargingData,
+    ServiceEventError,
     ServiceEventErrorData,
     ServiceEventData,
     ServiceEventName,
