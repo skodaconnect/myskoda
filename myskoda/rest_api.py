@@ -136,6 +136,7 @@ class RestApi:
             anonymization_fn=anonymize_info,
         )
         result = self._deserialize(raw, Info.from_json)
+        result.timestamp = datetime.now(UTC)
         url = anonymize_url(url) if anonymize else url
         return GetEndpointResult(url=url, raw=raw, result=result)
 
