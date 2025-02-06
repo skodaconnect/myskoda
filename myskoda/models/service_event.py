@@ -8,7 +8,7 @@ from typing import Generic, TypeVar
 from mashumaro import field_options
 from mashumaro.mixins.orjson import DataClassORJSONMixin
 
-from .charging import ChargeMode, ChargingState, ServiceEventChargingError
+from .charging import ChargeMode, ChargingState
 
 
 class ServiceEventName(StrEnum):
@@ -25,6 +25,12 @@ class ServiceEventName(StrEnum):
     CLIMATISATION_COMPLETED = "climatisation-completed"
     DEPARTURE_READY = "departure-ready"
     DEPARTURE_STATUS_CHANGED = "departure-status-changed"
+    DEPARTURE_ERROR_PLUG = "departure-error-plug"
+
+
+class ServiceEventError(StrEnum):
+    STOPPED_DEVICE = "STOPPED_DEVICE"
+    CLIMA = "CLIMA"
 
 
 @dataclass
@@ -115,14 +121,25 @@ class ServiceEventChargingData(ServiceEventData):
         default=None,
         metadata=field_options(alias="timeToFinish", deserialize=_deserialize_time_to_finish),
     )
-    error_code: ServiceEventChargingError | None = field(
-        default=None, metadata=field_options(alias="errorCode")
-    )
 
 
 @dataclass
 class ServiceEventWithChargingData(ServiceEvent):
     data: ServiceEventChargingData
+
+
+@dataclass
+class ServiceEventErrorData(ServiceEventData):
+    """Error code inside charging or departure service."""
+
+    error_code: ServiceEventError | None = field(
+        default=None, metadata=field_options(alias="errorCode")
+    )
+
+
+@dataclass
+class ServiceEventWithErrorData(ServiceEvent):
+    data: ServiceEventErrorData
 
 
 class UnexpectedChargeModeError(Exception):

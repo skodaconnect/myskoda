@@ -286,7 +286,6 @@ async def test_subscribe_event(
                     soc=None,
                     charged_range=None,
                     time_to_finish=None,
-                    error_code=None,
                 ),
             ),
         ),
