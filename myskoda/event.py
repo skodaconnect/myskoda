@@ -18,6 +18,7 @@ class ServiceEventTopic(StrEnum):
     CHARGING = "CHARGING"
     LIGHTS = "LIGHTS"
     DEPARTURE = "DEPARTURE"
+    ODOMETER = "ODOMETER"
 
 
 class AccountEventTopic(StrEnum):
@@ -79,6 +80,13 @@ class EventLights(BaseEvent):
 
 
 @dataclass
+class EventOdometer(BaseEvent):
+    event: ServiceEvent
+    type: Literal[EventType.SERVICE_EVENT] = EventType.SERVICE_EVENT
+    topic: Literal[ServiceEventTopic.ODOMETER] = ServiceEventTopic.ODOMETER
+
+
+@dataclass
 class EventDeparture(BaseEvent):
     event: ServiceEvent
     type: Literal[EventType.SERVICE_EVENT] = EventType.SERVICE_EVENT
@@ -99,5 +107,6 @@ Event = (
     | EventAuxiliaryHeating
     | EventCharging
     | EventLights
+    | EventOdometer
     | EventDeparture
 )

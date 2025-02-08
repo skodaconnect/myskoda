@@ -38,6 +38,7 @@ from .event import (
     EventCharging,
     EventDeparture,
     EventLights,
+    EventOdometer,
     EventOperation,
     EventType,
 )
@@ -295,6 +296,15 @@ class MySkodaMqttClient:
             elif event_type == EventType.SERVICE_EVENT and topic == "vehicle-status/lights":
                 self._emit(
                     EventLights(
+                        vin=vin,
+                        user_id=user_id,
+                        timestamp=datetime.now(tz=UTC),
+                        event=ServiceEvent.from_json(data),
+                    )
+                )
+            elif event_type == EventType.SERVICE_EVENT and topic == "vehicle-status/odometer":
+                self._emit(
+                    EventOdometer(
                         vin=vin,
                         user_id=user_id,
                         timestamp=datetime.now(tz=UTC),
