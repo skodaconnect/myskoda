@@ -99,6 +99,22 @@ async def test_subscribe_event(
             ),
         ),
         (
+            f"{base_topic}/service-event/vehicle-status/odometer",
+            json.dumps(
+                {
+                    "version": 1,
+                    "traceId": trace_id,
+                    "timestamp": timestamp_str,
+                    "producer": "SKODA_MHUB",
+                    "name": "change-odometer",
+                    "data": {
+                        "userId": USER_ID,
+                        "vin": VIN,
+                    },
+                }
+            ),
+        ),
+        (
             f"{base_topic}/service-event/vehicle-status/access",
             json.dumps(
                 {
