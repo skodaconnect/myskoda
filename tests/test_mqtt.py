@@ -10,7 +10,7 @@ import pytest
 from amqtt.client import QOS_2, MQTTClient
 
 from myskoda.anonymize import USER_ID, VIN
-from myskoda.event import Event, EventAccess, EventCharging, EventLights, EventOperation
+from myskoda.event import Event, EventAccess, EventCharging, EventLights, EventOperation, EventOdometer
 from myskoda.models.charging import ChargeMode, ChargingState
 from myskoda.models.operation_request import OperationName, OperationRequest, OperationStatus
 from myskoda.models.service_event import (
@@ -226,6 +226,19 @@ async def test_subscribe_event(
                 timestamp=timestamp,
                 producer="SKODA_MHUB",
                 name=ServiceEventName.CHANGE_LIGHTS,
+                data=ServiceEventData(user_id=USER_ID, vin=VIN),
+            ),
+        ),
+        EventOdometer(
+            vin=VIN,
+            user_id=USER_ID,
+            timestamp=ANY,
+            event=ServiceEvent(
+                version=1,
+                trace_id=trace_id,
+                timestamp=timestamp,
+                producer="SKODA_MHUB",
+                name=ServiceEventName.CHANGE_ODOMETER,
                 data=ServiceEventData(user_id=USER_ID, vin=VIN),
             ),
         ),
