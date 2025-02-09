@@ -8,13 +8,16 @@ from typing import Generic, TypeVar
 from mashumaro import field_options
 from mashumaro.mixins.orjson import DataClassORJSONMixin
 
+from myskoda.models.vehicle_ignition_status import IgnitionStatus, UnexpectedIgnitionStatusError
+
 
 class VehicleEventName(StrEnum):
     """List of known vehicle EventNames."""
 
-    AWAKE = "vehicle-awake"
-    CONNECTION_ONLINE = "vehicle-connection-online"
-    IGNITION_STATUS_CHANGED = "vehicle-ignition-status-changed"
+    VEHICLE_AWAKE = "vehicle-awake"
+    VEHICLE_CONNECTION_ONLINE = "vehicle-connection-online"
+    VEHICLE_WARNING_BATTEYLEVEL = "vehicle-warning-batterylevel"
+    VEHICLE_IGNITION_STATUS_CHANGED = "vehicle-ignition-status-changed"
 
 
 @dataclass
@@ -41,3 +44,28 @@ class VehicleEvent(Generic[T], DataClassORJSONMixin):
     data: T
     trace_id: str = field(metadata=field_options(alias="traceId"))
     timestamp: datetime | None = field(default=None)
+
+
+def _deserialize_ignition_status(value: str) -> IgnitionStatus:
+    match value:
+        case "ON":
+            return IgnitionStatus.ON
+        case "OFF":
+            return IgnitionStatus.OFF
+        case _:
+            raise UnexpectedIgnitionStatusError
+
+
+@dataclass
+class VehicleEventVehicleIgnitionStatusData(VehicleEventData):
+    """Ignition data inside vehicle service event vehicle-ignition-status."""
+
+    ignition_status: IgnitionStatus | None = field(
+        default=None,
+        metadata=field_options(alias="ignitionStatus", deserialize=_deserialize_ignition_status),
+    )
+
+
+@dataclass
+class VehicleEventWithVehicleIgnitionStatusData(VehicleEvent):
+    data: VehicleEventVehicleIgnitionStatusData
