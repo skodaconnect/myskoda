@@ -17,6 +17,7 @@ import aiomqtt
 
 from myskoda.auth.authorization import Authorization
 from myskoda.models.service_event import ServiceEvent, ServiceEventWithChargingData
+from myskoda.models.vehicle_event import VehicleEvent
 
 from .const import (
     MQTT_ACCOUNT_EVENT_TOPICS,
@@ -37,10 +38,12 @@ from .event import (
     EventAuxiliaryHeating,
     EventCharging,
     EventDeparture,
+    EventVehicleIgnitionStatus,
     EventLights,
     EventOdometer,
     EventOperation,
     EventType,
+    EventVehicleConnectionStatusUpdate,
 )
 from .models.operation_request import OperationName, OperationRequest, OperationStatus
 
@@ -168,14 +171,15 @@ class MySkodaMqttClient:
                     _LOGGER.info("Connected to MQTT")
                     _LOGGER.debug("using MQTT client %s", client)
                     for vin in self.vehicle_vins:
-                        for topic in MQTT_OPERATION_TOPICS:
-                            await client.subscribe(
-                                f"{self.user_id}/{vin}/operation-request/{topic}"
-                            )
-                        for topic in MQTT_SERVICE_EVENT_TOPICS:
-                            await client.subscribe(f"{self.user_id}/{vin}/service-event/{topic}")
-                        for topic in MQTT_ACCOUNT_EVENT_TOPICS:
-                            await client.subscribe(f"{self.user_id}/{vin}/account-event/{topic}")
+                        await client.subscribe(f"{self.user_id}/{vin}/#")
+                        # for topic in MQTT_OPERATION_TOPICS:
+                        #     await client.subscribe(
+                        #         f"{self.user_id}/{vin}/operation-request/{topic}"
+                        #     )
+                        # for topic in MQTT_SERVICE_EVENT_TOPICS:
+                        #     await client.subscribe(f"{self.user_id}/{vin}/service-event/{topic}")
+                        # for topic in MQTT_ACCOUNT_EVENT_TOPICS:
+                        #     await client.subscribe(f"{self.user_id}/{vin}/account-event/{topic}")
 
                     self._subscribed.set()
                     self._reconnect_delay = MQTT_RECONNECT_DELAY
@@ -309,6 +313,27 @@ class MySkodaMqttClient:
                         user_id=user_id,
                         timestamp=datetime.now(tz=UTC),
                         event=ServiceEvent.from_json(data),
+                    )
+                )
+            elif event_type == EventType.VEHICLE_EVENT and topic == "vehicle-ignition-status":
+                self._emit(
+                    EventVehicleIgnitionStatus(
+                        vin=vin,
+                        user_id=user_id,
+                        timestamp=datetime.now(tz=UTC),
+                        event=VehicleEvent.from_json(data),
+                    )
+                )
+            elif (
+                event_type == EventType.VEHICLE_EVENT
+                and topic == "vehicle-connection-status-update"
+            ):
+                self._emit(
+                    EventVehicleConnectionStatusUpdate(
+                        vin=vin,
+                        user_id=user_id,
+                        timestamp=datetime.now(tz=UTC),
+                        event=VehicleEvent.from_json(data),
                     )
                 )
         except Exception as exc:  # noqa: BLE001

@@ -9,6 +9,7 @@ from mashumaro.mixins.orjson import DataClassORJSONMixin
 
 from .models.operation_request import OperationRequest
 from .models.service_event import ServiceEvent
+from .models.vehicle_event import VehicleEvent
 
 
 class ServiceEventTopic(StrEnum):
@@ -21,6 +22,11 @@ class ServiceEventTopic(StrEnum):
     ODOMETER = "ODOMETER"
 
 
+class VehicleEventTopic(StrEnum):
+    VEHICLE_CONNECTION_STATUS_UPDATE = "VEHICLE_CONNECTION_STATUS_UPDATE"
+    VEHICLE_IGNITION_STATUS = "VEHICLE_IGNITION_STATUS"
+
+
 class AccountEventTopic(StrEnum):
     ACCOUNT_PRIVACY = "ACCOUNT_PRIVACY"
 
@@ -29,6 +35,7 @@ class EventType(StrEnum):
     ACCOUNT_EVENT = "account-event"
     OPERATION = "operation-request"
     SERVICE_EVENT = "service-event"
+    VEHICLE_EVENT = "vehicle-event"
 
 
 @dataclass
@@ -99,6 +106,24 @@ class EventAccountPrivacy(BaseEvent):
     topic: Literal[AccountEventTopic.ACCOUNT_PRIVACY] = AccountEventTopic.ACCOUNT_PRIVACY
 
 
+@dataclass
+class EventVehicleIgnitionStatus(BaseEvent):
+    event: VehicleEvent
+    type: Literal[EventType.VEHICLE_EVENT] = EventType.VEHICLE_EVENT
+    topic: Literal[VehicleEventTopic.VEHICLE_IGNITION_STATUS] = (
+        VehicleEventTopic.VEHICLE_IGNITION_STATUS
+    )
+
+
+@dataclass
+class EventVehicleConnectionStatusUpdate(BaseEvent):
+    event: VehicleEvent
+    type: Literal[EventType.VEHICLE_EVENT] = EventType.VEHICLE_EVENT
+    topic: Literal[VehicleEventTopic.VEHICLE_CONNECTION_STATUS_UPDATE] = (
+        VehicleEventTopic.VEHICLE_CONNECTION_STATUS_UPDATE
+    )
+
+
 Event = (
     EventAccountPrivacy
     | EventOperation
@@ -109,4 +134,6 @@ Event = (
     | EventLights
     | EventOdometer
     | EventDeparture
+    | EventVehicleIgnitionStatus
+    | EventVehicleConnectionStatusUpdate
 )
