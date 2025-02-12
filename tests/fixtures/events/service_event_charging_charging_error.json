@@ -5,7 +5,7 @@
     "producer": "SKODA_MHUB",
     "name": "charging-error",
     "data": {
-	"errorCode": "STOPPED_DEVICE",
+        "errorCode": "STOPPED_DEVICE",
         "userId": "ad0d7945-4814-43d0-801f-charging-error",
         "vin": "TMBAXXXXXXXXXXXXX"
     }

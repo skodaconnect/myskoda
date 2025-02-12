@@ -13,10 +13,12 @@ from myskoda.models.service_event import (
     ChargingState,
     ServiceEvent,
     ServiceEventChargingData,
-    ServiceEventChargingError,
     ServiceEventData,
+    ServiceEventError,
+    ServiceEventErrorData,
     ServiceEventName,
     ServiceEventWithChargingData,
+    ServiceEventWithErrorData,
 )
 
 FIXTURES_DIR = Path(__file__).parent.joinpath("fixtures")
@@ -32,6 +34,7 @@ def load_service_events() -> list[str]:
         "events/service_event_charging_charging_error.json",
         "events/service_event_departure_ready.json",
         "events/service_event_departure_status_changed.json",
+        "events/service_event_departure_error_plug.json",
     ]:
         json_file = FIXTURES_DIR / path
         service_events.append(json_file.read_text())
@@ -45,7 +48,6 @@ def test_parse_service_events(service_events: list[str]) -> None:
         if event.name in [
             ServiceEventName.CHANGE_SOC,
             ServiceEventName.CHARGING_STATUS_CHANGED,
-            ServiceEventName.CHARGING_ERROR,
         ]:
             try:
                 event = ServiceEventWithChargingData.from_json(service_event)
@@ -67,11 +69,26 @@ def test_parse_service_events(service_events: list[str]) -> None:
                     user_id=f"ad0d7945-4814-43d0-801f-{event.name.value}",
                     vin="TMBAXXXXXXXXXXXXX",
                 )
-            elif event.name == ServiceEventName.CHARGING_ERROR:
-                assert event.data == ServiceEventChargingData(
+        elif event.name in [
+            ServiceEventName.CHARGING_ERROR,
+            ServiceEventName.DEPARTURE_ERROR_PLUG,
+        ]:
+            try:
+                event = ServiceEventWithErrorData.from_json(service_event)
+            except ValueError:
+                event = ServiceEvent.from_json(service_event)
+
+            if event.name == ServiceEventName.CHARGING_ERROR:
+                assert event.data == ServiceEventErrorData(
                     user_id=f"ad0d7945-4814-43d0-801f-{event.name.value}",
                     vin="TMBAXXXXXXXXXXXXX",
-                    error_code=ServiceEventChargingError.STOPPED_DEVICE,
+                    error_code=ServiceEventError.STOPPED_DEVICE,
+                )
+            elif event.name == ServiceEventName.DEPARTURE_ERROR_PLUG:
+                assert event.data == ServiceEventErrorData(
+                    user_id=f"ad0d7945-4814-43d0-801f-{event.name.value}",
+                    vin="TMBAXXXXXXXXXXXXX",
+                    error_code=ServiceEventError.CLIMA,
                 )
         else:
             assert event.data == ServiceEventData(
