@@ -1,3 +1,5 @@
+"""Vehicle ignition statuses."""
+
 from enum import StrEnum
 
 
