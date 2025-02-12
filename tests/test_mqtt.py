@@ -10,7 +10,16 @@ import pytest
 from amqtt.client import QOS_2, MQTTClient
 
 from myskoda.anonymize import USER_ID, VIN
-from myskoda.event import Event, EventAccess, EventCharging, EventLights, EventOperation
+from myskoda.event import (
+    Event,
+    EventAccess,
+    EventCharging,
+    EventLights,
+    EventOdometer,
+    EventOperation,
+    EventVehicleConnectionStatusUpdate,
+    EventVehicleIgnitionStatus,
+)
 from myskoda.models.charging import ChargeMode, ChargingState
 from myskoda.models.operation_request import OperationName, OperationRequest, OperationStatus
 from myskoda.models.service_event import (
@@ -19,6 +28,14 @@ from myskoda.models.service_event import (
     ServiceEventData,
     ServiceEventName,
     ServiceEventWithChargingData,
+)
+from myskoda.models.vehicle_event import (
+    IgnitionStatus,
+    VehicleEvent,
+    VehicleEventData,
+    VehicleEventName,
+    VehicleEventVehicleIgnitionStatusData,
+    VehicleEventWithVehicleIgnitionStatusData,
 )
 from myskoda.myskoda import MySkoda
 
@@ -91,6 +108,22 @@ async def test_subscribe_event(
                     "timestamp": timestamp_str,
                     "producer": "SKODA_MHUB",
                     "name": "change-lights",
+                    "data": {
+                        "userId": USER_ID,
+                        "vin": VIN,
+                    },
+                }
+            ),
+        ),
+        (
+            f"{base_topic}/service-event/vehicle-status/odometer",
+            json.dumps(
+                {
+                    "version": 1,
+                    "traceId": trace_id,
+                    "timestamp": timestamp_str,
+                    "producer": "SKODA_MHUB",
+                    "name": "change-odometer",
                     "data": {
                         "userId": USER_ID,
                         "vin": VIN,
@@ -172,6 +205,88 @@ async def test_subscribe_event(
                 }
             ),
         ),
+        (
+            f"{base_topic}/vehicle-event/vehicle-connection-status-update",
+            json.dumps(
+                {
+                    "version": 1,
+                    "traceId": trace_id,
+                    "timestamp": timestamp_str,
+                    "producer": "SKODA_MHUB",
+                    "name": "vehicle-connection-online",
+                    "data": {
+                        "userId": USER_ID,
+                        "vin": VIN,
+                    },
+                }
+            ),
+        ),
+        (
+            f"{base_topic}/vehicle-event/vehicle-connection-status-update",
+            json.dumps(
+                {
+                    "version": 1,
+                    "traceId": trace_id,
+                    "timestamp": timestamp_str,
+                    "producer": "SKODA_MHUB",
+                    "name": "vehicle-awake",
+                    "data": {
+                        "userId": USER_ID,
+                        "vin": VIN,
+                    },
+                }
+            ),
+        ),
+        (
+            f"{base_topic}/vehicle-event/vehicle-connection-status-update",
+            json.dumps(
+                {
+                    "version": 1,
+                    "traceId": trace_id,
+                    "timestamp": timestamp_str,
+                    "producer": "SKODA_MHUB",
+                    "name": "vehicle-warning-batterylevel",
+                    "data": {
+                        "userId": USER_ID,
+                        "vin": VIN,
+                    },
+                }
+            ),
+        ),
+        (
+            f"{base_topic}/vehicle-event/vehicle-ignition-status",
+            json.dumps(
+                {
+                    "version": 1,
+                    "traceId": trace_id,
+                    "timestamp": timestamp_str,
+                    "producer": "SKODA_MHUB",
+                    "name": "vehicle-ignition-status-changed",
+                    "data": {
+                        "userId": USER_ID,
+                        "vin": VIN,
+                        "ignitionStatus": IgnitionStatus.ON,
+                    },
+                }
+            ),
+        ),
+        (
+            f"{base_topic}/vehicle-event/vehicle-ignition-status",
+            json.dumps(
+                {
+                    "version": 1,
+                    "traceId": trace_id,
+                    "timestamp": timestamp_str,
+                    "producer": "SKODA_MHUB",
+                    "name": "vehicle-ignition-status-changed",
+                    "data": {
+                        "userId": USER_ID,
+                        "vin": VIN,
+                        "ignitionStatus": IgnitionStatus.OFF,
+                    },
+                }
+            ),
+        ),
     ]
 
     def on_event(event: Event) -> None:
@@ -210,6 +325,19 @@ async def test_subscribe_event(
                 timestamp=timestamp,
                 producer="SKODA_MHUB",
                 name=ServiceEventName.CHANGE_LIGHTS,
+                data=ServiceEventData(user_id=USER_ID, vin=VIN),
+            ),
+        ),
+        EventOdometer(
+            vin=VIN,
+            user_id=USER_ID,
+            timestamp=ANY,
+            event=ServiceEvent(
+                version=1,
+                trace_id=trace_id,
+                timestamp=timestamp,
+                producer="SKODA_MHUB",
+                name=ServiceEventName.CHANGE_ODOMETER,
                 data=ServiceEventData(user_id=USER_ID, vin=VIN),
             ),
         ),
@@ -286,6 +414,88 @@ async def test_subscribe_event(
                     soc=None,
                     charged_range=None,
                     time_to_finish=None,
+                ),
+            ),
+        ),
+        EventVehicleConnectionStatusUpdate(
+            vin=VIN,
+            user_id=USER_ID,
+            timestamp=ANY,
+            event=VehicleEvent(
+                version=1,
+                trace_id=trace_id,
+                timestamp=timestamp,
+                producer="SKODA_MHUB",
+                name=VehicleEventName.VEHICLE_CONNECTION_ONLINE,
+                data=VehicleEventData(
+                    user_id=USER_ID,
+                    vin=VIN,
+                ),
+            ),
+        ),
+        EventVehicleConnectionStatusUpdate(
+            vin=VIN,
+            user_id=USER_ID,
+            timestamp=ANY,
+            event=VehicleEvent(
+                version=1,
+                trace_id=trace_id,
+                timestamp=timestamp,
+                producer="SKODA_MHUB",
+                name=VehicleEventName.VEHICLE_AWAKE,
+                data=VehicleEventData(
+                    user_id=USER_ID,
+                    vin=VIN,
+                ),
+            ),
+        ),
+        EventVehicleConnectionStatusUpdate(
+            vin=VIN,
+            user_id=USER_ID,
+            timestamp=ANY,
+            event=VehicleEvent(
+                version=1,
+                trace_id=trace_id,
+                timestamp=timestamp,
+                producer="SKODA_MHUB",
+                name=VehicleEventName.VEHICLE_WARNING_BATTEYLEVEL,
+                data=VehicleEventData(
+                    user_id=USER_ID,
+                    vin=VIN,
+                ),
+            ),
+        ),
+        EventVehicleIgnitionStatus(
+            vin=VIN,
+            user_id=USER_ID,
+            timestamp=ANY,
+            event=VehicleEventWithVehicleIgnitionStatusData(
+                version=1,
+                trace_id=trace_id,
+                timestamp=timestamp,
+                producer="SKODA_MHUB",
+                name=VehicleEventName.VEHICLE_IGNITION_STATUS_CHANGED,
+                data=VehicleEventVehicleIgnitionStatusData(
+                    user_id=USER_ID,
+                    vin=VIN,
+                    ignition_status=IgnitionStatus.ON,
+                ),
+            ),
+        ),
+        EventVehicleIgnitionStatus(
+            vin=VIN,
+            user_id=USER_ID,
+            timestamp=ANY,
+            event=VehicleEventWithVehicleIgnitionStatusData(
+                version=1,
+                trace_id=trace_id,
+                timestamp=timestamp,
+                producer="SKODA_MHUB",
+                name=VehicleEventName.VEHICLE_IGNITION_STATUS_CHANGED,
+                data=VehicleEventVehicleIgnitionStatusData(
+                    user_id=USER_ID,
+                    vin=VIN,
+                    ignition_status=IgnitionStatus.OFF,
                 ),
             ),
         ),

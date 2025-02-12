@@ -17,6 +17,7 @@ class ServiceEventName(StrEnum):
     CHANGE_ACCESS = "change-access"
     CHANGE_CHARGE_MODE = "change-charge-mode"
     CHANGE_LIGHTS = "change-lights"
+    CHANGE_ODOMETER = "change-odometer"
     CHANGE_REMAINING_TIME = "change-remaining-time"
     CHANGE_SOC = "change-soc"
     CHARGING_COMPLETED = "charging-completed"
