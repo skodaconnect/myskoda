@@ -17,6 +17,7 @@ import aiomqtt
 
 from myskoda.auth.authorization import Authorization
 from myskoda.models.service_event import ServiceEvent, ServiceEventWithChargingData
+from myskoda.models.vehicle_event import VehicleEvent, VehicleEventWithVehicleIgnitionStatusData
 
 from .const import (
     MQTT_ACCOUNT_EVENT_TOPICS,
@@ -28,6 +29,7 @@ from .const import (
     MQTT_OPERATION_TOPICS,
     MQTT_RECONNECT_DELAY,
     MQTT_SERVICE_EVENT_TOPICS,
+    MQTT_VEHICLE_EVENT_TOPICS,
 )
 from .event import (
     Event,
@@ -38,8 +40,11 @@ from .event import (
     EventCharging,
     EventDeparture,
     EventLights,
+    EventOdometer,
     EventOperation,
     EventType,
+    EventVehicleConnectionStatusUpdate,
+    EventVehicleIgnitionStatus,
 )
 from .models.operation_request import OperationName, OperationRequest, OperationStatus
 
@@ -167,6 +172,7 @@ class MySkodaMqttClient:
                     _LOGGER.info("Connected to MQTT")
                     _LOGGER.debug("using MQTT client %s", client)
                     for vin in self.vehicle_vins:
+                        # await client.subscribe(f"{self.user_id}/{vin}/#")
                         for topic in MQTT_OPERATION_TOPICS:
                             await client.subscribe(
                                 f"{self.user_id}/{vin}/operation-request/{topic}"
@@ -175,6 +181,8 @@ class MySkodaMqttClient:
                             await client.subscribe(f"{self.user_id}/{vin}/service-event/{topic}")
                         for topic in MQTT_ACCOUNT_EVENT_TOPICS:
                             await client.subscribe(f"{self.user_id}/{vin}/account-event/{topic}")
+                        for topic in MQTT_VEHICLE_EVENT_TOPICS:
+                            await client.subscribe(f"{self.user_id}/{vin}/vehicle-event/{topic}")
 
                     self._subscribed.set()
                     self._reconnect_delay = MQTT_RECONNECT_DELAY
@@ -219,6 +227,14 @@ class MySkodaMqttClient:
             event = ServiceEventWithChargingData.from_json(data)
         except ValueError:
             event = ServiceEvent.from_json(data)
+        return event
+
+    @staticmethod
+    def _get_vehicle_ignition_status_changed_event(data: str) -> VehicleEvent:
+        try:
+            event = VehicleEventWithVehicleIgnitionStatusData.from_json(data)
+        except ValueError:
+            event = VehicleEvent.from_json(data)
         return event
 
     def _parse_topic(self, topic_match: re.Match[str], data: str) -> None:
@@ -299,6 +315,36 @@ class MySkodaMqttClient:
                         user_id=user_id,
                         timestamp=datetime.now(tz=UTC),
                         event=ServiceEvent.from_json(data),
+                    )
+                )
+            elif event_type == EventType.SERVICE_EVENT and topic == "vehicle-status/odometer":
+                self._emit(
+                    EventOdometer(
+                        vin=vin,
+                        user_id=user_id,
+                        timestamp=datetime.now(tz=UTC),
+                        event=ServiceEvent.from_json(data),
+                    )
+                )
+            elif event_type == EventType.VEHICLE_EVENT and topic == "vehicle-ignition-status":
+                self._emit(
+                    EventVehicleIgnitionStatus(
+                        vin=vin,
+                        user_id=user_id,
+                        timestamp=datetime.now(tz=UTC),
+                        event=self._get_vehicle_ignition_status_changed_event(data),
+                    )
+                )
+            elif (
+                event_type == EventType.VEHICLE_EVENT
+                and topic == "vehicle-connection-status-update"
+            ):
+                self._emit(
+                    EventVehicleConnectionStatusUpdate(
+                        vin=vin,
+                        user_id=user_id,
+                        timestamp=datetime.now(tz=UTC),
+                        event=VehicleEvent.from_json(data),
                     )
                 )
         except Exception as exc:  # noqa: BLE001

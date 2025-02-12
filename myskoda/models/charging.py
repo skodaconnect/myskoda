@@ -60,10 +60,6 @@ class PlugUnlockMode(StrEnum):
     OFF = "OFF"
 
 
-class ServiceEventChargingError(StrEnum):
-    STOPPED_DEVICE = "STOPPED_DEVICE"
-
-
 @dataclass
 class Settings(DataClassORJSONMixin):
     available_charge_modes: list[ChargeMode] = field(

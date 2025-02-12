@@ -27,8 +27,9 @@ def on_event(event: Event):
             print(f"Battery is {event.event.data.soc}% charged.")
 ```
 
-There is three types of events:
+There is four types of events:
 
 * `EventType.SERVICE_EVENT`: Sent proactively by the vehicle, when something changed.
 * `EventType.OPERATION`: Sent by Skoda's server as response to an operation executed on the vehicle. It will track the operation's status.
 * `EventType.ACCOUNT_EVENT`
+* `EventType.VEHICLE_EVENT`: Sent proactively by the vehicle, when something changed.
