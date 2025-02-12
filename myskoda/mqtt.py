@@ -172,7 +172,6 @@ class MySkodaMqttClient:
                     _LOGGER.info("Connected to MQTT")
                     _LOGGER.debug("using MQTT client %s", client)
                     for vin in self.vehicle_vins:
-                        # await client.subscribe(f"{self.user_id}/{vin}/#")
                         for topic in MQTT_OPERATION_TOPICS:
                             await client.subscribe(
                                 f"{self.user_id}/{vin}/operation-request/{topic}"
