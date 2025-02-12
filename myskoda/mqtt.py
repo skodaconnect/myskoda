@@ -323,10 +323,11 @@ class MySkodaMqttClient:
                         timestamp=datetime.now(tz=UTC),
                     )
                 )
-            elif (event_type == EventType.SERVICE_EVENT and topic in service_event_map) or (
-                event_type == EventType.VEHICLE_EVENT and topic in vehicle_event_map
-            ):
+            elif event_type == EventType.SERVICE_EVENT and topic in service_event_map:
                 if emit_event := service_event_map.get(topic):
+                    self._emit(emit_event)
+            elif event_type == EventType.VEHICLE_EVENT and topic in vehicle_event_map:
+                if emit_event := vehicle_event_map.get(topic):
                     self._emit(emit_event)
             else:
                 _LOGGER.error("Could not parse MQTT event: %s", data)
