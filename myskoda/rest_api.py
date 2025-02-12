@@ -268,6 +268,7 @@ class RestApi:
             anonymization_fn=anonymize_user,
         )
         result = self._deserialize(raw, User.from_json)
+        result.timestamp = datetime.now(UTC)
         return GetEndpointResult(url=url, raw=raw, result=result)
 
     async def get_garage(self, anonymize: bool = False) -> GetEndpointResult[Garage]:
