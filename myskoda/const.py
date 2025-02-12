@@ -10,6 +10,7 @@ MQTT_BROKER_HOST = "mqtt.messagehub.de"
 MQTT_BROKER_PORT = 8883
 
 
+MQTT_OPERATION_TIMEOUT = 10 * 60  #  10 minutes
 MQTT_OPERATION_TOPICS = [
     "air-conditioning/set-air-conditioning-at-unlock",
     "air-conditioning/set-air-conditioning-seats-heating",
