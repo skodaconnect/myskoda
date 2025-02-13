@@ -39,3 +39,4 @@ jobs:
         uses: coverallsapp/github-action@v2
         with:
           file: coverage.xml
+          fail-on-error: false
