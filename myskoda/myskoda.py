@@ -128,7 +128,7 @@ class MySkoda:
             async with timeout(MQTT_OPERATION_TIMEOUT):
                 await self.mqtt.wait_for_operation(operation)
         except TimeoutError:
-            _LOGGER.debug("Timeout occurred while waiting for %s. Aborted.", operation)
+            _LOGGER.warning("Timeout occurred while waiting for %s. Aborted.", operation)
 
     async def connect(self, email: str, password: str) -> None:
         """Authenticate on the rest api and connect to the MQTT broker."""
