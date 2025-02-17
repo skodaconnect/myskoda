@@ -4,7 +4,7 @@ This class provides all methods to operate on the API and MQTT broker.
 """
 
 import logging
-from asyncio import gather
+from asyncio import gather, timeout
 from collections.abc import Awaitable, Callable
 from datetime import UTC, datetime
 from ssl import SSLContext
@@ -26,6 +26,7 @@ from myskoda.models.fixtures import (
 
 from .__version__ import __version__ as version
 from .auth.authorization import Authorization
+from .const import MQTT_OPERATION_TIMEOUT
 from .event import Event
 from .models.air_conditioning import (
     AirConditioning,
@@ -123,7 +124,11 @@ class MySkoda:
     async def _wait_for_operation(self, operation: OperationName) -> None:
         if self.mqtt is None:
             return
-        await self.mqtt.wait_for_operation(operation)
+        try:
+            async with timeout(MQTT_OPERATION_TIMEOUT):
+                await self.mqtt.wait_for_operation(operation)
+        except TimeoutError:
+            _LOGGER.warning("Timeout occurred while waiting for %s. Aborted.", operation)
 
     async def connect(self, email: str, password: str) -> None:
         """Authenticate on the rest api and connect to the MQTT broker."""
