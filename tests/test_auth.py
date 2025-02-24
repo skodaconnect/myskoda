@@ -13,6 +13,13 @@ from myskoda.const import BASE_URL_IDENT, BASE_URL_SKODA, CLIENT_ID
 
 FIXTURES_DIR = Path(__file__).parent.joinpath("fixtures")
 
+BRAND_CONFIG = authorization.VAGBrand(
+    brandname="Skoda",
+    client_id=CLIENT_ID,
+    redirect_uri="myskoda://redirect/login/",
+    base_url=BASE_URL_SKODA,
+)
+
 
 def fixture(filename: str) -> str:
     with FIXTURES_DIR.joinpath(filename).open() as file:
@@ -91,7 +98,7 @@ async def test_get_info(responses: aioresponses) -> None:
     session = aiohttp.ClientSession()
     auth = authorization.Authorization(session, generate_nonce)
 
-    await auth.authorize("user@example.com", "example")
+    await auth.authorize("user@example.com", "example", BRAND_CONFIG)
 
     assert auth.idk_session is not None
     assert auth.idk_session.access_token == access_token

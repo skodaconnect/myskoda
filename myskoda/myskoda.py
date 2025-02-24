@@ -25,8 +25,8 @@ from myskoda.models.fixtures import (
 )
 
 from .__version__ import __version__ as version
-from .auth.authorization import Authorization
-from .const import MQTT_OPERATION_TIMEOUT
+from .auth.authorization import Authorization, VAGBrand
+from .const import BASE_URL_SKODA, CLIENT_ID, MQTT_OPERATION_TIMEOUT
 from .event import Event
 from .models.air_conditioning import (
     AirConditioning,
@@ -54,6 +54,13 @@ from .rest_api import GetEndpointResult, RestApi
 from .vehicle import Vehicle
 
 _LOGGER = logging.getLogger(__name__)
+
+BRAND_CONFIG = VAGBrand(
+    brandname="Skoda",
+    client_id=CLIENT_ID,
+    redirect_uri="myskoda://redirect/login/",
+    base_url=BASE_URL_SKODA,
+)
 
 
 async def trace_response(
@@ -132,7 +139,7 @@ class MySkoda:
 
     async def connect(self, email: str, password: str) -> None:
         """Authenticate on the rest api and connect to the MQTT broker."""
-        await self.authorization.authorize(email, password)
+        await self.authorization.authorize(email, password, BRAND_CONFIG)
         _LOGGER.debug("IDK Authorization was successful.")
 
         if self.mqtt:
