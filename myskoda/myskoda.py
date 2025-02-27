@@ -397,9 +397,11 @@ class MySkoda:
             return []
         return [vehicle.vin for vehicle in garage.vehicles]
 
-    async def get_vehicle(self, vin: str) -> Vehicle:
+    async def get_vehicle(
+        self, vin: str, excluded_capabilities: list[CapabilityId] | None = None
+    ) -> Vehicle:
         """Load a full vehicle based on its capabilities."""
-        all_capabilities = [
+        capabilities = [
             CapabilityId.AIR_CONDITIONING,
             CapabilityId.AUXILIARY_HEATING,
             CapabilityId.CHARGING,
@@ -410,7 +412,10 @@ class MySkoda:
             CapabilityId.DEPARTURE_TIMERS,
         ]
 
-        return await self.get_partial_vehicle(vin, all_capabilities)
+        if excluded_capabilities:
+            capabilities = [c for c in capabilities if c not in excluded_capabilities]
+
+        return await self.get_partial_vehicle(vin, capabilities)
 
     async def get_partial_vehicle(self, vin: str, capabilities: list[CapabilityId]) -> Vehicle:
         """Load a partial vehicle, based on list of capabilities."""
@@ -420,17 +425,7 @@ class MySkoda:
         vehicle = Vehicle(info, maintenance)
 
         for capa in capabilities:
-            # Only request vehicle health data if we do not need to wakeup the car
-            # This avoids triggering battery protection, such as in Skoda Karoq
-            # https://github.com/skodaconnect/homeassistant-myskoda/issues/468
             if info.is_capability_available(capa):
-                if (
-                    capa == CapabilityId.VEHICLE_HEALTH_INSPECTION
-                    and CapabilityId.VEHICLE_HEALTH_WARNINGS_WITH_WAKE_UP
-                    in vehicle.info.capabilities.capabilities
-                ):
-                    _LOGGER.debug("Skipping request for capability %s.", capa)
-                    continue
                 await self._request_capability_data(vehicle, vin, capa)
 
         return vehicle
