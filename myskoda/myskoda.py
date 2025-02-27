@@ -78,17 +78,9 @@ TRACE_CONFIG.on_request_end.append(trace_response)
 
 
 class MySkodaAuthorization(Authorization):
-    @property
-    def client_id(self) -> str:  #  noqa:D102
-        return CLIENT_ID
-
-    @property
-    def redirect_uri(self) -> str:  #  noqa:D102
-        return REDIRECT_URI
-
-    @property
-    def base_url(self) -> str:  #  noqa:D102
-        return BASE_URL_SKODA
+    client_id: str = CLIENT_ID
+    redirect_uri: str = REDIRECT_URI
+    base_url: str = BASE_URL_SKODA
 
 
 class MySkoda:
