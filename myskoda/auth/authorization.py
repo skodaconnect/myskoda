@@ -3,6 +3,7 @@
 import base64
 import hashlib
 import logging
+from abc import ABC, abstractmethod
 from asyncio import Lock
 from collections.abc import Callable
 from dataclasses import dataclass, field
@@ -48,45 +49,11 @@ class IDKSession(DataClassORJSONMixin):
     id_token: str = field(metadata=field_options(alias="idToken"))
 
 
-class VAGBrand:
-    """Configuration of a particular brand."""
-
-    brandname: str
-    description: str | None
-    client_id: str
-    redirect_uri: str
-    base_url: str
-
-    def __init__(  # noqa: D107
-        self,
-        brandname: str,
-        client_id: str,
-        redirect_uri: str,
-        base_url: str,
-        description: str | None = None,
-    ) -> None:
-        self.brandname = brandname
-        self.client_id = client_id
-        self.redirect_uri = redirect_uri
-        self.base_url = base_url
-        self.description = description
-
-    @property
-    def app_prefix(self) -> str:
-        """Calculate the app prefix."""
-        split_str = "://"
-        if split_str not in self.redirect_uri:
-            raise ValueError
-
-        return self.redirect_uri.split(split_str)[0]
-
-
-class Authorization:
+class Authorization(ABC):
     """Class that holds Authorization information and authorization state of the session."""
 
     session: ClientSession
     idk_session: IDKSession | None = None
-    brand: VAGBrand | None = None
 
     def __init__(  # noqa: D107
         self, session: ClientSession, generate_nonce: Callable[[], str] = generate_nonce
@@ -103,11 +70,48 @@ class Authorization:
 
         return parser.csrf_state
 
-    async def authorize(self, email: str, password: str, brand: VAGBrand) -> None:
+    @property
+    @abstractmethod
+    def client_id(self) -> str | None:
+        """The client ID used for this authorization.
+
+        Must be implemented by the per-brand subclass.
+        """
+
+    @property
+    @abstractmethod
+    def redirect_uri(self) -> str | None:
+        """The redirect URI used for this authorization.
+
+        Must be implemented by the per-brand subclass.
+        """
+
+    @property
+    @abstractmethod
+    def base_url(self) -> str | None:
+        """The base URL used for all API requests after authorization.
+
+        Must be implemented by the per-brand subclass.
+        """
+
+    @property
+    def app_prefix(self) -> str:
+        """Calculate the app prefix."""
+        if not self.redirect_uri:
+            raise BrandError
+        split_str = "://"
+        if split_str not in self.redirect_uri:
+            raise ValueError
+
+        return self.redirect_uri.split(split_str)[0]
+
+    async def authorize(self, email: str, password: str) -> None:
         """Authorize on the VW IDK servers."""
+        if not self.client_id or not self.redirect_uri or not self.base_url:
+            raise BrandError
+
         self.email = email
         self.password = password
-        self.brand = brand
 
         try:
             self.idk_session = await self._get_idk_session()
@@ -123,6 +127,9 @@ class Authorization:
         This calls the route for initial authorization,
         which will contain the initial SSO information such as the CSRF or the HMAC.
         """
+        if not self.client_id or not self.redirect_uri or not self.base_url:
+            raise BrandError
+
         # A SHA256 hash of the random "verifier" string will be transmitted as a challenge.
         # This is part of the OAUTH2 PKCE process. It is described here in detail:
         # https://www.oauth.com/oauth2-servers/pkce/authorization-request/
@@ -135,20 +142,17 @@ class Authorization:
             .rstrip("=")
         )
 
-        if self.brand:
-            params = {
-                "client_id": self.brand.client_id,
-                "nonce": self.generate_nonce(),
-                "redirect_uri": self.brand.redirect_uri,
-                "response_type": "code id_token",
-                # OpenID scopes. Can be found here: https://identity.vwgroup.io/.well-known/openid-configuration
-                "scope": "address badge birthdate cars driversLicense dealers email mileage mbb nationalIdentifier openid phone profession profile vin",  # noqa: E501
-                "code_challenge": challenge,
-                "code_challenge_method": "s256",
-                "prompt": "login",
-            }
-        else:
-            raise BrandError
+        params = {
+            "client_id": self.client_id,
+            "nonce": self.generate_nonce(),
+            "redirect_uri": self.redirect_uri,
+            "response_type": "code id_token",
+            # OpenID scopes. Can be found here: https://identity.vwgroup.io/.well-known/openid-configuration
+            "scope": "address badge birthdate cars driversLicense dealers email mileage mbb nationalIdentifier openid phone profession profile vin",  # noqa: E501
+            "code_challenge": challenge,
+            "code_challenge_method": "s256",
+            "prompt": "login",
+        }
 
         async with self.session.get(
             f"{BASE_URL_IDENT}/oidc/v1/authorize", params=params
@@ -161,20 +165,20 @@ class Authorization:
         Will post only the email address to the backend.
         The password will follow in a later request.
         """
+        if not self.client_id or not self.redirect_uri or not self.base_url:
+            raise BrandError
+
         form_data = FormData()
         form_data.add_field("relayState", csrf.template_model.relay_state)
         form_data.add_field("email", self.email)
         form_data.add_field("hmac", csrf.template_model.hmac)
         form_data.add_field("_csrf", csrf.csrf)
 
-        if self.brand:
-            async with self.session.post(
-                f"{BASE_URL_IDENT}/signin-service/v1/{self.brand.client_id}/login/identifier",
-                data=form_data(),
-            ) as response:
-                return self._extract_csrf(await response.text())
-        else:
-            raise BrandError
+        async with self.session.post(
+            f"{BASE_URL_IDENT}/signin-service/v1/{self.client_id}/login/identifier",
+            data=form_data(),
+        ) as response:
+            return self._extract_csrf(await response.text())
 
     async def _enter_password(self, csrf: CSRFState) -> IDKAuthorizationCode:
         """Third step in the login process.
@@ -182,6 +186,9 @@ class Authorization:
         Post both the email address and the password to the backend.
         This will return a token which can then be used in the skoda services to authenticate.
         """
+        if not self.client_id or not self.redirect_uri or not self.base_url:
+            raise BrandError
+
         form_data = FormData()
         form_data.add_field("relayState", csrf.template_model.relay_state)
         form_data.add_field("email", self.email)
@@ -196,24 +203,21 @@ class Authorization:
         # The following loop will follow all redirects until the last redirect to `myskoda://` is
         # encountered. This last URL will contain the token.
         try:
-            if self.brand:
-                async with self.session.post(
-                    f"{BASE_URL_IDENT}/signin-service/v1/{self.brand.client_id}/login/authenticate",
-                    data=form_data(),
-                    allow_redirects=False,
-                    raise_for_status=True,
-                ) as auth_response:
-                    location = auth_response.headers["Location"]
-                    while not location.startswith(self.brand.app_prefix):
-                        if "terms-and-conditions" in location:
-                            raise TermsAndConditionsError(location)
-                        if "consent/marketing" in location:
-                            raise MarketingConsentError(location)
-                        async with self.session.get(location, allow_redirects=False) as response:
-                            location = response.headers["Location"]
-                    codes = location.replace(self.brand.redirect_uri + "#", "")
-            else:
-                raise BrandError
+            async with self.session.post(
+                f"{BASE_URL_IDENT}/signin-service/v1/{self.client_id}/login/authenticate",
+                data=form_data(),
+                allow_redirects=False,
+                raise_for_status=True,
+            ) as auth_response:
+                location = auth_response.headers["Location"]
+                while not location.startswith(self.app_prefix):
+                    if "terms-and-conditions" in location:
+                        raise TermsAndConditionsError(location)
+                    if "consent/marketing" in location:
+                        raise MarketingConsentError(location)
+                    async with self.session.get(location, allow_redirects=False) as response:
+                        location = response.headers["Location"]
+                codes = location.replace(self.redirect_uri + "#", "")
 
         except InvalidUrlClientError:
             _LOGGER.exception("Error occurred while sending password. Password may be incorrect.")
@@ -234,17 +238,17 @@ class Authorization:
 
         This will return multiple tokens, such as an access token and a refresh token.
         """
-        if self.brand:
-            json_data = {
-                "code": code,
-                "redirectUri": self.brand.redirect_uri,
-                "verifier": verifier,
-            }
-        else:
+        if not self.redirect_uri or not self.base_url:
             raise BrandError
 
+        json_data = {
+            "code": code,
+            "redirectUri": self.redirect_uri,
+            "verifier": verifier,
+        }
+
         async with self.session.post(
-            f"{self.brand.base_url}/api/v1/authentication/exchange-authorization-code?tokenType=CONNECT",
+            f"{self.base_url}/api/v1/authentication/exchange-authorization-code?tokenType=CONNECT",
             json=json_data,
             allow_redirects=False,
         ) as response:
@@ -286,28 +290,28 @@ class Authorization:
         return datetime.now(tz=UTC) + timedelta(minutes=10) > expiry
 
     async def _perform_refresh_token(self) -> bool:
+        if not self.client_id or not self.redirect_uri or not self.base_url:
+            raise BrandError
+
         if not self.idk_session:
             raise NotAuthorizedError
 
         if not self.is_token_expired():
             return True
 
-        if self.brand:
-            async with self.session.post(
-                f"{self.brand.base_url}/api/v1/authentication/refresh-token?tokenType=CONNECT",
-                json={"token": self.idk_session.refresh_token},
-            ) as response:
-                if not response.ok:
-                    return False
-                try:
-                    self.idk_session = IDKSession.from_json(await response.text())
-                except Exception:
-                    _LOGGER.exception("Failed to parse tokens from refresh endpoint.")
-                    return False
-                else:
-                    return True
-        else:
-            raise BrandError
+        async with self.session.post(
+            f"{self.base_url}/api/v1/authentication/refresh-token?tokenType=CONNECT",
+            json={"token": self.idk_session.refresh_token},
+        ) as response:
+            if not response.ok:
+                return False
+            try:
+                self.idk_session = IDKSession.from_json(await response.text())
+            except Exception:
+                _LOGGER.exception("Failed to parse tokens from refresh endpoint.")
+                return False
+            else:
+                return True
 
     async def refresh_token(self) -> None:
         """Refresh the authorization token.

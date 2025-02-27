@@ -25,8 +25,8 @@ from myskoda.models.fixtures import (
 )
 
 from .__version__ import __version__ as version
-from .auth.authorization import Authorization, VAGBrand
-from .const import BASE_URL_SKODA, CLIENT_ID, MQTT_OPERATION_TIMEOUT
+from .auth.authorization import Authorization
+from .const import BASE_URL_SKODA, CLIENT_ID, MQTT_OPERATION_TIMEOUT, REDIRECT_URI
 from .event import Event
 from .models.air_conditioning import (
     AirConditioning,
@@ -55,13 +55,6 @@ from .vehicle import Vehicle
 
 _LOGGER = logging.getLogger(__name__)
 
-BRAND_CONFIG = VAGBrand(
-    brandname="Skoda",
-    client_id=CLIENT_ID,
-    redirect_uri="myskoda://redirect/login/",
-    base_url=BASE_URL_SKODA,
-)
-
 
 async def trace_response(
     _session: ClientSession,
@@ -84,11 +77,25 @@ TRACE_CONFIG = TraceConfig()
 TRACE_CONFIG.on_request_end.append(trace_response)
 
 
+class MySkodaAuthorization(Authorization):
+    @property
+    def client_id(self) -> str:  #  noqa:D102
+        return CLIENT_ID
+
+    @property
+    def redirect_uri(self) -> str:  #  noqa:D102
+        return REDIRECT_URI
+
+    @property
+    def base_url(self) -> str:  #  noqa:D102
+        return BASE_URL_SKODA
+
+
 class MySkoda:
     session: ClientSession
     rest_api: RestApi
     mqtt: MySkodaMqttClient | None = None
-    authorization: Authorization
+    authorization: MySkodaAuthorization
     ssl_context: SSLContext | None = None
 
     def __init__(  # noqa: D107, PLR0913
@@ -101,7 +108,7 @@ class MySkoda:
         mqtt_enable_ssl: bool | None = None,
     ) -> None:
         self.session = session
-        self.authorization = Authorization(session)
+        self.authorization = MySkodaAuthorization(session)
         self.rest_api = RestApi(self.session, self.authorization)
         self.ssl_context = ssl_context
         self.mqtt_broker_host = mqtt_broker_host
@@ -139,7 +146,7 @@ class MySkoda:
 
     async def connect(self, email: str, password: str) -> None:
         """Authenticate on the rest api and connect to the MQTT broker."""
-        await self.authorization.authorize(email, password, BRAND_CONFIG)
+        await self.authorization.authorize(email, password)
         _LOGGER.debug("IDK Authorization was successful.")
 
         if self.mqtt:
