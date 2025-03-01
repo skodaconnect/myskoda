@@ -9,7 +9,7 @@ from urllib.parse import parse_qs, urlparse
 from mashumaro import field_options
 from mashumaro.mixins.orjson import DataClassORJSONMixin
 
-from myskoda.models.common import DoorLockedState, OnOffState, OpenState
+from .common import BaseResponse, DoorLockedState, OnOffState, OpenState
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -65,7 +65,7 @@ class Renders(DataClassORJSONMixin):
 
 
 @dataclass
-class Status(DataClassORJSONMixin):
+class Status(BaseResponse):
     """Current status information for a vehicle."""
 
     detail: Detail
@@ -74,7 +74,6 @@ class Status(DataClassORJSONMixin):
     car_captured_timestamp: datetime | None = field(
         default=None, metadata=field_options(alias="carCapturedTimestamp")
     )
-    timestamp: datetime | None = field(default=None)
 
     def _extract_window_door_state_list_from_url(self) -> list[int]:
         """Extract window/door states from renders url.

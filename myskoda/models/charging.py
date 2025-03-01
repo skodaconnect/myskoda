@@ -7,7 +7,7 @@ from enum import StrEnum
 from mashumaro import field_options
 from mashumaro.mixins.orjson import DataClassORJSONMixin
 
-from .common import ActiveState, CaseInsensitiveStrEnum, EnabledState
+from .common import ActiveState, BaseResponse, CaseInsensitiveStrEnum, EnabledState
 
 
 class ChargingErrorType(StrEnum):
@@ -113,7 +113,7 @@ class ChargingStatus(DataClassORJSONMixin):
 
 
 @dataclass
-class Charging(DataClassORJSONMixin):
+class Charging(BaseResponse):
     """Information related to charging an EV."""
 
     errors: list[ChargingError]
@@ -125,4 +125,3 @@ class Charging(DataClassORJSONMixin):
         default=None, metadata=field_options(alias="carCapturedTimestamp")
     )
     status: ChargingStatus | None = field(default=None)
-    timestamp: datetime | None = field(default=None)

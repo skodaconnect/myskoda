@@ -7,7 +7,7 @@ from enum import StrEnum
 from mashumaro import field_options
 from mashumaro.mixins.orjson import DataClassORJSONMixin
 
-from .common import Address, Coordinates, Weekday
+from .common import Address, BaseResponse, Coordinates, Weekday
 
 
 @dataclass
@@ -82,7 +82,7 @@ class ServicePartner(DataClassORJSONMixin):
 
 
 @dataclass
-class Maintenance(DataClassORJSONMixin):
+class Maintenance(BaseResponse):
     maintenance_report: MaintenanceReport | None = field(
         default=None, metadata=field_options(alias="maintenanceReport")
     )
@@ -92,4 +92,3 @@ class Maintenance(DataClassORJSONMixin):
     preferred_service_partner: ServicePartner | None = field(
         default=None, metadata=field_options(alias="preferredServicePartner")
     )
-    timestamp: datetime | None = field(default=None)

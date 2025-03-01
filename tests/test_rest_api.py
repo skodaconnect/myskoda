@@ -2,7 +2,9 @@
 
 import json
 import re
+from datetime import UTC, datetime
 from pathlib import Path
+from unittest.mock import patch
 
 import pytest
 from aioresponses import aioresponses
@@ -319,6 +321,9 @@ async def test_get_departure_timers(
             url=url_pattern,
             body=departure_timer,
         )
-        get_departure_timers_result = await myskoda.get_departure_timers(target_vin)
 
-        assert get_departure_timers_result == DepartureInfo.from_json(departure_timer)
+        with patch("myskoda.models.common.datetime") as mock_datetime:
+            mock_datetime.now.return_value = datetime(2024, 1, 1, 0, 0, 0, tzinfo=UTC)
+            get_departure_timers_result = await myskoda.get_departure_timers(target_vin)
+
+            assert get_departure_timers_result == DepartureInfo.from_json(departure_timer)

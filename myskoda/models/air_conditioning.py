@@ -13,7 +13,7 @@ from mashumaro.config import (
 )
 from mashumaro.mixins.orjson import DataClassORJSONMixin
 
-from .common import ChargerLockedState, ConnectionState, OnOffState, Side, Weekday
+from .common import BaseResponse, ChargerLockedState, ConnectionState, OnOffState, Side, Weekday
 
 
 class TemperatureUnit(StrEnum):
@@ -145,7 +145,7 @@ class WindowHeating(DataClassORJSONMixin):
 
 
 @dataclass
-class AirConditioning(DataClassORJSONMixin):
+class AirConditioning(BaseResponse):
     """Information related to air conditioning."""
 
     timers: list[AirConditioningTimer]
@@ -190,4 +190,3 @@ class AirConditioning(DataClassORJSONMixin):
     outside_temperature: OutsideTemperature | None = field(
         default=None, metadata=field_options(alias="outsideTemperature")
     )
-    timestamp: datetime | None = field(default=None)

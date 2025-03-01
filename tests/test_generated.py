@@ -26,12 +26,12 @@ async def test_report_get(
     responses.get(url=url_pattern, body=report.raw)
 
     result = await myskoda.get_endpoint(VIN, report.endpoint, anonymize=True)
+    result = result.result.to_dict()
 
-    # Remove any timestamps
-    if result.result.timestamp:
-        result.result.timestamp = None
+    # Remove timestamp
+    result["timestamp"] = None
 
-    assert result.result.to_dict() == report.result
+    assert result == report.result
 
 
 def pytest_generate_tests(metafunc: pytest.Metafunc) -> None:
