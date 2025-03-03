@@ -7,6 +7,8 @@ from enum import StrEnum
 from mashumaro import field_options
 from mashumaro.mixins.orjson import DataClassORJSONMixin
 
+from .common import BaseResponse
+
 
 class WarningLightCategory(StrEnum):
     ASSISTANCE = "ASSISTANCE"
@@ -33,10 +35,9 @@ class WarningLight(DataClassORJSONMixin):
 
 
 @dataclass
-class Health(DataClassORJSONMixin):
+class Health(BaseResponse):
     """Information about the car's health (currently only mileage)."""
 
     warning_lights: list[WarningLight] = field(metadata=field_options(alias="warningLights"))
     mileage_in_km: int | None = field(default=None, metadata=field_options(alias="mileageInKm"))
     captured_at: datetime | None = field(default=None, metadata=field_options(alias="capturedAt"))
-    timestamp: datetime | None = field(default=None)

@@ -1,6 +1,7 @@
 """Common models used in multiple responses."""
 
 from dataclasses import dataclass, field
+from datetime import UTC, datetime
 from enum import StrEnum
 
 from mashumaro import field_options
@@ -99,3 +100,13 @@ class Weekday(StrEnum):
     FRIDAY = "FRIDAY"
     SATURDAY = "SATURDAY"
     SUNDAY = "SUNDAY"
+
+
+@dataclass
+class BaseResponse(DataClassORJSONMixin):
+    """Base class for all API response models.
+
+    All responses have the current timestamp injected.
+    """
+
+    timestamp: datetime = field(default_factory=lambda: datetime.now(UTC), kw_only=True)

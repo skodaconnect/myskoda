@@ -10,7 +10,7 @@ from mashumaro.config import BaseConfig
 from mashumaro.mixins.orjson import DataClassORJSONMixin
 
 from .air_conditioning import TemperatureUnit, TimerMode
-from .common import Weekday
+from .common import BaseResponse, Weekday
 
 
 @dataclass
@@ -89,7 +89,7 @@ class DepartureSettings(DataClassORJSONMixin):
 
 
 @dataclass
-class DepartureInfo(DataClassORJSONMixin):
+class DepartureInfo(BaseResponse):
     """Information related to Departure."""
 
     car_captured_timestamp: datetime | None = field(
@@ -107,4 +107,3 @@ class DepartureInfo(DataClassORJSONMixin):
     timers: list[DepartureTimer] | None = field(
         default=None, metadata=field_options(alias="timers")
     )
-    timestamp: datetime | None = field(default=None)

@@ -2,12 +2,14 @@
 
 import logging
 from dataclasses import dataclass, field
-from datetime import date, datetime
+from datetime import date
 from enum import StrEnum
 
 from mashumaro import field_options
 from mashumaro.mixins.orjson import DataClassORJSONMixin
 from mashumaro.mixins.yaml import DataClassYAMLMixin
+
+from .common import BaseResponse
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -263,7 +265,7 @@ class CompositeRender(DataClassORJSONMixin):
 
 
 @dataclass
-class Info(DataClassORJSONMixin):
+class Info(BaseResponse):
     """Basic vehicle information."""
 
     state: VehicleState
@@ -285,7 +287,6 @@ class Info(DataClassORJSONMixin):
     )
     license_plate: str | None = field(default=None, metadata=field_options(alias="licensePlate"))
     errors: list[Error] | None = field(default=None)
-    timestamp: datetime | None = field(default=None)
 
     def has_capability(self, cap: CapabilityId) -> bool:
         """Check for a capability.

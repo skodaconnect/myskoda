@@ -1,13 +1,12 @@
 """Models for responses of api/v2/vehicle-status/{vin}/driving-range."""
 
 from dataclasses import dataclass, field
-from datetime import datetime
 from enum import StrEnum
 
 from mashumaro import field_options
 from mashumaro.mixins.orjson import DataClassORJSONMixin
 
-from .common import Address, Coordinates
+from .common import Address, BaseResponse, Coordinates
 
 
 class PositionType(StrEnum):
@@ -33,9 +32,8 @@ class Error(DataClassORJSONMixin):
 
 
 @dataclass
-class Positions(DataClassORJSONMixin):
+class Positions(BaseResponse):
     """Positional information (GPS) for the vehicle and other things."""
 
     errors: list[Error]
     positions: list[Position]
-    timestamp: datetime | None = field(default=None)

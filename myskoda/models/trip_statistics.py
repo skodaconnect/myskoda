@@ -1,11 +1,13 @@
 """Models for responses of api/v2/vehicle-status/{vin}."""
 
 from dataclasses import dataclass, field
-from datetime import date, datetime
+from datetime import date
 from enum import StrEnum
 
 from mashumaro import field_options
 from mashumaro.mixins.orjson import DataClassORJSONMixin
+
+from .common import BaseResponse
 
 
 class VehicleType(StrEnum):
@@ -44,7 +46,7 @@ class StatisticsEntry(DataClassORJSONMixin):
 
 
 @dataclass
-class TripStatistics(DataClassORJSONMixin):
+class TripStatistics(BaseResponse):
     vehicle_type: VehicleType = field(metadata=field_options(alias="vehicleType"))
     detailed_statistics: list[StatisticsEntry] = field(
         metadata=field_options(alias="detailedStatistics")
@@ -73,4 +75,3 @@ class TripStatistics(DataClassORJSONMixin):
     overall_travel_time_in_min: int | None = field(
         default=None, metadata=field_options(alias="overallTravelTimeInMin")
     )
-    timestamp: datetime | None = field(default=None)
