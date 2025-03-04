@@ -11,6 +11,7 @@ from typing import cast
 
 import jwt
 from aiohttp import ClientSession, FormData, InvalidUrlClientError
+from jwt.exceptions import DecodeError
 from mashumaro import field_options
 from mashumaro.mixins.orjson import DataClassORJSONMixin
 
@@ -69,14 +70,28 @@ class Authorization:
 
         return parser.csrf_state
 
-    async def authorize(self, email: str, password: str) -> None:
+    async def authorize(
+        self,
+        email: str | None = None,
+        password: str | None = None,
+        refresh_token: str | None = None,
+    ) -> None:
         """Authorize on the VW IDK servers."""
-        self.email = email
-        self.password = password
-        try:
-            self.idk_session = await self._get_idk_session()
-        except (InvalidUrlClientError, KeyError) as ex:
-            raise AuthorizationFailedError from ex
+        if password and email:
+            self.email = email
+            self.password = password
+        elif refresh_token:
+            self._token = refresh_token
+        else:
+            raise AuthorizationFailedError
+
+        if self.email and self.password:
+            try:
+                self.idk_session = await self._get_idk_session()
+            except (InvalidUrlClientError, KeyError) as ex:
+                raise AuthorizationFailedError from ex
+        elif self._token:
+            self.idk_session = await self._get_idk_from_token()
 
         if self.idk_session is None:
             raise AuthorizationFailedError
@@ -226,6 +241,32 @@ class Authorization:
         # Exchange the token for access and refresh tokens (JWT format).
         return await self._exchange_auth_code_for_idk_session(authentication.code, verifier)
 
+    async def _get_idk_from_token(self) -> IDKSession:
+        """Log in via token refresh, providing the refresh token."""
+        # Check if refresh token is valid
+        try:
+            meta = jwt.decode(self._token, options={"verify_signature": False})
+            expiry = datetime.fromtimestamp(cast(float, meta.get("exp")), tz=UTC)
+        except DecodeError as exc:
+            raise InvalidRefreshTokenError from exc
+
+        if datetime.now(tz=UTC) + timedelta(minutes=1) < expiry:
+            # Token is valid for less than 1 minute or expired
+            # Do not use it to authenticate anymore
+            raise RefreshTokenExpiredError
+
+        async with self.session.post(
+            f"{BASE_URL_SKODA}/api/v1/authentication/refresh-token?tokenType=CONNECT",
+            json={"token": self._token},
+        ) as response:
+            if not response.ok:
+                raise RefreshTokenFailedError
+            try:
+                return IDKSession.from_json(await response.text())
+            except Exception as exc:
+                _LOGGER.exception("Failed to parse tokens from refresh endpoint.")
+                raise RefreshTokenFailedError from exc
+
     def is_token_expired(self) -> bool:
         """Check whether the login token is expired."""
         if not self.idk_session:
@@ -317,6 +358,27 @@ class NotAuthorizedError(Exception):
     """Not authorized.
 
     Did you forget to call Authorization.authorize()?
+    """
+
+
+class RefreshTokenExpiredError(Exception):
+    """Not authorized.
+
+    Your refresh token has expired.
+    """
+
+
+class InvalidRefreshTokenError(Exception):
+    """Not authorized.
+
+    Your supplied refresh token is invalid.
+    """
+
+
+class RefreshTokenFailedError(Exception):
+    """Not authorized.
+
+    Refreshing token failed.
     """
 
 
