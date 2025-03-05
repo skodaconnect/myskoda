@@ -80,9 +80,9 @@ TRACE_CONFIG.on_request_end.append(trace_response)
 
 
 class MySkodaAuthorization(Authorization):
-    client_id: str = CLIENT_ID
-    redirect_uri: str = REDIRECT_URI
-    base_url: str = BASE_URL_SKODA
+    client_id: str = CLIENT_ID  #  pyright: ignore[reportIncompatibleMethodOverride]
+    redirect_uri: str = REDIRECT_URI  #  pyright: ignore[reportIncompatibleMethodOverride]
+    base_url: str = BASE_URL_SKODA  #  pyright: ignore[reportIncompatibleMethodOverride]
 
 
 class MySkoda:
