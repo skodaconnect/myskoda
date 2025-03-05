@@ -55,6 +55,8 @@ from .vehicle import Vehicle
 
 _LOGGER = logging.getLogger(__name__)
 
+type Vin = str
+
 
 async def trace_response(
     _session: ClientSession,
@@ -89,6 +91,7 @@ class MySkoda:
     mqtt: MySkodaMqttClient | None = None
     authorization: MySkodaAuthorization
     ssl_context: SSLContext | None = None
+    vehicles: dict[Vin, Vehicle]
 
     def __init__(  # noqa: D107, PLR0913
         self,
@@ -99,6 +102,7 @@ class MySkoda:
         mqtt_broker_port: int | None = None,
         mqtt_enable_ssl: bool | None = None,
     ) -> None:
+        self.vehicles: dict[Vin, Vehicle] = {}
         self.session = session
         self.authorization = MySkodaAuthorization(session)
         self.rest_api = RestApi(self.session, self.authorization)
@@ -414,37 +418,39 @@ class MySkoda:
         info = await self.get_info(vin)
         maintenance = await self.get_maintenance(vin)
 
-        vehicle = Vehicle(info, maintenance)
+        if vin in self.vehicles:
+            self.vehicles[vin].info = info
+            self.vehicles[vin].maintenance = maintenance
+        else:
+            self.vehicles[vin] = Vehicle(info, maintenance)
 
         for capa in capabilities:
             if info.is_capability_available(capa):
-                await self._request_capability_data(vehicle, vin, capa)
+                await self._request_capability_data(vin, capa)
 
-        return vehicle
+        return self.vehicles[vin]
 
-    async def _request_capability_data(
-        self, vehicle: Vehicle, vin: str, capa: CapabilityId
-    ) -> None:
+    async def _request_capability_data(self, vin: str, capa: CapabilityId) -> None:
         """Request specific capability data from MySkoda API."""
         try:
             match capa:
                 case CapabilityId.AIR_CONDITIONING:
-                    vehicle.air_conditioning = await self.get_air_conditioning(vin)
+                    self.vehicles[vin].air_conditioning = await self.get_air_conditioning(vin)
                 case CapabilityId.AUXILIARY_HEATING:
-                    vehicle.auxiliary_heating = await self.get_auxiliary_heating(vin)
+                    self.vehicles[vin].auxiliary_heating = await self.get_auxiliary_heating(vin)
                 case CapabilityId.CHARGING:
-                    vehicle.charging = await self.get_charging(vin)
+                    self.vehicles[vin].charging = await self.get_charging(vin)
                 case CapabilityId.PARKING_POSITION:
-                    vehicle.positions = await self.get_positions(vin)
+                    self.vehicles[vin].positions = await self.get_positions(vin)
                 case CapabilityId.STATE:
-                    vehicle.status = await self.get_status(vin)
-                    vehicle.driving_range = await self.get_driving_range(vin)
+                    self.vehicles[vin].status = await self.get_status(vin)
+                    self.vehicles[vin].driving_range = await self.get_driving_range(vin)
                 case CapabilityId.TRIP_STATISTICS:
-                    vehicle.trip_statistics = await self.get_trip_statistics(vin)
+                    self.vehicles[vin].trip_statistics = await self.get_trip_statistics(vin)
                 case CapabilityId.VEHICLE_HEALTH_INSPECTION:
-                    vehicle.health = await self.get_health(vin)
+                    self.vehicles[vin].health = await self.get_health(vin)
                 case CapabilityId.DEPARTURE_TIMERS:
-                    vehicle.departure_info = await self.get_departure_timers(vin)
+                    self.vehicles[vin].departure_info = await self.get_departure_timers(vin)
         except Exception as err:  # noqa: BLE001
             _LOGGER.warning("Requesting %s failed: %s, continue", capa, err)
 

@@ -15,6 +15,7 @@ from .air_conditioning import (
     OutsideTemperature,
     TargetTemperature,
 )
+from .common import BaseResponse
 
 
 class AuxiliaryState(StrEnum):
@@ -72,7 +73,7 @@ class AuxiliaryHeatingTimer(AirConditioningTimer):
 
 
 @dataclass
-class AuxiliaryHeating(DataClassORJSONMixin):
+class AuxiliaryHeating(BaseResponse):
     """Information related to auxiliary heating."""
 
     timers: list[AuxiliaryHeatingTimer]
@@ -96,4 +97,3 @@ class AuxiliaryHeating(DataClassORJSONMixin):
     outside_temperature: OutsideTemperature | None = field(
         default=None, metadata=field_options(alias="outsideTemperature")
     )
-    timestamp: datetime | None = field(default=None)

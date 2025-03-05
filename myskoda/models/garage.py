@@ -2,13 +2,13 @@
 
 import logging
 from dataclasses import dataclass, field
-from datetime import datetime
 from enum import StrEnum
 
 from mashumaro import field_options
 from mashumaro.mixins.orjson import DataClassORJSONMixin
 
-from myskoda.models.info import CompositeRender, Render, VehicleState
+from .common import BaseResponse
+from .info import CompositeRender, Render, VehicleState
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -47,9 +47,8 @@ class GarageEntry(DataClassORJSONMixin):
 
 
 @dataclass
-class Garage(DataClassORJSONMixin):
+class Garage(BaseResponse):
     """Contents of the users Garage."""
 
     vehicles: list[GarageEntry] | None = field(default=None)
     errors: list[GarageError] | None = field(default=None)
-    timestamp: datetime | None = field(default=None)
