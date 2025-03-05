@@ -7,6 +7,8 @@ from enum import StrEnum
 from mashumaro import field_options
 from mashumaro.mixins.orjson import DataClassORJSONMixin
 
+from .common import BaseResponse
+
 
 class EngineType(StrEnum):
     DIESEL = "diesel"
@@ -31,7 +33,7 @@ class EngineRange(DataClassORJSONMixin):
 
 
 @dataclass
-class DrivingRange(DataClassORJSONMixin):
+class DrivingRange(BaseResponse):
     car_captured_timestamp: datetime = field(metadata=field_options(alias="carCapturedTimestamp"))
     car_type: EngineType = field(metadata=field_options(alias="carType"))
     primary_engine_range: EngineRange = field(metadata=field_options(alias="primaryEngineRange"))
@@ -42,4 +44,3 @@ class DrivingRange(DataClassORJSONMixin):
         default=None, metadata=field_options(alias="totalRangeInKm")
     )
     ad_blue_range: int | None = field(default=None, metadata=field_options(alias="adBlueRange"))
-    timestamp: datetime | None = field(default=None)

@@ -2,11 +2,13 @@
 
 import logging
 from dataclasses import dataclass, field
-from datetime import date, datetime
+from datetime import date
 from enum import StrEnum
 
 from mashumaro import field_options
 from mashumaro.mixins.orjson import DataClassORJSONMixin
+
+from .common import BaseResponse
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -36,7 +38,7 @@ def drop_unknown_capabilities(value: list[dict]) -> list[UserCapability]:
 
 
 @dataclass
-class User(DataClassORJSONMixin):
+class User(BaseResponse):
     capabilities: list[UserCapability] = field(
         metadata=field_options(deserialize=drop_unknown_capabilities)
     )
@@ -55,4 +57,3 @@ class User(DataClassORJSONMixin):
     )
     phone: str | None = None
     country: str | None = None
-    timestamp: datetime | None = field(default=None)
