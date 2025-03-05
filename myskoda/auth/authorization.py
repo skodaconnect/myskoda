@@ -3,6 +3,7 @@
 import base64
 import hashlib
 import logging
+from abc import ABC, abstractmethod
 from asyncio import Lock
 from collections.abc import Callable
 from dataclasses import dataclass, field
@@ -16,7 +17,7 @@ from mashumaro.mixins.orjson import DataClassORJSONMixin
 
 from myskoda.auth.csrf_parser import CSRFParser, CSRFState
 from myskoda.auth.utils import generate_nonce
-from myskoda.const import BASE_URL_IDENT, BASE_URL_SKODA, CLIENT_ID, MAX_RETRIES
+from myskoda.const import BASE_URL_IDENT, MAX_RETRIES
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -48,7 +49,7 @@ class IDKSession(DataClassORJSONMixin):
     id_token: str = field(metadata=field_options(alias="idToken"))
 
 
-class Authorization:
+class Authorization(ABC):
     """Class that holds Authorization information and authorization state of the session."""
 
     session: ClientSession
@@ -69,10 +70,49 @@ class Authorization:
 
         return parser.csrf_state
 
+    @property
+    @abstractmethod
+    def client_id(self) -> str | None:
+        """The client ID used for this authorization.
+
+        Must be implemented by the per-brand subclass.
+        """
+
+    @property
+    @abstractmethod
+    def redirect_uri(self) -> str | None:
+        """The redirect URI used for this authorization.
+
+        Must be implemented by the per-brand subclass.
+        """
+
+    @property
+    @abstractmethod
+    def base_url(self) -> str | None:
+        """The base URL used for all API requests after authorization.
+
+        Must be implemented by the per-brand subclass.
+        """
+
+    @property
+    def app_prefix(self) -> str:
+        """Calculate the app prefix."""
+        if not self.redirect_uri:
+            raise BrandError
+        split_str = "://"
+        if split_str not in self.redirect_uri:
+            raise ValueError
+
+        return self.redirect_uri.split(split_str)[0]
+
     async def authorize(self, email: str, password: str) -> None:
         """Authorize on the VW IDK servers."""
+        if not self.client_id or not self.redirect_uri or not self.base_url:
+            raise BrandError
+
         self.email = email
         self.password = password
+
         try:
             self.idk_session = await self._get_idk_session()
         except (InvalidUrlClientError, KeyError) as ex:
@@ -87,6 +127,9 @@ class Authorization:
         This calls the route for initial authorization,
         which will contain the initial SSO information such as the CSRF or the HMAC.
         """
+        if not self.client_id or not self.redirect_uri or not self.base_url:
+            raise BrandError
+
         # A SHA256 hash of the random "verifier" string will be transmitted as a challenge.
         # This is part of the OAUTH2 PKCE process. It is described here in detail:
         # https://www.oauth.com/oauth2-servers/pkce/authorization-request/
@@ -100,9 +143,9 @@ class Authorization:
         )
 
         params = {
-            "client_id": CLIENT_ID,
+            "client_id": self.client_id,
             "nonce": self.generate_nonce(),
-            "redirect_uri": "myskoda://redirect/login/",
+            "redirect_uri": self.redirect_uri,
             "response_type": "code id_token",
             # OpenID scopes. Can be found here: https://identity.vwgroup.io/.well-known/openid-configuration
             "scope": "address badge birthdate cars driversLicense dealers email mileage mbb nationalIdentifier openid phone profession profile vin",  # noqa: E501
@@ -110,6 +153,7 @@ class Authorization:
             "code_challenge_method": "s256",
             "prompt": "login",
         }
+
         async with self.session.get(
             f"{BASE_URL_IDENT}/oidc/v1/authorize", params=params
         ) as response:
@@ -121,6 +165,9 @@ class Authorization:
         Will post only the email address to the backend.
         The password will follow in a later request.
         """
+        if not self.client_id or not self.redirect_uri or not self.base_url:
+            raise BrandError
+
         form_data = FormData()
         form_data.add_field("relayState", csrf.template_model.relay_state)
         form_data.add_field("email", self.email)
@@ -128,7 +175,7 @@ class Authorization:
         form_data.add_field("_csrf", csrf.csrf)
 
         async with self.session.post(
-            f"{BASE_URL_IDENT}/signin-service/v1/{CLIENT_ID}/login/identifier",
+            f"{BASE_URL_IDENT}/signin-service/v1/{self.client_id}/login/identifier",
             data=form_data(),
         ) as response:
             return self._extract_csrf(await response.text())
@@ -139,6 +186,9 @@ class Authorization:
         Post both the email address and the password to the backend.
         This will return a token which can then be used in the skoda services to authenticate.
         """
+        if not self.client_id or not self.redirect_uri or not self.base_url:
+            raise BrandError
+
         form_data = FormData()
         form_data.add_field("relayState", csrf.template_model.relay_state)
         form_data.add_field("email", self.email)
@@ -154,20 +204,21 @@ class Authorization:
         # encountered. This last URL will contain the token.
         try:
             async with self.session.post(
-                f"{BASE_URL_IDENT}/signin-service/v1/{CLIENT_ID}/login/authenticate",
+                f"{BASE_URL_IDENT}/signin-service/v1/{self.client_id}/login/authenticate",
                 data=form_data(),
                 allow_redirects=False,
                 raise_for_status=True,
             ) as auth_response:
                 location = auth_response.headers["Location"]
-                while not location.startswith("myskoda://"):
+                while not location.startswith(self.app_prefix):
                     if "terms-and-conditions" in location:
                         raise TermsAndConditionsError(location)
                     if "consent/marketing" in location:
                         raise MarketingConsentError(location)
                     async with self.session.get(location, allow_redirects=False) as response:
                         location = response.headers["Location"]
-                codes = location.replace("myskoda://redirect/login/#", "")
+                codes = location.replace(self.redirect_uri + "#", "")
+
         except InvalidUrlClientError:
             _LOGGER.exception("Error occurred while sending password. Password may be incorrect.")
             raise
@@ -187,14 +238,17 @@ class Authorization:
 
         This will return multiple tokens, such as an access token and a refresh token.
         """
+        if not self.redirect_uri or not self.base_url:
+            raise BrandError
+
         json_data = {
             "code": code,
-            "redirectUri": "myskoda://redirect/login/",
+            "redirectUri": self.redirect_uri,
             "verifier": verifier,
         }
 
         async with self.session.post(
-            f"{BASE_URL_SKODA}/api/v1/authentication/exchange-authorization-code?tokenType=CONNECT",
+            f"{self.base_url}/api/v1/authentication/exchange-authorization-code?tokenType=CONNECT",
             json=json_data,
             allow_redirects=False,
         ) as response:
@@ -236,6 +290,9 @@ class Authorization:
         return datetime.now(tz=UTC) + timedelta(minutes=10) > expiry
 
     async def _perform_refresh_token(self) -> bool:
+        if not self.client_id or not self.redirect_uri or not self.base_url:
+            raise BrandError
+
         if not self.idk_session:
             raise NotAuthorizedError
 
@@ -243,7 +300,7 @@ class Authorization:
             return True
 
         async with self.session.post(
-            f"{BASE_URL_SKODA}/api/v1/authentication/refresh-token?tokenType=CONNECT",
+            f"{self.base_url}/api/v1/authentication/refresh-token?tokenType=CONNECT",
             json={"token": self.idk_session.refresh_token},
         ) as response:
             if not response.ok:
@@ -330,3 +387,7 @@ class TermsAndConditionsError(Exception):
 
 class MarketingConsentError(Exception):
     """Redirect to Marketing Consent encountered."""
+
+
+class BrandError(Exception):
+    """No valid brand configuration found."""
