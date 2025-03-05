@@ -43,7 +43,6 @@ class User(BaseResponse):
         metadata=field_options(deserialize=drop_unknown_capabilities)
     )
     email: str
-    first_name: str = field(metadata=field_options(alias="firstName"))
     id: str
     last_name: str = field(metadata=field_options(alias="lastName"))
     nickname: str
@@ -55,5 +54,6 @@ class User(BaseResponse):
     preferred_contact_channel: str | None = field(
         default=None, metadata=field_options(alias="preferredContactChannel")
     )
+    first_name: str | None = field(default=None, metadata=field_options(alias="firstName"))
     phone: str | None = None
     country: str | None = None
