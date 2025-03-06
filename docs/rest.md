@@ -179,3 +179,73 @@
     ]
 }
 ```
+
+### Get ordered vehicle details
+
+**METHOD:** `GET`
+**URL:** `https://mysmob.api.connect.skoda-auto.cz/api/v2/garage/vehicles/ordered/{commissionId}`
+**JSON:**
+
+```json
+{
+    "commissionId": "123456-123-2025",
+    "name": "Enyaq",
+    "activationState": "DISABLED",
+    "orderStatus": "ORDER_CONFIRMED",
+    "checkPoints": [
+        {
+            "status": "ORDER_CONFIRMED"
+        },
+        {
+            "status": "IN_PRODUCTION"
+        },
+        {
+            "status": "IN_DELIVERY"
+        },
+        {
+            "status": "TO_HANDOVER"
+        }
+    ],
+    "renders": [],
+    "compositeRenders": [],
+    "vehicleSpecification": {
+        "model": "Škoda Enyaq",
+        "trimLevel": "85",
+        "exteriorColour": "Olibo Green",
+        "interiorColour": "Loft",
+        "battery": {
+            "capacityInKWh": 77
+        },
+        "wltpConsumption": {}
+    },
+    "dealer": {
+        "servicePartnerId": "DNKC00409"
+    },
+    "errors": [
+        {
+            "type": "MISSING_RENDER",
+            "description": "Getting render of view point {interior_front} for vehicle commission ID {123456-123-2025} failed with message {404 Not Found from GET http://render-service/api/v1/renders/ordered-vehicles/123456-123-2025}"
+        },
+        {
+            "type": "MISSING_RENDER",
+            "description": "Getting render of view point {exterior_front} for vehicle commission ID {123456-123-2025} failed with message {404 Not Found from GET http://render-service/api/v1/renders/ordered-vehicles/123456-123-2025}"
+        },
+        {
+            "type": "MISSING_RENDER",
+            "description": "Getting render of view point {interior_boot} for vehicle commission ID {123456-123-2025} failed with message {404 Not Found from GET http://render-service/api/v1/renders/ordered-vehicles/123456-123-2025}"
+        },
+        {
+            "type": "MISSING_RENDER",
+            "description": "Getting render of view point {interior_side} for vehicle commission ID {123456-123-2025} failed with message {404 Not Found from GET http://render-service/api/v1/renders/ordered-vehicles/123456-123-2025}"
+        },
+        {
+            "type": "MISSING_RENDER",
+            "description": "Getting render of view point {exterior_rear} for vehicle commission ID {123456-123-2025} failed with message {404 Not Found from GET http://render-service/api/v1/renders/ordered-vehicles/123456-123-2025}"
+        },
+        {
+            "type": "MISSING_RENDER",
+            "description": "Getting render of view point {exterior_side} for vehicle commission ID {123456-123-2025} failed with message {404 Not Found from GET http://render-service/api/v1/renders/ordered-vehicles/123456-123-2025}"
+        }
+    ]
+}
+```
