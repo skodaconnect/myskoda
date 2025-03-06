@@ -6,6 +6,7 @@ This class provides all methods to operate on the API and MQTT broker.
 import logging
 from asyncio import gather, timeout
 from collections.abc import Awaitable, Callable
+from copy import deepcopy
 from datetime import UTC, datetime
 from ssl import SSLContext
 from traceback import format_exc
@@ -422,7 +423,7 @@ class MySkoda:
             if info.is_capability_available(capa):
                 await self._request_capability_data(vin, capa)
 
-        return self.vehicles[vin]
+        return deepcopy(self.vehicles[vin])
 
     async def _request_capability_data(self, vin: str, capa: CapabilityId) -> None:
         """Request specific capability data from MySkoda API."""
