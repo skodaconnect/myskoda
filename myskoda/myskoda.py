@@ -27,7 +27,7 @@ from myskoda.models.fixtures import (
 
 from .__version__ import __version__ as version
 from .auth.authorization import Authorization
-from .const import MQTT_OPERATION_TIMEOUT
+from .const import BASE_URL_SKODA, CLIENT_ID, MQTT_OPERATION_TIMEOUT, REDIRECT_URI
 from .event import Event
 from .models.air_conditioning import (
     AirConditioning,
@@ -80,11 +80,17 @@ TRACE_CONFIG = TraceConfig()
 TRACE_CONFIG.on_request_end.append(trace_response)
 
 
+class MySkodaAuthorization(Authorization):
+    client_id: str = CLIENT_ID  #  pyright: ignore[reportIncompatibleMethodOverride]
+    redirect_uri: str = REDIRECT_URI  #  pyright: ignore[reportIncompatibleMethodOverride]
+    base_url: str = BASE_URL_SKODA  #  pyright: ignore[reportIncompatibleMethodOverride]
+
+
 class MySkoda:
     session: ClientSession
     rest_api: RestApi
     mqtt: MySkodaMqttClient | None = None
-    authorization: Authorization
+    authorization: MySkodaAuthorization
     ssl_context: SSLContext | None = None
     vehicles: dict[Vin, Vehicle]
 
@@ -99,7 +105,7 @@ class MySkoda:
     ) -> None:
         self.vehicles: dict[Vin, Vehicle] = {}
         self.session = session
-        self.authorization = Authorization(session)
+        self.authorization = MySkodaAuthorization(session)
         self.rest_api = RestApi(self.session, self.authorization)
         self.ssl_context = ssl_context
         self.mqtt_broker_host = mqtt_broker_host
