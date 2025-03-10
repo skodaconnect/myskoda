@@ -1518,14 +1518,14 @@ files = [
 
 [[package]]
 name = "setuptools"
-version = "75.7.0"
+version = "76.0.0"
 description = "Easily download, build, install, upgrade, and uninstall Python packages"
 optional = false
 python-versions = ">=3.9"
 groups = ["dev"]
 files = [
-    {file = "setuptools-75.7.0-py3-none-any.whl", hash = "sha256:84fb203f278ebcf5cd08f97d3fb96d3fbed4b629d500b29ad60d11e00769b183"},
-    {file = "setuptools-75.7.0.tar.gz", hash = "sha256:886ff7b16cd342f1d1defc16fc98c9ce3fde69e087a4e1983d7ab634e5f41f4f"},
+    {file = "setuptools-76.0.0-py3-none-any.whl", hash = "sha256:199466a166ff664970d0ee145839f5582cb9bca7a0a3a2e795b6a9cb2308e9c6"},
+    {file = "setuptools-76.0.0.tar.gz", hash = "sha256:43b4ee60e10b0d0ee98ad11918e114c70701bc6051662a9a675a0496c1a158f4"},
 ]
 
 [package.extras]
@@ -1837,4 +1837,4 @@ docs = ["mkdocs", "mkdocs-gen-files", "mkdocs-literate-nav", "mkdocstrings"]
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.12.0, <4.0"
-content-hash = "bc3181c4082de5577e964a54479ed452fe9fc9d0b2d3b74cc07b52fc90471b0c"
+content-hash = "18448471e2b3850881463b535720806186a91212ad6a62ad366f489d3c5cdf91"
