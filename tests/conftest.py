@@ -14,8 +14,7 @@ from amqtt.broker import Broker, CancelledError
 from amqtt.client import MQTTClient
 
 from myskoda.anonymize import ACCESS_TOKEN
-from myskoda.auth.authorization import Authorization
-from myskoda.myskoda import MySkoda
+from myskoda.myskoda import MySkoda, MySkodaAuthorization
 from myskoda.rest_api import RestApi
 
 FIXTURES_DIR = Path(__file__).parent / "fixtures"
@@ -34,7 +33,7 @@ def responses() -> Generator[aioresponses, None, None]:
 async def api() -> AsyncIterator[RestApi]:
     """Return rest api."""
     async with ClientSession() as session:
-        authorization = Authorization(session)
+        authorization = MySkodaAuthorization(session)
         api = RestApi(session, authorization)
         api.authorization.get_access_token = AsyncMock()
         yield api
