@@ -49,7 +49,7 @@
 | sonar98 | POST   | api/v1/vehicle-access/{vin}/lock                                           | ✅      |         |
 | sonar98 | POST   | api/v1/vehicle-access/{vin}/unlock                                         | ✅      |         |
 | sonar98 | GET    | api/v1/charging/{vin}/certificates                                         |       |         |
-| sonar98 | GET    | api/v1/charging/{vin}/profiles                                             |       |         |
+| sonar98 | GET    | api/v1/charging/{vin}/profiles                                             | ✅      |         |
 | sonar98 | POST   | api/v1/charging/{vin}/certificates/{certificateId}                         |       |         |
 | sonar98 | DELETE | api/v1/charging/{vin}/certificates/{certificateId}                         |       |         |
 | sonar98 | PUT    | api/v1/charging/{vin}/set-auto-unlock-plug                                 | ✅      |         |
