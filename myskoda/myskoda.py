@@ -503,6 +503,7 @@ class MySkoda:
             Endpoint.POSITIONS: self.rest_api.get_positions,
             Endpoint.HEALTH: self.rest_api.get_health,
             Endpoint.CHARGING: self.rest_api.get_charging,
+            Endpoint.CHARGING_PROFILES: self.rest_api.get_charging_profiles,
             Endpoint.MAINTENANCE: self.rest_api.get_maintenance,
             Endpoint.DRIVING_RANGE: self.rest_api.get_driving_range,
             Endpoint.TRIP_STATISTICS: self.rest_api.get_trip_statistics,
