@@ -286,7 +286,7 @@ class Authorization(ABC):
             raise NotAuthorizedError
 
         meta = jwt.decode(self.idk_session.access_token, options={"verify_signature": False})
-        expiry = datetime.fromtimestamp(cast(float, meta.get("exp")), tz=UTC)
+        expiry = datetime.fromtimestamp(cast("float", meta.get("exp")), tz=UTC)
         return datetime.now(tz=UTC) + timedelta(minutes=10) > expiry
 
     async def _perform_refresh_token(self) -> bool:

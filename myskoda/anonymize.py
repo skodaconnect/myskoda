@@ -72,6 +72,10 @@ def anonymize_charging(data: dict) -> dict:
     return data
 
 
+def anonymize_chargingprofiles(data: dict) -> dict:
+    return data
+
+
 def anonymize_status(data: dict) -> dict:
     return data
 

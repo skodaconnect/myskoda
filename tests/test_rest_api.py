@@ -216,6 +216,39 @@ async def test_charging(charging: list[str], myskoda: MySkoda, responses: aiores
         )
 
 
+@pytest.fixture(name="charging_profiles")
+def load_chargingprofiles() -> list[str]:
+    """Load charging profile fixture."""
+    charging_profiles = []
+    for path in [
+        "enyaq/charging-profiles.json",
+    ]:
+        with FIXTURES_DIR.joinpath(path).open() as file:
+            charging_profiles.append(file.read())
+    return charging_profiles
+
+
+@pytest.mark.asyncio
+async def test_charging_profiles(
+    charging_profiles: list[str], myskoda: MySkoda, responses: aioresponses
+) -> None:
+    for charging_profile in charging_profiles:
+        charging_profile_status_json = json.loads(charging_profile)
+
+        target_vin = "TMBJM0CKV1N12345"
+        responses.get(
+            url=f"https://mysmob.api.connect.skoda-auto.cz/api/v1/charging/{target_vin}/profiles",
+            body=charging_profile,
+        )
+        get_status_result = await myskoda.get_charging_profiles(target_vin)
+
+        assert get_status_result.charging_profiles is not None
+        assert (
+            get_status_result.charging_profiles[0].id
+            == charging_profile_status_json["chargingProfiles"][0]["id"]
+        )
+
+
 @pytest.fixture(name="trip_statistics")
 def load_trip_statistics() -> list[str]:
     """Load trip statistics fixture."""

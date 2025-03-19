@@ -50,7 +50,7 @@ async def get(ctx: Context, endpoint: Endpoint) -> None:
         endpoint=endpoint,
     )
 
-    text = cast(str, fixture.to_yaml())
+    text = cast("str", fixture.to_yaml())
 
     file: Path = ctx.obj["file"]
     file.parent.mkdir(parents=True, exist_ok=True)

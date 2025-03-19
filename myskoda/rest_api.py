@@ -14,6 +14,7 @@ from myskoda.anonymize import (
     anonymize_air_conditioning,
     anonymize_auxiliary_heating,
     anonymize_charging,
+    anonymize_chargingprofiles,
     anonymize_departure_timers,
     anonymize_driving_range,
     anonymize_garage,
@@ -42,6 +43,7 @@ from .models.air_conditioning import (
 )
 from .models.auxiliary_heating import AuxiliaryConfig, AuxiliaryHeating, AuxiliaryHeatingTimer
 from .models.charging import Charging
+from .models.chargingprofiles import ChargingProfiles
 from .models.departure import DepartureInfo, DepartureTimer
 from .models.driving_range import DrivingRange
 from .models.health import Health
@@ -148,6 +150,20 @@ class RestApi:
             anonymization_fn=anonymize_charging,
         )
         result = self._deserialize(raw, Charging.from_json)
+        url = anonymize_url(url) if anonymize else url
+        return GetEndpointResult(url=url, raw=raw, result=result)
+
+    async def get_charging_profiles(
+        self, vin: str, anonymize: bool = False
+    ) -> GetEndpointResult[ChargingProfiles]:
+        """Retrieve information related to chargingprofiles for the specified vehicle."""
+        url = f"/v1/charging/{vin}/profiles"
+        raw = self.process_json(
+            data=await self._make_get_request(url),
+            anonymize=anonymize,
+            anonymization_fn=anonymize_chargingprofiles,
+        )
+        result = self._deserialize(raw, ChargingProfiles.from_json)
         url = anonymize_url(url) if anonymize else url
         return GetEndpointResult(url=url, raw=raw, result=result)
 
