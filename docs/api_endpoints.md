@@ -19,32 +19,23 @@
 | sonar98 | POST   | api/v1/users/{user_id}/vehicles/{vin}/check                                |       |         |
 | sonar98 | POST   | api/v1/feedbacks                                                           |       |         |
 | sonar98 | POST   | api/v1/vehicle-information/{vin}/certificates                              |       |         |
-| sonar98 | GET    | api/v1/vehicle-information/{vin}/equipment                                 |       | <pre lang="json">{"equipment":[{"name":"Multifunctional steering wheel and Digital Cockpit","description":"Your car is equipped with a multifunctional steering wheel and digital cockpit.","videoUrl":"https://player.vimeo.com/video/878185910?h=d9f46e4c61","videoThumbnailUrl":"https://go.skoda.eu/ENYAQ_2021_01_SteeringWheelCockpit_thb"},{"name":"Front Assist and Turn Assist","description":"Your car is equipped with a front assist and turn assist.","videoUrl":"https://player.vimeo.com/video/877923096?h=d92e6159f9","videoThumbnailUrl":"https://go.skoda.eu/ENYAQ_2021_14_FrontAssistTurningAssist_thb"},{"name":"Head-Up Display","description":"Your car is equipped with an augmented reality head-up display.","videoUrl":"https://player.vimeo.com/video/877932413?h=60d3a33d8f","videoThumbnailUrl":"https://go.skoda.eu/ENYAQ_2021_06_HeadUpDisplay_thb"},{"name":"Infotainment display with navigation","description":"Your car is equipped with an Infotainment display with new navigation.","videoUrl":"https://player.vimeo.com/video/877936165?h=ba1dec507f","videoThumbnailUrl":"https://go.skoda.eu/ENYAQ_2021_05_InfotainmentDisplay_thb"},{"name":"Full LED Matrix headlights","description":"Your car is equipped with a full LED matrix beam headlights.","videoUrl":"https://player.vimeo.com/video/878018636?h=b4cfd8d40b","videoThumbnailUrl":"https://go.skoda.eu/ENYAQ_2021_09_MatrixBeamHeadlights_thb"},{"name":"Side Assist","description":"Your car is equipped with a side assist.","videoUrl":"https://player.vimeo.com/video/878184722?h=cb488571c6","videoThumbnailUrl":"https://go.skoda.eu/ENYAQ_2021_15_SideAssist_thb"},{"name":"Lane Assist ","description":"Your car is equipped with an adaptive lane assist.","videoUrl":"https://player.vimeo.com/video/888627228?h=22ed8c5108","videoThumbnailUrl":"https://go.skoda.eu/ENYAQ_2021_02_AdaptiveLaneAssist_thb"}]}</pre>
-```         |
+| sonar98 | GET    | api/v1/vehicle-information/{vin}/equipment                                 |       | <pre lang="json">{"equipment":[{"name":"Multifunctional steering wheel and Digital Cockpit","description":"Your car is equipped with a multifunctional steering wheel and digital cockpit.","videoUrl":"https://player.vimeo.com/video/878185910?h=d9f46e4c61","videoThumbnailUrl":"https://go.skoda.eu/ENYAQ_2021_01_SteeringWheelCockpit_thb"},{"name":"Front Assist and Turn Assist","description":"Your car is equipped with a front assist and turn assist.","videoUrl":"https://player.vimeo.com/video/877923096?h=d92e6159f9","videoThumbnailUrl":"https://go.skoda.eu/ENYAQ_2021_14_FrontAssistTurningAssist_thb"},{"name":"Head-Up Display","description":"Your car is equipped with an augmented reality head-up display.","videoUrl":"https://player.vimeo.com/video/877932413?h=60d3a33d8f","videoThumbnailUrl":"https://go.skoda.eu/ENYAQ_2021_06_HeadUpDisplay_thb"},{"name":"Infotainment display with navigation","description":"Your car is equipped with an Infotainment display with new navigation.","videoUrl":"https://player.vimeo.com/video/877936165?h=ba1dec507f","videoThumbnailUrl":"https://go.skoda.eu/ENYAQ_2021_05_InfotainmentDisplay_thb"},{"name":"Full LED Matrix headlights","description":"Your car is equipped with a full LED matrix beam headlights.","videoUrl":"https://player.vimeo.com/video/878018636?h=b4cfd8d40b","videoThumbnailUrl":"https://go.skoda.eu/ENYAQ_2021_09_MatrixBeamHeadlights_thb"},{"name":"Side Assist","description":"Your car is equipped with a side assist.","videoUrl":"https://player.vimeo.com/video/878184722?h=cb488571c6","videoThumbnailUrl":"https://go.skoda.eu/ENYAQ_2021_15_SideAssist_thb"},{"name":"Lane Assist ","description":"Your car is equipped with an adaptive lane assist.","videoUrl":"https://player.vimeo.com/video/888627228?h=22ed8c5108","videoThumbnailUrl":"https://go.skoda.eu/ENYAQ_2021_02_AdaptiveLaneAssist_thb"}]}</pre> |
 | sonar98 | GET    | api/v1/vehicle-information/{vin}/certificates/{certificateId}              |       |         |
 | sonar98 | GET    | api/v1/ordered-vehicle-information/{commissionId}/equipment                |       |         |
 | sonar98 | GET    | api/v1/ordered-vehicle-information/{commissionId}/todos                    |       |         |
-| sonar98 | GET    | api/v1/vehicle-information/{vin}                                           |       | ```json
-{"devicePlatform":"WCAR","vehicleSpecification":{"title":"Škoda Enyaq","manufacturingDate":"2021-04-08","model":"Enyaq","modelYear":"2021","body":"SUV","systemCode":"UNKNOWN","systemModelId":"5AZJJ2","maxChargingPowerInKW":125,"battery":{"capacityInKWh":77},"engine":{"type":"iV","powerInKW":150},"gearbox":{"type":"E1H"}},"renders":[],"compositeRenders":[{"layers":[{"url":"https://iprenders.blob.core.windows.net/base5azs21200210/F6F6GPQtW9TAD7-cRLexStAC9HkqZiEy5n-PmosHKDiLh7U62wcV0ft94bRkFx-brBXkRgCUwxmWuHJPNMqn-19201080dayvext_side1080.png","viewPoint":"EXTERIOR_SIDE","type":"REAL","order":0}],"viewType":"UNMODIFIED_EXTERIOR_SIDE"}]}
-```        |
-| sonar98 | GET    | api/v1/vehicle-information/{vin}/renders                                   |       | ```json
-{"renders":[],"compositeRenders":[{"layers":[{"url":"https://iprenders.blob.core.windows.net/base5azs21200210/F6F6GPQtW9TAD7-cRLexStAC9HkqZiEy5n-PmosHKDiLh7U62wcV0ft94bRkFx-brBXkRgCUwxmWuHJPNMqn-19201080studiovint_boot1080.png","viewPoint":"INTERIOR_BOOT","type":"REAL","order":0}],"viewType":"UNMODIFIED_INTERIOR_BOOT"},{"layers":[{"url":"https://iprenders.blob.core.windows.net/base5azs21200210/F6F6GPQtW9TAD7-cRLexStAC9HkqZiEy5n-PmosHKDiLh7U62wcV0ft94bRkFx-brBXkRgCUwxmWuHJPNMqn-19201080dayvext_rear1080.png","viewPoint":"EXTERIOR_REAR","type":"REAL","order":0}],"viewType":"UNMODIFIED_EXTERIOR_REAR"},{"layers":[{"url":"https://iprenders.blob.core.windows.net/base5azs21200210/F6F6GPQtW9TAD7-cRLexStAC9HkqZiEy5n-PmosHKDiLh7U62wcV0ft94bRkFx-brBXkRgCUwxmWuHJPNMqn-19201080studiovint_side1080.png","viewPoint":"INTERIOR_SIDE","type":"REAL","order":0}],"viewType":"UNMODIFIED_INTERIOR_SIDE"},{"layers":[{"url":"https://iprenders.blob.core.windows.net/base5azs21200210/F6F6GPQtW9TAD7-cRLexStAC9HkqZiEy5n-PmosHKDiLh7U62wcV0ft94bRkFx-brBXkRgCUwxmWuHJPNMqn-19201080dayvext_front1080.png","viewPoint":"EXTERIOR_FRONT","type":"REAL","order":0}],"viewType":"UNMODIFIED_EXTERIOR_FRONT"},{"layers":[{"url":"https://iprenders.blob.core.windows.net/base5azs21200210/F6F6GPQtW9TAD7-cRLexStAC9HkqZiEy5n-PmosHKDiLh7U62wcV0ft94bRkFx-brBXkRgCUwxmWuHJPNMqn-19201080dayvext_side1080.png","viewPoint":"EXTERIOR_SIDE","type":"REAL","order":0}],"viewType":"UNMODIFIED_EXTERIOR_SIDE"},{"layers":[{"url":"https://iprenders.blob.core.windows.net/base5azs21200210/F6F6GPQtW9TAD7-cRLexStAC9HkqZiEy5n-PmosHKDiLh7U62wcV0ft94bRkFx-brBXkRgCUwxmWuHJPNMqn-19201080studiovint_front1080.png","viewPoint":"INTERIOR_FRONT","type":"REAL","order":0}],"viewType":"UNMODIFIED_INTERIOR_FRONT"}]}
-```        |
+| sonar98 | GET    | api/v1/vehicle-information/{vin}                                           |       | <pre lang="json"> {"devicePlatform":"WCAR","vehicleSpecification":{"title":"Škoda Enyaq","manufacturingDate":"2021-04-08","model":"Enyaq","modelYear":"2021","body":"SUV","systemCode":"UNKNOWN","systemModelId":"5AZJJ2","maxChargingPowerInKW":125,"battery":{"capacityInKWh":77},"engine":{"type":"iV","powerInKW":150},"gearbox":{"type":"E1H"}},"renders":[],"compositeRenders":[{"layers":[{"url":"https://iprenders.blob.core.windows.net/base5azs21200210/F6F6GPQtW9TAD7-cRLexStAC9HkqZiEy5n-PmosHKDiLh7U62wcV0ft94bRkFx-brBXkRgCUwxmWuHJPNMqn-19201080dayvext_side1080.png","viewPoint":"EXTERIOR_SIDE","type":"REAL","order":0}],"viewType":"UNMODIFIED_EXTERIOR_SIDE"}]}</pre> |
+| sonar98 | GET    | api/v1/vehicle-information/{vin}/renders                                   |       | <pre lang="json">{"renders":[],"compositeRenders":[{"layers":[{"url":"https://iprenders.blob.core.windows.net/base5azs21200210/F6F6GPQtW9TAD7-cRLexStAC9HkqZiEy5n-PmosHKDiLh7U62wcV0ft94bRkFx-brBXkRgCUwxmWuHJPNMqn-19201080studiovint_boot1080.png","viewPoint":"INTERIOR_BOOT","type":"REAL","order":0}],"viewType":"UNMODIFIED_INTERIOR_BOOT"},{"layers":[{"url":"https://iprenders.blob.core.windows.net/base5azs21200210/F6F6GPQtW9TAD7-cRLexStAC9HkqZiEy5n-PmosHKDiLh7U62wcV0ft94bRkFx-brBXkRgCUwxmWuHJPNMqn-19201080dayvext_rear1080.png","viewPoint":"EXTERIOR_REAR","type":"REAL","order":0}],"viewType":"UNMODIFIED_EXTERIOR_REAR"},{"layers":[{"url":"https://iprenders.blob.core.windows.net/base5azs21200210/F6F6GPQtW9TAD7-cRLexStAC9HkqZiEy5n-PmosHKDiLh7U62wcV0ft94bRkFx-brBXkRgCUwxmWuHJPNMqn-19201080studiovint_side1080.png","viewPoint":"INTERIOR_SIDE","type":"REAL","order":0}],"viewType":"UNMODIFIED_INTERIOR_SIDE"},{"layers":[{"url":"https://iprenders.blob.core.windows.net/base5azs21200210/F6F6GPQtW9TAD7-cRLexStAC9HkqZiEy5n-PmosHKDiLh7U62wcV0ft94bRkFx-brBXkRgCUwxmWuHJPNMqn-19201080dayvext_front1080.png","viewPoint":"EXTERIOR_FRONT","type":"REAL","order":0}],"viewType":"UNMODIFIED_EXTERIOR_FRONT"},{"layers":[{"url":"https://iprenders.blob.core.windows.net/base5azs21200210/F6F6GPQtW9TAD7-cRLexStAC9HkqZiEy5n-PmosHKDiLh7U62wcV0ft94bRkFx-brBXkRgCUwxmWuHJPNMqn-19201080dayvext_side1080.png","viewPoint":"EXTERIOR_SIDE","type":"REAL","order":0}],"viewType":"UNMODIFIED_EXTERIOR_SIDE"},{"layers":[{"url":"https://iprenders.blob.core.windows.net/base5azs21200210/F6F6GPQtW9TAD7-cRLexStAC9HkqZiEy5n-PmosHKDiLh7U62wcV0ft94bRkFx-brBXkRgCUwxmWuHJPNMqn-19201080studiovint_front1080.png","viewPoint":"INTERIOR_FRONT","type":"REAL","order":0}],"viewType":"UNMODIFIED_INTERIOR_FRONT"}]} |
 | sonar98 | POST   | api/v1/authentication/revoke-token                                         |       |         |
 | sonar98 | GET    | api/v1/vehicle-automatization/{vin}/departure/timers                       | ✅      |         |
 | sonar98 | POST   | api/v1/vehicle-automatization/{vin}/departure/timers                       | ✅      |         |
 | sonar98 | POST   | api/v1/vehicle-automatization/{vin}/departure/timers/settings              | ✅      |         |
-| sonar98 | GET    | api/v1/discover-news                                                       |       | ```json
-{"data":[{"text":"Redacted newstext in article. \uD83E\uDD29\n#skodanl","media":[{"type":"VIDEO","url":"https://url-redacted/", originalPostUrl":"https://url-redacted/"},{"text":"\uD835\uDDD7\uD835\uDDF2 \uD835\uDDFB\uD835\uDDF6\uD835\uDDF2\uD835\uDE02\uD835\uDE04\uD835\uDDF2 \uD835\uDDD8\uD835\uDDF9\uD835\uDDFF\uD835\uDDFC\uD835\uDDFE. \uD835\uDDD8\uD835\uDDFF\uD835\uDE03\uD835\uDDEE\uD835\uDDEE\uD835\uDDFF ‘\uD835\uDDFA \uD835\uDDFB\uD835\uDE02 \uD835\uDE07\uD835\uDDF2\uD835\uDDF9\uD835\uDDF3.\nRest is redacted","media":[{"type":"VIDEO","url":"https://url-redacted-again/"}],"originalPostUrl":"https://more-redaction-here/","publishedAt":"2025-03-10T12:13:50Z"}}],"paging":{"pageNumber":0,"hasNextPage":false}}
-```   |
+| sonar98 | GET    | api/v1/discover-news                                                       |       | <pre lang="json"> {"data":[{"text":"Redacted newstext in article. \uD83E\uDD29\n#skodanl","media":[{"type":"VIDEO","url":"https://url-redacted/", originalPostUrl":"https://url-redacted/"},{"text":"\uD835\uDDD7\uD835\uDDF2 \uD835\uDDFB\uD835\uDDF6\uD835\uDDF2\uD835\uDE02\uD835\uDE04\uD835\uDDF2 \uD835\uDDD8\uD835\uDDF9\uD835\uDDFF\uD835\uDDFC\uD835\uDDFE. \uD835\uDDD8\uD835\uDDFF\uD835\uDE03\uD835\uDDEE\uD835\uDDEE\uD835\uDDFF ‘\uD835\uDDFA \uD835\uDDFB\uD835\uDE02 \uD835\uDE07\uD835\uDDF2\uD835\uDDF9\uD835\uDDF3.\nRest is redacted","media":[{"type":"VIDEO","url":"https://url-redacted-again/"}],"originalPostUrl":"https://more-redaction-here/","publishedAt":"2025-03-10T12:13:50Z"}}],"paging":{"pageNumber":0,"hasNextPage":false}}</pre> |
 | sonar98 | GET    | api/v1/service-partners/{servicePartnerId}/encoded-url                     |       |         |
 | sonar98 | GET    | api/v1/service-partners                                                    |       |         |
 | sonar98 | POST   | api/v1/maps/places/favourites                                              |       |         |
 | sonar98 | DELETE | api/v1/maps/places/favourites/{id}                                         |       |         |
 | sonar98 | GET    | api/v1/maps/places/charging-stations                                       |       |         |
-| sonar98 | GET    | api/v1/maps/places/favourites                                              |       | ```json
-{"places":[{"type":"LOCATION","id":"67a13f8ca5798575d11cb638","placeDetail":{"placeId":"ChIJB0P0r6mWxkcRmrhc7bHaO0Q","gpsCoordinates":{"latitude":51.6503222,"longitude":5.0469573},"formattedAddress":"Europalaan 1, 5171 KW Kaatsheuvel, Nederland","name":"Efteling"}}],"errors":[]}
-```        |
+| sonar98 | GET    | api/v1/maps/places/favourites                                              |       | <pre lang="json"> {"places":[{"type":"LOCATION","id":"67a13f8ca5798575d11cb638","placeDetail":{"placeId":"ChIJB0P0r6mWxkcRmrhc7bHaO0Q","gpsCoordinates":{"latitude":51.6503222,"longitude":5.0469573},"formattedAddress":"Europalaan 1, 5171 KW Kaatsheuvel, Nederland","name":"Efteling"}}],"errors":[]}</pre> |
 | sonar98 | GET    | api/v1/maps/image                                                          |       |         |
 | sonar98 | GET    | api/v1/maps/places/{id}                                                    |       |         |
 | sonar98 | GET    | api/v1/maps/places/{id}/travel-data                                        |       |         |
@@ -57,9 +48,7 @@
 | sonar98 | PUT    | api/v1/maps/places/favourites/{id}                                         |       |         |
 | sonar98 | POST   | api/v1/vehicle-access/{vin}/lock                                           | ✅      |         |
 | sonar98 | POST   | api/v1/vehicle-access/{vin}/unlock                                         | ✅      |         |
-| sonar98 | GET    | api/v1/charging/{vin}/certificates                                         |       | ```json
-{"certificates":[{"id":"","issuer":"ELLI","state":"ORDERED"}]}
-```        |
+| sonar98 | GET    | api/v1/charging/{vin}/certificates                                         |       | <pre lang="json"> {"certificates":[{"id":"","issuer":"ELLI","state":"ORDERED"}]}</pre> |
 | sonar98 | GET    | api/v1/charging/{vin}/profiles                                             |       |         |
 | sonar98 | POST   | api/v1/charging/{vin}/certificates/{certificateId}                         |       |         |
 | sonar98 | DELETE | api/v1/charging/{vin}/certificates/{certificateId}                         |       |         |
@@ -81,16 +70,10 @@
 | sonar98 | GET    | api/v1/users/me/account/parking                                            |       |         |
 | sonar98 | GET    | api/v1/users/me/account/parking/summary                                    |       |         |
 | sonar98 | GET    | api/v1/users/{id}/profile-picture                                          |       |         |
-| sonar98 | GET    | api/v1/users/pay-to-services/supported-countries                           |       | ```json
-{"userCountry":"NL","payToPark":{"supportedInUserCountry":true,"supportedCountries":["AT","BE","CH","CZ","DE","DK","ES","FI","FR","HU","IT","NL","NO","PT","SE","SI"]},"payToFuel":{"supportedInUserCountry":false,"supportedCountries":["AT","BE","CH","CZ","DE","DK","ES","LU","PT"]}}
-```        |
-| sonar98 | GET    | api/v1/users/preferences                                                   |       | ```json
-{"unitId":"METRIC","theme":"AUTOMATIC","automaticWakeUp":false}
-```        |
+| sonar98 | GET    | api/v1/users/pay-to-services/supported-countries                           |       | <pre lang="json"> {"userCountry":"NL","payToPark":{"supportedInUserCountry":true,"supportedCountries":["AT","BE","CH","CZ","DE","DK","ES","FI","FR","HU","IT","NL","NO","PT","SE","SI"]},"payToFuel":{"supportedInUserCountry":false,"supportedCountries":["AT","BE","CH","CZ","DE","DK","ES","LU","PT"]}}</pre> |
+| sonar98 | GET    | api/v1/users/preferences                                                   |       | <pre lang="json"> {"unitId":"METRIC","theme":"AUTOMATIC","automaticWakeUp":false}</pre> |
 | sonar98 | GET    | api/v1/users/consents/{consentId}                                          |       |         |
-| sonar98 | GET    | api/v1/users/consents                                                      |       | ```json
-{"legalDocumentConsent":{"consented":true,"termsAndConditionsLink":"https://skodaid.vwgroup.io/terms-and-conditions?ui_locale=en","dataPrivacyLink":"https://skodaid.vwgroup.io/data-privacy?ui_locale=en"}}
-```        |
+| sonar98 | GET    | api/v1/users/consents                                                      |       | <pre lang="json"> {"legalDocumentConsent":{"consented":true,"termsAndConditionsLink":"https://skodaid.vwgroup.io/terms-and-conditions?ui_locale=en","dataPrivacyLink":"https://skodaid.vwgroup.io/data-privacy?ui_locale=en"}}</pre> |
 | sonar98 | POST   | api/v1/users/agent-id                                                      |       |         |
 | sonar98 | DELETE | api/v1/users/me/account/parking/cards/{cardId}                             |       |         |
 | sonar98 | DELETE | api/v1/users/me/account/parking/vehicles/{id}                              |       |         |
@@ -99,9 +82,7 @@
 | sonar98 | PUT    | api/v1/users/consents/{consentId}                                          |       |         |
 | sonar98 | PUT    | api/v1/users/preferred-contact-channel                                     |       |         |
 | sonar98 | PUT    | api/v1/users/preferences                                                   |       |         |
-| sonar98 | GET    | api/v1/notifications                                                       |       | ```json
-{"notifications":[{"title":"De MyŠkoda app is vernieuwd!","body":"Ontdek de verbeteringen en nieuwe functionaliteiten voor je Enyaq. Download de app nu!","sendDate":"2023-05-10T13:20:35.218Z","category":"ADHOC","vin":"TMBJC9NY2MF017352","links":[]},{"title":"De MyŠkoda app is vernieuwd!","body":"Ontdek de verbeteringen en nieuwe functionaliteiten voor je Enyaq. Download de app nu!","sendDate":"2023-05-09T07:31:03.545Z","category":"ADHOC","vin":"TMBJC9NY2MF017352","links":[]}]}
-```        |
+| sonar98 | GET    | api/v1/notifications                                                       |       | <pre lang="json"> {"notifications":[{"title":"De MyŠkoda app is vernieuwd!","body":"Ontdek de verbeteringen en nieuwe functionaliteiten voor je Enyaq. Download de app nu!","sendDate":"2023-05-10T13:20:35.218Z","category":"ADHOC","vin":"MYVIN","links":[]},{"title":"De MyŠkoda app is vernieuwd!","body":"Ontdek de verbeteringen en nieuwe functionaliteiten voor je Enyaq. Download de app nu!","sendDate":"2023-05-09T07:31:03.545Z","category":"ADHOC","vin":"MYVIN","links":[]}]}</pre> |
 | sonar98 | DELETE | api/v1/parking/sessions/{sessionId}                                        |       |         |
 | sonar98 | GET    | api/v1/parking/payment-url                                                 |       |         |
 | sonar98 | GET    | api/v1/parking/locations/{locationId}/price                                |       |         |
@@ -117,9 +98,7 @@
 | sonar98 | GET    | api/v1/notifications-subscriptions/{id}/settings                           |       |         |
 | sonar98 | POST   | api/v1/notifications-subscriptions/{id}/settings                           |       |         |
 | sonar98 | POST   | api/v1/report                                                              |       |         |
-| sonar98 | GET    | api/v1/spin/status                                                         |       | ```json
-{"remainingTries":3,"lockedWaitingTimeInSeconds":0,"state":"DEFINED"}
-```        |
+| sonar98 | GET    | api/v1/spin/status                                                         |       | <pre lang="json"> {"remainingTries":3,"lockedWaitingTimeInSeconds":0,"state":"DEFINED"}</pre> |
 | sonar98 | PUT    | api/v1/spin                                                                |       |         |
 | sonar98 | POST   | api/v1/spin                                                                |       |         |
 | sonar98 | POST   | api/v1/spin/verify                                                         | ✅      |         |
@@ -134,12 +113,8 @@
 | EnergyX | GET    | api/v2/garage/initial-vehicle                                              |       | Same content as api/v2/garage/vehicles/{vin} of the first vehicle |
 | EnergyX | GET    | api/v2/garage/vehicles/ordered/{commissionId}                              |       |         |
 | EnergyX | GET    | api/v2/garage/vehicles/{vin}                                               | ✅      |         |
-| EnergyX | GET    | api/v2/garage/vehicles/{vin}/users/guests                                  |       | ```json
-{"users":[{"id":"XXXXX-64c0-43d8-9dbd-f82c11ac8df8","firstName":"Joe","lastName":"Guest","nickname":"JG","email":"joe.guest@skodacars.rule.io","profilePictureUrl":"https://mysmob.api.connect.skoda-auto.cz/....","knownToVehicle":true,"hasConsent":true}]}
-```        |
-| EnergyX | GET    | api/v2/garage/vehicles/{vin}/users/guests/count                            |       | ```json
-{"count":1}
-```        |
+| EnergyX | GET    | api/v2/garage/vehicles/{vin}/users/guests                                  |       | <pre lang="json"> {"users":[{"id":"XXXXX-64c0-43d8-9dbd-f82c11ac8df8","firstName":"Joe","lastName":"Guest","nickname":"JG","email":"joe.guest@skodacars.rule.io","profilePictureUrl":"https://mysmob.api.connect.skoda-auto.cz/....","knownToVehicle":true,"hasConsent":true}]}</pre> |
+| EnergyX | GET    | api/v2/garage/vehicles/{vin}/users/guests/count                            |       | <pre lang="json"> {"count":1}</pre> |
 | EnergyX | GET    | api/v2/garage/vehicles/{vin}/users/primary                                 |       | Same format as single guest from api/v2/garage/vehicles/{vin}/users/guests        |
 | EnergyX | DELETE | api/v2/garage/vehicles/{vin}                                               |       |         |
 | EnergyX | DELETE | api/v2/garage/vehicles/{vin}/users/guests/{id}                             |       |         |
@@ -156,9 +131,7 @@
 | EnergyX | GET    | api/v2/loyalty-program/salesforce-contacts/{id}                            |       |         |
 | EnergyX | DELETE | api/v2/loyalty-program/members/{id}                                        |       |         |
 | EnergyX | DELETE | api/v2/loyalty-program/members/{id}/challenges/{challengeId}/enrollment    |       |         |
-| EnergyX | GET    | api/v2/widgets/vehicle-status/{vin}                                        |       | ```json
-{"vehicle":{"name":"REDACTED","licensePlate":"REDACTED","renderUrl":"https://mspgwlivestorage.blob.core.windows.net/widget-renders/XXXX.png?etag=YYYY"},"vehicleStatus":{"doorsLocked":"CLOSED","drivingRangeInKm":121},"chargingStatus":{"stateOfChargeInPercent":35,"remainingTimeToFullyChargedInMinutes":0},"parkingPosition":{"state":"PARKED","maps":{"lightMapUrl":"https://mysmob.api.connect.skoda-auto.cz/api/v1/maps/image?latitude=xxxxx&longitude=yyyyx&width=533&height=400&zoom=17"},"gpsCoordinates":{"latitude":xxxx,"longitude":yyyy},"formattedAddress":"Street 1, Town"}}
-```        |
+| EnergyX | GET    | api/v2/widgets/vehicle-status/{vin}                                        |       | <pre lang="json"> {"vehicle":{"name":"REDACTED","licensePlate":"REDACTED","renderUrl":"https://mspgwlivestorage.blob.core.windows.net/widget-renders/XXXX.png?etag=YYYY"},"vehicleStatus":{"doorsLocked":"CLOSED","drivingRangeInKm":121},"chargingStatus":{"stateOfChargeInPercent":35,"remainingTimeToFullyChargedInMinutes":0},"parkingPosition":{"state":"PARKED","maps":{"lightMapUrl":"https://mysmob.api.connect.skoda-auto.cz/api/v1/maps/image?latitude=xxxxx&longitude=yyyyx&width=533&height=400&zoom=17"},"gpsCoordinates":{"latitude":xxxx,"longitude":yyyy},"formattedAddress":"Street 1, Town"}}</pre> |
 | EnergyX | GET    | api/v2/dealers/{dealerId}                                                  |       |         |
 | EnergyX | GET    | api/v2/fueling/sessions/{sessionId}                                        |       |         |
 | EnergyX | GET    | api/v2/fueling/sessions/{sessionId}/state                                  |       |         |
@@ -166,21 +139,11 @@
 | EnergyX | GET    | api/v2/fueling/locations/{locationId}                                      |       |         |
 | EnergyX | GET    | api/v2/fueling/sessions/latest                                             |       |         |
 | EnergyX | POST   | api/v2/fueling/sessions                                                    |       |         |
-| EnergyX | GET    | api/v2/consents/eprivacy/{vin}                                             |       | ```json
-{"consented":false,"link":"https://www.skoda-auto.com/other/eprivacy-nl"}
-```        |
-| EnergyX | GET    | api/v2/consents/location-access                                            |       | ```json
-{"consented":false,"termsAndConditionsLink":"https://skodaid.vwgroup.io/terms-and-conditions?ui_locale=nl","dataPrivacyLink":"https://skodaid.vwgroup.io/data-privacy?ui_locale=nl"}
-
-```        |
-| EnergyX | GET    | api/v2/consents/marketing                                                  |       | ```json
-{"consented":false,"title":"Marketingtoestemming voor Škoda Auto a.s.","text":"Ik geef hierbij toestemming voor het verwerken van mijn identiteits- en contactinformatie en gebruiksgegevens voor producten en diensten met als doel het mij toesturen van aanbiedingen van producten en diensten van Škoda Auto, inclusief informatie over evenementen, prijsvragen en nieuwsbrieven. De toestemming is 5 jaar geldig.\n\nMeer informatie over gegevensverwerking, inclusief uw recht om de toestemming in te trekken, vindt u [hier](https://www.skoda-auto.com/other/memorandum-marketing-nl)."}
-```        |
-| EnergyX | GET    | api/v2/consents/terms-of-use                                               |       | ```json
-{"termsAndConditionsLink":"https://skodaid.vwgroup.io/terms-and-conditions?ui_locale=nl","dataPrivacyLink":"https://skodaid.vwgroup.io/data-privacy?ui_locale=nl"}
-```        |
-| EnergyX | GET    | api/v2/consents/third-party-offers                                         |       | ```json
-{"consented":false,"text":"Ik geef hierbij toestemming voor het delen van mijn:\n\n- identiteitsgegevens\n- contactgegevens\n- gebruiksgegevens voor producten en diensten   \n\nmet derde partijen. Op basis van deze toestemming mogen Škoda Auto a.s. of deze derde partijen zelf mij aanbiedingen voor producten en diensten sturen, inclusief informatie over evenementen, prijsvragen en nieuwsbrieven van deze derde partijen.\n\nDeze derde partijen omvatten uw favoriete dealer en servicepartner, importeur verantwoordelijk voor de markt, bedrijven van Volkswagen Financial Services Group die werkzaam zijn in de markt en de digitale service- en technologie-hub Škoda X s.r.p. De toestemming is 5 jaar geldig.\n\nMeer informatie over gegevensverwerking, inclusief uw recht om de toestemming in te trekken, is te vinden in het [Privacybeleid](https://www.skoda-auto.com/other/memorandum-marketing-nl)."}
+| EnergyX | GET    | api/v2/consents/eprivacy/{vin}                                             |       | <pre lang="json"> {"consented":false,"link":"https://www.skoda-auto.com/other/eprivacy-nl"}</pre> |
+| EnergyX | GET    | api/v2/consents/location-access                                            |       | <pre lang="json"> {"consented":false,"termsAndConditionsLink":"https://skodaid.vwgroup.io/terms-and-conditions?ui_locale=nl","dataPrivacyLink":"https://skodaid.vwgroup.io/data-privacy?ui_locale=nl"}</pre> |
+| EnergyX | GET    | api/v2/consents/marketing                                                  |       | <pre lang="json"> {"consented":false,"title":"Marketingtoestemming voor Škoda Auto a.s.","text":"Ik geef hierbij toestemming voor het verwerken van mijn identiteits- en contactinformatie en gebruiksgegevens voor producten en diensten met als doel het mij toesturen van aanbiedingen van producten en diensten van Škoda Auto, inclusief informatie over evenementen, prijsvragen en nieuwsbrieven. De toestemming is 5 jaar geldig.\n\nMeer informatie over gegevensverwerking, inclusief uw recht om de toestemming in te trekken, vindt u [hier](https://www.skoda-auto.com/other/memorandum-marketing-nl)."}</pre> |
+| EnergyX | GET    | api/v2/consents/terms-of-use                                               |       | <pre lang="json"> {"termsAndConditionsLink":"https://skodaid.vwgroup.io/terms-and-conditions?ui_locale=nl","dataPrivacyLink":"https://skodaid.vwgroup.io/data-privacy?ui_locale=nl"}</pre> |
+| EnergyX | GET    | api/v2/consents/third-party-offers                                         |       | <pre lang="json"> {"consented":false,"text":"Ik geef hierbij toestemming voor het delen van mijn:\n\n- identiteitsgegevens\n- contactgegevens\n- gebruiksgegevens voor producten en diensten   \n\nmet derde partijen. Op basis van deze toestemming mogen Škoda Auto a.s. of deze derde partijen zelf mij aanbiedingen voor producten en diensten sturen, inclusief informatie over evenementen, prijsvragen en nieuwsbrieven van deze derde partijen.\n\nDeze derde partijen omvatten uw favoriete dealer en servicepartner, importeur verantwoordelijk voor de markt, bedrijven van Volkswagen Financial Services Group die werkzaam zijn in de markt en de digitale service- en technologie-hub Škoda X s.r.p. De toestemming is 5 jaar geldig.\n\nMeer informatie over gegevensverwerking, inclusief uw recht om de toestemming in te trekken, is te vinden in het [Privacybeleid](https://www.skoda-auto.com/other/memorandum-marketing-nl)."}</pre> |
 ```        |
 | EnergyX | PATCH  | api/v2/consents/eprivacy/{vin}                                             |       |         |
 | EnergyX | PATCH  | api/v2/consents/location-access                                            |       |         |
@@ -189,9 +152,7 @@
 | EnergyX | GET    | api/v2/consents/required                                                   |       |         |
 | EnergyX | POST   | api/v2/consents                                                            |       |         |
 | EnergyX | PUT    | api/v2/consents/{id}                                                       |       |         |
-| EnergyX | GET    | api/v2/air-conditioning/{vin}/active-ventilation                           |       | ```json
-{"state":"INVALID","durationInSeconds":600,"timers":[],"errors":[{"type":"UNAVAILABLE_CLIMA_INFORMATION"}]}
-```        |
+| EnergyX | GET    | api/v2/air-conditioning/{vin}/active-ventilation                           |       | <pre lang="json"> {"state":"INVALID","durationInSeconds":600,"timers":[],"errors":[{"type":"UNAVAILABLE_CLIMA_INFORMATION"}]}</pre> |
 | EnergyX | GET    | api/v2/air-conditioning/{vin}                                              |  ✅     |         |
 | EnergyX | GET    | api/v2/air-conditioning/{vin}/auxiliary-heating                            |  ✅     |         |
 | EnergyX | POST   | api/v2/air-conditioning/{vin}/active-ventilation/timers                    |       |         |
@@ -212,9 +173,7 @@
 | EnergyX | POST   | api/v2/air-conditioning/{vin}/stop-window-heating                          |  ✅     |         |
 | EnergyX | POST   | api/v3/maps/places/favourites                                              |       |         |
 | EnergyX | DELETE | api/v3/maps/places/favourites/{id}                                         |       |         |
-| EnergyX | GET    | api/v3/maps/places/favourites                                              |       | ```json
-{"places":[{"type":"LOCATION","id":"67a13f8ca5798575d11cb638","placeDetail":{"placeId":"ChIJB0P0r6mWxkcRmrhc7bHaO0Q","gpsCoordinates":{"latitude":51.6503222,"longitude":5.0469573},"formattedAddress":"Europalaan 1, 5171 KW Kaatsheuvel, Nederland","name":"Efteling"}}],"errors":[]}
-```        |
+| EnergyX | GET    | api/v3/maps/places/favourites                                              |       | <pre lang="json"> {"places":[{"type":"LOCATION","id":"67a13f8ca5798575d11cb638","placeDetail":{"placeId":"ChIJB0P0r6mWxkcRmrhc7bHaO0Q","gpsCoordinates":{"latitude":51.6503222,"longitude":5.0469573},"formattedAddress":"Europalaan 1, 5171 KW Kaatsheuvel, Nederland","name":"Efteling"}}],"errors":[]}</pre> |
 | EnergyX | GET    | api/v3/maps/image                                                          |       |         |
 | EnergyX | GET    | api/v3/maps/places/{id}                                                    |       |         |
 | EnergyX | POST   | api/v3/maps/nearby-places                                                  |       |         |
@@ -230,9 +189,7 @@
 | EnergyX | GET    | api/v3/vehicle-maintenance/service-partners/{servicePartnerId}/encoded-url |       |         |
 | EnergyX | GET    | api/v3/vehicle-maintenance/service-partners/{servicePartnerId}             |       |         |
 | EnergyX | GET    | api/v3/vehicle-maintenance/service-partners                                |       |         |
-| EnergyX | GET    | api/v3/vehicle-maintenance/vehicles/{vin}/report                           |       | ```json
-{"capturedAt":"2025-03-19T07:33:41.681Z","inspectionDueInDays":84,"mileageInKm":91870}
-```        |
+| EnergyX | GET    | api/v3/vehicle-maintenance/vehicles/{vin}/report                           |       | <pre lang="json"> {"capturedAt":"2025-03-19T07:33:41.681Z","inspectionDueInDays":84,"mileageInKm":91870}</pre> |
 | EnergyX | GET    | api/v3/vehicle-maintenance/vehicles/{vin}                                  | ✅      |         |
 | EnergyX | PUT    | api/v3/vehicle-maintenance/vehicles/{vin}/service-partner                  |       |         |
 | EnergyX | GET    | api/v2/test-drives/dealers                                                 |       |         |
