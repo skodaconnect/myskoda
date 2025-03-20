@@ -244,108 +244,89 @@ class MySkodaMqttClient:
         _LOGGER.debug("Message (%s) received for %s on topic %s: %s", event_type, vin, topic, data)
 
         # Messages will contain payload as JSON.
+        timestamp_now = datetime.now(tz=UTC)
+
+        # Define handlers for each event_type/topic
+        event_handlers = {
+            EventType.OPERATION: lambda: EventOperation(
+                vin=vin,
+                user_id=user_id,
+                timestamp=timestamp_now,
+                operation=OperationRequest.from_json(data),
+            ),
+            EventType.ACCOUNT_EVENT: lambda: EventAccountPrivacy(
+                vin=vin,
+                user_id=user_id,
+                timestamp=timestamp_now,
+            ),
+            EventType.SERVICE_EVENT: {
+                "air-conditioning": lambda: EventAirConditioning(
+                    vin=vin,
+                    user_id=user_id,
+                    timestamp=timestamp_now,
+                    event=ServiceEvent.from_json(data),
+                ),
+                "auxiliary-heating": lambda: EventAuxiliaryHeating(
+                    vin=vin,
+                    user_id=user_id,
+                    timestamp=timestamp_now,
+                    event=ServiceEvent.from_json(data),
+                ),
+                "charging": lambda: EventCharging(
+                    vin=vin,
+                    user_id=user_id,
+                    timestamp=timestamp_now,
+                    event=self._get_charging_event(data),
+                ),
+                "departure": lambda: EventDeparture(
+                    vin=vin,
+                    user_id=user_id,
+                    timestamp=timestamp_now,
+                    event=ServiceEvent.from_json(data),
+                ),
+                "vehicle-status/access": lambda: EventAccess(
+                    vin=vin,
+                    user_id=user_id,
+                    timestamp=timestamp_now,
+                    event=ServiceEvent.from_json(data),
+                ),
+                "vehicle-status/lights": lambda: EventLights(
+                    vin=vin,
+                    user_id=user_id,
+                    timestamp=timestamp_now,
+                    event=ServiceEvent.from_json(data),
+                ),
+                "vehicle-status/odometer": lambda: EventOdometer(
+                    vin=vin,
+                    user_id=user_id,
+                    timestamp=timestamp_now,
+                    event=ServiceEvent.from_json(data),
+                ),
+            },
+            EventType.VEHICLE_EVENT: {
+                "vehicle-ignition-status": lambda: EventVehicleIgnitionStatus(
+                    vin=vin,
+                    user_id=user_id,
+                    timestamp=timestamp_now,
+                    event=self._get_vehicle_ignition_status_changed_event(data),
+                ),
+                "vehicle-connection-status-update": lambda: EventVehicleConnectionStatusUpdate(
+                    vin=vin,
+                    user_id=user_id,
+                    timestamp=timestamp_now,
+                    event=VehicleEvent.from_json(data),
+                ),
+            },
+        }
+
+        # Handle event
         try:
-            if event_type == EventType.OPERATION:
-                self._emit(
-                    EventOperation(
-                        vin=vin,
-                        user_id=user_id,
-                        timestamp=datetime.now(tz=UTC),
-                        operation=OperationRequest.from_json(data),
-                    )
-                )
-            elif event_type == EventType.ACCOUNT_EVENT:
-                self._emit(
-                    EventAccountPrivacy(
-                        vin=vin,
-                        user_id=user_id,
-                        timestamp=datetime.now(tz=UTC),
-                    )
-                )
-            elif event_type == EventType.SERVICE_EVENT and topic == "air-conditioning":
-                self._emit(
-                    EventAirConditioning(
-                        vin=vin,
-                        user_id=user_id,
-                        timestamp=datetime.now(tz=UTC),
-                        event=ServiceEvent.from_json(data),
-                    )
-                )
-            elif event_type == EventType.SERVICE_EVENT and topic == "auxiliary-heating":
-                self._emit(
-                    EventAuxiliaryHeating(
-                        vin=vin,
-                        user_id=user_id,
-                        timestamp=datetime.now(tz=UTC),
-                        event=ServiceEvent.from_json(data),
-                    )
-                )
-            elif event_type == EventType.SERVICE_EVENT and topic == "charging":
-                self._emit(
-                    EventCharging(
-                        vin=vin,
-                        user_id=user_id,
-                        timestamp=datetime.now(tz=UTC),
-                        event=self._get_charging_event(data),
-                    )
-                )
-            elif event_type == EventType.SERVICE_EVENT and topic == "departure":
-                self._emit(
-                    EventDeparture(
-                        vin=vin,
-                        user_id=user_id,
-                        timestamp=datetime.now(tz=UTC),
-                        event=ServiceEvent.from_json(data),
-                    )
-                )
-            elif event_type == EventType.SERVICE_EVENT and topic == "vehicle-status/access":
-                self._emit(
-                    EventAccess(
-                        vin=vin,
-                        user_id=user_id,
-                        timestamp=datetime.now(tz=UTC),
-                        event=ServiceEvent.from_json(data),
-                    )
-                )
-            elif event_type == EventType.SERVICE_EVENT and topic == "vehicle-status/lights":
-                self._emit(
-                    EventLights(
-                        vin=vin,
-                        user_id=user_id,
-                        timestamp=datetime.now(tz=UTC),
-                        event=ServiceEvent.from_json(data),
-                    )
-                )
-            elif event_type == EventType.SERVICE_EVENT and topic == "vehicle-status/odometer":
-                self._emit(
-                    EventOdometer(
-                        vin=vin,
-                        user_id=user_id,
-                        timestamp=datetime.now(tz=UTC),
-                        event=ServiceEvent.from_json(data),
-                    )
-                )
-            elif event_type == EventType.VEHICLE_EVENT and topic == "vehicle-ignition-status":
-                self._emit(
-                    EventVehicleIgnitionStatus(
-                        vin=vin,
-                        user_id=user_id,
-                        timestamp=datetime.now(tz=UTC),
-                        event=self._get_vehicle_ignition_status_changed_event(data),
-                    )
-                )
-            elif (
-                event_type == EventType.VEHICLE_EVENT
-                and topic == "vehicle-connection-status-update"
-            ):
-                self._emit(
-                    EventVehicleConnectionStatusUpdate(
-                        vin=vin,
-                        user_id=user_id,
-                        timestamp=datetime.now(tz=UTC),
-                        event=VehicleEvent.from_json(data),
-                    )
-                )
+            if event_type in event_handlers:
+                if isinstance(event_handlers[event_type], dict):
+                    if topic in event_handlers[event_type]:
+                        self._emit(event_handlers[event_type][topic]())
+                else:
+                    self._emit(event_handlers[event_type])
         except Exception as exc:  # noqa: BLE001
             _LOGGER.warning("Exception parsing MQTT event: %s", exc)
 
