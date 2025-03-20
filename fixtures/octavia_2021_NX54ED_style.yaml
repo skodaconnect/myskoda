@@ -39,6 +39,8 @@ vehicles:
         statuses: []
       - id: VEHICLE_WAKE_UP
         statuses: []
+      - id: ACCIDENT_DAMAGE_MANAGEMENT
+        statuses: []
       - id: AUXILIARY_HEATING_TIMERS
         statuses: []
       - id: CUBIC
@@ -154,7 +156,7 @@ reports:
     url: >-
       /v2/garage/vehicles/TMOCKAA0AA000000?connectivityGenerations=MOD1&connectivityGenerations=MOD2&connectivityGenerations=MOD3&connectivityGenerations=MOD4
     result:
-      timestamp: '2025-03-20T09:57:50.381120+00:00'
+      timestamp: null
       state: ACTIVATED
       specification:
         body: Combi
@@ -202,6 +204,8 @@ reports:
           - id: WARNING_LIGHTS
             statuses: []
           - id: VEHICLE_WAKE_UP
+            statuses: []
+          - id: ACCIDENT_DAMAGE_MANAGEMENT
             statuses: []
           - id: AUXILIARY_HEATING_TIMERS
             statuses: []
@@ -337,7 +341,7 @@ reports:
       "carCapturedTimestamp": "2025-03-20T09:54:17Z"}
     url: /v2/vehicle-status/TMOCKAA0AA000000
     result:
-      timestamp: '2025-03-20T09:57:50.890293+00:00'
+      timestamp: null
       detail:
         bonnet: CLOSED
         sunroof: UNSUPPORTED
@@ -390,7 +394,7 @@ reports:
       power cable connection/lock information are not available"}]}
     url: /v2/air-conditioning/TMOCKAA0AA000000
     result:
-      timestamp: '2025-03-20T09:57:51.534986+00:00'
+      timestamp: null
       timers:
         - enabled: false
           id: 1
@@ -454,7 +458,7 @@ reports:
       "2025-03-20T09:53:40Z"}, "errors": []}
     url: /v2/air-conditioning/TMOCKAA0AA000000/auxiliary-heating
     result:
-      timestamp: '2025-03-20T09:57:51.994436+00:00'
+      timestamp: null
       timers:
         - enabled: false
           id: 1
@@ -497,7 +501,7 @@ reports:
       "countryCode": "DEU"}}], "errors": []}
     url: /v1/maps/positions?vin=TMOCKAA0AA000000
     result:
-      timestamp: '2025-03-20T09:57:53.028485+00:00'
+      timestamp: null
       errors: []
       positions:
         - address:
@@ -525,7 +529,7 @@ reports:
       {"category": "OTHER", "defects": []}]}
     url: /v1/vehicle-health-report/warning-lights/TMOCKAA0AA000000
     result:
-      timestamp: '2025-03-20T09:57:53.210709+00:00'
+      timestamp: null
       warning_lights:
         - category: ASSISTANCE
           defects: []
@@ -559,7 +563,7 @@ reports:
       "description": "Charge limit is not available."}]}
     url: /v1/charging/TMOCKAA0AA000000
     result:
-      timestamp: '2025-03-20T09:57:54.671490+00:00'
+      timestamp: null
       errors:
         - type: CARE_MODE_IS_NOT_AVAILABLE
           description: Care mode is not available.
@@ -779,7 +783,7 @@ reports:
       third brake light."}]}]}}
     url: /v3/vehicle-maintenance/vehicles/TMOCKAA0AA000000
     result:
-      timestamp: '2025-03-20T09:57:58.240061+00:00'
+      timestamp: null
       maintenance_report:
         captured_at: '2025-03-20T09:54:17+00:00'
         mileage_in_km: 86757
@@ -891,7 +895,7 @@ reports:
     url: >-
       /v1/trip-statistics/TMOCKAA0AA000000?offsetType=week&offset=0&timezone=Europe%2FBerlin
     result:
-      timestamp: '2025-03-20T09:57:59.276305+00:00'
+      timestamp: null
       vehicle_type: GAS
       detailed_statistics:
         - date: '2025-03-17'
@@ -990,7 +994,7 @@ reports:
     url: >-
       /v1/vehicle-automatization/TMOCKAA0AA000000/departure/timers?deviceDateTime=2025-03-20T11%3A57%3A59.276552%2B02%3A00
     result:
-      timestamp: '2025-03-20T09:58:00.028168+00:00'
+      timestamp: null
       car_captured_timestamp: null
       first_occurring_timer_id: null
       minimum_battery_state_of_charge_in_percent: null
@@ -999,4 +1003,4 @@ reports:
         fahrenheit: null
         unit_in_car: CELSIUS
       timers: []
-      errorr: null
+    error: null
