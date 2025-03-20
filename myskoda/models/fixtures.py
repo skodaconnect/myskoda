@@ -22,6 +22,7 @@ class Endpoint(StrEnum):
     POSITIONS = "positions"
     HEALTH = "health"
     CHARGING = "charging"
+    CHARGING_PROFILES = "charging_profiles"
     MAINTENANCE = "maintenance"
     DRIVING_RANGE = "driving_range"
     TRIP_STATISTICS = "trip_statistics"

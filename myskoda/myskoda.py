@@ -39,6 +39,7 @@ from .models.air_conditioning import (
 )
 from .models.auxiliary_heating import AuxiliaryConfig, AuxiliaryHeating, AuxiliaryHeatingTimer
 from .models.charging import ChargeMode, Charging
+from .models.chargingprofiles import ChargingProfiles
 from .models.departure import DepartureInfo, DepartureTimer
 from .models.driving_range import DrivingRange
 from .models.health import Health
@@ -351,6 +352,10 @@ class MySkoda:
         """Retrieve information related to charging for the specified vehicle."""
         return (await self.rest_api.get_charging(vin, anonymize=anonymize)).result
 
+    async def get_charging_profiles(self, vin: str, anonymize: bool = False) -> ChargingProfiles:
+        """Retrieve information related to charging profiles for the specified vehicle."""
+        return (await self.rest_api.get_charging_profiles(vin, anonymize=anonymize)).result
+
     async def get_status(self, vin: str, anonymize: bool = False) -> Status:
         """Retrieve the current status for the specified vehicle."""
         return (await self.rest_api.get_status(vin, anonymize=anonymize)).result
@@ -498,6 +503,7 @@ class MySkoda:
             Endpoint.POSITIONS: self.rest_api.get_positions,
             Endpoint.HEALTH: self.rest_api.get_health,
             Endpoint.CHARGING: self.rest_api.get_charging,
+            Endpoint.CHARGING_PROFILES: self.rest_api.get_charging_profiles,
             Endpoint.MAINTENANCE: self.rest_api.get_maintenance,
             Endpoint.DRIVING_RANGE: self.rest_api.get_driving_range,
             Endpoint.TRIP_STATISTICS: self.rest_api.get_trip_statistics,
