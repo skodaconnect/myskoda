@@ -1,56 +1,58 @@
-[tool.poetry]
+[project]
 name = "myskoda"
-version = "0.0.0"
+dynamic = ["version"]
 description = "Library for interaction with the MySkoda APIs."
 authors = [
-    "Frederick Gnodtke <frederick@gnodtke.net>",
-    "WebSpider <bacardicoke@gmail.com>",
-    "Fabrice Devaux <fabrice.devaux@gmail.com>",
+  {name = "Frederick Gnodtke", email = "frederick@gnodtke.net"},
+  {name = "WebSpider", email = "bacardicoke@gmail.com"},
+  {name = "Fabrice Devaux", email = "fabrice.devaux@gmail.com"}
 ]
 readme = "README.md"
+requires-python = ">=3.12.0"
+dependencies = [
+  "aiohttp ~=3.11",
+  "aiomqtt ~=2.2",
+  "asyncio ~=3.4",
+  "mashumaro[orjson] ~=3.13",
+  "pyjwt ~=2.10",
+  "pyyaml ~=6.0"
+]
 
-[tool.poetry.dependencies]
-aiohttp = "^3"
-aiomqtt = "^2.2"
-asyncclick = { version = "^8.1.7.2", optional = true }
-asyncio = "^3"
-coloredlogs = { version = "^15.0.1", optional = true }
-pyjwt = "^2"
-python = ">=3.12.0, <4.0"
-pyyaml = "^6"
-termcolor = { version = "^2.4.0", optional = true }
-mashumaro = { extras = ["orjson"], version = "^3.13.1" }
-mkdocs = { extras = ["gen-files"], version = "^1.6.1", optional = true }
-mkdocstrings = { extras = ["python"], version = ">=0.26.1,<0.30.0", optional = true }
-mkdocs-gen-files = { version = "^0.5.0", optional = true }
-mkdocs-literate-nav = { version = "^0.6.1", optional = true }
-pygments = { version = "^2.18.0", optional = true }
+[dependency-groups]
+dev = [
+  "aioresponses ~=0.7",
+  "amqtt ==0.11.0-beta1",
+  "pyright ~=1.1",
+  "pytest ~=8.0",
+  "pytest-asyncio ~=0.0",
+  "pytest-cov >=5,<7",
+  "ruff >=0.6.4,<0.12.0",
+  "setuptools >=75.2,<77.0"
+]
 
-[tool.poetry.group.dev.dependencies]
-pyright = "^1.1.379"
-pytest = "^8"
-pytest-asyncio = "^0"
-ruff = ">=0.6.4,<0.12.0"
-pytest-cov = ">=5,<7"
-aioresponses = "^0.7.6"
-amqtt = "0.11.0-beta1"
-setuptools = ">=75.2,<77.0"
-
-[tool.poetry.scripts]
-myskoda = "myskoda.cli:cli"
-
-[tool.poetry.extras]
-cli = ["asyncclick", "coloredlogs", "termcolor", "pygments"]
-docs = ["mkdocs", "mkdocstrings", "mkdocs-gen-files", "mkdocs-literate-nav"]
-
-[tool.poetry-dynamic-versioning]
-enable = true
-vcs = "git"
-style = "semver"
+[project.optional-dependencies]
+cli = [
+  "asyncclick ~=8.1",
+  "coloredlogs ~=15.0",
+  "termcolor ~=2.4",
+  "pygments ~=2.18"
+]
+docs = [
+  "mkdocs ~=1.6",
+  "mkdocstrings[python] >=0.26.1,<0.30.0",
+  "mkdocs-gen-files ~=0.5",
+  "mkdocs-literate-nav ~=0.6"
+]
 
 [build-system]
-requires = ["poetry-core>=1.0.0", "poetry-dynamic-versioning>=1.0.0,<2.0.0"]
-build-backend = "poetry_dynamic_versioning.backend"
+requires = ["hatchling", "uv-dynamic-versioning"]
+build-backend = "hatchling.build"
+
+[tool.hatch.version]
+source = "uv-dynamic-versioning"
+
+[project.scripts]
+myskoda = "myskoda.cli:cli"
 
 [tool.ruff]
 line-length = 100
@@ -58,27 +60,26 @@ target-version = "py312"
 
 [tool.ruff.lint]
 ignore = [
-    "COM812", # missing-trailing-comma
-    "D101",   # undocumented-public-class
-    "D103",   # undocumented-public-function
-    "D203",   # one-blank-line-before-class
-    "D211",   # blank-line-before-class
-    "D213",   # multi-line-summary-second-line
-    "FBT001", # boolean-type-hint-positional-argument
-    "FBT002", # boolean-default-value-positional-argument
-    "FIX002", # line-contains-todo
-    "ISC001", # single-line-implicit-string-concatenation
-    "S101",   # assert (used in tests)
-    "T201",   # print
-    "TD003",  # missing-todo-link
-
+  "COM812", # missing-trailing-comma
+  "D101", # undocumented-public-class
+  "D103", # undocumented-public-function
+  "D203", # one-blank-line-before-class
+  "D211", # blank-line-before-class
+  "D213", # multi-line-summary-second-line
+  "FBT001", # boolean-type-hint-positional-argument
+  "FBT002", # boolean-default-value-positional-argument
+  "FIX002", # line-contains-todo
+  "ISC001", # single-line-implicit-string-concatenation
+  "S101", # assert (used in tests)
+  "T201", # print
+  "TD003", # missing-todo-link
 ]
 select = ["ALL"]
 
 [tool.pytest.ini_options]
 asyncio_mode = "auto"
-log_format = "%(asctime)s %(levelname)s %(message)s"
 log_date_format = "%Y-%m-%d %H:%M:%S"
+log_format = "%(asctime)s %(levelname)s %(message)s"
 
 [tool.coverage.run]
 omit = ["myskoda/cli/*"]

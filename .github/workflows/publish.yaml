@@ -19,26 +19,18 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Install Poetry
-        run: pipx install poetry
+      # https://docs.astral.sh/uv/guides/integration/github/#installation
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          version: "0.6.9"
 
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version-file: pyproject.toml
-          cache: "poetry"
 
-      - name: Install Poetry Dynamic Versioning
-        run: pipx inject poetry "poetry-dynamic-versioning[plugin]"
-
-      - name: Update Poetry configuration
-        run: poetry config virtualenvs.create false
-
-      - name: Install dependencies
-        run: poetry install --sync --no-interaction
-
-      - name: Package project
-        run: poetry build
-
-      - name: Publish package distributions to PyPI
-        uses: pypa/gh-action-pypi-publish@release/v1
+      - name: Build and publish package
+        run: |
+          uv build
+          uv publish
