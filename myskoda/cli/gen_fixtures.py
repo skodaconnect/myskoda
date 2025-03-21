@@ -1,7 +1,6 @@
 """Generate a set of test fixtures from your garage."""
 
 from pathlib import Path
-from typing import cast
 
 import asyncclick as click
 from asyncclick.core import Context

@@ -8,7 +8,6 @@ from asyncio import Lock
 from collections.abc import Callable
 from dataclasses import dataclass, field
 from datetime import UTC, datetime, timedelta
-from typing import cast
 
 import jwt
 from aiohttp import ClientSession, FormData, InvalidUrlClientError
