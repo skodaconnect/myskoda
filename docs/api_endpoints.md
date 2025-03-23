@@ -15,6 +15,7 @@ head -n 9 docs/api_endpoints.md && tail -n +10 docs/api_endpoints.md | sort --fi
 | sonar98 | GET    | api/v1/charging/{vin}/certificates                                         |       | <pre lang="json"> {"certificates":[{"id":"","issuer":"ELLI","state":"ORDERED"}]}</pre> |
 | sonar98 | DELETE | api/v1/charging/{vin}/certificates/{certificateId}                         |       |         |
 | sonar98 | POST   | api/v1/charging/{vin}/certificates/{certificateId}                         |       |         |
+| lglerup | GET    | api/v1/charging/{vin}/history                                              |       |         |
 | sonar98 | GET    | api/v1/charging/{vin}/profiles                                             |       |         |
 | sonar98 | PUT    | api/v1/charging/{vin}/profiles/{id}                                        |       |         |
 | sonar98 | PUT    | api/v1/charging/{vin}/set-auto-unlock-plug                                 | ✅     |         |
@@ -131,11 +132,14 @@ head -n 9 docs/api_endpoints.md && tail -n +10 docs/api_endpoints.md | sort --fi
 | EnergyX | POST   | api/v2/air-conditioning/{vin}/stop-window-heating                          | ✅     |         |
 | EnergyX | POST   | api/v2/air-conditioning/{vin}/timers                                       | ✅     |         |
 | EnergyX | GET    | api/v2/car-configurator/url                                                |       |         |
+| lglerup | GET    | api/v2/connection-status/{vin}/readiness                                   |       |         |
 | EnergyX | POST   | api/v2/consents                                                            |       |         |
 | EnergyX | PATCH  | api/v2/consents/eprivacy/{vin}                                             |       |         |
 | EnergyX | GET    | api/v2/consents/eprivacy/{vin}                                             |       | <pre lang="json"> {"consented":false,"link":"https://www.skoda-auto.com/other/eprivacy-nl"}</pre> |
 | EnergyX | PATCH  | api/v2/consents/location-access                                            |       |         |
 | EnergyX | GET    | api/v2/consents/location-access                                            |       | <pre lang="json"> {"consented":false,"termsAndConditionsLink":"https://skodaid.vwgroup.io/terms-and-conditions?ui_locale=nl","dataPrivacyLink":"https://skodaid.vwgroup.io/data-privacy?ui_locale=nl"}</pre> |
+| lglerup | GET    | api/v2/consents/mandatory                                                  |       |         |
+| lglerup | PATCH  | api/v2/consents/mandatory                                                  |       |         |
 | EnergyX | PATCH  | api/v2/consents/marketing                                                  |       |         |
 | EnergyX | GET    | api/v2/consents/marketing                                                  |       | <pre lang="json"> {"consented":false,"title":"Marketingtoestemming voor Škoda Auto a.s.","text":"Ik geef hierbij toestemming voor het verwerken van mijn identiteits- en contactinformatie en gebruiksgegevens voor producten en diensten met als doel het mij toesturen van aanbiedingen van producten en diensten van Škoda Auto, inclusief informatie over evenementen, prijsvragen en nieuwsbrieven. De toestemming is 5 jaar geldig.\n\nMeer informatie over gegevensverwerking, inclusief uw recht om de toestemming in te trekken, vindt u [hier](https://www.skoda-auto.com/other/memorandum-marketing-nl)."}</pre> |
 | EnergyX | GET    | api/v2/consents/required                                                   |       |         |
@@ -158,14 +162,20 @@ head -n 9 docs/api_endpoints.md && tail -n +10 docs/api_endpoints.md | sort --fi
 | EnergyX | PATCH  | api/v2/garage/vehicles/{vin}                                               |       |         |
 | EnergyX | GET    | api/v2/garage/vehicles/{vin}                                               | ✅     |         |
 | EnergyX | POST   | api/v2/garage/vehicles/{vin}/capabilities/change-user-capability           |       |         |
+| lglerup | GET    | api/v2/garage/vehicles/{vin}/fleet                                         |       |         |
 | EnergyX | PUT    | api/v2/garage/vehicles/{vin}/license-plate                                 |       |         |
 | EnergyX | GET    | api/v2/garage/vehicles/{vin}/users/guests                                  |       | <pre lang="json"> {"users":[{"id":"XXXXX-64c0-43d8-9dbd-f82c11ac8df8","firstName":"Joe","lastName":"Guest","nickname":"JG","email":"joe.guest@skodacars.rule.io","profilePictureUrl":"https://mysmob.api.connect.skoda-auto.cz/....","knownToVehicle":true,"hasConsent":true}]}</pre> |
 | EnergyX | GET    | api/v2/garage/vehicles/{vin}/users/guests/count                            |       | <pre lang="json"> {"count":1}</pre> |
 | EnergyX | DELETE | api/v2/garage/vehicles/{vin}/users/guests/{id}                             |       |         |
 | EnergyX | GET    | api/v2/garage/vehicles/{vin}/users/primary                                 |       | Same format as single guest from api/v2/garage/vehicles/{vin}/users/guests |
+| lglerup | GET    | api/v2/loyalty-program/details                                             |       |         |
 | EnergyX | POST   | api/v2/loyalty-program/members                                             |       |         |
 | EnergyX | DELETE | api/v2/loyalty-program/members/{id}                                        |       |         |
 | EnergyX | GET    | api/v2/loyalty-program/members/{id}                                        |       |         |
+| lglerup | PATCH  | api/v2/loyalty-program/members/{id}                                        |       |         |
+| lglerup | GET    | api/v2/loyalty-program/members/{id}/badges                                 |       |         |
+| lglerup | GET    | api/v2/loyalty-program/members/{id}/badges/{badgeId}                       |       |         |
+| lglerup | POST   | api/v2/loyalty-program/members/{id}/badges/{badgeId}/collect-badge         |       |         |
 | EnergyX | GET    | api/v2/loyalty-program/members/{id}/challenges                             |       |         |
 | EnergyX | DELETE | api/v2/loyalty-program/members/{id}/challenges/{challengeId}/enrollment    |       |         |
 | EnergyX | PUT    | api/v2/loyalty-program/members/{id}/challenges/{challengeId}/enrollment    |       |         |
@@ -180,19 +190,37 @@ head -n 9 docs/api_endpoints.md && tail -n +10 docs/api_endpoints.md | sort --fi
 | EnergyX | GET    | api/v2/maps/places/{id}                                                    |       |         |
 | EnergyX | POST   | api/v2/maps/route                                                          |       |         |
 | EnergyX | PUT    | api/v2/maps/{vin}/route                                                    |       |         |
+| lglerup | GET    | api/v2/shop/cubic-link                                                     |       |         |
+| lglerup | GET    | api/v2/shop/loyalty-products                                               |       |         |
+| lglerup | POST   | api/v2/shop/loyalty-products/{productCode}                                 |       |         |
+| lglerup | GET    | api/v2/shop/loyalty-products/{productCode}/image                           |       |         |
+| lglerup | GET    | api/v2/shop/subscriptions                                                  |       |         |
+| lglerup | POST   | api/v2/shop/subscriptions/{vin}/order                                      |       |         |
+| lglerup | POST   | api/v2/test-drives                                                         |       |         |
 | EnergyX | GET    | api/v2/test-drives/dealers                                                 |       |         |
 | EnergyX | GET    | api/v2/test-drives/form-definition                                         |       |         |
 | EnergyX | GET    | api/v2/vehicle-status/render                                               |       |         |
 | EnergyX | GET    | api/v2/vehicle-status/{vin}                                                | ✅     |         |
 | EnergyX | GET    | api/v2/vehicle-status/{vin}/driving-range                                  | ✅     |         |
+| lglerup | GET    | api/v2/vehicle-status/{vin}/driving-score                                  |       |         |
 | EnergyX | GET    | api/v2/widgets/vehicle-status/{vin}                                        |       | <pre lang="json"> {"vehicle":{"name":"REDACTED","licensePlate":"REDACTED","renderUrl":"https://mspgwlivestorage.blob.core.windows.net/widget-renders/XXXX.png?etag=YYYY"},"vehicleStatus":{"doorsLocked":"CLOSED","drivingRangeInKm":121},"chargingStatus":{"stateOfChargeInPercent":35,"remainingTimeToFullyChargedInMinutes":0},"parkingPosition":{"state":"PARKED","maps":{"lightMapUrl":"https://mysmob.api.connect.skoda-auto.cz/api/v1/maps/image?latitude=xxxxx&longitude=yyyyx&width=533&height=400&zoom=17"},"gpsCoordinates":{"latitude":xxxx,"longitude":yyyy},"formattedAddress":"Street 1, Town"}}</pre> |
+| lglerup | GET    | api/v3/car-configurator/url                                                |       |         |
 | EnergyX | GET    | api/v3/maps/image                                                          |       |         |
 | EnergyX | POST   | api/v3/maps/nearby-places                                                  |       |         |
+| lglerup | GET    | api/v3/maps/offers                                                         |       |         |
+| lglerup | POST   | api/v3/maps/offers/analytics                                               |       |         |
+| lglerup | POST   | api/v3/maps/offers/{id}/redemption                                         |       |         |
+| lglerup | GET    | api/v3/maps/places                                                         |       |         |
 | EnergyX | POST   | api/v3/maps/places/favourites                                              |       |         |
 | EnergyX | GET    | api/v3/maps/places/favourites                                              |       | <pre lang="json"> {"places":[{"type":"LOCATION","id":"67a13f8ca5798575d11cb638","placeDetail":{"placeId":"ChIJB0P0r6mWxkcRmrhc7bHaO0Q","gpsCoordinates":{"latitude":51.6503222,"longitude":5.0469573},"formattedAddress":"Europalaan 1, 5171 KW Kaatsheuvel, Nederland","name":"Efteling"}}],"errors":[]}</pre> |
 | EnergyX | DELETE | api/v3/maps/places/favourites/{id}                                         |       |         |
 | EnergyX | PUT    | api/v3/maps/places/favourites/{id}                                         |       |         |
+| lglerup | GET    | api/v3/maps/places/predictions                                             |       |         |
 | EnergyX | GET    | api/v3/maps/places/{id}                                                    |       |         |
+| lglerup | GET    | api/v3/maps/positions/vehicles/{vin}/parking                               |       |         |
+| lglerup | POST   | api/v3/maps/recommendations/charging-stations                              |       |         |
+| lglerup | POST   | api/v3/maps/route                                                          |       |         |
+| lglerup | PUT    | api/v3/maps/{vin}/route                                                    |       |         |
 | EnergyX | GET    | api/v3/vehicle-maintenance/service-partners                                |       |         |
 | EnergyX | GET    | api/v3/vehicle-maintenance/service-partners/{servicePartnerId}             |       |         |
 | EnergyX | GET    | api/v3/vehicle-maintenance/service-partners/{servicePartnerId}/encoded-url |       |         |
