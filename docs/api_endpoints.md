@@ -17,11 +17,11 @@ head -n 9 docs/api_endpoints.md && tail -n +10 docs/api_endpoints.md | sort --fi
 | sonar98 | POST   | api/v1/charging/{vin}/certificates/{certificateId}                         |       |         |
 | sonar98 | GET    | api/v1/charging/{vin}/profiles                                             |       |         |
 | sonar98 | PUT    | api/v1/charging/{vin}/profiles/{id}                                        |       |         |
-| sonar98 | PUT    | api/v1/charging/{vin}/set-auto-unlock-plug                                 | ✅      |         |
+| sonar98 | PUT    | api/v1/charging/{vin}/set-auto-unlock-plug                                 | ✅     |         |
 | prior98 | PUT    | api/v1/charging/{vin}/set-care-mode                                        | ✅     |         |
 | prior98 | PUT    | api/v1/charging/{vin}/set-charge-limit                                     | ✅     |         |
 | prior98 | PUT    | api/v1/charging/{vin}/set-charge-mode                                      | ✅     |         |
-| sonar98 | PUT    | api/v1/charging/{vin}/set-charging-current                                 | ✅      |         |
+| sonar98 | PUT    | api/v1/charging/{vin}/set-charging-current                                 | ✅     |         |
 | prior98 | POST   | api/v1/charging/{vin}/start                                                | ✅     |         |
 | prios98 | POST   | api/v1/charging/{vin}/stop                                                 | ✅     |         |
 | sonar98 | GET    | api/v1/discover-news                                                       |       | <pre lang="json"> {"data":[{"text":"Redacted newstext in article. \uD83E\uDD29\n#skodanl","media":[{"type":"VIDEO","url":"https://url-redacted/", originalPostUrl":"https://url-redacted/"},{"text":"\uD835\uDDD7\uD835\uDDF2 \uD835\uDDFB\uD835\uDDF6\uD835\uDDF2\uD835\uDE02\uD835\uDE04\uD835\uDDF2 \uD835\uDDD8\uD835\uDDF9\uD835\uDDFF\uD835\uDDFC\uD835\uDDFE. \uD835\uDDD8\uD835\uDDFF\uD835\uDE03\uD835\uDDEE\uD835\uDDEE\uD835\uDDFF ‘\uD835\uDDFA \uD835\uDDFB\uD835\uDE02 \uD835\uDE07\uD835\uDDF2\uD835\uDDF9\uD835\uDDF3.\nRest is redacted","media":[{"type":"VIDEO","url":"https://url-redacted-again/"}],"originalPostUrl":"https://more-redaction-here/","publishedAt":"2025-03-10T12:13:50Z"}}],"paging":{"pageNumber":0,"hasNextPage":false}}</pre> |
@@ -65,7 +65,7 @@ head -n 9 docs/api_endpoints.md && tail -n +10 docs/api_endpoints.md | sort --fi
 | sonar98 | POST   | api/v1/spin                                                                |       |         |
 | sonar98 | PUT    | api/v1/spin                                                                |       |         |
 | sonar98 | GET    | api/v1/spin/status                                                         |       | <pre lang="json"> {"remainingTries":3,"lockedWaitingTimeInSeconds":0,"state":"DEFINED"}</pre> |
-| sonar98 | POST   | api/v1/spin/verify                                                         | ✅      |         |
+| sonar98 | POST   | api/v1/spin/verify                                                         | ✅     |         |
 | prior98 | GET    | api/v1/trip-statistics/{vin}                                               | ✅     |         |
 | sonar98 | GET    | api/v1/trip-statistics/{vin}/fuel-prices                                   |       |         |
 | sonar98 | POST   | api/v1/trip-statistics/{vin}/fuel-prices                                   |       |         |
@@ -95,11 +95,11 @@ head -n 9 docs/api_endpoints.md && tail -n +10 docs/api_endpoints.md | sort --fi
 | sonar98 | GET    | api/v1/users/{id}/profile-picture                                          |       |         |
 | sonar98 | POST   | api/v1/users/{user_id}/vehicles/{vin}/check                                |       |         |
 | prior98 | POST   | api/v1/vehicle-access/{vin}/honk-and-flash                                 | ✅     |         |
-| sonar98 | POST   | api/v1/vehicle-access/{vin}/lock                                           | ✅      |         |
-| sonar98 | POST   | api/v1/vehicle-access/{vin}/unlock                                         | ✅      |         |
-| sonar98 | GET    | api/v1/vehicle-automatization/{vin}/departure/timers                       | ✅      |         |
-| sonar98 | POST   | api/v1/vehicle-automatization/{vin}/departure/timers                       | ✅      |         |
-| sonar98 | POST   | api/v1/vehicle-automatization/{vin}/departure/timers/settings              | ✅      |         |
+| sonar98 | POST   | api/v1/vehicle-access/{vin}/lock                                           | ✅     |         |
+| sonar98 | POST   | api/v1/vehicle-access/{vin}/unlock                                         | ✅     |         |
+| sonar98 | GET    | api/v1/vehicle-automatization/{vin}/departure/timers                       | ✅     |         |
+| sonar98 | POST   | api/v1/vehicle-automatization/{vin}/departure/timers                       | ✅     |         |
+| sonar98 | POST   | api/v1/vehicle-automatization/{vin}/departure/timers/settings              | ✅     |         |
 | prior98 | GET    | api/v1/vehicle-health-report/warning-lights/{vin}                          | ✅     |         |
 | sonar98 | GET    | api/v1/vehicle-information/{vin}                                           |       | <pre lang="json"> {"devicePlatform":"WCAR","vehicleSpecification":{"title":"Škoda Enyaq","manufacturingDate":"2021-04-08","model":"Enyaq","modelYear":"2021","body":"SUV","systemCode":"UNKNOWN","systemModelId":"5AZJJ2","maxChargingPowerInKW":125,"battery":{"capacityInKWh":77},"engine":{"type":"iV","powerInKW":150},"gearbox":{"type":"E1H"}},"renders":[],"compositeRenders":[{"layers":[{"url":"https://iprenders.blob.core.windows.net/base5azs21200210/F6F6GPQtW9TAD7-cRLexStAC9HkqZiEy5n-PmosHKDiLh7U62wcV0ft94bRkFx-brBXkRgCUwxmWuHJPNMqn-19201080dayvext_side1080.png","viewPoint":"EXTERIOR_SIDE","type":"REAL","order":0}],"viewType":"UNMODIFIED_EXTERIOR_SIDE"}]}</pre> |
 | sonar98 | POST   | api/v1/vehicle-information/{vin}/certificates                              |       |         |
@@ -111,25 +111,25 @@ head -n 9 docs/api_endpoints.md && tail -n +10 docs/api_endpoints.md | sort --fi
 | sonar98 | DELETE | api/v1/vehicle-services-backups/{id}                                       |       |         |
 | sonar98 | POST   | api/v1/vehicle-services-backups/{id}/apply                                 |       |         |
 | prior98 | POST   | api/v1/vehicle-wakeup/{vin}                                                | ✅     |         |
-| EnergyX | GET    | api/v2/air-conditioning/{vin}                                              |  ✅     |         |
+| EnergyX | GET    | api/v2/air-conditioning/{vin}                                              | ✅     |         |
 | EnergyX | GET    | api/v2/air-conditioning/{vin}/active-ventilation                           |       | <pre lang="json"> {"state":"INVALID","durationInSeconds":600,"timers":[],"errors":[{"type":"UNAVAILABLE_CLIMA_INFORMATION"}]}</pre> |
 | EnergyX | POST   | api/v2/air-conditioning/{vin}/active-ventilation/start                     |       |         |
 | EnergyX | POST   | api/v2/air-conditioning/{vin}/active-ventilation/stop                      |       |         |
 | EnergyX | POST   | api/v2/air-conditioning/{vin}/active-ventilation/timers                    |       |         |
-| EnergyX | GET    | api/v2/air-conditioning/{vin}/auxiliary-heating                            |  ✅     |         |
-| EnergyX | POST   | api/v2/air-conditioning/{vin}/auxiliary-heating/start                      |  ✅     |         |
-| EnergyX | POST   | api/v2/air-conditioning/{vin}/auxiliary-heating/stop                       |  ✅     |         |
-| EnergyX | POST   | api/v2/air-conditioning/{vin}/auxiliary-heating/timers                     |  ✅     |         |
-| EnergyX | POST   | api/v2/air-conditioning/{vin}/settings/ac-at-unlock                        |  ✅     |         |
-| EnergyX | POST   | api/v2/air-conditioning/{vin}/settings/ac-without-external-power           |  ✅     |         |
-| EnergyX | POST   | api/v2/air-conditioning/{vin}/settings/seats-heating                       |  ✅     |         |
-| EnergyX | POST   | api/v2/air-conditioning/{vin}/settings/target-temperature                  |  ✅     |         |
-| EnergyX | POST   | api/v2/air-conditioning/{vin}/settings/windows-heating                     |  ✅     |         |
-| EnergyX | POST   | api/v2/air-conditioning/{vin}/start                                        |  ✅     |         |
-| EnergyX | POST   | api/v2/air-conditioning/{vin}/start-window-heating                         |  ✅     |         |
-| EnergyX | POST   | api/v2/air-conditioning/{vin}/stop                                         |  ✅     |         |
-| EnergyX | POST   | api/v2/air-conditioning/{vin}/stop-window-heating                          |  ✅     |         |
-| EnergyX | POST   | api/v2/air-conditioning/{vin}/timers                                       |  ✅     |         |
+| EnergyX | GET    | api/v2/air-conditioning/{vin}/auxiliary-heating                            | ✅     |         |
+| EnergyX | POST   | api/v2/air-conditioning/{vin}/auxiliary-heating/start                      | ✅     |         |
+| EnergyX | POST   | api/v2/air-conditioning/{vin}/auxiliary-heating/stop                       | ✅     |         |
+| EnergyX | POST   | api/v2/air-conditioning/{vin}/auxiliary-heating/timers                     | ✅     |         |
+| EnergyX | POST   | api/v2/air-conditioning/{vin}/settings/ac-at-unlock                        | ✅     |         |
+| EnergyX | POST   | api/v2/air-conditioning/{vin}/settings/ac-without-external-power           | ✅     |         |
+| EnergyX | POST   | api/v2/air-conditioning/{vin}/settings/seats-heating                       | ✅     |         |
+| EnergyX | POST   | api/v2/air-conditioning/{vin}/settings/target-temperature                  | ✅     |         |
+| EnergyX | POST   | api/v2/air-conditioning/{vin}/settings/windows-heating                     | ✅     |         |
+| EnergyX | POST   | api/v2/air-conditioning/{vin}/start                                        | ✅     |         |
+| EnergyX | POST   | api/v2/air-conditioning/{vin}/start-window-heating                         | ✅     |         |
+| EnergyX | POST   | api/v2/air-conditioning/{vin}/stop                                         | ✅     |         |
+| EnergyX | POST   | api/v2/air-conditioning/{vin}/stop-window-heating                          | ✅     |         |
+| EnergyX | POST   | api/v2/air-conditioning/{vin}/timers                                       | ✅     |         |
 | EnergyX | GET    | api/v2/car-configurator/url                                                |       |         |
 | EnergyX | POST   | api/v2/consents                                                            |       |         |
 | EnergyX | PATCH  | api/v2/consents/eprivacy/{vin}                                             |       |         |
@@ -150,19 +150,19 @@ head -n 9 docs/api_endpoints.md && tail -n +10 docs/api_endpoints.md | sort --fi
 | EnergyX | GET    | api/v2/fueling/sessions/latest                                             |       |         |
 | EnergyX | GET    | api/v2/fueling/sessions/{sessionId}                                        |       |         |
 | EnergyX | GET    | api/v2/fueling/sessions/{sessionId}/state                                  |       |         |
-| EnergyX | GET    | api/v2/garage                                                              | ✅      |         |
+| EnergyX | GET    | api/v2/garage                                                              | ✅     |         |
 | EnergyX | GET    | api/v2/garage/first-vehicle                                                |       |         |
 | EnergyX | GET    | api/v2/garage/initial-vehicle                                              |       | Same content as api/v2/garage/vehicles/{vin} of the first vehicle |
 | EnergyX | GET    | api/v2/garage/vehicles/ordered/{commissionId}                              |       |         |
 | EnergyX | DELETE | api/v2/garage/vehicles/{vin}                                               |       |         |
 | EnergyX | PATCH  | api/v2/garage/vehicles/{vin}                                               |       |         |
-| EnergyX | GET    | api/v2/garage/vehicles/{vin}                                               | ✅      |         |
+| EnergyX | GET    | api/v2/garage/vehicles/{vin}                                               | ✅     |         |
 | EnergyX | POST   | api/v2/garage/vehicles/{vin}/capabilities/change-user-capability           |       |         |
 | EnergyX | PUT    | api/v2/garage/vehicles/{vin}/license-plate                                 |       |         |
 | EnergyX | GET    | api/v2/garage/vehicles/{vin}/users/guests                                  |       | <pre lang="json"> {"users":[{"id":"XXXXX-64c0-43d8-9dbd-f82c11ac8df8","firstName":"Joe","lastName":"Guest","nickname":"JG","email":"joe.guest@skodacars.rule.io","profilePictureUrl":"https://mysmob.api.connect.skoda-auto.cz/....","knownToVehicle":true,"hasConsent":true}]}</pre> |
 | EnergyX | GET    | api/v2/garage/vehicles/{vin}/users/guests/count                            |       | <pre lang="json"> {"count":1}</pre> |
 | EnergyX | DELETE | api/v2/garage/vehicles/{vin}/users/guests/{id}                             |       |         |
-| EnergyX | GET    | api/v2/garage/vehicles/{vin}/users/primary                                 |       | Same format as single guest from api/v2/garage/vehicles/{vin}/users/guests        |
+| EnergyX | GET    | api/v2/garage/vehicles/{vin}/users/primary                                 |       | Same format as single guest from api/v2/garage/vehicles/{vin}/users/guests |
 | EnergyX | POST   | api/v2/loyalty-program/members                                             |       |         |
 | EnergyX | DELETE | api/v2/loyalty-program/members/{id}                                        |       |         |
 | EnergyX | GET    | api/v2/loyalty-program/members/{id}                                        |       |         |
@@ -183,8 +183,8 @@ head -n 9 docs/api_endpoints.md && tail -n +10 docs/api_endpoints.md | sort --fi
 | EnergyX | GET    | api/v2/test-drives/dealers                                                 |       |         |
 | EnergyX | GET    | api/v2/test-drives/form-definition                                         |       |         |
 | EnergyX | GET    | api/v2/vehicle-status/render                                               |       |         |
-| EnergyX | GET    | api/v2/vehicle-status/{vin}                                                | ✅      |         |
-| EnergyX | GET    | api/v2/vehicle-status/{vin}/driving-range                                  | ✅      |         |
+| EnergyX | GET    | api/v2/vehicle-status/{vin}                                                | ✅     |         |
+| EnergyX | GET    | api/v2/vehicle-status/{vin}/driving-range                                  | ✅     |         |
 | EnergyX | GET    | api/v2/widgets/vehicle-status/{vin}                                        |       | <pre lang="json"> {"vehicle":{"name":"REDACTED","licensePlate":"REDACTED","renderUrl":"https://mspgwlivestorage.blob.core.windows.net/widget-renders/XXXX.png?etag=YYYY"},"vehicleStatus":{"doorsLocked":"CLOSED","drivingRangeInKm":121},"chargingStatus":{"stateOfChargeInPercent":35,"remainingTimeToFullyChargedInMinutes":0},"parkingPosition":{"state":"PARKED","maps":{"lightMapUrl":"https://mysmob.api.connect.skoda-auto.cz/api/v1/maps/image?latitude=xxxxx&longitude=yyyyx&width=533&height=400&zoom=17"},"gpsCoordinates":{"latitude":xxxx,"longitude":yyyy},"formattedAddress":"Street 1, Town"}}</pre> |
 | EnergyX | GET    | api/v3/maps/image                                                          |       |         |
 | EnergyX | POST   | api/v3/maps/nearby-places                                                  |       |         |
@@ -196,7 +196,7 @@ head -n 9 docs/api_endpoints.md && tail -n +10 docs/api_endpoints.md | sort --fi
 | EnergyX | GET    | api/v3/vehicle-maintenance/service-partners                                |       |         |
 | EnergyX | GET    | api/v3/vehicle-maintenance/service-partners/{servicePartnerId}             |       |         |
 | EnergyX | GET    | api/v3/vehicle-maintenance/service-partners/{servicePartnerId}/encoded-url |       |         |
-| EnergyX | GET    | api/v3/vehicle-maintenance/vehicles/{vin}                                  | ✅      |         |
+| EnergyX | GET    | api/v3/vehicle-maintenance/vehicles/{vin}                                  | ✅     |         |
 | EnergyX | GET    | api/v3/vehicle-maintenance/vehicles/{vin}/report                           |       | <pre lang="json"> {"capturedAt":"2025-03-19T07:33:41.681Z","inspectionDueInDays":84,"mileageInKm":91870}</pre> |
 | EnergyX | POST   | api/v3/vehicle-maintenance/vehicles/{vin}/service-booking                  |       |         |
 | EnergyX | DELETE | api/v3/vehicle-maintenance/vehicles/{vin}/service-partner                  |       |         |
