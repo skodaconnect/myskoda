@@ -1,5 +1,10 @@
 # API endpoints
 
+##### Command to sort API endpoints table
+```sh
+head -n 9 docs/api_endpoints.md && tail -n +10 docs/api_endpoints.md | sort --field-separator=\| --key=4
+```
+
 | Source  | Method | Endpoint                                                                   | Used? | Remarks |
 | ------- | ------ | -------------------------------------------------------------------------- | ----- | ------- |
 | prior98 | POST   | api/v1/authentication/exchange-authorization-code                          | ✅     |         |
