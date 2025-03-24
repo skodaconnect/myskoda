@@ -16,6 +16,7 @@ class EngineType(StrEnum):
     GASOLINE = "gasoline"
     HYBRID = "hybrid"
     CNG = "cng"
+    UNKNOWN = "unknown"
 
 
 @dataclass
