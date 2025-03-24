@@ -46,6 +46,7 @@ from myskoda.cli.requests import (
     auth,
     auxiliary_heating,
     charging,
+    charging_profiles,
     departure_timers,
     driving_range,
     garage,
@@ -149,6 +150,7 @@ cli.add_command(auxiliary_heating)
 cli.add_command(positions)
 cli.add_command(health)
 cli.add_command(charging)
+cli.add_command(charging_profiles)
 cli.add_command(maintenance)
 cli.add_command(driving_range)
 cli.add_command(user)

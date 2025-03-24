@@ -214,7 +214,7 @@ class MySkodaMqttClient:
             return
 
         # Cast the data from binary string, ignoring empty messages.
-        data = cast(str, msg.payload)
+        data = cast("str", msg.payload)
         if len(data) == 0:
             return
 
@@ -353,7 +353,7 @@ class MySkodaMqttClient:
         for callback in self._callbacks:
             result = callback(event)
             if result is not None:
-                task = asyncio.create_task(cast(Any, result))
+                task = asyncio.create_task(cast("Any", result))
                 background_tasks.add(task)
                 task.add_done_callback(background_tasks.discard)
 

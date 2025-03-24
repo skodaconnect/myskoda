@@ -27,7 +27,7 @@ from myskoda.models.fixtures import (
 
 from .__version__ import __version__ as version
 from .auth.authorization import Authorization
-from .const import MQTT_OPERATION_TIMEOUT
+from .const import BASE_URL_SKODA, CLIENT_ID, MQTT_OPERATION_TIMEOUT, REDIRECT_URI
 from .event import Event
 from .models.air_conditioning import (
     AirConditioning,
@@ -39,6 +39,7 @@ from .models.air_conditioning import (
 )
 from .models.auxiliary_heating import AuxiliaryConfig, AuxiliaryHeating, AuxiliaryHeatingTimer
 from .models.charging import ChargeMode, Charging
+from .models.chargingprofiles import ChargingProfiles
 from .models.departure import DepartureInfo, DepartureTimer
 from .models.driving_range import DrivingRange
 from .models.health import Health
@@ -80,11 +81,17 @@ TRACE_CONFIG = TraceConfig()
 TRACE_CONFIG.on_request_end.append(trace_response)
 
 
+class MySkodaAuthorization(Authorization):
+    client_id: str = CLIENT_ID  #  pyright: ignore[reportIncompatibleMethodOverride]
+    redirect_uri: str = REDIRECT_URI  #  pyright: ignore[reportIncompatibleMethodOverride]
+    base_url: str = BASE_URL_SKODA  #  pyright: ignore[reportIncompatibleMethodOverride]
+
+
 class MySkoda:
     session: ClientSession
     rest_api: RestApi
     mqtt: MySkodaMqttClient | None = None
-    authorization: Authorization
+    authorization: MySkodaAuthorization
     ssl_context: SSLContext | None = None
     vehicles: dict[Vin, Vehicle]
 
@@ -99,7 +106,7 @@ class MySkoda:
     ) -> None:
         self.vehicles: dict[Vin, Vehicle] = {}
         self.session = session
-        self.authorization = Authorization(session)
+        self.authorization = MySkodaAuthorization(session)
         self.rest_api = RestApi(self.session, self.authorization)
         self.ssl_context = ssl_context
         self.mqtt_broker_host = mqtt_broker_host
@@ -345,6 +352,10 @@ class MySkoda:
         """Retrieve information related to charging for the specified vehicle."""
         return (await self.rest_api.get_charging(vin, anonymize=anonymize)).result
 
+    async def get_charging_profiles(self, vin: str, anonymize: bool = False) -> ChargingProfiles:
+        """Retrieve information related to charging profiles for the specified vehicle."""
+        return (await self.rest_api.get_charging_profiles(vin, anonymize=anonymize)).result
+
     async def get_status(self, vin: str, anonymize: bool = False) -> Status:
         """Retrieve the current status for the specified vehicle."""
         return (await self.rest_api.get_status(vin, anonymize=anonymize)).result
@@ -492,6 +503,7 @@ class MySkoda:
             Endpoint.POSITIONS: self.rest_api.get_positions,
             Endpoint.HEALTH: self.rest_api.get_health,
             Endpoint.CHARGING: self.rest_api.get_charging,
+            Endpoint.CHARGING_PROFILES: self.rest_api.get_charging_profiles,
             Endpoint.MAINTENANCE: self.rest_api.get_maintenance,
             Endpoint.DRIVING_RANGE: self.rest_api.get_driving_range,
             Endpoint.TRIP_STATISTICS: self.rest_api.get_trip_statistics,

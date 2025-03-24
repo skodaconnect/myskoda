@@ -1,7 +1,6 @@
 """Generate a set of test fixtures from your garage."""
 
 from pathlib import Path
-from typing import cast
 
 import asyncclick as click
 from asyncclick.core import Context
@@ -50,7 +49,7 @@ async def get(ctx: Context, endpoint: Endpoint) -> None:
         endpoint=endpoint,
     )
 
-    text = cast(str, fixture.to_yaml())
+    text = str(fixture.to_yaml())
 
     file: Path = ctx.obj["file"]
     file.parent.mkdir(parents=True, exist_ok=True)

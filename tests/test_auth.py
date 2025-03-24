@@ -8,8 +8,8 @@ import pytest
 from aioresponses import aioresponses
 
 from myskoda.anonymize import USER_ID
-from myskoda.auth import authorization
 from myskoda.const import BASE_URL_IDENT, BASE_URL_SKODA, CLIENT_ID
+from myskoda.myskoda import MySkodaAuthorization
 
 FIXTURES_DIR = Path(__file__).parent.joinpath("fixtures")
 
@@ -89,7 +89,7 @@ async def test_get_info(responses: aioresponses) -> None:
     )
 
     session = aiohttp.ClientSession()
-    auth = authorization.Authorization(session, generate_nonce)
+    auth = MySkodaAuthorization(session, generate_nonce)
 
     await auth.authorize("user@example.com", "example")
 
