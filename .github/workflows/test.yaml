@@ -14,18 +14,19 @@ jobs:
       - name: Install dev dependencies
         run: sudo snap install just --classic
 
-      - name: Install Poetry
-        run: pipx install poetry
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          version: "0.6.9"
 
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version-file: pyproject.toml
-          cache: "poetry"
 
       - name: Install Python dependencies
         run: |
-          poetry install --no-root --extras "cli docs"
+          uv sync --all-extras
 
       - name: Lint
         run: |

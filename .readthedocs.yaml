@@ -8,9 +8,9 @@ build:
     post_create_environment:
       - pip install poetry
     post_install:
-      # VIRTUAL_ENV needs to be set manually for now.
-      # See https://github.com/readthedocs/readthedocs.org/pull/11152/
-      - VIRTUAL_ENV=$READTHEDOCS_VIRTUALENV_PATH poetry install --extras docs
+      # See https://github.com/astral-sh/uv/issues/10074
+      - pip install uv
+      - UV_PROJECT_ENVIRONMENT=$READTHEDOCS_VIRTUALENV_PATH uv sync --extra docs
 
 mkdocs:
   configuration: mkdocs.yaml

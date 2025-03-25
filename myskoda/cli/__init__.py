@@ -1,7 +1,7 @@
 """CLI to test all API functions and models.
 
 Execute with:
-poetry run python3 -m myskoda.cli
+uv run myskoda
 """
 
 from logging import DEBUG, INFO
