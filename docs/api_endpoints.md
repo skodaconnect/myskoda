@@ -16,7 +16,7 @@ head -n 9 docs/api_endpoints.md && tail -n +10 docs/api_endpoints.md | sort --fi
 | sonar98 | DELETE | api/v1/charging/{vin}/certificates/{certificateId}                         |       |         |
 | sonar98 | POST   | api/v1/charging/{vin}/certificates/{certificateId}                         |       |         |
 | lglerup | GET    | api/v1/charging/{vin}/history                                              |       |         |
-| sonar98 | GET    | api/v1/charging/{vin}/profiles                                             |       |         |
+| sonar98 | GET    | api/v1/charging/{vin}/profiles                                             |       | <pre lang="json"> {'chargingProfiles': [{'id': 1, 'name': 'testloc', 'settings': {'maxChargingCurrent': 'MAXIMUM', 'minBatteryStateOfCharge': {'minimumBatteryStateOfChargeInPercent': 0}, 'targetStateOfChargeInPercent': 80, 'autoUnlockPlugWhenCharged': 'OFF'}, 'preferredChargingTimes': [{'id': 1, 'enabled': False, 'startTime': '22:00', 'endTime': '06:00'}, {'id': 2, 'enabled': False, 'startTime': '22:00', 'endTime': '06:00'}, {'id': 3, 'enabled': False, 'startTime': '22:00', 'endTime': '06:00'}, {'id': 4, 'enabled': False, 'startTime': '22:00', 'endTime': '06:00'}], 'timers': [{'id': 1, 'enabled': False, 'time': '07:00', 'type': 'RECURRING', 'recurringOn': ['MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY']}, {'id': 2, 'enabled': False, 'time': '09:00', 'type': 'RECURRING', 'recurringOn': ['SATURDAY', 'SUNDAY']}, {'id': 3, 'enabled': False, 'time': '07:00', 'type': 'RECURRING', 'recurringOn': ['MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY', 'SUNDAY']}]}], 'carCapturedTimestamp': '2025-03-25T08:23:15.128Z'} </pre> |
 | sonar98 | PUT    | api/v1/charging/{vin}/profiles/{id}                                        |       |         |
 | sonar98 | PUT    | api/v1/charging/{vin}/set-auto-unlock-plug                                 | ✅     |         |
 | prior98 | PUT    | api/v1/charging/{vin}/set-care-mode                                        | ✅     |         |
@@ -132,13 +132,13 @@ head -n 9 docs/api_endpoints.md && tail -n +10 docs/api_endpoints.md | sort --fi
 | EnergyX | POST   | api/v2/air-conditioning/{vin}/stop-window-heating                          | ✅     |         |
 | EnergyX | POST   | api/v2/air-conditioning/{vin}/timers                                       | ✅     |         |
 | EnergyX | GET    | api/v2/car-configurator/url                                                |       |         |
-| lglerup | GET    | api/v2/connection-status/{vin}/readiness                                   |       |         |
+| lglerup | GET    | api/v2/connection-status/{vin}/readiness                                   |       | <pre lang="json"> {'unreachable': False, 'inMotion': False, 'batteryProtectionLimitOn': False} </pre> |
 | EnergyX | POST   | api/v2/consents                                                            |       |         |
 | EnergyX | PATCH  | api/v2/consents/eprivacy/{vin}                                             |       |         |
 | EnergyX | GET    | api/v2/consents/eprivacy/{vin}                                             |       | <pre lang="json"> {"consented":false,"link":"https://www.skoda-auto.com/other/eprivacy-nl"}</pre> |
 | EnergyX | PATCH  | api/v2/consents/location-access                                            |       |         |
 | EnergyX | GET    | api/v2/consents/location-access                                            |       | <pre lang="json"> {"consented":false,"termsAndConditionsLink":"https://skodaid.vwgroup.io/terms-and-conditions?ui_locale=nl","dataPrivacyLink":"https://skodaid.vwgroup.io/data-privacy?ui_locale=nl"}</pre> |
-| lglerup | GET    | api/v2/consents/mandatory                                                  |       |         |
+| lglerup | GET    | api/v2/consents/mandatory                                                  |       | <pre lang="json"> {'consented': True} </pre> |
 | lglerup | PATCH  | api/v2/consents/mandatory                                                  |       |         |
 | EnergyX | PATCH  | api/v2/consents/marketing                                                  |       |         |
 | EnergyX | GET    | api/v2/consents/marketing                                                  |       | <pre lang="json"> {"consented":false,"title":"Marketingtoestemming voor Škoda Auto a.s.","text":"Ik geef hierbij toestemming voor het verwerken van mijn identiteits- en contactinformatie en gebruiksgegevens voor producten en diensten met als doel het mij toesturen van aanbiedingen van producten en diensten van Škoda Auto, inclusief informatie over evenementen, prijsvragen en nieuwsbrieven. De toestemming is 5 jaar geldig.\n\nMeer informatie over gegevensverwerking, inclusief uw recht om de toestemming in te trekken, vindt u [hier](https://www.skoda-auto.com/other/memorandum-marketing-nl)."}</pre> |
@@ -162,13 +162,13 @@ head -n 9 docs/api_endpoints.md && tail -n +10 docs/api_endpoints.md | sort --fi
 | EnergyX | PATCH  | api/v2/garage/vehicles/{vin}                                               |       |         |
 | EnergyX | GET    | api/v2/garage/vehicles/{vin}                                               | ✅     |         |
 | EnergyX | POST   | api/v2/garage/vehicles/{vin}/capabilities/change-user-capability           |       |         |
-| lglerup | GET    | api/v2/garage/vehicles/{vin}/fleet                                         |       |         |
+| lglerup | GET    | api/v2/garage/vehicles/{vin}/fleet                                         |       | <pre lang="json"> {'partOfFleet': False} </pre> |
 | EnergyX | PUT    | api/v2/garage/vehicles/{vin}/license-plate                                 |       |         |
 | EnergyX | GET    | api/v2/garage/vehicles/{vin}/users/guests                                  |       | <pre lang="json"> {"users":[{"id":"XXXXX-64c0-43d8-9dbd-f82c11ac8df8","firstName":"Joe","lastName":"Guest","nickname":"JG","email":"joe.guest@skodacars.rule.io","profilePictureUrl":"https://mysmob.api.connect.skoda-auto.cz/....","knownToVehicle":true,"hasConsent":true}]}</pre> |
 | EnergyX | GET    | api/v2/garage/vehicles/{vin}/users/guests/count                            |       | <pre lang="json"> {"count":1}</pre> |
 | EnergyX | DELETE | api/v2/garage/vehicles/{vin}/users/guests/{id}                             |       |         |
 | EnergyX | GET    | api/v2/garage/vehicles/{vin}/users/primary                                 |       | Same format as single guest from api/v2/garage/vehicles/{vin}/users/guests |
-| lglerup | GET    | api/v2/loyalty-program/details                                             |       |         |
+| lglerup | GET    | api/v2/loyalty-program/details                                             |       | <pre lang="json"> {'name': 'MyŠkoda Club', 'rewardsAvailable': False} </pre> |
 | EnergyX | POST   | api/v2/loyalty-program/members                                             |       |         |
 | EnergyX | DELETE | api/v2/loyalty-program/members/{id}                                        |       |         |
 | EnergyX | GET    | api/v2/loyalty-program/members/{id}                                        |       |         |
