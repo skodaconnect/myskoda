@@ -11,9 +11,6 @@ jobs:
       - name: Clone the repository
         uses: actions/checkout@v4
 
-      - name: Install dev dependencies
-        run: sudo snap install just --classic
-
       - name: Install uv
         uses: astral-sh/setup-uv@v5
         with:
@@ -27,14 +24,18 @@ jobs:
       - name: Install Python dependencies
         run: |
           uv sync --all-extras
+          uv pip install pre-commit
 
-      - name: Lint
+      - name: Pre-commit
         run: |
-          just lint
+          uv run pre-commit run --hook-stage manual --all-files
 
       - name: Test
         run: |
-          just test
+          uv run pytest \
+            --cov-report term \
+            --cov-report xml:coverage.xml \
+            --cov=myskoda
 
       - name: Coveralls
         uses: coverallsapp/github-action@v2

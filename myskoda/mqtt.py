@@ -236,7 +236,7 @@ class MySkodaMqttClient:
             event = VehicleEvent.from_json(data)
         return event
 
-    def _parse_topic(self, topic_match: re.Match[str], data: str) -> None:
+    def _parse_topic(self, topic_match: re.Match[str], data: str) -> None:  # noqa: C901
         """Parse the topic and extract relevant parts."""
         [user_id, vin, event_type, topic] = topic_match.groups()
         event_type = EventType(event_type)

@@ -83,3 +83,7 @@ log_format = "%(asctime)s %(levelname)s %(message)s"
 
 [tool.coverage.run]
 omit = ["myskoda/cli/*"]
+
+[tool.pyright]
+venvPath = "."
+venv = ".venv"
