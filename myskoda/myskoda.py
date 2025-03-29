@@ -11,7 +11,7 @@ from datetime import UTC, datetime
 from ssl import SSLContext
 from traceback import format_exc
 from types import SimpleNamespace
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 from aiohttp import ClientSession, TraceConfig, TraceRequestEndParams
 
@@ -28,7 +28,7 @@ from myskoda.models.fixtures import (
 from .__version__ import __version__ as version
 from .auth.authorization import Authorization
 from .const import BASE_URL_SKODA, CLIENT_ID, MQTT_OPERATION_TIMEOUT, REDIRECT_URI
-from .event import Event
+from .event import Event, ServiceEventTopic
 from .models.air_conditioning import (
     AirConditioning,
     AirConditioningAtUnlock,
@@ -41,7 +41,7 @@ from .models.auxiliary_heating import AuxiliaryConfig, AuxiliaryHeating, Auxilia
 from .models.charging import ChargeMode, Charging
 from .models.chargingprofiles import ChargingProfiles
 from .models.departure import DepartureInfo, DepartureTimer
-from .models.driving_range import DrivingRange
+from .models.driving_range import DrivingRange, EngineType
 from .models.health import Health
 from .models.info import CapabilityId, Info
 from .models.maintenance import Maintenance
@@ -51,9 +51,12 @@ from .models.spin import Spin
 from .models.status import Status
 from .models.trip_statistics import TripStatistics
 from .models.user import User
-from .mqtt import MySkodaMqttClient
+from .mqtt import EventType, MySkodaMqttClient
 from .rest_api import GetEndpointResult, RestApi
 from .vehicle import Vehicle
+
+if TYPE_CHECKING:
+    from .models.service_event import ServiceEventChargingData
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -122,7 +125,54 @@ class MySkoda:
             "port": self.mqtt_broker_port,
             "enable_ssl": self.mqtt_enable_ssl,
         }
-        return MySkodaMqttClient(**{k: v for k, v in kwargs.items() if v is not None})
+        mqtt = MySkodaMqttClient(**{k: v for k, v in kwargs.items() if v is not None})
+        mqtt.subscribe(self._on_mqtt_event)
+        return mqtt
+
+    async def _on_mqtt_event(self, event: Event) -> None:  # noqa: C901, PLR0912
+        """Handle MQTT events.
+
+        Update self.vehicles with data received in event.
+        """
+        vehicle = self.vehicles.get(event.vin)
+        if not vehicle:
+            _LOGGER.debug("Received event for unknown VIN %s", event)
+            return
+
+        if event.type == EventType.SERVICE_EVENT and event.topic == ServiceEventTopic.CHARGING:
+            _LOGGER.debug("Updating Vehicle data with event %s", event)
+            event_data: ServiceEventChargingData = event.event.data
+            if vehicle.charging and (status := vehicle.charging.status):
+                if event_data.charged_range:
+                    status.battery.remaining_cruising_range_in_meters = (
+                        event_data.charged_range * 1000
+                    )
+                if event_data.soc:
+                    status.battery.state_of_charge_in_percent = event_data.soc
+                if event_data.time_to_finish:
+                    status.remaining_time_to_fully_charged_in_minutes = event_data.time_to_finish
+                if event_data.state:
+                    status.state = event_data.state
+
+            if vehicle.driving_range:
+                per = vehicle.driving_range.primary_engine_range
+                ser = False
+
+                if vehicle.driving_range.secondary_engine_range:
+                    ser = vehicle.driving_range.secondary_engine_range
+
+                if event_data.soc:
+                    if per.engine_type == EngineType.ELECTRIC:
+                        per.current_soc_in_percent = event_data.soc
+                    elif ser and ser.engine_type == EngineType.ELECTRIC:
+                        ser.current_soc_in_percent = event_data.soc
+
+                if event_data.charged_range:
+                    range_in_km = int(event_data.charged_range / 1000)
+                    if per.engine_type == EngineType.ELECTRIC:
+                        per.remaining_range_in_km = range_in_km
+                    elif ser and ser.engine_type == EngineType.ELECTRIC:
+                        ser.remaining_range_in_km = range_in_km
 
     async def enable_mqtt(self) -> None:
         """If MQTT was not enabled when initializing MySkoda, enable it manually and connect."""
