@@ -28,7 +28,7 @@ class Vehicle:
     health: Health | None = None
     departure_info: DepartureInfo | None = None
 
-    def __init__(self, info: Info, maintenance: Maintenance) -> None:  # noqa: D107
+    def __init__(self, info: Info, maintenance: Maintenance) -> None:
         self.info = info
         self.maintenance = maintenance
 

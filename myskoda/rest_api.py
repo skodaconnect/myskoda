@@ -71,7 +71,7 @@ class RestApi:
     session: ClientSession
     authorization: Authorization
 
-    def __init__(self, session: ClientSession, authorization: Authorization) -> None:  # noqa: D107
+    def __init__(self, session: ClientSession, authorization: Authorization) -> None:
         self.session = session
         self.authorization = authorization
 
