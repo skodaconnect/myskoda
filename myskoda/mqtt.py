@@ -8,7 +8,7 @@ import logging
 import re
 import ssl
 import uuid
-from collections.abc import Awaitable, Callable
+from collections.abc import Callable, Coroutine
 from datetime import UTC, datetime
 from random import uniform
 from typing import Any, cast
@@ -89,7 +89,7 @@ class OperationFailedError(Exception):
 class MySkodaMqttClient:
     user_id: str | None
     vehicle_vins: list[str]
-    _callbacks: list[Callable[[Event], None | Awaitable[None]]]
+    _callbacks: list[Callable[[Event], Coroutine[Any, Any, None]]]
     _operation_listeners: list[OperationListener]
 
     def __init__(  # noqa: D107
@@ -127,7 +127,7 @@ class MySkodaMqttClient:
         self._listener_task = None
         self._running = False
 
-    def subscribe(self, callback: Callable[[Event], None | Awaitable[None]]) -> None:
+    def subscribe(self, callback: Callable[[Event], Coroutine[Any, Any, None]]) -> None:
         """Listen for events emitted by MySkoda's MQTT broker."""
         self._callbacks.append(callback)
 
@@ -353,7 +353,7 @@ class MySkodaMqttClient:
         for callback in self._callbacks:
             result = callback(event)
             if result is not None:
-                task = asyncio.create_task(cast("Any", result))
+                task = asyncio.create_task(result)
                 background_tasks.add(task)
                 task.add_done_callback(background_tasks.discard)
 

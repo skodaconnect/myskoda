@@ -5,7 +5,7 @@ This class provides all methods to operate on the API and MQTT broker.
 
 import logging
 from asyncio import gather, timeout
-from collections.abc import Awaitable, Callable
+from collections.abc import Callable, Coroutine
 from copy import deepcopy
 from datetime import UTC, datetime
 from ssl import SSLContext
@@ -153,7 +153,7 @@ class MySkoda:
             await self.mqtt.connect(user.id, vehicles)
         _LOGGER.debug("MySkoda ready.")
 
-    def subscribe(self, callback: Callable[[Event], None | Awaitable[None]]) -> None:
+    def subscribe(self, callback: Callable[[Event], Coroutine[Any, Any, None]]) -> None:
         """Listen for events emitted by MySkoda's MQTT broker."""
         if self.mqtt is None:
             raise MqttDisabledError
