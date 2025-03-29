@@ -289,7 +289,7 @@ async def test_subscribe_event(
         ),
     ]
 
-    def on_event(event: Event) -> None:
+    async def on_event(event: Event) -> None:
         events.append(event)
         if len(events) == len(messages):
             future.set_result(None)

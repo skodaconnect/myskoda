@@ -39,7 +39,7 @@ async def subscribe(ctx: Context) -> None:
     """Connect to the MQTT broker and listen for messages."""
     myskoda: MySkoda = ctx.obj["myskoda"]
 
-    def on_event(event: Event) -> None:
+    async def on_event(event: Event) -> None:
         ctx.obj["print"](event.to_dict())
 
     myskoda.subscribe(on_event)
