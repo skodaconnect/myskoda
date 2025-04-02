@@ -71,7 +71,7 @@ class OperationListener:
     operation_name: OperationName
     future: asyncio.Future[OperationRequest]
 
-    def __init__(  # noqa: D107
+    def __init__(
         self, operation_name: OperationName, future: asyncio.Future[OperationRequest]
     ) -> None:
         self.operation_name = operation_name
@@ -79,7 +79,7 @@ class OperationListener:
 
 
 class OperationFailedError(Exception):
-    def __init__(self, operation: OperationRequest) -> None:  # noqa: D107
+    def __init__(self, operation: OperationRequest) -> None:
         op = operation.operation
         error = operation.error_code
         trace = operation.trace_id
@@ -92,7 +92,7 @@ class MySkodaMqttClient:
     _callbacks: list[Callable[[Event], Coroutine[Any, Any, None]]]
     _operation_listeners: list[OperationListener]
 
-    def __init__(  # noqa: D107
+    def __init__(
         self,
         authorization: Authorization,
         hostname: str = MQTT_BROKER_HOST,

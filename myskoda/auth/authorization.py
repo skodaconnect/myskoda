@@ -54,7 +54,7 @@ class Authorization(ABC):
     session: ClientSession
     idk_session: IDKSession | None = None
 
-    def __init__(  # noqa: D107
+    def __init__(
         self, session: ClientSession, generate_nonce: Callable[[], str] = generate_nonce
     ) -> None:
         self.session = session
@@ -361,7 +361,7 @@ class AuthorizationError(Exception):
 class InvalidStatusError(Exception):
     """An invalid HTTP status code was received."""
 
-    def __init__(self, status: int) -> None:  # noqa: D107
+    def __init__(self, status: int) -> None:
         super().__init__(f"Received invalid HTTP status code {status}.")
 
 
