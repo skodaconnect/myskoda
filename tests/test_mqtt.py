@@ -294,7 +294,7 @@ async def test_subscribe_event(
         if len(events) == len(messages):
             future.set_result(None)
 
-    myskoda.subscribe(on_event)
+    myskoda.subscribe_events(on_event)
 
     for topic, message in messages:
         await mqtt_client.publish(topic, message.encode("utf-8"), QOS_2)

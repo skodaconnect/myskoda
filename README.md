@@ -7,7 +7,12 @@
 
 # MySkoda
 
-This Python library can be used to work with the MySkoda API.
+MySkoda is an async Python library to interact with the Skoda API.
+
+MySkoda is primarily developed to be used by the https://github.com/skodaconnect/homeassistant-myskoda project, a Home Assistant integration for Skoda vehicles.
+
+Before updating please review the [release notes](https://github.com/skodaconnect/myskoda/releases).
+
 <!-- TOC -->
 
 - [MySkoda](#myskoda)
@@ -41,18 +46,22 @@ pip install myskoda
 ### Basic example
 
 ```python
+import asyncio
 from aiohttp import ClientSession
 from myskoda import MySkoda
 
-session = ClientSession()
-myskoda = MySkoda(session)
-await myskoda.connect(email, password)
+USERNAME = "my.user@domain.com"
+PASSWORD = "my_password"
 
-for vin in await myskoda.list_vehicle_vins():
-    print(vin)
+async def main():
+    async with ClientSession() as session:
+        myskoda = MySkoda(session)
+        await myskoda.connect(USERNAME, PASSWORD)
+        for vin in await myskoda.list_vehicle_vins():
+            print(vin)
+        myskoda.disconnect()
 
-myskoda.disconnect()
-await session.close()
+asyncio.run(main())
 ```
 
 ## Documentation

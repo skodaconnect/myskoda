@@ -15,10 +15,7 @@ from typing import Any, cast
 
 import aiomqtt
 
-from myskoda.auth.authorization import Authorization
-from myskoda.models.service_event import ServiceEvent, ServiceEventWithChargingData
-from myskoda.models.vehicle_event import VehicleEvent, VehicleEventWithVehicleIgnitionStatusData
-
+from .auth.authorization import Authorization
 from .const import (
     MQTT_ACCOUNT_EVENT_TOPICS,
     MQTT_BROKER_HOST,
@@ -47,6 +44,8 @@ from .event import (
     EventVehicleIgnitionStatus,
 )
 from .models.operation_request import OperationName, OperationRequest, OperationStatus
+from .models.service_event import ServiceEvent, ServiceEventWithChargingData
+from .models.vehicle_event import VehicleEvent, VehicleEventWithVehicleIgnitionStatusData
 
 _LOGGER = logging.getLogger(__name__)
 TOPIC_RE = re.compile("^(.*?)/(.*?)/(.*?)/(.*?)$")

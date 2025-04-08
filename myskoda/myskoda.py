@@ -1,13 +1,29 @@
 """Main entry point for the MySkoda library.
 
 This class provides all methods to operate on the API and MQTT broker.
+
+Example:
+    async with aiohttp.ClientSession() as client:
+        myskoda = MySkoda(session)
+        await myskoda.connect("username", "password")
+        for vin in await myskoda.list_vehicle_vins():
+            print(vin)
+
+All get_ methods will always fetch new data from the API and return that.
+
+All refresh_ methods are debounced or otherwise rate limited. They (eventually) update local
+attributes and don't return anything. Instead they trigger callbacks which clients can register
+for using the subscribe_updates method.
+
+MQTT event callbacks can also be subscribed for using the subscribe_events method.
+
 """
 
 import logging
-from asyncio import create_task, gather, timeout
+from asyncio import create_task, timeout
+from collections import defaultdict
 from collections.abc import Callable, Coroutine
-from copy import deepcopy
-from datetime import UTC, datetime
+from datetime import UTC, datetime, timedelta
 from ssl import SSLContext
 from traceback import format_exc
 from types import SimpleNamespace
@@ -27,7 +43,14 @@ from myskoda.models.fixtures import (
 
 from .__version__ import __version__ as version
 from .auth.authorization import Authorization
-from .const import BASE_URL_SKODA, CLIENT_ID, MQTT_OPERATION_TIMEOUT, REDIRECT_URI
+from .const import (
+    BASE_URL_SKODA,
+    CACHE_USER_ENDPOINT_IN_HOURS,
+    CACHE_VEHICLE_HEALTH_IN_HOURS,
+    CLIENT_ID,
+    MQTT_OPERATION_TIMEOUT,
+    REDIRECT_URI,
+)
 from .event import Event, EventCharging, EventOperation, ServiceEventTopic
 from .models.air_conditioning import (
     AirConditioning,
@@ -40,6 +63,7 @@ from .models.air_conditioning import (
 from .models.auxiliary_heating import AuxiliaryConfig, AuxiliaryHeating, AuxiliaryHeatingTimer
 from .models.charging import ChargeMode, Charging, ChargingStatus
 from .models.chargingprofiles import ChargingProfiles
+from .models.common import Vin
 from .models.departure import DepartureInfo, DepartureTimer
 from .models.driving_range import DrivingRange, EngineType
 from .models.health import Health
@@ -60,8 +84,6 @@ from .vehicle import Vehicle
 _LOGGER = logging.getLogger(__name__)
 
 background_tasks = set()
-
-type Vin = str
 
 
 class MqttDisabledError(Exception):
@@ -112,8 +134,9 @@ class MySkoda:
     mqtt: MySkodaMqttClient | None = None
     authorization: MySkodaAuthorization
     ssl_context: SSLContext | None = None
+    user: User | None = None
     _vehicles: dict[Vin, Vehicle]
-    _callbacks: list[Callable[[Event], Coroutine[Any, Any, None]]]
+    _callbacks: dict[Vin, list[Callable[[], Coroutine[Any, Any, None]]]]
 
     def __init__(  # noqa: PLR0913
         self,
@@ -124,6 +147,7 @@ class MySkoda:
         mqtt_broker_port: int | None = None,
         mqtt_enable_ssl: bool | None = None,
     ) -> None:
+        self._callbacks = defaultdict(list)
         self._vehicles: dict[Vin, Vehicle] = {}
         self.session = session
         self.authorization = MySkodaAuthorization(session)
@@ -134,172 +158,15 @@ class MySkoda:
         self.mqtt_enable_ssl = mqtt_enable_ssl
         if mqtt_enabled:
             self.mqtt = self._create_mqtt_client()
-        self._callbacks = []
-
-    def _create_mqtt_client(self) -> MySkodaMqttClient:
-        kwargs = {
-            "authorization": self.authorization,
-            "hostname": self.mqtt_broker_host,
-            "port": self.mqtt_broker_port,
-            "enable_ssl": self.mqtt_enable_ssl,
-        }
-        mqtt = MySkodaMqttClient(**{k: v for k, v in kwargs.items() if v is not None})
-        mqtt.subscribe(self._on_mqtt_event)
-        return mqtt
-
-    async def _on_mqtt_event(self, event: Event) -> None:
-        """Handle MQTT events.
-
-        - Update self._vehicles with data received in event.
-        - Pass the event through to any subscribed callbacks.
-        """
-        if event.vin not in self._vehicles:
-            _LOGGER.debug("Received event for unknown VIN %s", event)
-        elif event.type == EventType.OPERATION:
-            await self._process_operation_event(event)
-        elif event.type == EventType.SERVICE_EVENT:
-            if event.topic == ServiceEventTopic.CHARGING:
-                await self._process_charging_event(event)
-            elif event.topic == ServiceEventTopic.ACCESS:
-                # NOTE: In the coordinator we are refreshing the full vehicle here...
-                # Do we really need to refresh the whole vehicle?
-                await self._refresh_info(event.vin)
-                await self._refresh_maintenance(event.vin)
-            elif event.topic == ServiceEventTopic.AIR_CONDITIONING:
-                await self._refresh_air_conditioning(event.vin)
-            elif event.topic == ServiceEventTopic.DEPARTURE:
-                await self._refresh_positions(event.vin)
-            elif event.topic == ServiceEventTopic.ODOMETER:
-                await self._refresh_info(event.vin)
-                await self._refresh_maintenance(event.vin)
-
-        self._emit_mqtt_event(event)
-
-    async def _process_operation_event(self, event: EventOperation) -> None:
-        """Refresh the appropriate vehicle data based on the operation details."""
-        _LOGGER.debug("Processing operation event: %s", event)
-        if event.operation.status == OperationStatus.IN_PROGRESS:
-            pass
-        elif event.operation.status == OperationStatus.ERROR:
-            pass  # Full update? Maybe instead just selective refresh as for completed operations?
-        elif event.operation.operation in [
-            OperationName.STOP_AIR_CONDITIONING,
-            OperationName.START_AIR_CONDITIONING,
-            OperationName.SET_AIR_CONDITIONING_TARGET_TEMPERATURE,
-            OperationName.START_WINDOW_HEATING,
-            OperationName.STOP_WINDOW_HEATING,
-            OperationName.SET_AIR_CONDITIONING_TIMERS,
-        ]:
-            await self._refresh_air_conditioning(event.vin)
-        elif event.operation.operation in [
-            OperationName.START_AUXILIARY_HEATING,
-            OperationName.STOP_AUXILIARY_HEATING,
-        ]:
-            await self._refresh_auxiliary_heating(event.vin)
-        elif event.operation.operation in [
-            OperationName.UPDATE_CHARGE_LIMIT,
-            OperationName.UPDATE_CARE_MODE,
-            OperationName.UPDATE_CHARGING_CURRENT,
-            OperationName.START_CHARGING,
-            OperationName.STOP_CHARGING,
-            OperationName.UPDATE_AUTO_UNLOCK_PLUG,
-        ]:
-            await self._refresh_charging(event.vin)
-        elif event.operation.operation in [
-            OperationName.LOCK,
-            OperationName.UNLOCK,
-        ]:
-            await self._refresh_status(event.vin)
-        elif event.operation.operation in [
-            OperationName.UPDATE_DEPARTURE_TIMERS,
-        ]:
-            await self._refresh_departure_info(event.vin)
-
-    async def _process_charging_event(self, event: EventCharging) -> None:
-        """Update self._vehicles with data from the event.
-
-        Start by fully refreshing Vehicle.charging and Vehicle.driving_range as the endpoints
-        may return updated data which is not included in the event. At the same time, the event
-        may have more recent data so still apply data extracted from the event on top...
-        """
-        _LOGGER.debug("Processing charging event: %s", event)
-        await self._refresh_charging(event.vin)
-        await self._refresh_driving_range(event.vin)
-
-        vehicle = self._vehicles[event.vin]
-        event_data: ServiceEventChargingData = event.event.data
-        if vehicle.charging and (status := vehicle.charging.status):
-            self._process_charging_event_update_charging(status, event_data)
-
-        if driving_range := vehicle.driving_range:
-            self._process_charging_event_update_driving_range(driving_range, event_data)
-
-    @staticmethod
-    def _process_charging_event_update_charging(
-        charging_status: ChargingStatus, event_data: ServiceEventChargingData
-    ) -> None:
-        """Update charging_status with the event_data."""
-        if event_data.charged_range:
-            charging_status.battery.remaining_cruising_range_in_meters = (
-                event_data.charged_range * 1000
-            )
-        if event_data.soc:
-            charging_status.battery.state_of_charge_in_percent = event_data.soc
-        if event_data.time_to_finish:
-            charging_status.remaining_time_to_fully_charged_in_minutes = event_data.time_to_finish
-        if event_data.state:
-            charging_status.state = event_data.state
-
-    @staticmethod
-    def _process_charging_event_update_driving_range(
-        driving_range: DrivingRange, event_data: ServiceEventChargingData
-    ) -> None:
-        """Update driving_range with the event_data."""
-        per = driving_range.primary_engine_range
-        ser = False
-
-        if driving_range.secondary_engine_range:
-            ser = driving_range.secondary_engine_range
-
-        if event_data.soc:
-            if per.engine_type == EngineType.ELECTRIC:
-                per.current_soc_in_percent = event_data.soc
-            elif ser and ser.engine_type == EngineType.ELECTRIC:
-                ser.current_soc_in_percent = event_data.soc
-
-        if event_data.charged_range:
-            range_in_km = int(event_data.charged_range / 1000)
-            if per.engine_type == EngineType.ELECTRIC:
-                per.remaining_range_in_km = range_in_km
-            elif ser and ser.engine_type == EngineType.ELECTRIC:
-                ser.remaining_range_in_km = range_in_km
-
-    def _emit_mqtt_event(self, event: Event) -> None:
-        """Pass event to any subscribed callbacks."""
-        for callback in self._callbacks:
-            result = callback(event)
-            if result is not None:
-                task = create_task(result)
-                background_tasks.add(task)
-                task.add_done_callback(background_tasks.discard)
 
     async def enable_mqtt(self) -> None:
         """If MQTT was not enabled when initializing MySkoda, enable it manually and connect."""
         if self.mqtt is not None:
             return
         self.mqtt = self._create_mqtt_client()
-        user = await self.get_user()
+        self.user = await self.get_user()
         vehicles = await self.list_vehicle_vins()
-        await self.mqtt.connect(user.id, vehicles)
-
-    async def _wait_for_operation(self, operation: OperationName) -> None:
-        if self.mqtt is None:
-            return
-        try:
-            async with timeout(MQTT_OPERATION_TIMEOUT):
-                await self.mqtt.wait_for_operation(operation)
-        except TimeoutError:
-            _LOGGER.warning("Timeout occurred while waiting for %s. Aborted.", operation)
+        await self.mqtt.connect(self.user.id, vehicles)
 
     async def connect(self, email: str, password: str) -> None:
         """Authenticate on the rest api and connect to the MQTT broker."""
@@ -312,27 +179,150 @@ class MySkoda:
             await self.mqtt.connect(user.id, vehicles)
         _LOGGER.debug("MySkoda ready.")
 
-    def subscribe(self, callback: Callable[[Event], Coroutine[Any, Any, None]]) -> None:
-        """Listen for events emitted by MySkoda's MQTT broker."""
-        if self.mqtt is None:
-            raise MqttDisabledError
-        self._callbacks.append(callback)
-
     async def disconnect(self) -> None:
         """Disconnect from the MQTT broker."""
         if self.mqtt:
             await self.mqtt.disconnect()
 
-    async def stop_charging(self, vin: Vin) -> None:
-        """Stop the car from charging."""
-        future = self._wait_for_operation(OperationName.STOP_CHARGING)
-        await self.rest_api.stop_charging(vin)
-        await future
+    def subscribe_events(self, callback: Callable[[Event], Coroutine[Any, Any, None]]) -> None:
+        """Listen for events emitted by MySkoda's MQTT broker."""
+        if self.mqtt is None:
+            raise MqttDisabledError
+        self.mqtt.subscribe(callback=callback)
+
+    def subscribe(self, callback: Callable[[Event], Coroutine[Any, Any, None]]) -> None:
+        """See subscribe_events. For backwards compatibility."""
+        _LOGGER.warning(
+            "The subscribe() method is deprecated and will be removed, use subscribe_events"
+        )
+        self.subscribe_events(callback=callback)
+
+    def subscribe_updates(
+        self, vin: Vin, callback: Callable[[], Coroutine[Any, Any, None]]
+    ) -> None:
+        """Subscribe a callback function to be called when Vehicle data is updated."""
+        self._callbacks[vin].append(callback)
+
+    async def verify_spin(self, spin: str, anonymize: bool = False) -> Spin:
+        """Verify S-PIN."""
+        return (await self.rest_api.verify_spin(spin, anonymize=anonymize)).result
+
+    async def list_vehicle_vins(self) -> list[str]:
+        """List all vehicles by their vins."""
+        garage = (await self.rest_api.get_garage()).result
+        if garage.vehicles is None:
+            return []
+        return [vehicle.vin for vehicle in garage.vehicles]
+
+    def vehicle(self, vin: Vin) -> Vehicle:
+        """Return the currently cached vehicle."""
+        if vin in self._vehicles:
+            return self._vehicles[vin]
+        raise UnknownVinError(vin)
+
+    async def get_vehicle(
+        self, vin: Vin, excluded_capabilities: list[CapabilityId] | None = None
+    ) -> Vehicle:
+        """Load and return a full vehicle based on its capabilities."""
+        capabilities = [
+            CapabilityId.AIR_CONDITIONING,
+            CapabilityId.AUXILIARY_HEATING,
+            CapabilityId.CHARGING,
+            CapabilityId.PARKING_POSITION,
+            CapabilityId.STATE,
+            CapabilityId.TRIP_STATISTICS,
+            CapabilityId.VEHICLE_HEALTH_INSPECTION,
+            CapabilityId.DEPARTURE_TIMERS,
+        ]
+
+        if excluded_capabilities:
+            capabilities = [c for c in capabilities if c not in excluded_capabilities]
+
+        return await self.get_partial_vehicle(vin, capabilities)
+
+    async def get_partial_vehicle(self, vin: Vin, capabilities: list[CapabilityId]) -> Vehicle:
+        """Load and return a partial vehicle, based on list of capabilities."""
+        info = await self.get_info(vin)
+        maintenance = await self.get_maintenance(vin)
+
+        if vin in self._vehicles:
+            self._vehicles[vin].info = info
+            self._vehicles[vin].maintenance = maintenance
+        else:
+            self._vehicles[vin] = Vehicle(info, maintenance)
+
+        for capa in capabilities:
+            if info.is_capability_available(capa):
+                await self._request_capability_data(vin, capa)
+
+        return self.vehicle(vin)
+
+    async def get_auth_token(self) -> str:
+        """Retrieve the main access token for the IDK session."""
+        return await self.rest_api.authorization.get_access_token()
+
+    async def get_user(self, anonymize: bool = False) -> User:
+        """Retrieve user information about logged in user."""
+        return (await self.rest_api.get_user(anonymize=anonymize)).result
+
+    async def get_info(self, vin: Vin, anonymize: bool = False) -> Info:
+        """Retrieve the basic vehicle information for the specified vehicle."""
+        return (await self.rest_api.get_info(vin, anonymize=anonymize)).result
+
+    async def get_charging(self, vin: Vin, anonymize: bool = False) -> Charging:
+        """Retrieve information related to charging for the specified vehicle."""
+        return (await self.rest_api.get_charging(vin, anonymize=anonymize)).result
+
+    async def get_charging_profiles(self, vin: Vin, anonymize: bool = False) -> ChargingProfiles:
+        """Retrieve information related to charging profiles for the specified vehicle."""
+        return (await self.rest_api.get_charging_profiles(vin, anonymize=anonymize)).result
+
+    async def get_status(self, vin: Vin, anonymize: bool = False) -> Status:
+        """Retrieve the current status for the specified vehicle."""
+        return (await self.rest_api.get_status(vin, anonymize=anonymize)).result
+
+    async def get_air_conditioning(self, vin: Vin, anonymize: bool = False) -> AirConditioning:
+        """Retrieve the current air conditioning status for the specified vehicle."""
+        return (await self.rest_api.get_air_conditioning(vin, anonymize=anonymize)).result
+
+    async def get_auxiliary_heating(self, vin: Vin, anonymize: bool = False) -> AuxiliaryHeating:
+        """Retrieve the current auxiliary heating status for the specified vehicle."""
+        return (await self.rest_api.get_auxiliary_heating(vin, anonymize=anonymize)).result
+
+    async def get_positions(self, vin: Vin, anonymize: bool = False) -> Positions:
+        """Retrieve the current position for the specified vehicle."""
+        return (await self.rest_api.get_positions(vin, anonymize=anonymize)).result
+
+    async def get_driving_range(self, vin: Vin, anonymize: bool = False) -> DrivingRange:
+        """Retrieve estimated driving range for combustion vehicles."""
+        return (await self.rest_api.get_driving_range(vin, anonymize=anonymize)).result
+
+    async def get_trip_statistics(self, vin: Vin, anonymize: bool = False) -> TripStatistics:
+        """Retrieve statistics about past trips."""
+        return (await self.rest_api.get_trip_statistics(vin, anonymize=anonymize)).result
+
+    async def get_maintenance(self, vin: Vin, anonymize: bool = False) -> Maintenance:
+        """Retrieve maintenance report."""
+        return (await self.rest_api.get_maintenance(vin, anonymize=anonymize)).result
+
+    async def get_health(self, vin: Vin, anonymize: bool = False) -> Health:
+        """Retrieve health information for the specified vehicle."""
+        return (await self.rest_api.get_health(vin, anonymize=anonymize)).result
+
+    async def get_departure_timers(self, vin: Vin, anonymize: bool = False) -> DepartureInfo:
+        """Retrieve departure timers for the specified vehicle."""
+        return (await self.rest_api.get_departure_timers(vin, anonymize=anonymize)).result
 
     async def start_charging(self, vin: Vin) -> None:
         """Start charging the car."""
         future = self._wait_for_operation(OperationName.START_CHARGING)
         await self.rest_api.start_charging(vin)
+        await future
+
+    async def stop_charging(self, vin: Vin) -> None:
+        """Stop the car from charging."""
+        future = self._wait_for_operation(OperationName.STOP_CHARGING)
+        await self.rest_api.stop_charging(vin)
         await future
 
     async def set_charge_mode(self, vin: Vin, mode: ChargeMode) -> None:
@@ -491,199 +481,118 @@ class MySkoda:
         await self.rest_api.set_departure_timer(vin, timer)
         await future
 
-    async def get_departure_timers(self, vin: Vin, anonymize: bool = False) -> DepartureInfo:
-        """Retrieve departure timers for the specified vehicle."""
-        return (await self.rest_api.get_departure_timers(vin, anonymize=anonymize)).result
+    async def refresh_user(self) -> None:
+        """Refresh user data for the provided Vin."""
+        if self.user and self.user.timestamp:
+            cache_expiry_time = self.user.timestamp + timedelta(hours=CACHE_USER_ENDPOINT_IN_HOURS)
 
-    async def get_auth_token(self) -> str:
-        """Retrieve the main access token for the IDK session."""
-        return await self.rest_api.authorization.get_access_token()
-
-    async def verify_spin(self, spin: str, anonymize: bool = False) -> Spin:
-        """Verify S-PIN."""
-        return (await self.rest_api.verify_spin(spin, anonymize=anonymize)).result
-
-    async def get_info(self, vin: Vin, anonymize: bool = False) -> Info:
-        """Retrieve the basic vehicle information for the specified vehicle."""
-        return (await self.rest_api.get_info(vin, anonymize=anonymize)).result
-
-    async def get_charging(self, vin: Vin, anonymize: bool = False) -> Charging:
-        """Retrieve information related to charging for the specified vehicle."""
-        return (await self.rest_api.get_charging(vin, anonymize=anonymize)).result
-
-    async def get_charging_profiles(self, vin: Vin, anonymize: bool = False) -> ChargingProfiles:
-        """Retrieve information related to charging profiles for the specified vehicle."""
-        return (await self.rest_api.get_charging_profiles(vin, anonymize=anonymize)).result
-
-    async def get_status(self, vin: Vin, anonymize: bool = False) -> Status:
-        """Retrieve the current status for the specified vehicle."""
-        return (await self.rest_api.get_status(vin, anonymize=anonymize)).result
-
-    async def get_air_conditioning(self, vin: Vin, anonymize: bool = False) -> AirConditioning:
-        """Retrieve the current air conditioning status for the specified vehicle."""
-        return (await self.rest_api.get_air_conditioning(vin, anonymize=anonymize)).result
-
-    async def get_auxiliary_heating(self, vin: Vin, anonymize: bool = False) -> AuxiliaryHeating:
-        """Retrieve the current auxiliary heating status for the specified vehicle."""
-        return (await self.rest_api.get_auxiliary_heating(vin, anonymize=anonymize)).result
-
-    async def get_positions(self, vin: Vin, anonymize: bool = False) -> Positions:
-        """Retrieve the current position for the specified vehicle."""
-        return (await self.rest_api.get_positions(vin, anonymize=anonymize)).result
-
-    async def get_driving_range(self, vin: Vin, anonymize: bool = False) -> DrivingRange:
-        """Retrieve estimated driving range for combustion vehicles."""
-        return (await self.rest_api.get_driving_range(vin, anonymize=anonymize)).result
-
-    async def get_trip_statistics(self, vin: Vin, anonymize: bool = False) -> TripStatistics:
-        """Retrieve statistics about past trips."""
-        return (await self.rest_api.get_trip_statistics(vin, anonymize=anonymize)).result
-
-    async def get_maintenance(self, vin: Vin, anonymize: bool = False) -> Maintenance:
-        """Retrieve maintenance report."""
-        return (await self.rest_api.get_maintenance(vin, anonymize=anonymize)).result
-
-    async def get_health(self, vin: Vin, anonymize: bool = False) -> Health:
-        """Retrieve health information for the specified vehicle."""
-        return (await self.rest_api.get_health(vin, anonymize=anonymize)).result
-
-    async def get_user(self, anonymize: bool = False) -> User:
-        """Retrieve user information about logged in user."""
-        return (await self.rest_api.get_user(anonymize=anonymize)).result
-
-    async def list_vehicle_vins(self) -> list[str]:
-        """List all vehicles by their vins."""
-        garage = (await self.rest_api.get_garage()).result
-        if garage.vehicles is None:
-            return []
-        return [vehicle.vin for vehicle in garage.vehicles]
-
-    def vehicle(self, vin: Vin) -> Vehicle:
-        """Return the currently cached vehicle."""
-        if vin in self._vehicles:
-            return deepcopy(self._vehicles[vin])
-        raise UnknownVinError(vin)
-
-    async def get_vehicle(
-        self, vin: Vin, excluded_capabilities: list[CapabilityId] | None = None
-    ) -> Vehicle:
-        """Load a full vehicle based on its capabilities."""
-        capabilities = [
-            CapabilityId.AIR_CONDITIONING,
-            CapabilityId.AUXILIARY_HEATING,
-            CapabilityId.CHARGING,
-            CapabilityId.PARKING_POSITION,
-            CapabilityId.STATE,
-            CapabilityId.TRIP_STATISTICS,
-            CapabilityId.VEHICLE_HEALTH_INSPECTION,
-            CapabilityId.DEPARTURE_TIMERS,
-        ]
-
-        if excluded_capabilities:
-            capabilities = [c for c in capabilities if c not in excluded_capabilities]
-
-        return await self.get_partial_vehicle(vin, capabilities)
-
-    async def get_partial_vehicle(self, vin: Vin, capabilities: list[CapabilityId]) -> Vehicle:
-        """Load a partial vehicle, based on list of capabilities."""
-        info = await self.get_info(vin)
-        maintenance = await self.get_maintenance(vin)
-
-        if vin in self._vehicles:
-            self._vehicles[vin].info = info
-            self._vehicles[vin].maintenance = maintenance
+            if datetime.now(UTC) > cache_expiry_time:
+                _LOGGER.debug("Refreshing user - cache expired at %s", self.user.timestamp)
+                self.user = await self.get_user()
+            else:
+                _LOGGER.debug("Skipping user refresh - cache is still valid.")
         else:
-            self._vehicles[vin] = Vehicle(info, maintenance)
+            self.user = await self.get_user()
 
-        for capa in capabilities:
-            if info.is_capability_available(capa):
-                await self._request_capability_data(vin, capa)
+    @async_debounce(immediate=True)
+    async def refresh_vehicle(self, vin: Vin, notify: bool = True) -> None:
+        """Refresh all vehicle data for the provided Vin.
 
-        return self.vehicle(vin)
+        Get health only when missing and every 24h.
+        This avoids triggering battery protection, such as in Citigoe and Karoq.
+        https://github.com/skodaconnect/homeassistant-myskoda/issues/468
+        """
+        excluded_capabilities = []
+        if (vehicle := self._vehicles.get(vin)) and vehicle.health and vehicle.health.timestamp:
+            cache_expiry = vehicle.health.timestamp + timedelta(hours=CACHE_VEHICLE_HEALTH_IN_HOURS)
 
-    async def _request_capability_data(self, vin: Vin, capa: CapabilityId) -> None:
-        """Request specific capability data from MySkoda API."""
-        try:
-            match capa:
-                case CapabilityId.AIR_CONDITIONING:
-                    self._vehicles[vin].air_conditioning = await self.get_air_conditioning(vin)
-                case CapabilityId.AUXILIARY_HEATING:
-                    self._vehicles[vin].auxiliary_heating = await self.get_auxiliary_heating(vin)
-                case CapabilityId.CHARGING:
-                    self._vehicles[vin].charging = await self.get_charging(vin)
-                case CapabilityId.PARKING_POSITION:
-                    self._vehicles[vin].positions = await self.get_positions(vin)
-                case CapabilityId.STATE:
-                    self._vehicles[vin].status = await self.get_status(vin)
-                    self._vehicles[vin].driving_range = await self.get_driving_range(vin)
-                case CapabilityId.TRIP_STATISTICS:
-                    self._vehicles[vin].trip_statistics = await self.get_trip_statistics(vin)
-                case CapabilityId.VEHICLE_HEALTH_INSPECTION:
-                    self._vehicles[vin].health = await self.get_health(vin)
-                case CapabilityId.DEPARTURE_TIMERS:
-                    self._vehicles[vin].departure_info = await self.get_departure_timers(vin)
-        except Exception as err:  # noqa: BLE001
-            _LOGGER.warning("Requesting %s failed: %s, continue", capa, err)
+            if datetime.now(UTC) > cache_expiry:
+                _LOGGER.debug("Refreshing health - cache expired at %s", cache_expiry)
+            else:
+                _LOGGER.debug("Skipping health refresh - cache is still valid.")
+                excluded_capabilities.append(CapabilityId.VEHICLE_HEALTH_INSPECTION)
 
-    @async_debounce(immediate=True, queue=False)
-    async def _refresh_info(self, vin: Vin) -> None:
+        self._vehicles[vin] = await self.get_vehicle(vin, excluded_capabilities)
+
+        if notify:
+            self._notify_callbacks(vin)
+
+    @async_debounce(immediate=True)
+    async def refresh_info(self, vin: Vin, notify: bool = True) -> None:
         """Refresh info data for the provided Vin."""
         self._vehicles[vin].info = await self.get_info(vin)
+        if notify:
+            self._notify_callbacks(vin)
 
-    @async_debounce(immediate=True, queue=False)
-    async def _refresh_maintenance(self, vin: Vin) -> None:
-        """Refresh maintenance data for the provided Vin."""
-        self._vehicles[vin].maintenance = await self.get_maintenance(vin)
-
-    @async_debounce(immediate=True, queue=False)
-    async def _refresh_air_conditioning(self, vin: Vin) -> None:
-        """Refresh air_conditioning data for the provided Vin."""
-        self._vehicles[vin].air_conditioning = await self.get_air_conditioning(vin)
-
-    @async_debounce(immediate=True, queue=False)
-    async def _refresh_auxiliary_heating(self, vin: Vin) -> None:
-        """Refresh auxiliary_heating data for the provided Vin."""
-        self._vehicles[vin].auxiliary_heating = await self.get_auxiliary_heating(vin)
-
-    @async_debounce(immediate=True, queue=False)
-    async def _refresh_charging(self, vin: Vin) -> None:
+    @async_debounce(immediate=True)
+    async def refresh_charging(self, vin: Vin, notify: bool = True) -> None:
         """Refresh charging data for the provided Vin."""
         self._vehicles[vin].charging = await self.get_charging(vin)
+        if notify:
+            self._notify_callbacks(vin)
 
-    @async_debounce(immediate=True, queue=False)
-    async def _refresh_positions(self, vin: Vin) -> None:
-        """Refresh positions data for the provided Vin."""
-        self._vehicles[vin].positions = await self.get_positions(vin)
-
-    @async_debounce(immediate=True, queue=False)
-    async def _refresh_status(self, vin: Vin) -> None:
+    @async_debounce(immediate=True)
+    async def refresh_status(self, vin: Vin, notify: bool = True) -> None:
         """Refresh status data for the provided Vin."""
         self._vehicles[vin].status = await self.get_status(vin)
+        if notify:
+            self._notify_callbacks(vin)
 
-    @async_debounce(immediate=True, queue=False)
-    async def _refresh_driving_range(self, vin: Vin) -> None:
+    @async_debounce(immediate=True)
+    async def refresh_air_conditioning(self, vin: Vin, notify: bool = True) -> None:
+        """Refresh air_conditioning data for the provided Vin."""
+        self._vehicles[vin].air_conditioning = await self.get_air_conditioning(vin)
+        if notify:
+            self._notify_callbacks(vin)
+
+    @async_debounce(immediate=True)
+    async def refresh_auxiliary_heating(self, vin: Vin, notify: bool = True) -> None:
+        """Refresh auxiliary_heating data for the provided Vin."""
+        self._vehicles[vin].auxiliary_heating = await self.get_auxiliary_heating(vin)
+        if notify:
+            self._notify_callbacks(vin)
+
+    @async_debounce(immediate=True)
+    async def refresh_positions(self, vin: Vin, notify: bool = True) -> None:
+        """Refresh positions data for the provided Vin."""
+        self._vehicles[vin].positions = await self.get_positions(vin)
+        if notify:
+            self._notify_callbacks(vin)
+
+    @async_debounce(immediate=True)
+    async def refresh_driving_range(self, vin: Vin, notify: bool = True) -> None:
         """Refresh driving_range data for the provided Vin."""
         self._vehicles[vin].driving_range = await self.get_driving_range(vin)
+        if notify:
+            self._notify_callbacks(vin)
 
-    @async_debounce(immediate=True, queue=False)
-    async def _refresh_trip_statistics(self, vin: Vin) -> None:
+    @async_debounce(immediate=True)
+    async def refresh_trip_statistics(self, vin: Vin, notify: bool = True) -> None:
         """Refresh trip_statistics data for the provided Vin."""
         self._vehicles[vin].trip_statistics = await self.get_trip_statistics(vin)
+        if notify:
+            self._notify_callbacks(vin)
 
-    @async_debounce(immediate=True, queue=False)
-    async def _refresh_health(self, vin: Vin) -> None:
+    @async_debounce(immediate=True)
+    async def refresh_maintenance(self, vin: Vin, notify: bool = True) -> None:
+        """Refresh maintenance data for the provided Vin."""
+        self._vehicles[vin].maintenance = await self.get_maintenance(vin)
+        if notify:
+            self._notify_callbacks(vin)
+
+    @async_debounce(immediate=True)
+    async def refresh_health(self, vin: Vin, notify: bool = True) -> None:
         """Refresh health data for the provided Vin."""
         self._vehicles[vin].health = await self.get_health(vin)
+        if notify:
+            self._notify_callbacks(vin)
 
-    @async_debounce(immediate=True, queue=False)
-    async def _refresh_departure_info(self, vin: Vin) -> None:
+    @async_debounce(immediate=True)
+    async def refresh_departure_info(self, vin: Vin, notify: bool = True) -> None:
         """Refresh departure_info data for the provided Vin."""
         self._vehicles[vin].departure_info = await self.get_departure_timers(vin)
-
-    async def get_all_vehicles(self) -> list[Vehicle]:
-        """Load all vehicles based on their capabilities."""
-        vins = await self.list_vehicle_vins()
-        return await gather(*(self.get_vehicle(vin) for vin in vins))
+        if notify:
+            self._notify_callbacks(vin)
 
     async def generate_fixture_report(
         self, vin: Vin, vehicle: FixtureVehicle, endpoint: Endpoint
@@ -767,3 +676,183 @@ class MySkoda:
             reports=reports,
             library_version=version,
         )
+
+    async def _request_capability_data(self, vin: Vin, capa: CapabilityId) -> None:
+        """Request specific capability data from MySkoda API."""
+        try:
+            match capa:
+                case CapabilityId.AIR_CONDITIONING:
+                    self._vehicles[vin].air_conditioning = await self.get_air_conditioning(vin)
+                case CapabilityId.AUXILIARY_HEATING:
+                    self._vehicles[vin].auxiliary_heating = await self.get_auxiliary_heating(vin)
+                case CapabilityId.CHARGING:
+                    self._vehicles[vin].charging = await self.get_charging(vin)
+                case CapabilityId.PARKING_POSITION:
+                    self._vehicles[vin].positions = await self.get_positions(vin)
+                case CapabilityId.STATE:
+                    self._vehicles[vin].status = await self.get_status(vin)
+                    self._vehicles[vin].driving_range = await self.get_driving_range(vin)
+                case CapabilityId.TRIP_STATISTICS:
+                    self._vehicles[vin].trip_statistics = await self.get_trip_statistics(vin)
+                case CapabilityId.VEHICLE_HEALTH_INSPECTION:
+                    self._vehicles[vin].health = await self.get_health(vin)
+                case CapabilityId.DEPARTURE_TIMERS:
+                    self._vehicles[vin].departure_info = await self.get_departure_timers(vin)
+        except Exception as err:  # noqa: BLE001
+            _LOGGER.warning("Requesting %s failed: %s, continue", capa, err)
+
+    async def _wait_for_operation(self, operation: OperationName) -> None:
+        if self.mqtt is None:
+            return
+        try:
+            async with timeout(MQTT_OPERATION_TIMEOUT):
+                await self.mqtt.wait_for_operation(operation)
+        except TimeoutError:
+            _LOGGER.warning("Timeout occurred while waiting for %s. Aborted.", operation)
+
+    def _notify_callbacks(self, vin: Vin) -> None:
+        """Execute registered callback functions for the vin."""
+        for callback in self._callbacks.get(vin, []):
+            result = callback()
+            if result is not None:
+                task = create_task(result)
+                background_tasks.add(task)
+                task.add_done_callback(background_tasks.discard)
+
+    def _create_mqtt_client(self) -> MySkodaMqttClient:
+        kwargs = {
+            "authorization": self.authorization,
+            "hostname": self.mqtt_broker_host,
+            "port": self.mqtt_broker_port,
+            "enable_ssl": self.mqtt_enable_ssl,
+        }
+        mqtt = MySkodaMqttClient(**{k: v for k, v in kwargs.items() if v is not None})
+        mqtt.subscribe(self._on_mqtt_event)
+        return mqtt
+
+    async def _on_mqtt_event(self, event: Event) -> None:
+        """Handle MQTT events.
+
+        Update self._vehicles with data received in event and notify callbacks.
+        """
+        if event.vin not in self._vehicles:
+            _LOGGER.debug("Received event for unknown VIN %s", event)
+        elif event.type == EventType.OPERATION:
+            await self._process_operation_event(event)
+        elif event.type == EventType.SERVICE_EVENT:
+            if event.topic == ServiceEventTopic.CHARGING:
+                await self._process_charging_event(event)
+            elif event.topic == ServiceEventTopic.ACCESS:
+                await self.refresh_status(event.vin)
+            elif event.topic == ServiceEventTopic.AIR_CONDITIONING:
+                await self.refresh_air_conditioning(event.vin)
+            elif event.topic == ServiceEventTopic.DEPARTURE:
+                await self.refresh_positions(event.vin)
+            elif event.topic == ServiceEventTopic.ODOMETER:
+                await self.refresh_info(event.vin)
+                await self.refresh_maintenance(event.vin)
+
+    async def _process_operation_event(self, event: EventOperation) -> None:
+        """Refresh the appropriate vehicle data based on the operation details."""
+        _LOGGER.debug("Processing operation event: %s", event)
+        if event.operation.status == OperationStatus.ERROR:
+            _LOGGER.warning(
+                "Error received from car in operation %s, reason: %s.",
+                event.operation.status,
+                event.operation.error_code,
+            )
+        if event.operation.status == OperationStatus.IN_PROGRESS:
+            pass
+        elif event.operation.operation in [
+            OperationName.STOP_AIR_CONDITIONING,
+            OperationName.START_AIR_CONDITIONING,
+            OperationName.SET_AIR_CONDITIONING_TARGET_TEMPERATURE,
+            OperationName.START_WINDOW_HEATING,
+            OperationName.STOP_WINDOW_HEATING,
+            OperationName.SET_AIR_CONDITIONING_TIMERS,
+        ]:
+            await self.refresh_air_conditioning(event.vin)
+        elif event.operation.operation in [
+            OperationName.START_AUXILIARY_HEATING,
+            OperationName.STOP_AUXILIARY_HEATING,
+        ]:
+            await self.refresh_auxiliary_heating(event.vin)
+        elif event.operation.operation in [
+            OperationName.UPDATE_CHARGE_LIMIT,
+            OperationName.UPDATE_CARE_MODE,
+            OperationName.UPDATE_CHARGING_CURRENT,
+            OperationName.START_CHARGING,
+            OperationName.STOP_CHARGING,
+            OperationName.UPDATE_AUTO_UNLOCK_PLUG,
+        ]:
+            await self.refresh_charging(event.vin)
+        elif event.operation.operation in [
+            OperationName.LOCK,
+            OperationName.UNLOCK,
+        ]:
+            await self.refresh_status(event.vin)
+        elif event.operation.operation in [
+            OperationName.UPDATE_DEPARTURE_TIMERS,
+        ]:
+            await self.refresh_departure_info(event.vin)
+
+    async def _process_charging_event(self, event: EventCharging) -> None:
+        """Update self._vehicles with data from the event.
+
+        Start by fully refreshing Vehicle.charging and Vehicle.driving_range as the endpoints
+        may return updated data which is not included in the event. At the same time, the event
+        may have more recent data so still apply data extracted from the event on top...
+        """
+        _LOGGER.debug("Processing charging event: %s", event)
+        await self.refresh_charging(event.vin, notify=False)
+        await self.refresh_driving_range(event.vin, notify=False)
+
+        vehicle = self._vehicles[event.vin]
+        event_data: ServiceEventChargingData = event.event.data
+        if vehicle.charging and (status := vehicle.charging.status):
+            self._process_charging_event_update_charging(status, event_data)
+
+        if driving_range := vehicle.driving_range:
+            self._process_charging_event_update_driving_range(driving_range, event_data)
+
+        self._notify_callbacks(event.vin)
+
+    @staticmethod
+    def _process_charging_event_update_charging(
+        charging_status: ChargingStatus, event_data: ServiceEventChargingData
+    ) -> None:
+        """Update charging_status with the event_data."""
+        if event_data.charged_range:
+            charging_status.battery.remaining_cruising_range_in_meters = (
+                event_data.charged_range * 1000
+            )
+        if event_data.soc:
+            charging_status.battery.state_of_charge_in_percent = event_data.soc
+        if event_data.time_to_finish:
+            charging_status.remaining_time_to_fully_charged_in_minutes = event_data.time_to_finish
+        if event_data.state:
+            charging_status.state = event_data.state
+
+    @staticmethod
+    def _process_charging_event_update_driving_range(
+        driving_range: DrivingRange, event_data: ServiceEventChargingData
+    ) -> None:
+        """Update driving_range with the event_data."""
+        per = driving_range.primary_engine_range
+        ser = False
+
+        if driving_range.secondary_engine_range:
+            ser = driving_range.secondary_engine_range
+
+        if event_data.soc:
+            if per.engine_type == EngineType.ELECTRIC:
+                per.current_soc_in_percent = event_data.soc
+            elif ser and ser.engine_type == EngineType.ELECTRIC:
+                ser.current_soc_in_percent = event_data.soc
+
+        if event_data.charged_range:
+            range_in_km = int(event_data.charged_range / 1000)
+            if per.engine_type == EngineType.ELECTRIC:
+                per.remaining_range_in_km = range_in_km
+            elif ser and ser.engine_type == EngineType.ELECTRIC:
+                ser.remaining_range_in_km = range_in_km
