@@ -5,12 +5,12 @@ import functools
 from collections.abc import Awaitable, Callable
 from typing import ParamSpec
 
+from .const import DEFAULT_DEBOUNCE_WAIT_SECONDS
+
 # TODO @dvx76: Switch to Python 3.13 generics syntax once we're on 3.13
 # https://docs.python.org/3/library/typing.html#typing.ParamSpec
 
 P = ParamSpec("P")  # Represents the function parameters
-
-DEFAULT_DEBOUNCE_WAIT_SECONDS = 30.0
 
 
 def async_debounce(
@@ -24,7 +24,7 @@ def async_debounce(
     resetting if called again.
 
     When 'immediate' is True the first call is executed immediatally.
-    When que'ue is True subsequent calls are still debounced normally. 'queue' does nothing when
+    When queue is True subsequent calls are still debounced normally. 'queue' does nothing when
     'immediate' is False.
     """
     task: asyncio.Task | None = None

@@ -7,6 +7,8 @@ from enum import StrEnum
 from mashumaro import field_options
 from mashumaro.mixins.orjson import DataClassORJSONMixin
 
+type Vin = str
+
 
 class CaseInsensitiveStrEnum(StrEnum):
     @classmethod
