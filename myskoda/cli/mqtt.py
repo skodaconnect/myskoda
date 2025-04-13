@@ -42,5 +42,5 @@ async def subscribe(ctx: Context) -> None:
     async def on_event(event: Event) -> None:
         ctx.obj["print"](event.to_dict())
 
-    myskoda.subscribe(on_event)
+    myskoda.subscribe_events(on_event)
     await asyncio.Event().wait()

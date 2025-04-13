@@ -11,7 +11,7 @@ plugins:
   - search
   - gen-files:
       scripts:
-      - scripts/gen_ref_nav.py
+        - scripts/gen_ref_nav.py
   - literate-nav:
       nav_file: SUMMARY.md
   - mkdocstrings:
@@ -23,9 +23,10 @@ plugins:
 nav:
   - Home: README.md
   - Fetching Data: fetching_data.md
+  - Refreshing Data: refreshing_data.md
   - Events: events.md
   - Primer: primer.md
   - API reference: reference/
-  - Reverse Engineering:
-    - MQTT: mqtt.md
-    - Rest API: rest.md
+  - Skoda API details:
+      - MQTT: mqtt.md
+      - Rest API: rest.md
