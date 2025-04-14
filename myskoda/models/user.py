@@ -45,7 +45,6 @@ class User(BaseResponse):
     email: str
     id: str
     last_name: str = field(metadata=field_options(alias="lastName"))
-    nickname: str
     preferred_language: str = field(metadata=field_options(alias="preferredLanguage"))
     profile_picture_url: str | None = field(
         default=None, metadata=field_options(alias="profilePictureUrl")
@@ -55,5 +54,6 @@ class User(BaseResponse):
         default=None, metadata=field_options(alias="preferredContactChannel")
     )
     first_name: str | None = field(default=None, metadata=field_options(alias="firstName"))
+    nickname: str | None = None
     phone: str | None = None
     country: str | None = None
