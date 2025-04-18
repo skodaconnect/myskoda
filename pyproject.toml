@@ -34,7 +34,7 @@ dev = [
 cli = [
   "asyncclick ~=8.1",
   "coloredlogs ~=15.0",
-  "termcolor ~=2.4",
+  "termcolor ~=3.0",
   "pygments ~=2.18"
 ]
 docs = [
