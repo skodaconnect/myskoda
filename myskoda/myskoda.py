@@ -19,8 +19,8 @@ MQTT event callbacks can also be subscribed for using the subscribe_events metho
 
 """
 
+import asyncio
 import logging
-from asyncio import create_task, timeout
 from collections import defaultdict
 from collections.abc import Callable, Coroutine
 from datetime import UTC, datetime, timedelta
@@ -49,6 +49,7 @@ from .const import (
     CACHE_VEHICLE_HEALTH_IN_HOURS,
     CLIENT_ID,
     MQTT_OPERATION_TIMEOUT,
+    OPERATION_REFRESH_DELAY_SECONDS,
     REDIRECT_URI,
 )
 from .event import Event, EventCharging, EventOperation, ServiceEventTopic
@@ -705,7 +706,7 @@ class MySkoda:
         if self.mqtt is None:
             return
         try:
-            async with timeout(MQTT_OPERATION_TIMEOUT):
+            async with asyncio.timeout(MQTT_OPERATION_TIMEOUT):
                 await self.mqtt.wait_for_operation(operation)
         except TimeoutError:
             _LOGGER.warning("Timeout occurred while waiting for %s. Aborted.", operation)
@@ -715,7 +716,7 @@ class MySkoda:
         for callback in self._callbacks.get(vin, []):
             result = callback()
             if result is not None:
-                task = create_task(result)
+                task = asyncio.create_task(result)
                 background_tasks.add(task)
                 task.add_done_callback(background_tasks.discard)
 
@@ -761,9 +762,14 @@ class MySkoda:
                 event.operation.status,
                 event.operation.error_code,
             )
+            return
         if event.operation.status == OperationStatus.IN_PROGRESS:
-            pass
-        elif event.operation.operation in [
+            return
+        # The API backend doesn't seem to update right away after an operation completes so delay
+        # a little bit before refreshing data. Magic numbers are bad but there is no way for us
+        # to know when the backend has updated data...
+        await asyncio.sleep(OPERATION_REFRESH_DELAY_SECONDS)
+        if event.operation.operation in [
             OperationName.STOP_AIR_CONDITIONING,
             OperationName.START_AIR_CONDITIONING,
             OperationName.SET_AIR_CONDITIONING_TARGET_TEMPERATURE,
