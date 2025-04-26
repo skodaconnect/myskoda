@@ -744,7 +744,7 @@ class MySkoda:
             if event.topic == ServiceEventTopic.CHARGING:
                 await self._process_charging_event(event)
             elif event.topic == ServiceEventTopic.ACCESS:
-                await self.refresh_status(event.vin)
+                await self.refresh_vehicle(event.vin)
             elif event.topic == ServiceEventTopic.AIR_CONDITIONING:
                 await self.refresh_air_conditioning(event.vin)
             elif event.topic == ServiceEventTopic.DEPARTURE:
