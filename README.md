@@ -59,7 +59,7 @@ async def main():
         await myskoda.connect(USERNAME, PASSWORD)
         for vin in await myskoda.list_vehicle_vins():
             print(vin)
-        myskoda.disconnect()
+        await myskoda.disconnect()
 
 asyncio.run(main())
 ```
