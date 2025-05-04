@@ -53,6 +53,38 @@ async def stop_air_conditioning(ctx: Context, timeout: float, vin: str) -> None:
 
 
 @click.command()
+@click.option("timeout", "--timeout", type=float, default=300)
+@click.argument("vin")
+@click.pass_context
+@mqtt_required
+async def start_ventilation(
+    ctx: Context,
+    timeout: float,  # noqa: ASYNC109
+    vin: str,
+) -> None:
+    """Start the ventilation."""
+    myskoda: MySkoda = ctx.obj["myskoda"]
+    async with asyncio.timeout(timeout):
+    await myskoda.start_ventilation(vin)
+
+
+@click.command()
+@click.option("timeout", "--timeout", type=float, default=300)
+@click.argument("vin")
+@click.pass_context
+@mqtt_required
+async def stop_ventilation(
+    ctx: Context,
+    timeout: float,  # noqa: ASYNC109
+    vin: str,
+) -> None:
+    """Stop the ventilation."""
+    myskoda: MySkoda = ctx.obj["myskoda"]
+    async with asyncio.timeout(timeout):
+    await myskoda.stop_ventilation(vin)
+
+
+@click.command()
 @click.option("temperature", "--temperature", type=float, required=False)
 @click.option("duration", "--duration", type=int, required=False)
 @click.option(

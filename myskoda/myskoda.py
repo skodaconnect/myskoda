@@ -436,6 +436,18 @@ class MySkoda:
         await self.rest_api.stop_air_conditioning(vin)
         await future
 
+    async def start_ventilation(self, vin: Vin) -> None:
+        """Start the ventilation."""
+        future = self._wait_for_operation(OperationName.START_ACTIVE_VENTILATION)
+        await self.rest_api.start_ventilation(vin)
+        await future
+
+    async def stop_ventilation(self, vin: Vin) -> None:
+        """Start the ventilation."""
+        future = self._wait_for_operation(OperationName.STOP_ACTIVE_VENTILATION)
+        await self.rest_api.stop_ventilation(vin)
+        await future
+
     async def start_auxiliary_heating(
         self, vin: Vin, spin: str, config: AuxiliaryConfig | None = None
     ) -> None:
