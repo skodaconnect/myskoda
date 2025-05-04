@@ -65,7 +65,7 @@ async def start_ventilation(
     """Start the ventilation."""
     myskoda: MySkoda = ctx.obj["myskoda"]
     async with asyncio.timeout(timeout):
-    await myskoda.start_ventilation(vin)
+        await myskoda.start_ventilation(vin)
 
 
 @click.command()
@@ -81,7 +81,7 @@ async def stop_ventilation(
     """Stop the ventilation."""
     myskoda: MySkoda = ctx.obj["myskoda"]
     async with asyncio.timeout(timeout):
-    await myskoda.stop_ventilation(vin)
+        await myskoda.stop_ventilation(vin)
 
 
 @click.command()
