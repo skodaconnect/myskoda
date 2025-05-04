@@ -354,12 +354,12 @@ class RestApi:
 
     async def stop_ventilation(self, vin: str) -> None:
         """Start the ventilation."""
-        _LOGGER.debug( "Stopping ventilation for vehicle %s", vin)
+        _LOGGER.debug("Stopping ventilation for vehicle %s", vin)
         await self._make_post_request(url=f"/v2/air-conditioning/{vin}/active-ventilation/stop")
 
     async def start_ventilation(self, vin: str) -> None:
         """Start the ventilation."""
-        _LOGGER.debug( "Starting ventilation for vehicle %s", vin)
+        _LOGGER.debug("Starting ventilation for vehicle %s", vin)
         await self._make_post_request(url=f"/v2/air-conditioning/{vin}/active-ventilation/start")
 
     async def stop_auxiliary_heating(self, vin: str) -> None:
