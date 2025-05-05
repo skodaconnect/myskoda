@@ -115,8 +115,8 @@ head -n 9 docs/api_endpoints.md && tail -n +10 docs/api_endpoints.md | sort --fi
 | prior98 | POST   | api/v1/vehicle-wakeup/{vin}                                                | ✅     |         |
 | EnergyX | GET    | api/v2/air-conditioning/{vin}                                              | ✅     |         |
 | EnergyX | GET    | api/v2/air-conditioning/{vin}/active-ventilation                           |       | <pre lang="json"> {"state":"INVALID","durationInSeconds":600,"timers":[],"errors":[{"type":"UNAVAILABLE_CLIMA_INFORMATION"}]}</pre> |
-| EnergyX | POST   | api/v2/air-conditioning/{vin}/active-ventilation/start                     |       |         |
-| EnergyX | POST   | api/v2/air-conditioning/{vin}/active-ventilation/stop                      |       |         |
+| EnergyX | POST   | api/v2/air-conditioning/{vin}/active-ventilation/start                     | ✅     |         |
+| EnergyX | POST   | api/v2/air-conditioning/{vin}/active-ventilation/stop                      | ✅     |         |
 | EnergyX | POST   | api/v2/air-conditioning/{vin}/active-ventilation/timers                    |       |         |
 | EnergyX | GET    | api/v2/air-conditioning/{vin}/auxiliary-heating                            | ✅     |         |
 | EnergyX | POST   | api/v2/air-conditioning/{vin}/auxiliary-heating/start                      | ✅     |         |
