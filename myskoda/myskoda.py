@@ -77,6 +77,7 @@ from .models.spin import Spin
 from .models.status import Status
 from .models.trip_statistics import TripStatistics
 from .models.user import User
+from .models.vehicle_connection_status import VehicleConnectionStatus
 from .mqtt import EventType, MySkodaMqttClient
 from .rest_api import GetEndpointResult, RestApi
 from .utils import async_debounce
@@ -313,6 +314,12 @@ class MySkoda:
     async def get_departure_timers(self, vin: Vin, anonymize: bool = False) -> DepartureInfo:
         """Retrieve departure timers for the specified vehicle."""
         return (await self.rest_api.get_departure_timers(vin, anonymize=anonymize)).result
+
+    async def get_connection_status(
+        self, vin: Vin, anonymize: bool = False
+    ) -> VehicleConnectionStatus:
+        """Retrieve vehicle connection status for the specified vehicle."""
+        return (await self.rest_api.get_vehicle_connection_status(vin, anonymize=anonymize)).result
 
     async def start_charging(self, vin: Vin) -> None:
         """Start charging the car."""

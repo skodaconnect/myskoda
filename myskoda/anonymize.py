@@ -108,6 +108,10 @@ def anonymize_trip_statistics(data: dict) -> dict:
     return data
 
 
+def anonymize_vehicle_connection_status(data: dict) -> dict:
+    return data
+
+
 def anonymize_health(data: dict) -> dict:
     return data
 
