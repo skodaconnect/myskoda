@@ -30,6 +30,8 @@ async def test_report_get(
 
     # Remove timestamp
     result["timestamp"] = None
+    if (res := report.result) is not None and "timestamp" in res:
+        res["timestamp"] = None
 
     assert result == report.result
 
