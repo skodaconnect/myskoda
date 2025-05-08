@@ -81,7 +81,9 @@ class CurrentProfile(DataClassORJSONMixin):
     target_state_of_charge_in_percent: int = field(
         metadata=field_options(alias="targetStateOfChargeInPercent")
     )
-    next_charging_time: time = field(metadata=field_options(alias="nextChargingTime"))
+    next_charging_time: time | None = field(
+        default=None, metadata=field_options(alias="nextChargingTime")
+    )
 
 
 @dataclass

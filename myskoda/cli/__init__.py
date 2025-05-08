@@ -34,9 +34,11 @@ from myskoda.cli.operations import (
     set_windows_heating,
     start_air_conditioning,
     start_auxiliary_heating,
+    start_ventilation,
     start_window_heating,
     stop_air_conditioning,
     stop_auxiliary_heating,
+    stop_ventilation,
     stop_window_heating,
     unlock,
     wakeup,
@@ -162,6 +164,8 @@ cli.add_command(stop_air_conditioning)
 cli.add_command(start_auxiliary_heating)
 cli.add_command(stop_auxiliary_heating)
 cli.add_command(set_target_temperature)
+cli.add_command(start_ventilation)
+cli.add_command(stop_ventilation)
 cli.add_command(start_window_heating)
 cli.add_command(stop_window_heating)
 cli.add_command(set_charge_limit)

@@ -19,8 +19,8 @@ MQTT event callbacks can also be subscribed for using the subscribe_events metho
 
 """
 
+import asyncio
 import logging
-from asyncio import create_task, timeout
 from collections import defaultdict
 from collections.abc import Callable, Coroutine
 from datetime import UTC, datetime, timedelta
@@ -49,6 +49,7 @@ from .const import (
     CACHE_VEHICLE_HEALTH_IN_HOURS,
     CLIENT_ID,
     MQTT_OPERATION_TIMEOUT,
+    OPERATION_REFRESH_DELAY_SECONDS,
     REDIRECT_URI,
 )
 from .event import Event, EventCharging, EventOperation, ServiceEventTopic
@@ -435,6 +436,18 @@ class MySkoda:
         await self.rest_api.stop_air_conditioning(vin)
         await future
 
+    async def start_ventilation(self, vin: Vin) -> None:
+        """Start the ventilation."""
+        future = self._wait_for_operation(OperationName.START_ACTIVE_VENTILATION)
+        await self.rest_api.start_ventilation(vin)
+        await future
+
+    async def stop_ventilation(self, vin: Vin) -> None:
+        """Start the ventilation."""
+        future = self._wait_for_operation(OperationName.STOP_ACTIVE_VENTILATION)
+        await self.rest_api.stop_ventilation(vin)
+        await future
+
     async def start_auxiliary_heating(
         self, vin: Vin, spin: str, config: AuxiliaryConfig | None = None
     ) -> None:
@@ -705,7 +718,7 @@ class MySkoda:
         if self.mqtt is None:
             return
         try:
-            async with timeout(MQTT_OPERATION_TIMEOUT):
+            async with asyncio.timeout(MQTT_OPERATION_TIMEOUT):
                 await self.mqtt.wait_for_operation(operation)
         except TimeoutError:
             _LOGGER.warning("Timeout occurred while waiting for %s. Aborted.", operation)
@@ -715,7 +728,7 @@ class MySkoda:
         for callback in self._callbacks.get(vin, []):
             result = callback()
             if result is not None:
-                task = create_task(result)
+                task = asyncio.create_task(result)
                 background_tasks.add(task)
                 task.add_done_callback(background_tasks.discard)
 
@@ -743,7 +756,7 @@ class MySkoda:
             if event.topic == ServiceEventTopic.CHARGING:
                 await self._process_charging_event(event)
             elif event.topic == ServiceEventTopic.ACCESS:
-                await self.refresh_status(event.vin)
+                await self.refresh_vehicle(event.vin)
             elif event.topic == ServiceEventTopic.AIR_CONDITIONING:
                 await self.refresh_air_conditioning(event.vin)
             elif event.topic == ServiceEventTopic.DEPARTURE:
@@ -761,9 +774,14 @@ class MySkoda:
                 event.operation.status,
                 event.operation.error_code,
             )
+            return
         if event.operation.status == OperationStatus.IN_PROGRESS:
-            pass
-        elif event.operation.operation in [
+            return
+        # The API backend doesn't seem to update right away after an operation completes so delay
+        # a little bit before refreshing data. Magic numbers are bad but there is no way for us
+        # to know when the backend has updated data...
+        await asyncio.sleep(OPERATION_REFRESH_DELAY_SECONDS)
+        if event.operation.operation in [
             OperationName.STOP_AIR_CONDITIONING,
             OperationName.START_AIR_CONDITIONING,
             OperationName.SET_AIR_CONDITIONING_TARGET_TEMPERATURE,
