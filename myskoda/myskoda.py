@@ -246,12 +246,16 @@ class MySkoda:
         """Load and return a partial vehicle, based on list of capabilities."""
         info = await self.get_info(vin)
         maintenance = await self.get_maintenance(vin)
+        connection_status = await self.get_connection_status(vin)
 
         if vin in self._vehicles:
             self._vehicles[vin].info = info
             self._vehicles[vin].maintenance = maintenance
+            self._vehicles[vin].connection_status = connection_status
         else:
-            self._vehicles[vin] = Vehicle(info, maintenance)
+            self._vehicles[vin] = Vehicle(
+                info=info, maintenance=maintenance, connection_status=connection_status
+            )
 
         for capa in capabilities:
             if info.is_capability_available(capa):
