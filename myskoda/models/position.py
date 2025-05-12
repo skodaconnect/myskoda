@@ -15,9 +15,9 @@ class PositionType(StrEnum):
 
 @dataclass
 class Position(DataClassORJSONMixin):
-    address: Address
     gps_coordinates: Coordinates = field(metadata=field_options(alias="gpsCoordinates"))
     type: PositionType
+    address: Address | None = None
 
 
 class ErrorType(StrEnum):
