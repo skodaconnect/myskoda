@@ -28,14 +28,11 @@ class Vehicle:
     maintenance: Maintenance
     health: Health | None = None
     departure_info: DepartureInfo | None = None
-    connection_status: VehicleConnectionStatus
+    connection_status: VehicleConnectionStatus | None = None
 
-    def __init__(
-        self, info: Info, maintenance: Maintenance, connection_status: VehicleConnectionStatus
-    ) -> None:
+    def __init__(self, info: Info, maintenance: Maintenance) -> None:
         self.info = info
         self.maintenance = maintenance
-        self.connection_status = connection_status
 
     def has_capability(self, cap: CapabilityId) -> bool:
         """Check for a capability.
