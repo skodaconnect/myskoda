@@ -251,7 +251,7 @@ class MySkoda:
             self._vehicles[vin].info = info
             self._vehicles[vin].maintenance = maintenance
         else:
-            self._vehicles[vin] = Vehicle(info, maintenance)
+            self._vehicles[vin] = Vehicle(info=info, maintenance=maintenance)
 
         for capa in capabilities:
             if info.is_capability_available(capa):
@@ -712,6 +712,7 @@ class MySkoda:
                 case CapabilityId.STATE:
                     self._vehicles[vin].status = await self.get_status(vin)
                     self._vehicles[vin].driving_range = await self.get_driving_range(vin)
+                    self._vehicles[vin].connection_status = await self.get_connection_status(vin)
                 case CapabilityId.TRIP_STATISTICS:
                     self._vehicles[vin].trip_statistics = await self.get_trip_statistics(vin)
                 case CapabilityId.VEHICLE_HEALTH_INSPECTION:

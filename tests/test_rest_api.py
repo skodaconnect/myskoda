@@ -284,6 +284,41 @@ async def test_trip_statistics(
         assert get_status_result.vehicle_type == VehicleType.HYBRID
 
 
+@pytest.fixture(name="vehicle_connection_statuses")
+def load_vehicle_connection_status() -> list[str]:
+    """Load connection status fixture."""
+    vehicle_connection_statuses = []
+    for path in [
+        "other/vehicle-connection-status.json",
+    ]:
+        with FIXTURES_DIR.joinpath(path).open() as file:
+            vehicle_connection_statuses.append(file.read())
+    return vehicle_connection_statuses
+
+
+@pytest.mark.asyncio
+async def test_vehicle_connection_status(
+    vehicle_connection_statuses: list[str], myskoda: MySkoda, responses: aioresponses
+) -> None:
+    """Unit test for RestAPI.get_connection_status(). Needs more work."""
+    for connection_status in vehicle_connection_statuses:
+        connection_status_json = json.loads(connection_status)
+
+        target_vin = "TMBJM0CKV1N12345"
+        responses.get(
+            url=f"https://mysmob.api.connect.skoda-auto.cz/api/v2/connection-status/{target_vin}/readiness",
+            body=connection_status,
+        )
+        get_connection_status = await myskoda.get_connection_status(target_vin)
+
+        assert get_connection_status.unreachable == connection_status_json["unreachable"]
+        assert get_connection_status.in_motion == connection_status_json["inMotion"]
+        assert (
+            get_connection_status.battery_protection_limit_on
+            == connection_status_json["batteryProtectionLimitOn"]
+        )
+
+
 @pytest.fixture(name="spin_statuses")
 def load_spin_status() -> list[str]:
     """Load spin-status fixture."""
