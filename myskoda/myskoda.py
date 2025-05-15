@@ -657,6 +657,7 @@ class MySkoda:
             Endpoint.DRIVING_RANGE: self.rest_api.get_driving_range,
             Endpoint.TRIP_STATISTICS: self.rest_api.get_trip_statistics,
             Endpoint.DEPARTURE_INFO: self.rest_api.get_departure_timers,
+            Endpoint.VEHICLE_CONNECTION_STATUS: self.rest_api.get_vehicle_connection_status,
         }
 
         # Look up the method, or raise an error if unsupported
