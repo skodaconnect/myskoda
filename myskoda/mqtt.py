@@ -235,118 +235,145 @@ class MySkodaMqttClient:
             event = VehicleEvent.from_json(data)
         return event
 
-    def _parse_topic(self, topic_match: re.Match[str], data: str) -> None:  # noqa: C901
+    def _parse_topic(self, topic_match: re.Match[str], data: str) -> None:
         """Parse the topic and extract relevant parts."""
-        [user_id, vin, event_type, topic] = topic_match.groups()
-        event_type = EventType(event_type)
+        user_id, vin, event_type_str, topic = topic_match.groups()
+        event_type = EventType(event_type_str)
 
         _LOGGER.debug("Message (%s) received for %s on topic %s: %s", event_type, vin, topic, data)
 
-        # Messages will contain payload as JSON.
         try:
-            if event_type == EventType.OPERATION:
-                self._emit(
-                    EventOperation(
-                        vin=vin,
-                        user_id=user_id,
-                        timestamp=datetime.now(tz=UTC),
-                        operation=OperationRequest.from_json(data),
-                    )
-                )
-            elif event_type == EventType.ACCOUNT_EVENT:
-                self._emit(
-                    EventAccountPrivacy(
-                        vin=vin,
-                        user_id=user_id,
-                        timestamp=datetime.now(tz=UTC),
-                    )
-                )
-            elif event_type == EventType.SERVICE_EVENT and topic == "air-conditioning":
-                self._emit(
-                    EventAirConditioning(
-                        vin=vin,
-                        user_id=user_id,
-                        timestamp=datetime.now(tz=UTC),
-                        event=ServiceEvent.from_json(data),
-                    )
-                )
-            elif event_type == EventType.SERVICE_EVENT and topic == "auxiliary-heating":
-                self._emit(
-                    EventAuxiliaryHeating(
-                        vin=vin,
-                        user_id=user_id,
-                        timestamp=datetime.now(tz=UTC),
-                        event=ServiceEvent.from_json(data),
-                    )
-                )
-            elif event_type == EventType.SERVICE_EVENT and topic == "charging":
-                self._emit(
-                    EventCharging(
-                        vin=vin,
-                        user_id=user_id,
-                        timestamp=datetime.now(tz=UTC),
-                        event=self._get_charging_event(data),
-                    )
-                )
-            elif event_type == EventType.SERVICE_EVENT and topic == "departure":
-                self._emit(
-                    EventDeparture(
-                        vin=vin,
-                        user_id=user_id,
-                        timestamp=datetime.now(tz=UTC),
-                        event=ServiceEvent.from_json(data),
-                    )
-                )
-            elif event_type == EventType.SERVICE_EVENT and topic == "vehicle-status/access":
-                self._emit(
-                    EventAccess(
-                        vin=vin,
-                        user_id=user_id,
-                        timestamp=datetime.now(tz=UTC),
-                        event=ServiceEvent.from_json(data),
-                    )
-                )
-            elif event_type == EventType.SERVICE_EVENT and topic == "vehicle-status/lights":
-                self._emit(
-                    EventLights(
-                        vin=vin,
-                        user_id=user_id,
-                        timestamp=datetime.now(tz=UTC),
-                        event=ServiceEvent.from_json(data),
-                    )
-                )
-            elif event_type == EventType.SERVICE_EVENT and topic == "vehicle-status/odometer":
-                self._emit(
-                    EventOdometer(
-                        vin=vin,
-                        user_id=user_id,
-                        timestamp=datetime.now(tz=UTC),
-                        event=ServiceEvent.from_json(data),
-                    )
-                )
-            elif event_type == EventType.VEHICLE_EVENT and topic == "vehicle-ignition-status":
-                self._emit(
-                    EventVehicleIgnitionStatus(
-                        vin=vin,
-                        user_id=user_id,
-                        timestamp=datetime.now(tz=UTC),
-                        event=self._get_vehicle_ignition_status_changed_event(data),
-                    )
-                )
-            elif (
-                event_type == EventType.VEHICLE_EVENT
-                and topic == "vehicle-connection-status-update"
-            ):
-                self._emit(
-                    EventVehicleConnectionStatusUpdate(
-                        vin=vin,
-                        user_id=user_id,
-                        timestamp=datetime.now(tz=UTC),
-                        event=VehicleEvent.from_json(data),
-                    )
-                )
+            handler = self._event_dispatch().get((event_type, topic)) or self._event_dispatch().get(
+                (event_type, None)
+            )
+
+            if handler:
+                event = handler(vin, user_id, data)
+                self._emit(event)
         except Exception as exc:  # noqa: BLE001
             _LOGGER.warning("Exception parsing MQTT event: %s", exc)
+
+    def _event_dispatch(
+        self,
+    ) -> dict[tuple[EventType, str | None], Callable[[str, str, str], Event]]:
+        """Dispatch map for topic handlers."""
+        return {
+            (EventType.OPERATION, None): self._construct_operation_event,
+            (EventType.ACCOUNT_EVENT, None): self._construct_account_event,
+            (EventType.SERVICE_EVENT, "air-conditioning"): self._construct_air_conditioning_event,
+            (EventType.SERVICE_EVENT, "auxiliary-heating"): self._construct_auxiliary_heating_event,
+            (EventType.SERVICE_EVENT, "charging"): self._construct_charging_event,
+            (EventType.SERVICE_EVENT, "departure"): self._construct_departure_event,
+            (EventType.SERVICE_EVENT, "vehicle-status/access"): self._construct_access_event,
+            (EventType.SERVICE_EVENT, "vehicle-status/lights"): self._construct_lights_event,
+            (EventType.SERVICE_EVENT, "vehicle-status/odometer"): self._construct_odometer_event,
+            (
+                EventType.VEHICLE_EVENT,
+                "vehicle-ignition-status",
+            ): self._construct_ignition_status_event,
+            (
+                EventType.VEHICLE_EVENT,
+                "vehicle-connection-status-update",
+            ): self._construct_connection_status_event,
+        }
+
+    def _construct_operation_event(self, vin: str, user_id: str, data: str) -> Event:
+        """Construct an OPERATION event."""
+        return EventOperation(
+            vin=vin,
+            user_id=user_id,
+            timestamp=datetime.now(tz=UTC),
+            operation=OperationRequest.from_json(data),
+        )
+
+    def _construct_account_event(self, vin: str, user_id: str, _data: str) -> Event:
+        """Construct an account."""
+        return EventAccountPrivacy(
+            vin=vin,
+            user_id=user_id,
+            timestamp=datetime.now(tz=UTC),
+        )
+
+    def _construct_air_conditioning_event(self, vin: str, user_id: str, data: str) -> Event:
+        """Construct an air-conditioning event."""
+        return EventAirConditioning(
+            vin=vin,
+            user_id=user_id,
+            timestamp=datetime.now(tz=UTC),
+            event=ServiceEvent.from_json(data),
+        )
+
+    def _construct_auxiliary_heating_event(self, vin: str, user_id: str, data: str) -> Event:
+        """Construct an auxiliary-heating event."""
+        return EventAuxiliaryHeating(
+            vin=vin,
+            user_id=user_id,
+            timestamp=datetime.now(tz=UTC),
+            event=ServiceEvent.from_json(data),
+        )
+
+    def _construct_charging_event(self, vin: str, user_id: str, data: str) -> Event:
+        """Construct a charging event."""
+        return EventCharging(
+            vin=vin,
+            user_id=user_id,
+            timestamp=datetime.now(tz=UTC),
+            event=self._get_charging_event(data),
+        )
+
+    def _construct_departure_event(self, vin: str, user_id: str, data: str) -> Event:
+        """Construct a departure event."""
+        return EventDeparture(
+            vin=vin,
+            user_id=user_id,
+            timestamp=datetime.now(tz=UTC),
+            event=ServiceEvent.from_json(data),
+        )
+
+    def _construct_access_event(self, vin: str, user_id: str, data: str) -> Event:
+        """Construct a vehicle-status/access event."""
+        return EventAccess(
+            vin=vin,
+            user_id=user_id,
+            timestamp=datetime.now(tz=UTC),
+            event=ServiceEvent.from_json(data),
+        )
+
+    def _construct_lights_event(self, vin: str, user_id: str, data: str) -> Event:
+        """Construct a vehicle-status/lights event."""
+        return EventLights(
+            vin=vin,
+            user_id=user_id,
+            timestamp=datetime.now(tz=UTC),
+            event=ServiceEvent.from_json(data),
+        )
+
+    def _construct_odometer_event(self, vin: str, user_id: str, data: str) -> Event:
+        """Construct a vehicle-status/odometer event."""
+        return EventOdometer(
+            vin=vin,
+            user_id=user_id,
+            timestamp=datetime.now(tz=UTC),
+            event=ServiceEvent.from_json(data),
+        )
+
+    def _construct_ignition_status_event(self, vin: str, user_id: str, data: str) -> Event:
+        """Construct a vehicle-ignition-status event."""
+        return EventVehicleIgnitionStatus(
+            vin=vin,
+            user_id=user_id,
+            timestamp=datetime.now(tz=UTC),
+            event=self._get_vehicle_ignition_status_changed_event(data),
+        )
+
+    def _construct_connection_status_event(self, vin: str, user_id: str, data: str) -> Event:
+        """Construct a vehicle-connection-status-update event."""
+        return EventVehicleConnectionStatusUpdate(
+            vin=vin,
+            user_id=user_id,
+            timestamp=datetime.now(tz=UTC),
+            event=VehicleEvent.from_json(data),
+        )
 
     def _emit(self, event: Event) -> None:
         for callback in self._callbacks:
