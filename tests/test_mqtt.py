@@ -1,13 +1,13 @@
 """Unit tests for MQTT."""
 
+import asyncio
 import json
-from asyncio import get_event_loop
 from datetime import datetime
 from pathlib import Path
 from unittest.mock import ANY
 
+import aiomqtt
 import pytest
-from amqtt.client import QOS_2, MQTTClient
 
 from myskoda.anonymize import USER_ID, VIN
 from myskoda.event import (
@@ -37,34 +37,56 @@ from myskoda.models.vehicle_event import (
     VehicleEventVehicleIgnitionStatusData,
     VehicleEventWithVehicleIgnitionStatusData,
 )
-from myskoda.myskoda import MySkoda
+from myskoda.mqtt import MySkodaMqttClient
+
+from .conftest import FakeMqttClientWrapper
 
 FIXTURES_DIR = Path(__file__).parent / "fixtures"
 
 
+@pytest.fixture
+async def connected_mqtt_client(myskoda_mqtt_client: MySkodaMqttClient) -> MySkodaMqttClient:
+    """Return a connected MySkodaMqttClient instance to use in tests."""
+    await myskoda_mqtt_client.connect(user_id="1234", vehicle_vins=["TMOCKAA0AA000000"])
+    return myskoda_mqtt_client
+
+
 @pytest.mark.asyncio
 async def test_wait_for_operation(
-    mqtt_client: MQTTClient,
-    myskoda: MySkoda,
+    connected_mqtt_client: MySkodaMqttClient, fake_mqtt_client_wrapper: FakeMqttClientWrapper
 ) -> None:
-    assert myskoda.mqtt is not None
-
     topic = f"{USER_ID}/{VIN}/operation-request/air-conditioning/start-stop-air-conditioning"
-
-    future = myskoda.mqtt.wait_for_operation(OperationName.START_AIR_CONDITIONING)
-
-    await mqtt_client.publish(
-        topic,
-        b'{"version":1,"operation":"start-air-conditioning","status":"IN_PROGRESS","traceId":"f0b638f7bba08ec4acb5de64cdb97ba9","requestId":"72f24950-b3db-4b7e-948f-7032f533773a"}',
-        QOS_2,
-    )
+    future = connected_mqtt_client.wait_for_operation(OperationName.START_AIR_CONDITIONING)
 
     assert future.done() is False
 
-    await mqtt_client.publish(
-        topic,
-        b'{"version":1,"operation":"start-air-conditioning","status":"COMPLETED_SUCCESS","traceId":"10d37beb6b37e9a9e74460d402855f27","requestId":"72f24950-b3db-4b7e-948f-7032f533773a"}',
-        QOS_2,
+    in_progress = json.dumps(
+        {
+            "version": 1,
+            "operation": "start-air-conditioning",
+            "status": "IN_PROGRESS",
+            "traceId": "f0b638f7bba08ec4acb5de64cdb97ba9",
+            "requestId": "72f24950-b3db-4b7e-948f-7032f533773a",
+        }
+    )
+    complete = json.dumps(
+        {
+            "version": 1,
+            "operation": "start-air-conditioning",
+            "status": "COMPLETED_SUCCESS",
+            "traceId": "10d37beb6b37e9a9e74460d402855f27",
+            "requestId": "72f24950-b3db-4b7e-948f-7032f533773a",
+        }
+    )
+    fake_mqtt_client_wrapper.set_messages(
+        [
+            aiomqtt.Message(
+                topic=topic, payload=in_progress, qos=1, retain=False, mid=1, properties=None
+            ),
+            aiomqtt.Message(
+                topic=topic, payload=complete, qos=1, retain=False, mid=1, properties=None
+            ),
+        ]
     )
 
     await future
@@ -72,11 +94,8 @@ async def test_wait_for_operation(
 
 @pytest.mark.asyncio
 async def test_subscribe_event(
-    mqtt_client: MQTTClient,
-    myskoda: MySkoda,
+    connected_mqtt_client: MySkodaMqttClient, fake_mqtt_client_wrapper: FakeMqttClientWrapper
 ) -> None:
-    assert myskoda.mqtt is not None
-
     base_topic = f"{USER_ID}/{VIN}"
     trace_id = "7a59299d06535a6756d10e96e0c75ed3"
     request_id = "b9bc1258-2d0c-43c2-8d67-44d9f6c8cb9f"
@@ -84,12 +103,12 @@ async def test_subscribe_event(
     timestamp = datetime.fromisoformat(timestamp_str)
 
     events: list[Event] = []
-    future = get_event_loop().create_future()
+    future = asyncio.get_event_loop().create_future()
 
     messages = [
-        (
-            f"{base_topic}/operation-request/air-conditioning/start-stop-air-conditioning",
-            json.dumps(
+        aiomqtt.Message(
+            topic=f"{base_topic}/operation-request/air-conditioning/start-stop-air-conditioning",
+            payload=json.dumps(
                 {
                     "version": 1,
                     "operation": "stop-air-conditioning",
@@ -98,10 +117,14 @@ async def test_subscribe_event(
                     "requestId": request_id,
                 }
             ),
+            qos=1,
+            retain=False,
+            mid=1,
+            properties=None,
         ),
-        (
-            f"{base_topic}/service-event/vehicle-status/lights",
-            json.dumps(
+        aiomqtt.Message(
+            topic=f"{base_topic}/service-event/vehicle-status/lights",
+            payload=json.dumps(
                 {
                     "version": 1,
                     "traceId": trace_id,
@@ -114,10 +137,14 @@ async def test_subscribe_event(
                     },
                 }
             ),
+            qos=1,
+            retain=False,
+            mid=1,
+            properties=None,
         ),
-        (
-            f"{base_topic}/service-event/vehicle-status/odometer",
-            json.dumps(
+        aiomqtt.Message(
+            topic=f"{base_topic}/service-event/vehicle-status/odometer",
+            payload=json.dumps(
                 {
                     "version": 1,
                     "traceId": trace_id,
@@ -130,10 +157,14 @@ async def test_subscribe_event(
                     },
                 }
             ),
+            qos=1,
+            retain=False,
+            mid=1,
+            properties=None,
         ),
-        (
-            f"{base_topic}/service-event/vehicle-status/access",
-            json.dumps(
+        aiomqtt.Message(
+            topic=f"{base_topic}/service-event/vehicle-status/access",
+            payload=json.dumps(
                 {
                     "version": 1,
                     "traceId": trace_id,
@@ -146,10 +177,14 @@ async def test_subscribe_event(
                     },
                 }
             ),
+            qos=1,
+            retain=False,
+            mid=1,
+            properties=None,
         ),
-        (
-            f"{base_topic}/service-event/charging",
-            json.dumps(
+        aiomqtt.Message(
+            topic=f"{base_topic}/service-event/charging",
+            payload=json.dumps(
                 {
                     "version": 1,
                     "traceId": trace_id,
@@ -167,10 +202,14 @@ async def test_subscribe_event(
                     },
                 }
             ),
+            qos=1,
+            retain=False,
+            mid=1,
+            properties=None,
         ),
-        (
-            f"{base_topic}/service-event/charging",
-            json.dumps(
+        aiomqtt.Message(
+            topic=f"{base_topic}/service-event/charging",
+            payload=json.dumps(
                 {
                     "version": 1,
                     "traceId": trace_id,
@@ -188,10 +227,14 @@ async def test_subscribe_event(
                     },
                 }
             ),
+            qos=1,
+            retain=False,
+            mid=1,
+            properties=None,
         ),
-        (
-            f"{base_topic}/service-event/charging",
-            json.dumps(
+        aiomqtt.Message(
+            topic=f"{base_topic}/service-event/charging",
+            payload=json.dumps(
                 {
                     "version": 1,
                     "traceId": trace_id,
@@ -204,10 +247,14 @@ async def test_subscribe_event(
                     },
                 }
             ),
+            qos=1,
+            retain=False,
+            mid=1,
+            properties=None,
         ),
-        (
-            f"{base_topic}/vehicle-event/vehicle-connection-status-update",
-            json.dumps(
+        aiomqtt.Message(
+            topic=f"{base_topic}/vehicle-event/vehicle-connection-status-update",
+            payload=json.dumps(
                 {
                     "version": 1,
                     "traceId": trace_id,
@@ -220,10 +267,14 @@ async def test_subscribe_event(
                     },
                 }
             ),
+            qos=1,
+            retain=False,
+            mid=1,
+            properties=None,
         ),
-        (
-            f"{base_topic}/vehicle-event/vehicle-connection-status-update",
-            json.dumps(
+        aiomqtt.Message(
+            topic=f"{base_topic}/vehicle-event/vehicle-connection-status-update",
+            payload=json.dumps(
                 {
                     "version": 1,
                     "traceId": trace_id,
@@ -236,10 +287,14 @@ async def test_subscribe_event(
                     },
                 }
             ),
+            qos=1,
+            retain=False,
+            mid=1,
+            properties=None,
         ),
-        (
-            f"{base_topic}/vehicle-event/vehicle-connection-status-update",
-            json.dumps(
+        aiomqtt.Message(
+            topic=f"{base_topic}/vehicle-event/vehicle-connection-status-update",
+            payload=json.dumps(
                 {
                     "version": 1,
                     "traceId": trace_id,
@@ -252,10 +307,14 @@ async def test_subscribe_event(
                     },
                 }
             ),
+            qos=1,
+            retain=False,
+            mid=1,
+            properties=None,
         ),
-        (
-            f"{base_topic}/vehicle-event/vehicle-ignition-status",
-            json.dumps(
+        aiomqtt.Message(
+            topic=f"{base_topic}/vehicle-event/vehicle-ignition-status",
+            payload=json.dumps(
                 {
                     "version": 1,
                     "traceId": trace_id,
@@ -269,10 +328,14 @@ async def test_subscribe_event(
                     },
                 }
             ),
+            qos=1,
+            retain=False,
+            mid=1,
+            properties=None,
         ),
-        (
-            f"{base_topic}/vehicle-event/vehicle-ignition-status",
-            json.dumps(
+        aiomqtt.Message(
+            topic=f"{base_topic}/vehicle-event/vehicle-ignition-status",
+            payload=json.dumps(
                 {
                     "version": 1,
                     "traceId": trace_id,
@@ -286,6 +349,10 @@ async def test_subscribe_event(
                     },
                 }
             ),
+            qos=1,
+            retain=False,
+            mid=1,
+            properties=None,
         ),
     ]
 
@@ -294,10 +361,10 @@ async def test_subscribe_event(
         if len(events) == len(messages):
             future.set_result(None)
 
-    myskoda.subscribe_events(on_event)
+    connected_mqtt_client.subscribe(on_event)
 
-    for topic, message in messages:
-        await mqtt_client.publish(topic, message.encode("utf-8"), QOS_2)
+    # @dvx76: not sure why messages get received/send in reverse order ...
+    fake_mqtt_client_wrapper.set_messages(list(reversed(messages)))
 
     await future
 
