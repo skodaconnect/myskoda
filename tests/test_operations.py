@@ -1,10 +1,9 @@
-"""Baseic unit tests for operations."""
+"""Basic unit tests for operations."""
 
 from unittest.mock import AsyncMock, patch
 
 import pytest
 from aioresponses import aioresponses
-from amqtt.client import QOS_2, MQTTClient
 
 from myskoda.anonymize import ACCESS_TOKEN, LOCATION, USER_ID, VIN
 from myskoda.const import BASE_URL_SKODA
@@ -21,12 +20,13 @@ from myskoda.models.auxiliary_heating import AuxiliaryConfig, AuxiliaryHeating, 
 from myskoda.models.charging import ChargeMode
 from myskoda.models.departure import DepartureInfo
 from myskoda.myskoda import MySkoda
-from tests.conftest import FIXTURES_DIR, create_completed_json
+
+from .conftest import FIXTURES_DIR, FakeMqttClientWrapper, create_aiomqtt_message
 
 
 @pytest.mark.asyncio
 async def test_stop_air_conditioning(
-    responses: aioresponses, mqtt_client: MQTTClient, myskoda: MySkoda
+    responses: aioresponses, myskoda: MySkoda, fake_mqtt_client_wrapper: FakeMqttClientWrapper
 ) -> None:
     url = f"{BASE_URL_SKODA}/api/v2/air-conditioning/{VIN}/stop"
     responses.post(url=url)
@@ -34,7 +34,9 @@ async def test_stop_air_conditioning(
     future = myskoda.stop_air_conditioning(VIN)
 
     topic = f"{USER_ID}/{VIN}/operation-request/air-conditioning/start-stop-air-conditioning"
-    await mqtt_client.publish(topic, create_completed_json("stop-air-conditioning"), QOS_2)
+    fake_mqtt_client_wrapper.set_messages(
+        [create_aiomqtt_message(topic=topic, operation="stop-air-conditioning")]
+    )
 
     await future
     responses.assert_called_with(
@@ -51,8 +53,8 @@ async def test_stop_air_conditioning(
 )
 async def test_start_air_conditioning(
     responses: aioresponses,
-    mqtt_client: MQTTClient,
     myskoda: MySkoda,
+    fake_mqtt_client_wrapper: FakeMqttClientWrapper,
     temperature: float,
     expected: str,
 ) -> None:
@@ -62,7 +64,9 @@ async def test_start_air_conditioning(
     future = myskoda.start_air_conditioning(VIN, temperature)
 
     topic = f"{USER_ID}/{VIN}/operation-request/air-conditioning/start-stop-air-conditioning"
-    await mqtt_client.publish(topic, create_completed_json("start-air-conditioning"), QOS_2)
+    fake_mqtt_client_wrapper.set_messages(
+        [create_aiomqtt_message(topic=topic, operation="start-air-conditioning")]
+    )
 
     await future
     responses.assert_called_with(
@@ -82,8 +86,8 @@ async def test_start_air_conditioning(
 )
 async def test_set_target_temperature(
     responses: aioresponses,
-    mqtt_client: MQTTClient,
     myskoda: MySkoda,
+    fake_mqtt_client_wrapper: FakeMqttClientWrapper,
     temperature: float,
     expected: str,
 ) -> None:
@@ -93,8 +97,8 @@ async def test_set_target_temperature(
     future = myskoda.set_target_temperature(VIN, temperature)
 
     topic = f"{USER_ID}/{VIN}/operation-request/air-conditioning/set-target-temperature"
-    await mqtt_client.publish(
-        topic, create_completed_json("set-air-conditioning-target-temperature"), QOS_2
+    fake_mqtt_client_wrapper.set_messages(
+        [create_aiomqtt_message(topic=topic, operation="set-air-conditioning-target-temperature")]
     )
 
     await future
@@ -108,7 +112,7 @@ async def test_set_target_temperature(
 
 @pytest.mark.asyncio
 async def test_start_window_heating(
-    responses: aioresponses, mqtt_client: MQTTClient, myskoda: MySkoda
+    responses: aioresponses, myskoda: MySkoda, fake_mqtt_client_wrapper: FakeMqttClientWrapper
 ) -> None:
     url = f"{BASE_URL_SKODA}/api/v2/air-conditioning/{VIN}/start-window-heating"
     responses.post(url=url)
@@ -116,7 +120,9 @@ async def test_start_window_heating(
     future = myskoda.start_window_heating(VIN)
 
     topic = f"{USER_ID}/{VIN}/operation-request/air-conditioning/start-stop-window-heating"
-    await mqtt_client.publish(topic, create_completed_json("start-window-heating"), QOS_2)
+    fake_mqtt_client_wrapper.set_messages(
+        [create_aiomqtt_message(topic=topic, operation="start-window-heating")]
+    )
 
     await future
     responses.assert_called_with(
@@ -129,7 +135,7 @@ async def test_start_window_heating(
 
 @pytest.mark.asyncio
 async def test_stop_window_heating(
-    responses: aioresponses, mqtt_client: MQTTClient, myskoda: MySkoda
+    responses: aioresponses, myskoda: MySkoda, fake_mqtt_client_wrapper: FakeMqttClientWrapper
 ) -> None:
     url = f"{BASE_URL_SKODA}/api/v2/air-conditioning/{VIN}/stop-window-heating"
     responses.post(url=url)
@@ -137,7 +143,9 @@ async def test_stop_window_heating(
     future = myskoda.stop_window_heating(VIN)
 
     topic = f"{USER_ID}/{VIN}/operation-request/air-conditioning/start-stop-window-heating"
-    await mqtt_client.publish(topic, create_completed_json("stop-window-heating"), QOS_2)
+    fake_mqtt_client_wrapper.set_messages(
+        [create_aiomqtt_message(topic=topic, operation="stop-window-heating")]
+    )
 
     await future
     responses.assert_called_with(
@@ -151,7 +159,10 @@ async def test_stop_window_heating(
 @pytest.mark.asyncio
 @pytest.mark.parametrize("limit", [50, 70, 90, 100])
 async def test_set_charge_limit(
-    responses: aioresponses, mqtt_client: MQTTClient, myskoda: MySkoda, limit: int
+    responses: aioresponses,
+    myskoda: MySkoda,
+    fake_mqtt_client_wrapper: FakeMqttClientWrapper,
+    limit: int,
 ) -> None:
     url = f"{BASE_URL_SKODA}/api/v1/charging/{VIN}/set-charge-limit"
     responses.put(url=url)
@@ -159,7 +170,9 @@ async def test_set_charge_limit(
     future = myskoda.set_charge_limit(VIN, limit)
 
     topic = f"{USER_ID}/{VIN}/operation-request/charging/update-charge-limit"
-    await mqtt_client.publish(topic, create_completed_json("update-charge-limit"), QOS_2)
+    fake_mqtt_client_wrapper.set_messages(
+        [create_aiomqtt_message(topic=topic, operation="update-charge-limit")]
+    )
 
     await future
     responses.assert_called_with(
@@ -173,7 +186,10 @@ async def test_set_charge_limit(
 @pytest.mark.asyncio
 @pytest.mark.parametrize("limit", [0, 20, 30, 50])
 async def test_set_minimum_charge_limit(
-    responses: aioresponses, mqtt_client: MQTTClient, myskoda: MySkoda, limit: int
+    responses: aioresponses,
+    myskoda: MySkoda,
+    fake_mqtt_client_wrapper: FakeMqttClientWrapper,
+    limit: int,
 ) -> None:
     url = f"{BASE_URL_SKODA}/api/v1/vehicle-automatization/{VIN}/departure/timers/settings"
     responses.post(url=url)
@@ -181,7 +197,9 @@ async def test_set_minimum_charge_limit(
     future = myskoda.set_minimum_charge_limit(VIN, limit)
 
     topic = f"{USER_ID}/{VIN}/operation-request/departure/update-minimal-soc"
-    await mqtt_client.publish(topic, create_completed_json("update-minimal-soc"), QOS_2)
+    fake_mqtt_client_wrapper.set_messages(
+        [create_aiomqtt_message(topic=topic, operation="update-minimal-soc")]
+    )
 
     await future
     responses.assert_called_with(
@@ -195,7 +213,11 @@ async def test_set_minimum_charge_limit(
 @pytest.mark.asyncio
 @pytest.mark.parametrize(("enabled", "expected"), [(True, "ACTIVATED"), (False, "DEACTIVATED")])
 async def test_set_battery_care_mode(
-    responses: aioresponses, mqtt_client: MQTTClient, myskoda: MySkoda, enabled: bool, expected: str
+    responses: aioresponses,
+    myskoda: MySkoda,
+    fake_mqtt_client_wrapper: FakeMqttClientWrapper,
+    enabled: bool,
+    expected: str,
 ) -> None:
     url = f"{BASE_URL_SKODA}/api/v1/charging/{VIN}/set-care-mode"
     responses.put(url=url)
@@ -203,7 +225,9 @@ async def test_set_battery_care_mode(
     future = myskoda.set_battery_care_mode(VIN, enabled)
 
     topic = f"{USER_ID}/{VIN}/operation-request/charging/update-care-mode"
-    await mqtt_client.publish(topic, create_completed_json("update-care-mode"), QOS_2)
+    fake_mqtt_client_wrapper.set_messages(
+        [create_aiomqtt_message(topic=topic, operation="update-care-mode")]
+    )
 
     await future
     responses.assert_called_with(
@@ -217,7 +241,11 @@ async def test_set_battery_care_mode(
 @pytest.mark.asyncio
 @pytest.mark.parametrize(("enabled", "expected"), [(True, "PERMANENT"), (False, "OFF")])
 async def test_set_auto_unlock_plug(
-    responses: aioresponses, mqtt_client: MQTTClient, myskoda: MySkoda, enabled: bool, expected: str
+    responses: aioresponses,
+    myskoda: MySkoda,
+    fake_mqtt_client_wrapper: FakeMqttClientWrapper,
+    enabled: bool,
+    expected: str,
 ) -> None:
     url = f"{BASE_URL_SKODA}/api/v1/charging/{VIN}/set-auto-unlock-plug"
     responses.put(url=url)
@@ -225,7 +253,9 @@ async def test_set_auto_unlock_plug(
     future = myskoda.set_auto_unlock_plug(VIN, enabled)
 
     topic = f"{USER_ID}/{VIN}/operation-request/charging/update-auto-unlock-plug"
-    await mqtt_client.publish(topic, create_completed_json("update-auto-unlock-plug"), QOS_2)
+    fake_mqtt_client_wrapper.set_messages(
+        [create_aiomqtt_message(topic=topic, operation="update-auto-unlock-plug")]
+    )
 
     await future
     responses.assert_called_with(
@@ -239,7 +269,11 @@ async def test_set_auto_unlock_plug(
 @pytest.mark.asyncio
 @pytest.mark.parametrize(("reduced", "expected"), [(True, "REDUCED"), (False, "MAXIMUM")])
 async def test_set_reduced_current_limit(
-    responses: aioresponses, mqtt_client: MQTTClient, myskoda: MySkoda, reduced: bool, expected: str
+    responses: aioresponses,
+    myskoda: MySkoda,
+    fake_mqtt_client_wrapper: FakeMqttClientWrapper,
+    reduced: bool,
+    expected: str,
 ) -> None:
     url = f"{BASE_URL_SKODA}/api/v1/charging/{VIN}/set-charging-current"
     responses.put(url=url)
@@ -247,7 +281,9 @@ async def test_set_reduced_current_limit(
     future = myskoda.set_reduced_current_limit(VIN, reduced)
 
     topic = f"{USER_ID}/{VIN}/operation-request/charging/update-charging-current"
-    await mqtt_client.publish(topic, create_completed_json("update-charging-current"), QOS_2)
+    fake_mqtt_client_wrapper.set_messages(
+        [create_aiomqtt_message(topic=topic, operation="update-charging-current")]
+    )
 
     await future
     responses.assert_called_with(
@@ -260,7 +296,7 @@ async def test_set_reduced_current_limit(
 
 @pytest.mark.asyncio
 async def test_start_charging(
-    responses: aioresponses, mqtt_client: MQTTClient, myskoda: MySkoda
+    responses: aioresponses, myskoda: MySkoda, fake_mqtt_client_wrapper: FakeMqttClientWrapper
 ) -> None:
     url = f"{BASE_URL_SKODA}/api/v1/charging/{VIN}/start"
     responses.post(url=url)
@@ -268,7 +304,9 @@ async def test_start_charging(
     future = myskoda.start_charging(VIN)
 
     topic = f"{USER_ID}/{VIN}/operation-request/charging/start-stop-charging"
-    await mqtt_client.publish(topic, create_completed_json("start-charging"), QOS_2)
+    fake_mqtt_client_wrapper.set_messages(
+        [create_aiomqtt_message(topic=topic, operation="start-charging")]
+    )
 
     await future
     responses.assert_called_with(
@@ -281,7 +319,7 @@ async def test_start_charging(
 
 @pytest.mark.asyncio
 async def test_stop_charging(
-    responses: aioresponses, mqtt_client: MQTTClient, myskoda: MySkoda
+    responses: aioresponses, myskoda: MySkoda, fake_mqtt_client_wrapper: FakeMqttClientWrapper
 ) -> None:
     url = f"{BASE_URL_SKODA}/api/v1/charging/{VIN}/stop"
     responses.post(url=url)
@@ -289,7 +327,9 @@ async def test_stop_charging(
     future = myskoda.stop_charging(VIN)
 
     topic = f"{USER_ID}/{VIN}/operation-request/charging/start-stop-charging"
-    await mqtt_client.publish(topic, create_completed_json("stop-charging"), QOS_2)
+    fake_mqtt_client_wrapper.set_messages(
+        [create_aiomqtt_message(topic=topic, operation="stop-charging")]
+    )
 
     await future
     responses.assert_called_with(
@@ -301,14 +341,16 @@ async def test_stop_charging(
 
 
 @pytest.mark.asyncio
-async def test_wakeup(responses: aioresponses, mqtt_client: MQTTClient, myskoda: MySkoda) -> None:
+async def test_wakeup(
+    responses: aioresponses, myskoda: MySkoda, fake_mqtt_client_wrapper: FakeMqttClientWrapper
+) -> None:
     url = f"{BASE_URL_SKODA}/api/v1/vehicle-wakeup/{VIN}?applyRequestLimiter=true"
     responses.post(url=url)
 
     future = myskoda.wakeup(VIN)
 
     topic = f"{USER_ID}/{VIN}/operation-request/vehicle-wakeup/wakeup"
-    await mqtt_client.publish(topic, create_completed_json("wakeup"), QOS_2)
+    fake_mqtt_client_wrapper.set_messages([create_aiomqtt_message(topic=topic, operation="wakeup")])
 
     await future
     responses.assert_called_with(
@@ -322,7 +364,10 @@ async def test_wakeup(responses: aioresponses, mqtt_client: MQTTClient, myskoda:
 @pytest.mark.asyncio
 @pytest.mark.parametrize("mode", ChargeMode)
 async def test_set_charge_mode(
-    responses: aioresponses, mqtt_client: MQTTClient, myskoda: MySkoda, mode: ChargeMode
+    responses: aioresponses,
+    myskoda: MySkoda,
+    fake_mqtt_client_wrapper: FakeMqttClientWrapper,
+    mode: ChargeMode,
 ) -> None:
     url = f"{BASE_URL_SKODA}/api/v1/charging/{VIN}/set-charge-mode"
     responses.post(url=url)
@@ -330,7 +375,9 @@ async def test_set_charge_mode(
     future = myskoda.set_charge_mode(VIN, mode)
 
     topic = f"{USER_ID}/{VIN}/operation-request/charging/update-charge-mode"
-    await mqtt_client.publish(topic, create_completed_json("update-charge-mode"), QOS_2)
+    fake_mqtt_client_wrapper.set_messages(
+        [create_aiomqtt_message(topic=topic, operation="update-charge-mode")]
+    )
 
     await future
     responses.assert_called_with(
@@ -344,7 +391,7 @@ async def test_set_charge_mode(
 @pytest.mark.asyncio
 async def test_honk_and_flash(
     responses: aioresponses,
-    mqtt_client: MQTTClient,
+    fake_mqtt_client_wrapper: FakeMqttClientWrapper,
     myskoda: MySkoda,
 ) -> None:
     url = f"{BASE_URL_SKODA}/api/v1/vehicle-access/{VIN}/honk-and-flash"
@@ -361,7 +408,9 @@ async def test_honk_and_flash(
     future = myskoda.honk_flash(VIN)
 
     topic = f"{USER_ID}/{VIN}/operation-request/vehicle-access/honk-and-flash"
-    await mqtt_client.publish(topic, create_completed_json("start-honk"), QOS_2)
+    fake_mqtt_client_wrapper.set_messages(
+        [create_aiomqtt_message(topic=topic, operation="start-honk")]
+    )
 
     await future
     responses.assert_called_with(
@@ -375,7 +424,7 @@ async def test_honk_and_flash(
 @pytest.mark.asyncio
 async def test_flash(
     responses: aioresponses,
-    mqtt_client: MQTTClient,
+    fake_mqtt_client_wrapper: FakeMqttClientWrapper,
     myskoda: MySkoda,
 ) -> None:
     url = f"{BASE_URL_SKODA}/api/v1/vehicle-access/{VIN}/honk-and-flash"
@@ -392,7 +441,9 @@ async def test_flash(
     future = myskoda.flash(VIN)
 
     topic = f"{USER_ID}/{VIN}/operation-request/vehicle-access/honk-and-flash"
-    await mqtt_client.publish(topic, create_completed_json("start-flash"), QOS_2)
+    fake_mqtt_client_wrapper.set_messages(
+        [create_aiomqtt_message(topic=topic, operation="start-flash")]
+    )
 
     await future
     responses.assert_called_with(
@@ -406,7 +457,10 @@ async def test_flash(
 @pytest.mark.asyncio
 @pytest.mark.parametrize("spin", ["1234", "4321"])
 async def test_lock(
-    responses: aioresponses, mqtt_client: MQTTClient, myskoda: MySkoda, spin: str
+    responses: aioresponses,
+    myskoda: MySkoda,
+    fake_mqtt_client_wrapper: FakeMqttClientWrapper,
+    spin: str,
 ) -> None:
     url = f"{BASE_URL_SKODA}/api/v1/vehicle-access/{VIN}/lock"
     responses.post(url=url)
@@ -414,7 +468,7 @@ async def test_lock(
     future = myskoda.lock(VIN, spin)
 
     topic = f"{USER_ID}/{VIN}/operation-request/vehicle-access/lock-vehicle"
-    await mqtt_client.publish(topic, create_completed_json("lock"), QOS_2)
+    fake_mqtt_client_wrapper.set_messages([create_aiomqtt_message(topic=topic, operation="lock")])
 
     await future
     responses.assert_called_with(
@@ -428,7 +482,10 @@ async def test_lock(
 @pytest.mark.asyncio
 @pytest.mark.parametrize("spin", ["1234", "4321"])
 async def test_unlock(
-    responses: aioresponses, mqtt_client: MQTTClient, myskoda: MySkoda, spin: str
+    responses: aioresponses,
+    myskoda: MySkoda,
+    fake_mqtt_client_wrapper: FakeMqttClientWrapper,
+    spin: str,
 ) -> None:
     url = f"{BASE_URL_SKODA}/api/v1/vehicle-access/{VIN}/unlock"
     responses.post(url=url)
@@ -436,7 +493,7 @@ async def test_unlock(
     future = myskoda.unlock(VIN, spin)
 
     topic = f"{USER_ID}/{VIN}/operation-request/vehicle-access/lock-vehicle"
-    await mqtt_client.publish(topic, create_completed_json("unlock"), QOS_2)
+    fake_mqtt_client_wrapper.set_messages([create_aiomqtt_message(topic=topic, operation="unlock")])
 
     await future
     responses.assert_called_with(
@@ -449,7 +506,7 @@ async def test_unlock(
 
 @pytest.mark.asyncio
 async def test_stop_auxiliary_heater(
-    responses: aioresponses, mqtt_client: MQTTClient, myskoda: MySkoda
+    responses: aioresponses, myskoda: MySkoda, fake_mqtt_client_wrapper: FakeMqttClientWrapper
 ) -> None:
     url = f"{BASE_URL_SKODA}/api/v2/air-conditioning/{VIN}/auxiliary-heating/stop"
     responses.post(url=url)
@@ -457,7 +514,9 @@ async def test_stop_auxiliary_heater(
     future = myskoda.stop_auxiliary_heating(VIN)
 
     topic = f"{USER_ID}/{VIN}/operation-request/auxiliary-heating/start-stop-auxiliary-heating"
-    await mqtt_client.publish(topic, create_completed_json("stop-auxiliary-heating"), QOS_2)
+    fake_mqtt_client_wrapper.set_messages(
+        [create_aiomqtt_message(topic=topic, operation="stop-auxiliary-heating")]
+    )
 
     await future
     responses.assert_called_with(
@@ -480,7 +539,7 @@ async def test_stop_auxiliary_heater(
 )
 async def test_start_auxiliary_heater(  # noqa: PLR0913
     responses: aioresponses,
-    mqtt_client: MQTTClient,
+    fake_mqtt_client_wrapper: FakeMqttClientWrapper,
     myskoda: MySkoda,
     spin: str,
     config: AuxiliaryConfig,
@@ -492,7 +551,9 @@ async def test_start_auxiliary_heater(  # noqa: PLR0913
     future = myskoda.start_auxiliary_heating(VIN, spin, config)
 
     topic = f"{USER_ID}/{VIN}/operation-request/auxiliary-heating/start-stop-auxiliary-heating"
-    await mqtt_client.publish(topic, create_completed_json("start-auxiliary-heating"), QOS_2)
+    fake_mqtt_client_wrapper.set_messages(
+        [create_aiomqtt_message(topic=topic, operation="start-auxiliary-heating")]
+    )
 
     json_data: dict[str, object] = {"spin": spin}
     if config is not None:
@@ -537,7 +598,7 @@ async def test_start_auxiliary_heater(  # noqa: PLR0913
 )
 async def test_set_ac_without_external_power(
     responses: aioresponses,
-    mqtt_client: MQTTClient,
+    fake_mqtt_client_wrapper: FakeMqttClientWrapper,
     myskoda: MySkoda,
     settings: AirConditioningWithoutExternalPower,
     expected: bool,
@@ -551,8 +612,12 @@ async def test_set_ac_without_external_power(
         f"{USER_ID}/{VIN}/operation-request/"
         "air-conditioning/set-air-conditioning-without-external-power"
     )
-    await mqtt_client.publish(
-        topic, create_completed_json("set-air-conditioning-without-external-power"), QOS_2
+    fake_mqtt_client_wrapper.set_messages(
+        [
+            create_aiomqtt_message(
+                topic=topic, operation="set-air-conditioning-without-external-power"
+            )
+        ]
     )
 
     await future
@@ -574,7 +639,7 @@ async def test_set_ac_without_external_power(
 )
 async def test_set_ac_at_unlock(
     responses: aioresponses,
-    mqtt_client: MQTTClient,
+    fake_mqtt_client_wrapper: FakeMqttClientWrapper,
     myskoda: MySkoda,
     settings: AirConditioningAtUnlock,
     expected: bool,
@@ -585,7 +650,9 @@ async def test_set_ac_at_unlock(
     future = myskoda.set_ac_at_unlock(VIN, settings)
 
     topic = f"{USER_ID}/{VIN}/operation-request/air-conditioning/set-air-conditioning-at-unlock"
-    await mqtt_client.publish(topic, create_completed_json("set-air-conditioning-at-unlock"), QOS_2)
+    fake_mqtt_client_wrapper.set_messages(
+        [create_aiomqtt_message(topic=topic, operation="set-air-conditioning-at-unlock")]
+    )
 
     await future
     responses.assert_called_with(
@@ -606,7 +673,7 @@ async def test_set_ac_at_unlock(
 )
 async def test_set_windows_heating(
     responses: aioresponses,
-    mqtt_client: MQTTClient,
+    fake_mqtt_client_wrapper: FakeMqttClientWrapper,
     myskoda: MySkoda,
     settings: WindowHeating,
     expected: bool,
@@ -617,7 +684,9 @@ async def test_set_windows_heating(
     future = myskoda.set_windows_heating(VIN, settings)
 
     topic = f"{USER_ID}/{VIN}/operation-request/air-conditioning/windows-heating"
-    await mqtt_client.publish(topic, create_completed_json("windows-heating"), QOS_2)
+    fake_mqtt_client_wrapper.set_messages(
+        [create_aiomqtt_message(topic=topic, operation="windows-heating")]
+    )
 
     await future
     responses.assert_called_with(
@@ -639,7 +708,7 @@ async def test_set_windows_heating(
 )
 async def test_set_seats_heating(
     responses: aioresponses,
-    mqtt_client: MQTTClient,
+    fake_mqtt_client_wrapper: FakeMqttClientWrapper,
     myskoda: MySkoda,
     settings: SeatHeating,
     expected: bool,
@@ -650,8 +719,8 @@ async def test_set_seats_heating(
     future = myskoda.set_seats_heating(VIN, settings)
 
     topic = f"{USER_ID}/{VIN}/operation-request/air-conditioning/set-air-conditioning-seats-heating"
-    await mqtt_client.publish(
-        topic, create_completed_json("set-air-conditioning-seats-heating"), QOS_2
+    fake_mqtt_client_wrapper.set_messages(
+        [create_aiomqtt_message(topic=topic, operation="set-air-conditioning-seats-heating")]
     )
 
     json_data: dict[str, object] = {}
@@ -673,7 +742,11 @@ async def test_set_seats_heating(
 @pytest.mark.asyncio
 @pytest.mark.parametrize(("timer_id", "enabled"), [(1, True), (2, False)])
 async def test_set_departure_timer(
-    responses: aioresponses, mqtt_client: MQTTClient, myskoda: MySkoda, timer_id: int, enabled: bool
+    responses: aioresponses,
+    myskoda: MySkoda,
+    fake_mqtt_client_wrapper: FakeMqttClientWrapper,
+    timer_id: int,
+    enabled: bool,
 ) -> None:
     url = f"{BASE_URL_SKODA}/api/v1/vehicle-automatization/{VIN}/departure/timers"
     responses.post(url=url)
@@ -694,7 +767,9 @@ async def test_set_departure_timer(
         future = myskoda.set_departure_timer(VIN, selected_timer)
 
         topic = f"{USER_ID}/{VIN}/operation-request/departure/update-departure-timers"
-        await mqtt_client.publish(topic, create_completed_json("update-departure-timers"), QOS_2)
+        fake_mqtt_client_wrapper.set_messages(
+            [create_aiomqtt_message(topic=topic, operation="update-departure-timers")]
+        )
 
         await future
 
@@ -710,7 +785,11 @@ async def test_set_departure_timer(
 @pytest.mark.asyncio
 @pytest.mark.parametrize(("timer_id", "enabled"), [(1, True), (2, False)])
 async def test_set_ac_timer(
-    responses: aioresponses, mqtt_client: MQTTClient, myskoda: MySkoda, timer_id: int, enabled: bool
+    responses: aioresponses,
+    myskoda: MySkoda,
+    fake_mqtt_client_wrapper: FakeMqttClientWrapper,
+    timer_id: int,
+    enabled: bool,
 ) -> None:
     url = f"{BASE_URL_SKODA}/api/v2/air-conditioning/{VIN}/timers"
     responses.post(url=url)
@@ -729,7 +808,9 @@ async def test_set_ac_timer(
     future = myskoda.set_ac_timer(VIN, selected_timer)
 
     topic = f"{USER_ID}/{VIN}/operation-request/air-conditioning/set-air-conditioning-timers"
-    await mqtt_client.publish(topic, create_completed_json("set-air-conditioning-timers"), QOS_2)
+    fake_mqtt_client_wrapper.set_messages(
+        [create_aiomqtt_message(topic=topic, operation="set-air-conditioning-timers")]
+    )
 
     json_data = {"timers": [selected_timer.to_dict(by_alias=True)]}
 
@@ -746,7 +827,7 @@ async def test_set_ac_timer(
 @pytest.mark.parametrize(("timer_id", "enabled", "spin"), [(1, True, "1234"), (2, False, "4321")])
 async def test_set_auxiliary_heating_timer(  # noqa: PLR0913
     responses: aioresponses,
-    mqtt_client: MQTTClient,
+    fake_mqtt_client_wrapper: FakeMqttClientWrapper,
     myskoda: MySkoda,
     timer_id: int,
     enabled: bool,
@@ -769,7 +850,9 @@ async def test_set_auxiliary_heating_timer(  # noqa: PLR0913
     future = myskoda.set_auxiliary_heating_timer(VIN, selected_timer, spin)
 
     topic = f"{USER_ID}/{VIN}/operation-request/air-conditioning/set-air-conditioning-timers"
-    await mqtt_client.publish(topic, create_completed_json("set-air-conditioning-timers"), QOS_2)
+    fake_mqtt_client_wrapper.set_messages(
+        [create_aiomqtt_message(topic=topic, operation="set-air-conditioning-timers")]
+    )
 
     json_data = {"spin": spin, "timers": [selected_timer.to_dict(by_alias=True)]}
 
