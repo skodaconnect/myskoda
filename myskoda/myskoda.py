@@ -140,24 +140,18 @@ class MySkoda:
     _vehicles: dict[Vin, Vehicle]
     _callbacks: dict[Vin, list[Callable[[], Coroutine[Any, Any, None]]]]
 
-    def __init__(  # noqa: PLR0913
+    def __init__(
         self,
         session: ClientSession,
         ssl_context: SSLContext | None = None,
         mqtt_enabled: bool = True,
-        mqtt_broker_host: str | None = None,
-        mqtt_broker_port: int | None = None,
-        mqtt_enable_ssl: bool | None = None,
     ) -> None:
         self._callbacks = defaultdict(list)
         self._vehicles: dict[Vin, Vehicle] = {}
         self.session = session
         self.authorization = MySkodaAuthorization(session)
         self.rest_api = RestApi(self.session, self.authorization)
-        self.ssl_context = ssl_context
-        self.mqtt_broker_host = mqtt_broker_host
-        self.mqtt_broker_port = mqtt_broker_port
-        self.mqtt_enable_ssl = mqtt_enable_ssl
+        self.ssl_context = ssl_context  # TODO @dvx76: this isn't used anywhere?
         if mqtt_enabled:
             self.mqtt = self._create_mqtt_client()
 
@@ -776,13 +770,7 @@ class MySkoda:
                 task.add_done_callback(background_tasks.discard)
 
     def _create_mqtt_client(self) -> MySkodaMqttClient:
-        kwargs = {
-            "authorization": self.authorization,
-            "hostname": self.mqtt_broker_host,
-            "port": self.mqtt_broker_port,
-            "enable_ssl": self.mqtt_enable_ssl,
-        }
-        mqtt = MySkodaMqttClient(**{k: v for k, v in kwargs.items() if v is not None})
+        mqtt = MySkodaMqttClient(authorization=self.authorization)
         mqtt.subscribe(self._on_mqtt_event)
         return mqtt
 

@@ -8,10 +8,11 @@ import logging
 import re
 import ssl
 import uuid
-from collections.abc import Callable, Coroutine
+from collections.abc import AsyncIterator, Callable, Coroutine
 from datetime import UTC, datetime
 from random import uniform
-from typing import Any, cast
+from types import TracebackType
+from typing import Any, Protocol, Self, cast
 
 import aiomqtt
 
@@ -49,7 +50,7 @@ from .models.vehicle_event import VehicleEvent, VehicleEventWithVehicleIgnitionS
 
 _LOGGER = logging.getLogger(__name__)
 TOPIC_RE = re.compile("^(.*?)/(.*?)/(.*?)/(.*?)$")
-app_uuid = uuid.uuid4()
+APP_UUID = uuid.uuid4()
 
 
 def _create_ssl_context() -> ssl.SSLContext:
@@ -85,6 +86,44 @@ class OperationFailedError(Exception):
         super().__init__(f"Operation {op} with trace {trace} failed: {error}")
 
 
+class AbstractMqttClientWrapper(Protocol):
+    """Interface for an aiomqtt.Client wrapper.
+
+    We're using an interface so we can pass in a fake wrapper in tests.
+    We're wrapping (technically subclassing) so we can add a clean public update_username_password
+    method.
+    """
+
+    async def __aenter__(self) -> Self: ...  # noqa: D105
+
+    async def __aexit__(  # noqa: D105
+        self,
+        exc_type: type[BaseException] | None,
+        exc: BaseException | None,
+        tb: TracebackType | None,
+    ) -> None: ...
+
+    @property
+    def messages(self) -> AsyncIterator: ...  # noqa: D102
+
+    async def subscribe(self, topic: str) -> None: ...  # noqa: D102
+
+    def update_username_password(self, username: str, password: str) -> None: ...  # noqa: D102
+
+
+class AioMqttClientWrapper(aiomqtt.Client):
+    def update_username_password(self, username: str, password: str) -> None:
+        """Update the username and password set in an aiomqtt.Client object.
+
+        This isn't super clean since _client is a private member but it's just an instance of
+        paho.mqtt.Client so unlikely to change.
+
+        We want the ability to update the username/pw so that MySkodaMqttClient can instantiate
+        this in its __init__ but defer setting the username/pw.
+        """
+        self._client.username_pw_set(username=username, password=password)
+
+
 class MySkodaMqttClient:
     user_id: str | None
     vehicle_vins: list[str]
@@ -94,15 +133,23 @@ class MySkodaMqttClient:
     def __init__(
         self,
         authorization: Authorization,
-        hostname: str = MQTT_BROKER_HOST,
-        port: int = MQTT_BROKER_PORT,
-        enable_ssl: bool = True,
+        mqtt_client: AbstractMqttClientWrapper | None = None,
     ) -> None:
         self.authorization = authorization
-        self.hostname = hostname
-        self.port = port
         self.vehicle_vins = []
-        self.enable_ssl = enable_ssl
+        self.mqtt_client = mqtt_client
+        if self.mqtt_client is None:
+            # Pass in pre-created SSLContext (vs 'tls_params=aiomqtt.TLSParameters()') to avoid a
+            # blocking call in paho.mqtt.client. See https://github.com/w1ll1am23/pyeconet/pull/43.
+            self.mqtt_client = AioMqttClientWrapper(
+                hostname=MQTT_BROKER_HOST,
+                port=MQTT_BROKER_PORT,
+                identifier="Id" + str(APP_UUID) + "#" + str(uuid.uuid4()),
+                logger=_LOGGER,
+                tls_context=_SSL_CONTEXT,
+                keepalive=MQTT_KEEPALIVE,
+                clean_session=True,
+            )
         self._callbacks = []
         self._operation_listeners = []
         self._listener_task = None
@@ -144,10 +191,7 @@ class MySkodaMqttClient:
 
         Reconnect loop based on https://github.com/empicano/aiomqtt/blob/main/docs/reconnection.md.
 
-        Recreate the aiomqtt.Client on every try to get the latest authorization token.
-
-        Passing in pre-created SSLContext (vs 'tls_params=aiomqtt.TLSParameters()') to avoid a
-        blocking call in paho.mqtt.client. See https://github.com/w1ll1am23/pyeconet/pull/43.
+        Re-fetch and update the authorization token on every try.
         """
         _LOGGER.debug("Starting _connect_and_listen")
         self._running = True
@@ -155,19 +199,10 @@ class MySkodaMqttClient:
         self._reconnect_delay = MQTT_RECONNECT_DELAY  # Initial delay for backoff
         while self._running:
             try:
-                # client_id = Id + session_uuid4 + # + random_uuid4
-                client_id = "Id" + str(app_uuid) + "#" + str(uuid.uuid4())
-                async with aiomqtt.Client(
-                    hostname=self.hostname,
-                    port=self.port,
-                    username="android-app",  # Explicit username from working payload
-                    identifier=client_id,
-                    password=await self.authorization.get_access_token(),
-                    logger=_LOGGER,
-                    tls_context=_SSL_CONTEXT if self.enable_ssl else None,
-                    keepalive=MQTT_KEEPALIVE,
-                    clean_session=True,
-                ) as client:
+                assert self.mqtt_client is not None
+                password = await self.authorization.get_access_token()
+                self.mqtt_client.update_username_password(username="android-app", password=password)
+                async with self.mqtt_client as client:
                     _LOGGER.info("Connected to MQTT")
                     _LOGGER.debug("using MQTT client %s", client)
                     for vin in self.vehicle_vins:

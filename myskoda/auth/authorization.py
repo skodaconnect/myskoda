@@ -51,6 +51,10 @@ class IDKSession(DataClassORJSONMixin):
 class Authorization(ABC):
     """Class that holds Authorization information and authorization state of the session."""
 
+    # TODO @dvx75: I think this should be much more abstract and void of most concrete
+    # implementations. At least not have dependencies on ClientSession.
+    # Maybe also move to Protocol instead of ABC.
+
     session: ClientSession
     idk_session: IDKSession | None = None
 
