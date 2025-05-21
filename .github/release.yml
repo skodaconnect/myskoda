@@ -15,9 +15,22 @@ changelog:
       labels:
         - bugfix
         - bug
+        - regression
     - title: 🛠️ Dependencies
       labels:
         - dependencies
+    - title: 🚧 Code Maintenance
+      labels:
+        - maintenance
+        - chore
+    - title: ✅ Testing
+      labels:
+        - test
+    - title: 🌐 Language
+        - translations
+    - title: 🖺 Documentation
+        - documentation
     - title: 🗒️ Other changes
       labels:
         - '*'
+
