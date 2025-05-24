@@ -1,1 +1,1 @@
-"""Pydantic models for all API responses."""
+"""Models for all API interactions."""

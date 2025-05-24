@@ -1,11 +1,22 @@
-"""Models for operation requests, returned by the MQTT broker."""
+"""Models for operation events, returned by the MQTT broker.
+
+Operation Event example:
+{
+    "version": 1,
+    "traceId": "800a74737b5a4328862d958c35b71b74",
+    "operation": "start-window-heating",
+    "status": "ERROR",
+    "errorCode": "timeout",
+    "requestId": "5a16b265-85e7-4502-bd24-c92091c3df31",
+}
+"""
 
 from dataclasses import dataclass, field
-from datetime import datetime
 from enum import StrEnum
 
 from mashumaro import field_options
-from mashumaro.mixins.orjson import DataClassORJSONMixin
+
+from .base import BaseEvent, EventType
 
 
 class OperationStatus(StrEnum):
@@ -52,12 +63,15 @@ class OperationName(StrEnum):
     WINDOWS_HEATING = "windows-heating"
 
 
-@dataclass
-class OperationRequest(DataClassORJSONMixin):
-    version: int
-    trace_id: str = field(metadata=field_options(alias="traceId"))
+@dataclass(frozen=True)
+class OperationEvent(BaseEvent):
+    """Base model for all Operation Events."""
+
+    event_type = EventType.OPERATION
     request_id: str = field(metadata=field_options(alias="requestId"))
     operation: OperationName
     status: OperationStatus
     error_code: str | None = field(default=None, metadata=field_options(alias="errorCode"))
-    timestamp: datetime | None = field(default=None)
+
+
+# TODO @dvx76: so also have a subclass per operation name here??

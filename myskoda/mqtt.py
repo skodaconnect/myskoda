@@ -9,7 +9,6 @@ import re
 import ssl
 import uuid
 from collections.abc import AsyncIterator, Callable, Coroutine
-from datetime import UTC, datetime
 from random import uniform
 from types import TracebackType
 from typing import Any, Protocol, Self, cast
@@ -29,24 +28,7 @@ from .const import (
     MQTT_SERVICE_EVENT_TOPICS,
     MQTT_VEHICLE_EVENT_TOPICS,
 )
-from .event import (
-    Event,
-    EventAccess,
-    EventAccountPrivacy,
-    EventAirConditioning,
-    EventAuxiliaryHeating,
-    EventCharging,
-    EventDeparture,
-    EventLights,
-    EventOdometer,
-    EventOperation,
-    EventType,
-    EventVehicleConnectionStatusUpdate,
-    EventVehicleIgnitionStatus,
-)
-from .models.operation_request import OperationName, OperationRequest, OperationStatus
-from .models.service_event import ServiceEvent, ServiceEventWithChargingData
-from .models.vehicle_event import VehicleEvent, VehicleEventWithVehicleIgnitionStatusData
+from .models.event import BaseEvent, OperationEvent, OperationName, OperationStatus
 
 _LOGGER = logging.getLogger(__name__)
 TOPIC_RE = re.compile("^(.*?)/(.*?)/(.*?)/(.*?)$")
@@ -69,20 +51,20 @@ class OperationListener:
     """Used to track callbacks to execute for a given OperationName."""
 
     operation_name: OperationName
-    future: asyncio.Future[OperationRequest]
+    future: asyncio.Future[OperationEvent]
 
     def __init__(
-        self, operation_name: OperationName, future: asyncio.Future[OperationRequest]
+        self, operation_name: OperationName, future: asyncio.Future[OperationEvent]
     ) -> None:
         self.operation_name = operation_name
         self.future = future
 
 
 class OperationFailedError(Exception):
-    def __init__(self, operation: OperationRequest) -> None:
-        op = operation.operation
-        error = operation.error_code
-        trace = operation.trace_id
+    def __init__(self, event: OperationEvent) -> None:
+        op = event.operation
+        error = event.error_code
+        trace = event.trace_id
         super().__init__(f"Operation {op} with trace {trace} failed: {error}")
 
 
@@ -127,7 +109,7 @@ class AioMqttClientWrapper(aiomqtt.Client):
 class MySkodaMqttClient:
     user_id: str | None
     vehicle_vins: list[str]
-    _callbacks: list[Callable[[Event], Coroutine[Any, Any, None]]]
+    _callbacks: list[Callable[[BaseEvent], Coroutine[Any, Any, None]]]
     _operation_listeners: list[OperationListener]
 
     def __init__(
@@ -173,14 +155,14 @@ class MySkodaMqttClient:
         self._listener_task = None
         self._running = False
 
-    def subscribe(self, callback: Callable[[Event], Coroutine[Any, Any, None]]) -> None:
+    def subscribe(self, callback: Callable[[BaseEvent], Coroutine[Any, Any, None]]) -> None:
         """Listen for events emitted by MySkoda's MQTT broker."""
         self._callbacks.append(callback)
 
-    def wait_for_operation(self, operation_name: OperationName) -> asyncio.Future[OperationRequest]:
+    def wait_for_operation(self, operation_name: OperationName) -> asyncio.Future[OperationEvent]:
         """Wait until the next operation of the specified type completes."""
         _LOGGER.debug("Waiting for operation %s complete.", operation_name)
-        future: asyncio.Future[OperationRequest] = asyncio.get_event_loop().create_future()
+        future: asyncio.Future[OperationEvent] = asyncio.get_event_loop().create_future()
 
         self._operation_listeners.append(OperationListener(operation_name, future))
 
@@ -239,151 +221,21 @@ class MySkodaMqttClient:
 
     def _on_message(self, msg: aiomqtt.Message) -> None:
         """Deserialize received MQTT message and emit Event to subscribed callbacks."""
-        # Extract the topic, user id and vin from the topic's name.
-        # Internally, the topic will always look like this:
-        # `/{user_id}/{vin}/path/to/topic`
-        topic_match = TOPIC_RE.match(str(msg.topic))
-        if not topic_match:
-            _LOGGER.warning("Unexpected MQTT topic encountered: %s", topic_match)
-            return
-
         # Cast the data from binary string, ignoring empty messages.
-        data = cast("str", msg.payload)
-        if len(data) == 0:
+        payload = cast("str", msg.payload)
+        if len(payload) == 0:
             return
 
-        self._parse_topic(topic_match, data)
+        topic = str(msg.topic)
 
-    @staticmethod
-    def _get_charging_event(data: str) -> ServiceEvent:
+        _LOGGER.debug("Message received on topic %s: %s", topic, payload)
+
         try:
-            event = ServiceEventWithChargingData.from_json(data)
-        except ValueError:
-            event = ServiceEvent.from_json(data)
-        return event
-
-    @staticmethod
-    def _get_vehicle_ignition_status_changed_event(data: str) -> VehicleEvent:
-        try:
-            event = VehicleEventWithVehicleIgnitionStatusData.from_json(data)
-        except ValueError:
-            event = VehicleEvent.from_json(data)
-        return event
-
-    def _parse_topic(self, topic_match: re.Match[str], data: str) -> None:  # noqa: C901
-        """Parse the topic and extract relevant parts."""
-        [user_id, vin, event_type, topic] = topic_match.groups()
-        event_type = EventType(event_type)
-
-        _LOGGER.debug("Message (%s) received for %s on topic %s: %s", event_type, vin, topic, data)
-
-        # Messages will contain payload as JSON.
-        try:
-            if event_type == EventType.OPERATION:
-                self._emit(
-                    EventOperation(
-                        vin=vin,
-                        user_id=user_id,
-                        timestamp=datetime.now(tz=UTC),
-                        operation=OperationRequest.from_json(data),
-                    )
-                )
-            elif event_type == EventType.ACCOUNT_EVENT:
-                self._emit(
-                    EventAccountPrivacy(
-                        vin=vin,
-                        user_id=user_id,
-                        timestamp=datetime.now(tz=UTC),
-                    )
-                )
-            elif event_type == EventType.SERVICE_EVENT and topic == "air-conditioning":
-                self._emit(
-                    EventAirConditioning(
-                        vin=vin,
-                        user_id=user_id,
-                        timestamp=datetime.now(tz=UTC),
-                        event=ServiceEvent.from_json(data),
-                    )
-                )
-            elif event_type == EventType.SERVICE_EVENT and topic == "auxiliary-heating":
-                self._emit(
-                    EventAuxiliaryHeating(
-                        vin=vin,
-                        user_id=user_id,
-                        timestamp=datetime.now(tz=UTC),
-                        event=ServiceEvent.from_json(data),
-                    )
-                )
-            elif event_type == EventType.SERVICE_EVENT and topic == "charging":
-                self._emit(
-                    EventCharging(
-                        vin=vin,
-                        user_id=user_id,
-                        timestamp=datetime.now(tz=UTC),
-                        event=self._get_charging_event(data),
-                    )
-                )
-            elif event_type == EventType.SERVICE_EVENT and topic == "departure":
-                self._emit(
-                    EventDeparture(
-                        vin=vin,
-                        user_id=user_id,
-                        timestamp=datetime.now(tz=UTC),
-                        event=ServiceEvent.from_json(data),
-                    )
-                )
-            elif event_type == EventType.SERVICE_EVENT and topic == "vehicle-status/access":
-                self._emit(
-                    EventAccess(
-                        vin=vin,
-                        user_id=user_id,
-                        timestamp=datetime.now(tz=UTC),
-                        event=ServiceEvent.from_json(data),
-                    )
-                )
-            elif event_type == EventType.SERVICE_EVENT and topic == "vehicle-status/lights":
-                self._emit(
-                    EventLights(
-                        vin=vin,
-                        user_id=user_id,
-                        timestamp=datetime.now(tz=UTC),
-                        event=ServiceEvent.from_json(data),
-                    )
-                )
-            elif event_type == EventType.SERVICE_EVENT and topic == "vehicle-status/odometer":
-                self._emit(
-                    EventOdometer(
-                        vin=vin,
-                        user_id=user_id,
-                        timestamp=datetime.now(tz=UTC),
-                        event=ServiceEvent.from_json(data),
-                    )
-                )
-            elif event_type == EventType.VEHICLE_EVENT and topic == "vehicle-ignition-status":
-                self._emit(
-                    EventVehicleIgnitionStatus(
-                        vin=vin,
-                        user_id=user_id,
-                        timestamp=datetime.now(tz=UTC),
-                        event=self._get_vehicle_ignition_status_changed_event(data),
-                    )
-                )
-            elif (
-                event_type == EventType.VEHICLE_EVENT
-                and topic == "vehicle-connection-status-update"
-            ):
-                self._emit(
-                    EventVehicleConnectionStatusUpdate(
-                        vin=vin,
-                        user_id=user_id,
-                        timestamp=datetime.now(tz=UTC),
-                        event=VehicleEvent.from_json(data),
-                    )
-                )
+            self._emit(BaseEvent.from_mqtt_message(topic=topic, payload=payload))
         except Exception as exc:  # noqa: BLE001
             _LOGGER.warning("Exception parsing MQTT event: %s", exc)
 
-    def _emit(self, event: Event) -> None:
+    def _emit(self, event: BaseEvent) -> None:
         for callback in self._callbacks:
             result = callback(event)
             if result is not None:
@@ -391,45 +243,43 @@ class MySkodaMqttClient:
                 background_tasks.add(task)
                 task.add_done_callback(background_tasks.discard)
 
-        self._handle_operation(event)
+        if isinstance(event, OperationEvent):
+            self._handle_operation(event)
 
-    def _handle_operation(self, event: Event) -> None:
-        if event.type != EventType.OPERATION:
-            return
-
-        if event.operation.status == OperationStatus.IN_PROGRESS:
+    def _handle_operation(self, event: OperationEvent) -> None:
+        if event.status == OperationStatus.IN_PROGRESS:
             _LOGGER.debug(
                 "An operation '%s' is now in progress. Trace id: %s",
-                event.operation.operation,
-                event.operation.trace_id,
+                event.operation,
+                event.trace_id,
             )
             return
 
         _LOGGER.debug(
             "Operation '%s' for trace id '%s' completed.",
-            event.operation.operation,
-            event.operation.trace_id,
+            event.operation,
+            event.trace_id,
         )
-        self._handle_operation_completed(event.operation)
+        self._handle_operation_completed(event)
 
-    def _handle_operation_completed(self, operation: OperationRequest) -> None:
+    def _handle_operation_completed(self, event: OperationEvent) -> None:
         listeners = self._operation_listeners
         self._operation_listeners = []
         for listener in listeners:
-            if listener.operation_name != operation.operation:
+            if listener.operation_name != event.operation:
                 self._operation_listeners.append(listener)
                 continue
 
-            if operation.status == OperationStatus.ERROR:
+            if event.status == OperationStatus.ERROR:
                 _LOGGER.error(
                     "Resolving listener for operation '%s' with error '%s'.",
-                    operation.operation,
-                    operation.error_code,
+                    event.operation,
+                    event.error_code,
                 )
-                listener.future.set_exception(OperationFailedError(operation))
+                listener.future.set_exception(OperationFailedError(event))
             else:
-                if operation.status == OperationStatus.COMPLETED_WARNING:
-                    _LOGGER.warning("Operation '%s' completed with warnings.", operation.operation)
+                if event.status == OperationStatus.COMPLETED_WARNING:
+                    _LOGGER.warning("Operation '%s' completed with warnings.", event.operation)
 
-                _LOGGER.debug("Resolving listener for operation '%s'.", operation.operation)
-                listener.future.set_result(operation)
+                _LOGGER.debug("Resolving listener for operation '%s'.", event.operation)
+                listener.future.set_result(event)
