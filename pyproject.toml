@@ -8,7 +8,7 @@ authors = [
   {name = "Fabrice Devaux", email = "fabrice.devaux@gmail.com"}
 ]
 readme = "README.md"
-requires-python = ">=3.12.0"
+requires-python = ">=3.13.0"
 dependencies = [
   "aiohttp ~=3.11",
   "aiomqtt ~=2.2",
@@ -55,7 +55,7 @@ myskoda = "myskoda.cli:cli"
 
 [tool.ruff]
 line-length = 100
-target-version = "py312"
+target-version = "py313"
 
 [tool.ruff.lint]
 ignore = [
