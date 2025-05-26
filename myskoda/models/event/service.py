@@ -61,46 +61,6 @@ class ServiceEventError(StrEnum):
     CLIMA = "CLIMA"
 
 
-def _deserialize_mode(value: str) -> ChargeMode:  # noqa: PLR0911
-    match value:
-        case "homeStorageCharging":
-            return ChargeMode.HOME_STORAGE_CHARGING
-        case "immediateDischarging":
-            return ChargeMode.IMMEDIATE_DISCHARGING
-        case "onlyOwnCurrent":
-            return ChargeMode.ONLY_OWN_CURRENT
-        case "preferredChargingTimes":
-            return ChargeMode.PREFERRED_CHARGING_TIMES
-        case "timerChargingWithClimatisation":
-            return ChargeMode.TIMER_CHARGING_WITH_CLIMATISATION
-        case "timer":
-            return ChargeMode.TIMER
-        case "manual":
-            return ChargeMode.MANUAL
-        case "off":
-            return ChargeMode.OFF
-        case _:
-            raise UnexpectedChargeModeError
-
-
-def _deserialize_charging_state(value: str) -> ChargingState:
-    match value:
-        case "charging":
-            return ChargingState.CHARGING
-        case "chargePurposeReachedAndConservation":
-            return ChargingState.CONSERVING
-        case "chargePurposeReachedAndNotConservationCharging":
-            return ChargingState.READY_FOR_CHARGING
-        case "notReadyForCharging":
-            return ChargingState.CONNECT_CABLE
-        case "readyForCharging":
-            return ChargingState.READY_FOR_CHARGING
-        case "conserving":
-            return ChargingState.CONSERVING
-        case _:
-            raise UnexpectedChargingStateError
-
-
 def _deserialize_time_to_finish(value: int | str) -> int | None:
     if value == "null":
         return None
@@ -136,6 +96,19 @@ class ServiceEvent(BaseEvent):
     data: ServiceEventData
 
 
+# ChargeMode and ChargingState use different values in API responses and MQTT events.
+# This allows using the same Enum for both.
+ChargeMode.HOME_STORAGE_CHARGING._add_value_alias_("homeStorageCharging")  # type: ignore[reportAttributeAccessIssue]
+ChargeMode.IMMEDIATE_DISCHARGING._add_value_alias_("immediateDischarging")  # type: ignore[reportAttributeAccessIssue]
+ChargeMode.ONLY_OWN_CURRENT._add_value_alias_("onlyOwnCurrent")  # type: ignore[reportAttributeAccessIssue]
+ChargeMode.PREFERRED_CHARGING_TIMES._add_value_alias_("preferredChargingTimes")  # type: ignore[reportAttributeAccessIssue]
+ChargeMode.TIMER_CHARGING_WITH_CLIMATISATION._add_value_alias_("timerChargingWithClimatisation")  # type: ignore[reportAttributeAccessIssue]
+ChargingState.READY_FOR_CHARGING._add_value_alias_("chargePurposeReachedAndNotConservationCharging")  # type: ignore[reportAttributeAccessIssue]
+ChargingState.READY_FOR_CHARGING._add_value_alias_("readyForCharging")  # type: ignore[reportAttributeAccessIssue]
+ChargingState.CONNECT_CABLE._add_value_alias_("notReadyForCharging")  # type: ignore[reportAttributeAccessIssue]
+ChargingState.CONSERVING._add_value_alias_("chargePurposeReachedAndConservation")  # type: ignore[reportAttributeAccessIssue]
+
+
 @dataclass(frozen=True)
 class ServiceEventChangeSocData(ServiceEventData):
     """Charging data inside charging service event change-soc.
@@ -143,12 +116,8 @@ class ServiceEventChangeSocData(ServiceEventData):
     TODO: Remove the None defaults where they aren't really needed...
     """
 
-    mode: ChargeMode | None = field(
-        default=None, metadata=field_options(deserialize=_deserialize_mode)
-    )
-    state: ChargingState | None = field(
-        default=None, metadata=field_options(deserialize=_deserialize_charging_state)
-    )
+    mode: ChargeMode | None = None
+    state: ChargingState | None = None
     soc: int | None = field(default=None)
     charged_range: int | None = field(default=None, metadata=field_options(alias="chargedRange"))
     time_to_finish: int | None = field(
