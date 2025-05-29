@@ -14,9 +14,7 @@ from .models import (
     common,
     health,
     info,
-    operation_request,
     position,
-    service_event,
     status,
     user,
 )
@@ -42,9 +40,7 @@ __all__ = [
     "common",
     "health",
     "info",
-    "operation_request",
     "position",
-    "service_event",
     "status",
     "user",
 ]

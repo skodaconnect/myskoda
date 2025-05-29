@@ -135,7 +135,7 @@ async def myskoda_mqtt_client(
 
 
 @pytest.fixture
-def responses() -> Generator[aioresponses, None, None]:
+def responses() -> Generator[aioresponses]:
     """Return aioresponses fixture."""
     with aioresponses() as mocked_responses:
         yield mocked_responses

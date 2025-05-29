@@ -10,33 +10,30 @@ import aiomqtt
 import pytest
 
 from myskoda.anonymize import USER_ID, VIN
-from myskoda.event import (
-    Event,
-    EventAccess,
-    EventCharging,
-    EventLights,
-    EventOdometer,
-    EventOperation,
-    EventVehicleConnectionStatusUpdate,
-    EventVehicleIgnitionStatus,
-)
 from myskoda.models.charging import ChargeMode, ChargingState
-from myskoda.models.operation_request import OperationName, OperationRequest, OperationStatus
-from myskoda.models.service_event import (
-    ServiceEvent,
-    ServiceEventChargingData,
+from myskoda.models.event import (
+    BaseEvent,
+    EventType,
+    OperationEvent,
+    OperationName,
+    OperationStatus,
+    ServiceEventChangeAccess,
+    ServiceEventChangeLights,
+    ServiceEventChangeOdometer,
+    ServiceEventChangeSoc,
+    ServiceEventChangeSocData,
+    ServiceEventChargingCompleted,
     ServiceEventData,
     ServiceEventName,
-    ServiceEventWithChargingData,
-)
-from myskoda.models.vehicle_event import (
-    IgnitionStatus,
-    VehicleEvent,
+    VehicleEventAwake,
+    VehicleEventConnectionOnline,
     VehicleEventData,
+    VehicleEventIgnitionStatusChanged,
     VehicleEventName,
     VehicleEventVehicleIgnitionStatusData,
-    VehicleEventWithVehicleIgnitionStatusData,
+    VehicleEventWarningBatterylevel,
 )
+from myskoda.models.vehicle_ignition_status import IgnitionStatus
 from myskoda.mqtt import MySkodaMqttClient
 
 from .conftest import FakeMqttClientWrapper
@@ -102,7 +99,7 @@ async def test_subscribe_event(
     timestamp_str = "2024-10-17T08:49:59.538Z"
     timestamp = datetime.fromisoformat(timestamp_str)
 
-    events: list[Event] = []
+    events: list[BaseEvent] = []
     future = asyncio.get_event_loop().create_future()
 
     messages = [
@@ -356,7 +353,7 @@ async def test_subscribe_event(
         ),
     ]
 
-    async def on_event(event: Event) -> None:
+    async def on_event(event: BaseEvent) -> None:
         events.append(event)
         if len(events) == len(messages):
             future.set_result(None)
@@ -369,201 +366,153 @@ async def test_subscribe_event(
     await future
 
     assert events == [
-        EventOperation(
+        OperationEvent(
             vin=VIN,
-            user_id=USER_ID,
+            event_type=EventType.OPERATION,
             timestamp=ANY,
-            operation=OperationRequest(
-                version=1,
-                operation=OperationName.STOP_AIR_CONDITIONING,
-                trace_id=trace_id,
-                request_id=request_id,
-                status=OperationStatus.COMPLETED_SUCCESS,
-                error_code=None,
+            version=1,
+            operation=OperationName.STOP_AIR_CONDITIONING,
+            trace_id=trace_id,
+            request_id=request_id,
+            status=OperationStatus.COMPLETED_SUCCESS,
+            error_code=None,
+        ),
+        ServiceEventChangeLights(
+            vin=VIN,
+            event_type=EventType.SERVICE_EVENT,
+            version=1,
+            trace_id=trace_id,
+            timestamp=timestamp,
+            producer="SKODA_MHUB",
+            name=ServiceEventName.CHANGE_LIGHTS,
+            data=ServiceEventData(user_id=USER_ID, vin=VIN),
+        ),
+        ServiceEventChangeOdometer(
+            vin=VIN,
+            event_type=EventType.SERVICE_EVENT,
+            version=1,
+            trace_id=trace_id,
+            timestamp=timestamp,
+            producer="SKODA_MHUB",
+            name=ServiceEventName.CHANGE_ODOMETER,
+            data=ServiceEventData(user_id=USER_ID, vin=VIN),
+        ),
+        ServiceEventChangeAccess(
+            vin=VIN,
+            event_type=EventType.SERVICE_EVENT,
+            version=1,
+            trace_id=trace_id,
+            timestamp=timestamp,
+            producer="SKODA_MHUB",
+            name=ServiceEventName.CHANGE_ACCESS,
+            data=ServiceEventData(user_id=USER_ID, vin=VIN),
+        ),
+        ServiceEventChangeSoc(
+            vin=VIN,
+            event_type=EventType.SERVICE_EVENT,
+            version=1,
+            trace_id=trace_id,
+            timestamp=timestamp,
+            producer="SKODA_MHUB",
+            name=ServiceEventName.CHANGE_SOC,
+            data=ServiceEventChangeSocData(
+                user_id=USER_ID,
+                vin=VIN,
+                charged_range=307,
+                soc=91,
+                state=ChargingState.CHARGING,
+                mode=ChargeMode.MANUAL,
+                time_to_finish=40,
             ),
         ),
-        EventLights(
+        ServiceEventChargingCompleted(
             vin=VIN,
-            user_id=USER_ID,
-            timestamp=ANY,
-            event=ServiceEvent(
-                version=1,
-                trace_id=trace_id,
-                timestamp=timestamp,
-                producer="SKODA_MHUB",
-                name=ServiceEventName.CHANGE_LIGHTS,
-                data=ServiceEventData(user_id=USER_ID, vin=VIN),
+            event_type=EventType.SERVICE_EVENT,
+            version=1,
+            trace_id=trace_id,
+            timestamp=timestamp,
+            producer="SKODA_MHUB",
+            name=ServiceEventName.CHARGING_COMPLETED,
+            data=ServiceEventChangeSocData(
+                user_id=USER_ID,
+                vin=VIN,
+                charged_range=500,
+                soc=100,
+                state=ChargingState.CONSERVING,
+                mode=ChargeMode.MANUAL,
+                time_to_finish=0,
             ),
         ),
-        EventOdometer(
+        ServiceEventChargingCompleted(
             vin=VIN,
-            user_id=USER_ID,
-            timestamp=ANY,
-            event=ServiceEvent(
-                version=1,
-                trace_id=trace_id,
-                timestamp=timestamp,
-                producer="SKODA_MHUB",
-                name=ServiceEventName.CHANGE_ODOMETER,
-                data=ServiceEventData(user_id=USER_ID, vin=VIN),
+            event_type=EventType.SERVICE_EVENT,
+            version=1,
+            trace_id=trace_id,
+            timestamp=timestamp,
+            producer="SKODA_MHUB",
+            name=ServiceEventName.CHARGING_COMPLETED,
+            data=ServiceEventChangeSocData(
+                user_id=USER_ID,
+                vin=VIN,
+                mode=None,
+                state=None,
+                soc=None,
+                charged_range=None,
+                time_to_finish=None,
             ),
         ),
-        EventAccess(
+        VehicleEventConnectionOnline(
             vin=VIN,
-            user_id=USER_ID,
-            timestamp=ANY,
-            event=ServiceEvent(
-                version=1,
-                trace_id=trace_id,
-                timestamp=timestamp,
-                producer="SKODA_MHUB",
-                name=ServiceEventName.CHANGE_ACCESS,
-                data=ServiceEventData(user_id=USER_ID, vin=VIN),
+            event_type=EventType.VEHICLE_EVENT,
+            version=1,
+            trace_id=trace_id,
+            timestamp=timestamp,
+            producer="SKODA_MHUB",
+            name=VehicleEventName.VEHICLE_CONNECTION_ONLINE,
+            data=VehicleEventData(user_id=USER_ID, vin=VIN),
+        ),
+        VehicleEventAwake(
+            vin=VIN,
+            event_type=EventType.VEHICLE_EVENT,
+            version=1,
+            trace_id=trace_id,
+            timestamp=timestamp,
+            producer="SKODA_MHUB",
+            name=VehicleEventName.VEHICLE_AWAKE,
+            data=VehicleEventData(user_id=USER_ID, vin=VIN),
+        ),
+        VehicleEventWarningBatterylevel(
+            vin=VIN,
+            event_type=EventType.VEHICLE_EVENT,
+            version=1,
+            trace_id=trace_id,
+            timestamp=timestamp,
+            producer="SKODA_MHUB",
+            name=VehicleEventName.VEHICLE_WARNING_BATTEYLEVEL,
+            data=VehicleEventData(user_id=USER_ID, vin=VIN),
+        ),
+        VehicleEventIgnitionStatusChanged(
+            vin=VIN,
+            event_type=EventType.VEHICLE_EVENT,
+            version=1,
+            trace_id=trace_id,
+            timestamp=timestamp,
+            producer="SKODA_MHUB",
+            name=VehicleEventName.VEHICLE_IGNITION_STATUS_CHANGED,
+            data=VehicleEventVehicleIgnitionStatusData(
+                user_id=USER_ID, vin=VIN, ignition_status=IgnitionStatus.ON
             ),
         ),
-        EventCharging(
+        VehicleEventIgnitionStatusChanged(
             vin=VIN,
-            user_id=USER_ID,
-            timestamp=ANY,
-            event=ServiceEventWithChargingData(
-                version=1,
-                trace_id=trace_id,
-                timestamp=timestamp,
-                producer="SKODA_MHUB",
-                name=ServiceEventName.CHANGE_SOC,
-                data=ServiceEventChargingData(
-                    user_id=USER_ID,
-                    vin=VIN,
-                    charged_range=307,
-                    soc=91,
-                    state=ChargingState.CHARGING,
-                    mode=ChargeMode.MANUAL,
-                    time_to_finish=40,
-                ),
-            ),
-        ),
-        EventCharging(
-            vin=VIN,
-            user_id=USER_ID,
-            timestamp=ANY,
-            event=ServiceEventWithChargingData(
-                version=1,
-                trace_id=trace_id,
-                timestamp=timestamp,
-                producer="SKODA_MHUB",
-                name=ServiceEventName.CHARGING_COMPLETED,
-                data=ServiceEventChargingData(
-                    user_id=USER_ID,
-                    vin=VIN,
-                    charged_range=500,
-                    soc=100,
-                    state=ChargingState.CONSERVING,
-                    mode=ChargeMode.MANUAL,
-                    time_to_finish=0,
-                ),
-            ),
-        ),
-        EventCharging(
-            vin=VIN,
-            user_id=USER_ID,
-            timestamp=ANY,
-            event=ServiceEventWithChargingData(
-                version=1,
-                trace_id=trace_id,
-                timestamp=timestamp,
-                producer="SKODA_MHUB",
-                name=ServiceEventName.CHARGING_COMPLETED,
-                data=ServiceEventChargingData(
-                    user_id=USER_ID,
-                    vin=VIN,
-                    mode=None,
-                    state=None,
-                    soc=None,
-                    charged_range=None,
-                    time_to_finish=None,
-                ),
-            ),
-        ),
-        EventVehicleConnectionStatusUpdate(
-            vin=VIN,
-            user_id=USER_ID,
-            timestamp=ANY,
-            event=VehicleEvent(
-                version=1,
-                trace_id=trace_id,
-                timestamp=timestamp,
-                producer="SKODA_MHUB",
-                name=VehicleEventName.VEHICLE_CONNECTION_ONLINE,
-                data=VehicleEventData(
-                    user_id=USER_ID,
-                    vin=VIN,
-                ),
-            ),
-        ),
-        EventVehicleConnectionStatusUpdate(
-            vin=VIN,
-            user_id=USER_ID,
-            timestamp=ANY,
-            event=VehicleEvent(
-                version=1,
-                trace_id=trace_id,
-                timestamp=timestamp,
-                producer="SKODA_MHUB",
-                name=VehicleEventName.VEHICLE_AWAKE,
-                data=VehicleEventData(
-                    user_id=USER_ID,
-                    vin=VIN,
-                ),
-            ),
-        ),
-        EventVehicleConnectionStatusUpdate(
-            vin=VIN,
-            user_id=USER_ID,
-            timestamp=ANY,
-            event=VehicleEvent(
-                version=1,
-                trace_id=trace_id,
-                timestamp=timestamp,
-                producer="SKODA_MHUB",
-                name=VehicleEventName.VEHICLE_WARNING_BATTEYLEVEL,
-                data=VehicleEventData(
-                    user_id=USER_ID,
-                    vin=VIN,
-                ),
-            ),
-        ),
-        EventVehicleIgnitionStatus(
-            vin=VIN,
-            user_id=USER_ID,
-            timestamp=ANY,
-            event=VehicleEventWithVehicleIgnitionStatusData(
-                version=1,
-                trace_id=trace_id,
-                timestamp=timestamp,
-                producer="SKODA_MHUB",
-                name=VehicleEventName.VEHICLE_IGNITION_STATUS_CHANGED,
-                data=VehicleEventVehicleIgnitionStatusData(
-                    user_id=USER_ID,
-                    vin=VIN,
-                    ignition_status=IgnitionStatus.ON,
-                ),
-            ),
-        ),
-        EventVehicleIgnitionStatus(
-            vin=VIN,
-            user_id=USER_ID,
-            timestamp=ANY,
-            event=VehicleEventWithVehicleIgnitionStatusData(
-                version=1,
-                trace_id=trace_id,
-                timestamp=timestamp,
-                producer="SKODA_MHUB",
-                name=VehicleEventName.VEHICLE_IGNITION_STATUS_CHANGED,
-                data=VehicleEventVehicleIgnitionStatusData(
-                    user_id=USER_ID,
-                    vin=VIN,
-                    ignition_status=IgnitionStatus.OFF,
-                ),
+            event_type=EventType.VEHICLE_EVENT,
+            version=1,
+            trace_id=trace_id,
+            timestamp=timestamp,
+            producer="SKODA_MHUB",
+            name=VehicleEventName.VEHICLE_IGNITION_STATUS_CHANGED,
+            data=VehicleEventVehicleIgnitionStatusData(
+                user_id=USER_ID, vin=VIN, ignition_status=IgnitionStatus.OFF
             ),
         ),
     ]

@@ -52,7 +52,6 @@ from .const import (
     OPERATION_REFRESH_DELAY_SECONDS,
     REDIRECT_URI,
 )
-from .event import Event, EventCharging, EventOperation, ServiceEventTopic
 from .models.air_conditioning import (
     AirConditioning,
     AirConditioningAtUnlock,
@@ -61,24 +60,38 @@ from .models.air_conditioning import (
     SeatHeating,
     WindowHeating,
 )
-from .models.auxiliary_heating import AuxiliaryConfig, AuxiliaryHeating, AuxiliaryHeatingTimer
+from .models.auxiliary_heating import (
+    AuxiliaryConfig,
+    AuxiliaryHeating,
+    AuxiliaryHeatingTimer,
+)
 from .models.charging import ChargeMode, Charging, ChargingStatus
 from .models.chargingprofiles import ChargingProfiles
 from .models.common import Vin
 from .models.departure import DepartureInfo, DepartureTimer
 from .models.driving_range import DrivingRange, EngineType
+from .models.event import (
+    BaseEvent,
+    OperationEvent,
+    OperationName,
+    OperationStatus,
+    ServiceEventAccess,
+    ServiceEventAirConditioning,
+    ServiceEventChangeSoc,
+    ServiceEventChangeSocData,
+    ServiceEventDeparture,
+    ServiceEventOdometer,
+)
 from .models.health import Health
 from .models.info import CapabilityId, Info
 from .models.maintenance import Maintenance
-from .models.operation_request import OperationName, OperationStatus
 from .models.position import Positions
-from .models.service_event import ServiceEventChargingData
 from .models.spin import Spin
 from .models.status import Status
 from .models.trip_statistics import TripStatistics
 from .models.user import User
 from .models.vehicle_connection_status import VehicleConnectionStatus
-from .mqtt import EventType, MySkodaMqttClient
+from .mqtt import MySkodaMqttClient
 from .rest_api import GetEndpointResult, RestApi
 from .utils import async_debounce
 from .vehicle import Vehicle
@@ -180,13 +193,13 @@ class MySkoda:
         if self.mqtt:
             await self.mqtt.disconnect()
 
-    def subscribe_events(self, callback: Callable[[Event], Coroutine[Any, Any, None]]) -> None:
+    def subscribe_events(self, callback: Callable[[BaseEvent], Coroutine[Any, Any, None]]) -> None:
         """Listen for events emitted by MySkoda's MQTT broker."""
         if self.mqtt is None:
             raise MqttDisabledError
         self.mqtt.subscribe(callback=callback)
 
-    def subscribe(self, callback: Callable[[Event], Coroutine[Any, Any, None]]) -> None:
+    def subscribe(self, callback: Callable[[BaseEvent], Coroutine[Any, Any, None]]) -> None:
         """See subscribe_events. For backwards compatibility."""
         _LOGGER.warning(
             "The subscribe() method is deprecated and will be removed, use subscribe_events"
@@ -774,45 +787,46 @@ class MySkoda:
         mqtt.subscribe(self._on_mqtt_event)
         return mqtt
 
-    async def _on_mqtt_event(self, event: Event) -> None:
+    async def _on_mqtt_event(self, event: BaseEvent) -> None:
         """Handle MQTT events.
 
         Update self._vehicles with data received in event and notify callbacks.
         """
         if event.vin not in self._vehicles:
             _LOGGER.debug("Received event for unknown VIN %s", event)
-        elif event.type == EventType.OPERATION:
-            await self._process_operation_event(event)
-        elif event.type == EventType.SERVICE_EVENT:
-            if event.topic == ServiceEventTopic.CHARGING:
-                await self._process_charging_event(event)
-            elif event.topic == ServiceEventTopic.ACCESS:
-                await self.refresh_vehicle(event.vin)
-            elif event.topic == ServiceEventTopic.AIR_CONDITIONING:
-                await self.refresh_air_conditioning(event.vin)
-            elif event.topic == ServiceEventTopic.DEPARTURE:
-                await self.refresh_positions(event.vin)
-            elif event.topic == ServiceEventTopic.ODOMETER:
-                await self.refresh_info(event.vin)
-                await self.refresh_maintenance(event.vin)
+            return
 
-    async def _process_operation_event(self, event: EventOperation) -> None:
+        if isinstance(event, OperationEvent):
+            await self._process_operation_event(event)
+        elif isinstance(event, ServiceEventChangeSoc):
+            await self._process_charging_event(event)
+        elif isinstance(event, ServiceEventAccess):
+            await self.refresh_vehicle(event.vin)
+        elif isinstance(event, ServiceEventAirConditioning):
+            await self.refresh_air_conditioning(event.vin)
+        elif isinstance(event, ServiceEventDeparture):
+            await self.refresh_positions(event.vin)
+        elif isinstance(event, ServiceEventOdometer):
+            await self.refresh_info(event.vin)
+            await self.refresh_maintenance(event.vin)
+
+    async def _process_operation_event(self, event: OperationEvent) -> None:
         """Refresh the appropriate vehicle data based on the operation details."""
         _LOGGER.debug("Processing operation event: %s", event)
-        if event.operation.status == OperationStatus.ERROR:
+        if event.status == OperationStatus.ERROR:
             _LOGGER.warning(
                 "Error received from car in operation %s, reason: %s.",
-                event.operation.status,
-                event.operation.error_code,
+                event.status,
+                event.error_code,
             )
             return
-        if event.operation.status == OperationStatus.IN_PROGRESS:
+        if event.status == OperationStatus.IN_PROGRESS:
             return
         # The API backend doesn't seem to update right away after an operation completes so delay
         # a little bit before refreshing data. Magic numbers are bad but there is no way for us
         # to know when the backend has updated data...
         await asyncio.sleep(OPERATION_REFRESH_DELAY_SECONDS)
-        if event.operation.operation in [
+        if event.operation in [
             OperationName.STOP_AIR_CONDITIONING,
             OperationName.START_AIR_CONDITIONING,
             OperationName.SET_AIR_CONDITIONING_TARGET_TEMPERATURE,
@@ -821,12 +835,12 @@ class MySkoda:
             OperationName.SET_AIR_CONDITIONING_TIMERS,
         ]:
             await self.refresh_air_conditioning(event.vin)
-        elif event.operation.operation in [
+        elif event.operation in [
             OperationName.START_AUXILIARY_HEATING,
             OperationName.STOP_AUXILIARY_HEATING,
         ]:
             await self.refresh_auxiliary_heating(event.vin)
-        elif event.operation.operation in [
+        elif event.operation in [
             OperationName.UPDATE_CHARGE_LIMIT,
             OperationName.UPDATE_CARE_MODE,
             OperationName.UPDATE_CHARGING_CURRENT,
@@ -835,17 +849,17 @@ class MySkoda:
             OperationName.UPDATE_AUTO_UNLOCK_PLUG,
         ]:
             await self.refresh_charging(event.vin)
-        elif event.operation.operation in [
+        elif event.operation in [
             OperationName.LOCK,
             OperationName.UNLOCK,
         ]:
             await self.refresh_status(event.vin)
-        elif event.operation.operation in [
+        elif event.operation in [
             OperationName.UPDATE_DEPARTURE_TIMERS,
         ]:
             await self.refresh_departure_info(event.vin)
 
-    async def _process_charging_event(self, event: EventCharging) -> None:
+    async def _process_charging_event(self, event: ServiceEventChangeSoc) -> None:
         """Update self._vehicles with data from the event.
 
         Start by fully refreshing Vehicle.charging and Vehicle.driving_range as the endpoints
@@ -857,18 +871,17 @@ class MySkoda:
         await self.refresh_driving_range(event.vin, notify=False)
 
         vehicle = self._vehicles[event.vin]
-        event_data: ServiceEventChargingData = event.event.data
         if vehicle.charging and (status := vehicle.charging.status):
-            self._process_charging_event_update_charging(status, event_data)
+            self._process_charging_event_update_charging(status, event.data)
 
         if driving_range := vehicle.driving_range:
-            self._process_charging_event_update_driving_range(driving_range, event_data)
+            self._process_charging_event_update_driving_range(driving_range, event.data)
 
         self._notify_callbacks(event.vin)
 
     @staticmethod
     def _process_charging_event_update_charging(
-        charging_status: ChargingStatus, event_data: ServiceEventChargingData
+        charging_status: ChargingStatus, event_data: ServiceEventChangeSocData
     ) -> None:
         """Update charging_status with the event_data."""
         if event_data.charged_range:
@@ -884,7 +897,7 @@ class MySkoda:
 
     @staticmethod
     def _process_charging_event_update_driving_range(
-        driving_range: DrivingRange, event_data: ServiceEventChargingData
+        driving_range: DrivingRange, event_data: ServiceEventChangeSocData
     ) -> None:
         """Update driving_range with the event_data."""
         per = driving_range.primary_engine_range

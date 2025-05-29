@@ -8,8 +8,7 @@ from asyncclick.core import Context
 from termcolor import colored
 
 from myskoda.cli.utils import mqtt_required
-from myskoda.event import Event
-from myskoda.models.operation_request import OperationName
+from myskoda.models.event import BaseEvent, OperationName
 from myskoda.myskoda import MqttDisabledError
 
 if TYPE_CHECKING:
@@ -39,7 +38,7 @@ async def subscribe(ctx: Context) -> None:
     """Connect to the MQTT broker and listen for messages."""
     myskoda: MySkoda = ctx.obj["myskoda"]
 
-    async def on_event(event: Event) -> None:
+    async def on_event(event: BaseEvent) -> None:
         ctx.obj["print"](event.to_dict())
 
     myskoda.subscribe_events(on_event)
