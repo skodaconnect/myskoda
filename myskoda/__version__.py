@@ -1,3 +1,5 @@
-"""Version for MySkoda package. Used for dynamic versioning with uv."""
+"""The package version is automatically set by uv-dynamic-versioning."""
 
-__version__ = "0.0.0"
+import importlib.metadata
+
+__version__ = importlib.metadata.version(__name__.split(".")[0])
