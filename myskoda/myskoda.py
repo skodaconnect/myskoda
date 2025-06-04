@@ -79,6 +79,7 @@ from .models.event import (
     ServiceEventAirConditioning,
     ServiceEventChangeSoc,
     ServiceEventChangeSocData,
+    ServiceEventCharging,
     ServiceEventDeparture,
     ServiceEventOdometer,
 )
@@ -800,6 +801,8 @@ class MySkoda:
             await self._process_operation_event(event)
         elif isinstance(event, ServiceEventChangeSoc):
             await self._process_charging_event(event)
+        elif isinstance(event, ServiceEventCharging):
+            await self.refresh_charging(event.vin)
         elif isinstance(event, ServiceEventAccess):
             await self.refresh_vehicle(event.vin)
         elif isinstance(event, ServiceEventAirConditioning):
