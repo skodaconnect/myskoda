@@ -48,5 +48,5 @@ class ParkingCoordinates(DataClassORJSONMixin):
 class ParkingPositionV3(BaseResponse):
     """Parking information based on GPS data from the vehicle."""
 
-    parking_coordinates: Coordinates = field(metadata=field_options(alias="parkingPosition"))
+    parking_position: ParkingCoordinates = field(metadata=field_options(alias="parkingPosition"))
     formatted_address: str = field(metadata=field_options(alias="formattedAddress"))
