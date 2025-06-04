@@ -37,3 +37,16 @@ class Positions(BaseResponse):
 
     errors: list[Error]
     positions: list[Position]
+
+
+@dataclass
+class ParkingCoordinates(DataClassORJSONMixin):
+    gps_coordinates: Coordinates = field(metadata=field_options(alias="gpsCoordinates"))
+
+
+@dataclass
+class ParkingPositionV3(BaseResponse):
+    """Parking information based on GPS data from the vehicle."""
+
+    parking_position: ParkingCoordinates = field(metadata=field_options(alias="parkingPosition"))
+    formatted_address: str = field(metadata=field_options(alias="formattedAddress"))
