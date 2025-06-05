@@ -81,6 +81,50 @@ class ServicePartner(DataClassORJSONMixin):
     partner_number: str = field(metadata=field_options(alias="partnerNumber"))
 
 
+class Resolution(StrEnum):
+    appointment = "APPOINTMENT"
+
+
+class BookingType(StrEnum):
+    auto = "AUTO"
+
+
+class IconColor(StrEnum):
+    white = "WHITE"
+
+
+@dataclass
+class CarWarning(DataClassORJSONMixin):
+    icon_color: IconColor
+    icon_name: str
+    message_id: str
+    notification_id: int
+    text: str
+
+
+@dataclass
+class Booking(DataClassORJSONMixin):
+    creation_date: datetime = field(metadata=field_options(alias="creationDate"))
+    accepted_date: datetime = field(metadata=field_options(alias="acceptedDate"))
+    confirmation_date: datetime = field(metadata=field_options(alias="confirmationDate"))
+    closed_date: datetime = field(metadata=field_options(alias="closedDate"))
+    appointment_date: datetime = field(metadata=field_options(alias="appointmentDate"))
+    contacted_date: datetime = field(metadata=field_options(alias="contactedDate"))
+    update_date: datetime = field(metadata=field_options(alias="updateDate"))
+    service_partner: ServicePartner
+    booking_id: str
+    mileage_in_km: int
+    resolution: Resolution
+    booking_type: BookingType
+    warnings: list[CarWarning]
+
+
+@dataclass
+class CustomerService(DataClassORJSONMixin):
+    active_bookings: list[Booking] = field(metadata=field_options(alias="activeBookings"))
+    booking_history: list[Booking] = field(metadata=field_options(alias="bookingHistory"))
+
+
 @dataclass
 class Maintenance(BaseResponse):
     maintenance_report: MaintenanceReport | None = field(
@@ -91,4 +135,7 @@ class Maintenance(BaseResponse):
     )
     preferred_service_partner: ServicePartner | None = field(
         default=None, metadata=field_options(alias="preferredServicePartner")
+    )
+    customer_service: CustomerService | None = field(
+        default=None, metadata=field_options(alias="customerService")
     )
