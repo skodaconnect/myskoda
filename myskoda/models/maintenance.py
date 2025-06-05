@@ -95,10 +95,10 @@ class IconColor(StrEnum):
 
 @dataclass
 class CarWarning(DataClassORJSONMixin):
-    icon_color: IconColor
-    icon_name: str
-    message_id: str
-    notification_id: int
+    icon_color: IconColor = field(metadata=field_options(alias="iconColor"))
+    icon_name: str = field(metadata=field_options(alias="iconName"))
+    message_id: str = field(metadata=field_options(alias="messageId"))
+    notification_id: int = field(metadata=field_options(alias="notificationId"))
     text: str
 
 
@@ -111,11 +111,11 @@ class Booking(DataClassORJSONMixin):
     appointment_date: datetime = field(metadata=field_options(alias="appointmentDate"))
     contacted_date: datetime = field(metadata=field_options(alias="contactedDate"))
     update_date: datetime = field(metadata=field_options(alias="updateDate"))
-    service_partner: ServicePartner
-    booking_id: str
-    mileage_in_km: int
+    service_partner: ServicePartner = field(metadata=field_options(alias="servicePartner"))
+    booking_id: str = field(metadata=field_options(alias="bookingId"))
+    mileage_in_km: int = field(metadata=field_options(alias="mileageInKm"))
     resolution: Resolution
-    booking_type: BookingType
+    booking_type: BookingType = field(metadata=field_options(alias="type"))
     warnings: list[CarWarning]
 
 
