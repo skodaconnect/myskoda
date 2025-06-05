@@ -572,24 +572,24 @@ reports:
           resolution: APPOINTMENT
           service_partner:
             address:
-              city: 'BREDA'
-              country: null
-              country_code: 'NLD'
-              house_number: null
-              street: 'Konijnenberg 7'
-              zip_code: '4825 BC'
-            brand: 'C'
+               city: Example City
+               country: null
+               country_code: DEU
+               house_number: '15'
+               street: Example Avenue
+               zip_code: '54321'
+            brand: C
             contact:
-              email: 'info@tb.nl'
-              phone: '076-8000000'
-              url: null
-            id: 'NLDC00164'
-            location: 
-              latitude: 51.601265
-              longitude: 4.7701173
-            name: 'Van Tilburg-Bastianen'
+               email: user@example.com
+               phone: +49 1234 567890
+               url: https://example.com
+            id: DEU11111
+            location:
+               latitude: 53.470636
+               longitude: 9.689872
+            name: Example Service Partner
             opening_hours: []
-            partner_number: '00164'
+            partner_number: '1111'
           update_date: '2025-05-21T08:30:49.558000+00:00'
           warnings:
             - icon_color: WHITE

@@ -798,24 +798,24 @@ reports:
           resolution: SUBMITTED
           service_partner:
             address:
-              city: 'Vaasa'
-              country: null
-              country_code: 'FIN'
-              house_number: null
-              street: 'Konepajakatu 22'
-              zip_code: '65100'
-            brand: 'C'
+               city: Example City
+               country: null
+               country_code: DEU
+               house_number: '15'
+               street: Example Avenue
+               zip_code: '54321'
+            brand: C
             contact:
-              email: 'rintajouppi.vaasa@asiakasviestit.fi'
-              phone: '020 777 2111'
-              url: null
-            id: 'FINC50335'
+               email: user@example.com
+               phone: +49 1234 567890
+               url: https://example.com
+            id: DEU11111
             location:
-              latitude: 63.10149
-              longitude: 21.637043
-            name: 'Rinta-Joupin Autoliike Vaasa'
+               latitude: 53.470636
+               longitude: 9.689872
+            name: Example Service Partner
             opening_hours: []
-            partner_number: '50335'
+            partner_number: '1111'
           update_date: '2024-02-27T04:20:12.556000+00:00'
           warnings:
             - icon_color: null
