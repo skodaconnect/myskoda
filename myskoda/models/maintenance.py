@@ -83,10 +83,13 @@ class ServicePartner(DataClassORJSONMixin):
 
 class Resolution(StrEnum):
     appointment = "APPOINTMENT"
+    rejected = "REJECTED"
+    submitted = "SUBMITTED"
 
 
 class BookingType(StrEnum):
     auto = "AUTO"
+    manual = "MANUAL"
 
 
 class IconColor(StrEnum):
@@ -95,21 +98,18 @@ class IconColor(StrEnum):
 
 @dataclass
 class CarWarning(DataClassORJSONMixin):
-    icon_color: IconColor = field(metadata=field_options(alias="iconColor"))
     icon_name: str = field(metadata=field_options(alias="iconName"))
     message_id: str = field(metadata=field_options(alias="messageId"))
     notification_id: int = field(metadata=field_options(alias="notificationId"))
     text: str
+    icon_color: IconColor | None = field(default=None, metadata=field_options(alias="iconColor"))
 
 
 @dataclass
 class Booking(DataClassORJSONMixin):
     creation_date: datetime = field(metadata=field_options(alias="creationDate"))
-    accepted_date: datetime = field(metadata=field_options(alias="acceptedDate"))
     confirmation_date: datetime = field(metadata=field_options(alias="confirmationDate"))
     closed_date: datetime = field(metadata=field_options(alias="closedDate"))
-    appointment_date: datetime = field(metadata=field_options(alias="appointmentDate"))
-    contacted_date: datetime = field(metadata=field_options(alias="contactedDate"))
     update_date: datetime = field(metadata=field_options(alias="updateDate"))
     service_partner: ServicePartner = field(metadata=field_options(alias="servicePartner"))
     booking_id: str = field(metadata=field_options(alias="bookingId"))
@@ -117,6 +117,15 @@ class Booking(DataClassORJSONMixin):
     resolution: Resolution
     booking_type: BookingType = field(metadata=field_options(alias="type"))
     warnings: list[CarWarning]
+    appointment_date: datetime | None = field(
+        default=None, metadata=field_options(alias="appointmentDate")
+    )
+    accepted_date: datetime | None = field(
+        default=None, metadata=field_options(alias="acceptedDate")
+    )
+    contacted_date: datetime | None = field(
+        default=None, metadata=field_options(alias="contactedDate")
+    )
 
 
 @dataclass
