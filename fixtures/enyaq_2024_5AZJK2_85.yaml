@@ -474,6 +474,7 @@ reports:
     []}]}, "predictiveMaintenance": {"setting": {"serviceActivated": true, "email":
     "user@example.com", "phone": "+49 1234 567890"}}}'
   result:
+    customer_service: null
     maintenance_report:
       captured_at: '2025-02-09T08:52:37.324000+00:00'
       inspection_due_in_days: 405

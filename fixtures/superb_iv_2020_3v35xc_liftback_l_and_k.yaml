@@ -457,6 +457,88 @@ reports:
     "Error: Emergency call function. Please service vehicle."}]}]}}'
   result:
     timestamp: null
+    customer_service:
+      active_bookings: []
+      booking_history:
+        - accepted_date: '2024-06-03T06:40:24+00:00'
+          appointment_date: null
+          booking_id: '5c459c5f-d599-443d-9d60-3f95be1e463a-1717226381265'
+          booking_type: AUTO
+          closed_date: '2024-06-03T06:41:15+00:00'
+          confirmation_date: '2024-06-01T07:25:01.104000+00:00'
+          contacted_date: '2024-06-03T06:41:15+00:00'
+          creation_date: '2024-06-01T07:19:29+00:00'
+          mileage_in_km: 42812
+          resolution: REJECTED
+          service_partner:
+            address:
+               city: Example City
+               country: null
+               country_code: DEU
+               house_number: '15'
+               street: Example Avenue
+               zip_code: '54321'
+            brand: C
+            contact:
+               email: user@example.com
+               phone: +49 1234 567890
+               url: https://example.com
+            id: DEU11111
+            location:
+               latitude: 53.470636
+               longitude: 9.689872
+            name: Example Service Partner
+            opening_hours: []
+            partner_number: '1111'
+          update_date: '2024-06-03T06:45:47.782000+00:00'
+          warnings:
+            - icon_color: null
+              icon_name: ''
+              message_id: 'A645'
+              notification_id: 42565
+              text: '42565'
+            - icon_color: null
+              icon_name: ''
+              message_id: 'A640'
+              notification_id: 42560
+              text: '42560'
+        - accepted_date: '2023-11-06T11:30:36+00:00'
+          appointment_date: null
+          booking_id: '4788f202-79be-4545-9647-de34edcce77c-1698907410727'
+          booking_type: AUTO
+          closed_date: '2023-11-06T11:32:08+00:00'
+          confirmation_date: '2023-11-02T06:50:01.922000+00:00'
+          contacted_date: null
+          creation_date: '2023-11-02T06:43:27+00:00'
+          mileage_in_km: 36131
+          resolution: REJECTED
+          service_partner:
+            address:
+               city: Example City
+               country: null
+               country_code: DEU
+               house_number: '15'
+               street: Example Avenue
+               zip_code: '54321'
+            brand: C
+            contact:
+               email: user@example.com
+               phone: +49 1234 567890
+               url: https://example.com
+            id: DEU11111
+            location:
+               latitude: 53.470636
+               longitude: 9.689872
+            name: Example Service Partner
+            opening_hours: []
+            partner_number: '1111'
+          update_date: '2023-11-06T11:35:09.021000+00:00'
+          warnings:
+            - icon_color: null
+              icon_name: 'H_2_19'
+              message_id: 'A2CB'
+              notification_id: 41675
+              text: 'Error: Emergency call function. Please service vehicle.'
     maintenance_report:
       captured_at: '2024-10-16T17:40:52+00:00'
       inspection_due_in_days: 265

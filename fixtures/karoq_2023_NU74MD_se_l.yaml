@@ -347,6 +347,7 @@ reports:
     "phone": "+49 1234 567890"}}}'
   result:
     timestamp: null
+    customer_service: null
     maintenance_report:
       captured_at: '2024-11-07T15:16:19+00:00'
       inspection_due_in_days: 642

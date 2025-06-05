@@ -363,6 +363,83 @@ reports:
     n.a. of oil. You can continue driving."}]}]}}'
   result:
     timestamp: null
+    customer_service:
+      active_bookings: []
+      booking_history:
+        - accepted_date: null
+          appointment_date: '2024-03-13T07:37:00+00:00'
+          booking_id: '4b437397-9f76-4bc9-8972-bb4af0fc9d31-1705055157793'
+          booking_type: AUTO
+          closed_date: '2024-03-13T07:37:00+00:00'
+          confirmation_date: '2024-01-12T10:30:23.431000+00:00'
+          contacted_date: '2024-01-15T08:22:35+00:00'
+          creation_date: '2024-01-12T10:25:49+00:00'
+          mileage_in_km: 58777
+          resolution: APPOINTMENT
+          service_partner:
+            address:
+              city: Example City
+              country: null
+              country_code: DEU
+              house_number: '15'
+              street: Example Avenue
+              zip_code: '54321'
+            brand: C
+            contact:
+              email: user@example.com
+              phone: +49 1234 567890
+              url: https://example.com
+            id: DEU11111
+            location:
+              latitude: 53.470636
+              longitude: 9.689872
+            name: Example Service Partner 
+            opening_hours: []
+            partner_number: '1111'
+          update_date: '2024-03-30T02:11:11.255000+00:00'
+          warnings:
+            - icon_color: null
+              icon_name: ''
+              message_id: 'A644'
+              notification_id: 42564
+              text: '42564'
+        - accepted_date: '2023-08-17T12:32:07+00:00'
+          appointment_date: null
+          booking_id: '426ff0a7-8f11-44f9-a235-ebe259c4b52c-1692271996343'
+          booking_type: AUTO
+          closed_date: '2023-08-18T05:58:02+00:00'
+          confirmation_date: '2023-08-17T11:35:01.656000+00:00'
+          contacted_date: null
+          creation_date: '2023-08-17T11:32:50+00:00'
+          mileage_in_km: 49670
+          resolution: REJECTED
+          service_partner:
+            address:
+              city: Example City
+              country: null
+              country_code: DEU
+              house_number: '15'
+              street: Example Avenue
+              zip_code: '54321'
+            brand: C
+            contact:
+              email: user@example.com
+              phone: +49 1234 567890
+              url: https://example.com
+            id: DEU11111
+            location:
+              latitude: 53.470636
+              longitude: 9.689872
+            name: Example Service Partner 
+            opening_hours: []
+            partner_number: '1111'
+          update_date: '2023-08-18T06:00:05.449000+00:00'
+          warnings:
+            - icon_color: null
+              icon_name: ''
+              message_id: 'A224'
+              notification_id: 41508
+              text: 'Please add maximum n.a. of oil. You can continue driving.'
     maintenance_report:
       captured_at: '2024-11-09T10:23:54+00:00'
       inspection_due_in_days: 489
