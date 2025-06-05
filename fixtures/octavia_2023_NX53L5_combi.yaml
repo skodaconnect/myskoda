@@ -426,6 +426,7 @@ reports:
     false, "email": "user@example.com", "phone": "+49 1234 567890"}}}'
   result:
     timestamp: null
+    customer_service: null
     maintenance_report:
       captured_at: '2024-11-06T11:38:22+00:00'
       inspection_due_in_days: 462

@@ -488,6 +488,7 @@ reports:
     673, "mileageInKm": 71}, "predictiveMaintenance": {"setting": {"serviceActivated":
     false, "email": "user@example.com", "phone": "+49 1234 567890"}}}'
   result:
+    customer_service: null
     maintenance_report:
       captured_at: '2025-05-14T20:35:33.079000+00:00'
       inspection_due_in_days: 673

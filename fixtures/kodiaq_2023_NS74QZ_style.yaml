@@ -454,6 +454,7 @@ reports:
     url: "/v3/vehicle-maintenance/vehicles/TMOCKAA0AA000000"
     result:
       timestamp: null
+      customer_service: null
       maintenance_report:
         captured_at: "2024-12-02T16:46:08+00:00"
         mileage_in_km: 37711

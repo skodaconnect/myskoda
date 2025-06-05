@@ -784,6 +784,441 @@ reports:
     url: /v3/vehicle-maintenance/vehicles/TMOCKAA0AA000000
     result:
       timestamp: null
+      customer_service:
+        active_bookings:
+        - accepted_date: '2024-02-27T04:19:05+00:00'
+          appointment_date: null
+          booking_id: 'd204e641-e243-4689-991f-437805309680-1707799958074'
+          booking_type: AUTO
+          closed_date: '2024-02-27T04:20:00+00:00'
+          confirmation_date: '2024-02-13T04:55:01.776000+00:00'
+          contacted_date: '2024-02-27T04:20:00+00:00'
+          creation_date: '2024-02-13T04:52:35+00:00'
+          mileage_in_km: 65884
+          resolution: SUBMITTED
+          service_partner:
+            address:
+              city: 'Vaasa'
+              country: null
+              country_code: 'FIN'
+              house_number: null
+              street: 'Konepajakatu 22'
+              zip_code: '65100'
+            brand: 'C'
+            contact:
+              email: 'rintajouppi.vaasa@asiakasviestit.fi'
+              phone: '020 777 2111'
+              url: null
+            id: 'FINC50335'
+            location:
+              latitude: 63.10149
+              longitude: 21.637043
+            name: 'Rinta-Joupin Autoliike Vaasa'
+            opening_hours: []
+            partner_number: '50335'
+          update_date: '2024-02-27T04:20:12.556000+00:00'
+          warnings:
+            - icon_color: null
+              icon_name: 'A_1_11'
+              message_id: 'A32B'
+              notification_id: 41771
+              text: 'Please check third brake light.'
+        booking_history:
+        - accepted_date: '2025-02-06T05:23:29+00:00'
+          appointment_date: null
+          booking_id: '917732f2-1281-4e49-961d-a9c2a6311093-1738746567055'
+          booking_type: AUTO
+          closed_date: '2025-02-06T05:51:09+00:00'
+          confirmation_date: '2025-02-05T09:15:02.349000+00:00'
+          contacted_date: '2025-02-06T05:51:09+00:00'
+          creation_date: '2025-02-05T09:09:24+00:00'
+          mileage_in_km: 83772
+          resolution: REJECTED
+          service_partner:
+            address:
+              country_code: DEU
+              zip_code: '54321'
+              house_number: '15'
+              street: Example Avenue
+              city: Example City
+              country: null
+            brand: C
+            contact:
+              email: user@example.com
+              phone: +49 1234 567890
+              url: https://example.com
+            id: DEU11111
+            location:
+              latitude: 53.470636
+              longitude: 9.689872
+            name: Example Service Partner
+            opening_hours: []
+            partner_number: '1111'
+          update_date: '2025-02-06T05:52:01.696000+00:00'
+          warnings:
+            - icon_color: null
+              icon_name: 'A_1_11'
+              message_id: 'A32B'
+              notification_id: 41771
+              text: 'Please check third brake light.'
+        - accepted_date: '2024-12-18T06:56:24+00:00'
+          appointment_date: null
+          booking_id: '820b888f-3880-4e45-a0e7-473553e8371f-1734108037104'
+          booking_type: AUTO
+          closed_date: '2024-12-23T08:04:35+00:00'
+          confirmation_date: '2024-12-13T16:45:03.062000+00:00'
+          contacted_date: '2024-12-23T08:04:35+00:00'
+          creation_date: '2024-12-13T16:40:31+00:00'
+          mileage_in_km: 81048 
+          resolution: REJECTED
+          service_partner:
+            address:
+               country_code: DEU
+               zip_code: '54321'
+               house_number: '15'
+               street: Example Avenue
+               city: Example City
+               country: null
+            brand: C
+            contact:
+               email: user@example.com
+               phone: +49 1234 567890
+               url: https://example.com
+            id: DEU11111
+            location:
+              latitude: 53.470636
+              longitude: 9.689872
+            name: Example Service Partner
+            opening_hours: []
+            partner_number: '1111'
+          update_date: '2024-12-23T08:05:36.027000+00:00'
+          warnings:
+            - icon_color: null
+              icon_name: 'A_1_11'
+              message_id: 'A32B'
+              notification_id: 41771
+              text: 'Please check third brake light.'
+        - accepted_date: '2024-12-05T05:16:08+00:00'
+          appointment_date: null
+          booking_id: '759d3680-ed99-49b3-874b-3d5ec7fe8177-1733307273108'
+          booking_type: AUTO
+          closed_date: '2024-12-09T11:12:15+00:00'
+          confirmation_date: '2024-12-04T10:20:02.148000+00:00'
+          contacted_date: '2024-12-09T11:12:15+00:00'
+          creation_date: '2024-12-04T10:14:28+00:00'
+          mileage_in_km: 80434
+          resolution: REJECTED
+          service_partner:
+            address:
+               country_code: DEU
+               zip_code: '54321'
+               house_number: '15'
+               street: Example Avenue
+               city: Example City
+               country: null
+            brand: C
+            contact:
+               email: user@example.com
+               phone: +49 1234 567890
+               url: https://example.com
+            id: DEU11111
+            location:
+              latitude: 53.470636
+              longitude: 9.689872
+            name: Example Service Partner
+            opening_hours: []
+            partner_number: '1111'
+          update_date: '2024-12-09T12:05:53.022000+00:00'
+          warnings:
+            - icon_color: null
+              icon_name: 'Bergassistent'
+              message_id: 'A411'
+              notification_id: 42001
+              text: 'Error: Hill Start Assist'
+            - icon_color: null
+              icon_name: 'H_1_07'
+              message_id: 'A4E9'
+              notification_id: 42217
+              text: 'Error: Airbag'
+            - icon_color: null
+              icon_name: 'B_1_12'
+              message_id: 'A239'
+              notification_id: 41529
+              text: 'Error: Electronic parking brake. Please service vehicle.'
+        - accepted_date: '2024-10-17T03:18:43+00:00'
+          appointment_date: null
+          booking_id: 'a659f74f-ac20-4ce3-93e5-c296e9d3acf9-1729095448839'
+          booking_type: AUTO
+          closed_date: '2024-10-18T06:28:32+00:00'
+          confirmation_date: '2024-10-16T16:19:45.777000+00:00'
+          contacted_date: '2024-10-18T06:28:32+00:00'
+          creation_date: '2024-10-16T16:17:23+00:00'
+          mileage_in_km: 77733
+          resolution: REJECTED
+          service_partner:
+            address:
+               country_code: DEU
+               zip_code: '54321'
+               house_number: '15'
+               street: Example Avenue
+               city: Example City
+               country: null
+            brand: C
+            contact:
+               email: user@example.com
+               phone: +49 1234 567890
+               url: https://example.com
+            id: DEU11111
+            location:
+              latitude: 53.470636
+              longitude: 9.689872
+            name: Example Service Partner
+            opening_hours: []
+            partner_number: '1111'
+          update_date: '2024-10-18T06:30:26.352000+00:00'
+          warnings:
+            - icon_color: null
+              icon_name: 'A_1_11'
+              message_id: 'A32B'
+              notification_id: 41771
+              text: 'Please check third brake light.'
+        - accepted_date: '2024-09-26T03:09:23+00:00'
+          appointment_date: '2024-10-15T05:00:00+00:00'
+          booking_id: '910a4f40-3f21-468f-8fa7-0a7316ad410c-1727272754863'
+          booking_type: AUTO
+          closed_date: '2024-10-15T05:00:00+00:00'
+          confirmation_date: '2024-09-25T14:00:07.499000+00:00'
+          contacted_date: null
+          creation_date: '2024-09-25T12:35:35+00:00'
+          mileage_in_km: 76483
+          resolution: APPOINTMENT
+          service_partner:
+            address:
+               country_code: DEU
+               zip_code: '54321'
+               house_number: '15'
+               street: Example Avenue
+               city: Example City
+               country: null
+            brand: C
+            contact:
+               email: user@example.com
+               phone: +49 1234 567890
+               url: https://example.com
+            id: DEU11111
+            location:
+              latitude: 53.470636
+              longitude: 9.689872
+            name: Example Service Partner
+            opening_hours: []
+            partner_number: '1111'
+          update_date: '2024-10-15T22:07:23.537000+00:00'
+          warnings:
+            - icon_color: null
+              icon_name: 'A_1_11'
+              message_id: 'A32B'
+              notification_id: 41771
+              text: 'Please check third brake light.'
+            - icon_color: WHITE
+              icon_name: ''
+              message_id: 'A647'
+              notification_id: 42567
+              text: 'Oil change service due!'
+        - accepted_date: '2024-07-09T06:26:10+00:00'
+          appointment_date: null
+          booking_id: '376e8846-43ca-4e66-802e-a83a846a09ea-1720392142694'
+          booking_type: AUTO
+          closed_date: '2024-07-09T06:26:42+00:00'
+          confirmation_date: '2024-07-07T22:45:02.686000+00:00'
+          contacted_date: '2024-07-09T06:26:42+00:00'
+          creation_date: '2024-07-07T19:13:24+00:00'
+          mileage_in_km: 71758
+          resolution: REJECTED
+          service_partner:
+            address:
+               country_code: DEU
+               zip_code: '54321'
+               house_number: '15'
+               street: Example Avenue
+               city: Example City
+               country: null
+            brand: C
+            contact:
+               email: user@example.com
+               phone: +49 1234 567890
+               url: https://example.com
+            id: DEU11111
+            location:
+              latitude: 53.470636
+              longitude: 9.689872
+            name: Example Service Partner
+            opening_hours: []
+            partner_number: '1111'
+          update_date: '2024-07-09T06:30:24.297000+00:00'
+          warnings:
+            - icon_color: null
+              icon_name: 'Bergassistent'
+              message_id: 'A411'
+              notification_id: 42001
+              text: 'Error: Hill Start Assist'
+            - icon_color: null
+              icon_name: 'B_1_12'
+              message_id: 'A239'
+              notification_id: 41529
+              text: 'Error: Electronic parking brake. Please service vehicle.'
+        - accepted_date: '2024-06-26T08:58:48+00:00'
+          appointment_date: null
+          booking_id: '220159fb-30ae-4bff-adf2-2b4f6edfd07a-1719341159538'
+          booking_type: AUTO
+          closed_date: '2024-06-27T03:27:27+00:00'
+          confirmation_date: '2024-06-25T18:50:04.253000+00:00'
+          contacted_date: '2024-06-27T03:27:27+00:00'
+          creation_date: '2024-06-25T12:02:51+00:00'
+          mileage_in_km: 71202
+          resolution: REJECTED
+          service_partner:
+            address:
+               country_code: DEU
+               zip_code: '54321'
+               house_number: '15'
+               street: Example Avenue
+               city: Example City
+               country: null
+            brand: C
+            contact:
+               email: user@example.com
+               phone: +49 1234 567890
+               url: https://example.com
+            id: DEU11111
+            location:
+              latitude: 53.470636
+              longitude: 9.689872
+            name: Example Service Partner
+            opening_hours: []
+            partner_number: '1111'
+          update_date: '2024-06-27T11:35:48.498000+00:00'
+          warnings:
+            - icon_color: null
+              icon_name: 'A_1_11'
+              message_id: 'A32B'
+              notification_id: 41771
+              text: 'Please check third brake light.'
+            - icon_color: WHITE
+              icon_name: ''
+              message_id: 'A640'
+              notification_id: 42560
+              text: 'Oil change service in 4100 km.'
+        - accepted_date: '2024-04-23T03:20:35+00:00'
+          appointment_date: null
+          booking_id: 'bde34c88-8933-452b-bd6b-30a5817ffd5e-1713804806022'
+          booking_type: AUTO
+          closed_date: '2024-04-23T07:35:55+00:00'
+          confirmation_date: '2024-04-23T14:20:21.610000+00:00'
+          contacted_date: '2024-04-23T07:35:55+00:00'
+          creation_date: '2024-04-22T12:21:50+00:00'
+          mileage_in_km: 68760
+          resolution: REJECTED
+          service_partner:
+            address:
+               country_code: DEU
+               zip_code: '54321'
+               house_number: '15'
+               street: Example Avenue
+               city: Example City
+               country: null
+            brand: C
+            contact:
+               email: user@example.com
+               phone: +49 1234 567890
+               url: https://example.com
+            id: DEU11111
+            location:
+              latitude: 53.470636
+              longitude: 9.689872
+            name: Example Service Partner
+            opening_hours: []
+            partner_number: '1111'
+          update_date: '2024-04-23T15:46:11.967000+00:00'
+          warnings:
+            - icon_color: null
+              icon_name: 'A_1_11'
+              message_id: 'A32B'
+              notification_id: 41771
+              text: 'Please check third brake light.'
+        - accepted_date: '2024-02-29T13:17:20+00:00'
+          appointment_date: null
+          booking_id: 'e5315678-4865-4ebf-96c8-575440292247-1709145021121'
+          booking_type: AUTO
+          closed_date: '2024-03-01T11:13:30+00:00'
+          confirmation_date: '2024-02-28T18:35:01.065000+00:00'
+          contacted_date: '2024-03-01T11:13:30+00:00'
+          creation_date: '2024-02-28T17:05:38+00:00'
+          mileage_in_km: 66947
+          resolution: REJECTED
+          service_partner:
+            address:
+               country_code: DEU
+               zip_code: '54321'
+               house_number: '15'
+               street: Example Avenue
+               city: Example City
+               country: null
+            brand: C
+            contact:
+               email: user@example.com
+               phone: +49 1234 567890
+               url: https://example.com
+            id: DEU11111
+            location:
+              latitude: 53.470636
+              longitude: 9.689872
+            name: Example Service Partner
+            opening_hours: []
+            partner_number: '1111'
+          update_date: '2024-03-01T11:15:14.768000+00:00'
+          warnings:
+            - icon_color: null
+              icon_name: 'A_1_11'
+              message_id: 'A32B'
+              notification_id: 41771
+              text: 'Please check third brake light.'
+        - accepted_date: '2023-12-27T08:58:43+00:00'
+          appointment_date: null
+          booking_id: '349b2fab-ff08-4f13-badb-0e48a77f23aa-1703227892069'
+          booking_type: AUTO
+          closed_date: '2023-12-27T08:59:07+00:00'
+          confirmation_date: '2023-12-22T07:35:07.841000+00:00'
+          contacted_date: '2023-12-27T08:59:07+00:00'
+          creation_date: '2023-12-22T08:40:03+00:00'
+          mileage_in_km: 63497
+          resolution: REJECTED
+          service_partner:
+            address:
+               country_code: DEU
+               zip_code: '54321'
+               house_number: '15'
+               street: Example Avenue
+               city: Example City
+               country: null
+            brand: C
+            contact:
+               email: user@example.com
+               phone: +49 1234 567890
+               url: https://example.com
+            id: DEU11111
+            location:
+              latitude: 53.470636
+              longitude: 9.689872
+            name: Example Service Partner
+            opening_hours: []
+            partner_number: '1111'
+          update_date: '2024-01-08T11:25:40.682000+00:00'
+          warnings:
+            - icon_color: null
+              icon_name: 'A_1_11'
+              message_id: 'A32B'
+              notification_id: 41771
+              text: 'Please check third brake light.'
       maintenance_report:
         captured_at: '2025-03-20T09:54:17+00:00'
         mileage_in_km: 86757

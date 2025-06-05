@@ -529,6 +529,7 @@ reports:
   raw: '{"maintenanceReport": {"capturedAt": "2025-04-25T08:46:14.602Z", "inspectionDueInDays":
     722, "mileageInKm": 63}}'
   result:
+    customer_service: null
     maintenance_report:
       captured_at: '2025-04-25T08:46:14.602000+00:00'
       inspection_due_in_days: 722

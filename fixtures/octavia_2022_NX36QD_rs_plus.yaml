@@ -446,6 +446,41 @@ reports:
     "OTHERS", "text": "Other"}], "addOns": {}, "warnings": []}]}}'
   result:
     timestamp: null
+    customer_service: 
+      active_bookings: []
+      booking_history: 
+        - accepted_date: '2024-01-29T06:32:07+00:00'
+          appointment_date: null
+          booking_id: xxxxxx-5fee-434f-848d-6da7459d6a49-1706379989252
+          booking_type: MANUAL
+          closed_date: '2024-01-29T06:32:14+00:00'
+          confirmation_date: '2024-01-27T18:28:01.502000+00:00'
+          contacted_date: '2024-01-29T06:32:14+00:00'
+          creation_date: '2024-01-27T18:26:28.722000+00:00'
+          mileage_in_km: 36863
+          resolution: REJECTED
+          service_partner: 
+            address:
+               city: 'Example City'
+               country: null
+               country_code: DEU
+               house_number: '15'
+               street: 'Example Avenue'
+               zip_code: '54321'
+            brand: 'C'
+            contact:
+                email: 'user@example.com'
+                phone: '+49 1234 567890'
+                url: 'https://example.com'
+            id: DEU11111
+            location:
+                latitude: 53.470636
+                longitude: 9.689872
+            name: 'Example Service Partner'
+            opening_hours: []
+            partner_number: '1111'
+          update_date: '2024-01-29T14:46:17.629000+00:00'
+          warnings: []
     maintenance_report:
       captured_at: '2024-11-19T12:19:16+00:00'
       inspection_due_in_days: 233

@@ -558,6 +558,46 @@ reports:
     "A642", "notificationId": 42562, "text": "Inspection service in 32 day(s)"}]}],
     "bookingHistory": []}}'
   result:
+    customer_service:
+      active_bookings:
+        - accepted_date: '2025-05-10T07:00:41+00:00'
+          appointment_date: '2025-06-17T22:00:00+00:00'
+          booking_id: '95068c79-8e3c-49bd-8a89-a67dd477c827-1746856110906'
+          booking_type: AUTO
+          closed_date: '2025-06-17T22:00:00+00:00'
+          confirmation_date: '2025-05-10T05:50:04.537000+00:00'
+          contacted_date: '2025-05-13T13:16:05+00:00'
+          creation_date: '2025-05-10T05:47:32+00:00'
+          mileage_in_km: 95257
+          resolution: APPOINTMENT
+          service_partner:
+            address:
+              city: 'BREDA'
+              country: null
+              country_code: 'NLD'
+              house_number: null
+              street: 'Konijnenberg 7'
+              zip_code: '4825 BC'
+            brand: 'C'
+            contact:
+              email: 'info@tb.nl'
+              phone: '076-8000000'
+              url: null
+            id: 'NLDC00164'
+            location: 
+              latitude: 51.601265
+              longitude: 4.7701173
+            name: 'Van Tilburg-Bastianen'
+            opening_hours: []
+            partner_number: '00164'
+          update_date: '2025-05-21T08:30:49.558000+00:00'
+          warnings:
+            - icon_color: WHITE
+              icon_name: 'K_1_19'
+              message_id: 'A642'
+              notification_id: 42562
+              text: 'Inspection service in 32 day(s)'
+      booking_history: []
     maintenance_report:
       captured_at: '2025-06-02T07:26:11.618000+00:00'
       inspection_due_in_days: 9
