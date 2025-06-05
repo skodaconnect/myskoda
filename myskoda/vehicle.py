@@ -7,7 +7,7 @@ from .models.departure import DepartureInfo
 from .models.driving_range import DrivingRange
 from .models.health import Health
 from .models.info import CapabilityId, Info
-from .models.maintenance import Maintenance
+from .models.maintenance import Maintenance, MaintReport
 from .models.position import Positions
 from .models.status import Status
 from .models.trip_statistics import TripStatistics
@@ -26,6 +26,7 @@ class Vehicle:
     driving_range: DrivingRange | None = None
     trip_statistics: TripStatistics | None = None
     maintenance: Maintenance
+    maintenance_report: MaintReport | None = None
     health: Health | None = None
     departure_info: DepartureInfo | None = None
     connection_status: VehicleConnectionStatus | None = None

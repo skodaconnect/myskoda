@@ -85,7 +85,7 @@ from .models.event import (
 )
 from .models.health import Health
 from .models.info import CapabilityId, Info
-from .models.maintenance import Maintenance
+from .models.maintenance import Maintenance, MaintReport
 from .models.position import Positions
 from .models.spin import Spin
 from .models.status import Status
@@ -255,10 +255,12 @@ class MySkoda:
         """Load and return a partial vehicle, based on list of capabilities."""
         info = await self.get_info(vin)
         maintenance = await self.get_maintenance(vin)
+        maintenance_report = await self.get_maintenance_report(vin)
 
         if vin in self._vehicles:
             self._vehicles[vin].info = info
             self._vehicles[vin].maintenance = maintenance
+            self._vehicles[vin].maintenance_report = maintenance_report
         else:
             self._vehicles[vin] = Vehicle(info=info, maintenance=maintenance)
 
@@ -313,8 +315,12 @@ class MySkoda:
         return (await self.rest_api.get_trip_statistics(vin, anonymize=anonymize)).result
 
     async def get_maintenance(self, vin: Vin, anonymize: bool = False) -> Maintenance:
-        """Retrieve maintenance report."""
+        """Retrieve maintenance report, settings and history."""
         return (await self.rest_api.get_maintenance(vin, anonymize=anonymize)).result
+
+    async def get_maintenance_report(self, vin: Vin, anonymize: bool = False) -> MaintReport:
+        """Retrieve maintenance report only."""
+        return (await self.rest_api.get_maintenance_report(vin, anonymize=anonymize)).result
 
     async def get_health(self, vin: Vin, anonymize: bool = False) -> Health:
         """Retrieve health information for the specified vehicle."""

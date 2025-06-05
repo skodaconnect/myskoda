@@ -92,3 +92,8 @@ class Maintenance(BaseResponse):
     preferred_service_partner: ServicePartner | None = field(
         default=None, metadata=field_options(alias="preferredServicePartner")
     )
+
+
+@dataclass
+class MaintReport(BaseResponse, MaintenanceReport):
+    pass
