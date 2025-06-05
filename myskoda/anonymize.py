@@ -63,7 +63,7 @@ def anonymize_maintenance(data: dict) -> dict:
         data["predictiveMaintenance"]["setting"]["phone"] = PHONE
     for booking in data.get("customerService", {}).get("bookingHistory", []):
         booking["servicePartner"].update(SERVICE_PARTNER)
-    for booking in data.get("customerService", {}).get("bookingHistory", []):
+    for booking in data.get("customerService", {}).get("activeBookings", []):
         booking["servicePartner"].update(SERVICE_PARTNER)
     return data
 
