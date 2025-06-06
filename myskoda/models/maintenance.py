@@ -81,6 +81,59 @@ class ServicePartner(DataClassORJSONMixin):
     partner_number: str = field(metadata=field_options(alias="partnerNumber"))
 
 
+class Resolution(StrEnum):
+    appointment = "APPOINTMENT"
+    rejected = "REJECTED"
+    submitted = "SUBMITTED"
+
+
+class BookingType(StrEnum):
+    auto = "AUTO"
+    manual = "MANUAL"
+
+
+class IconColor(StrEnum):
+    white = "WHITE"
+
+
+@dataclass
+class CarWarning(DataClassORJSONMixin):
+    icon_name: str = field(metadata=field_options(alias="iconName"))
+    message_id: str = field(metadata=field_options(alias="messageId"))
+    notification_id: int = field(metadata=field_options(alias="notificationId"))
+    text: str
+    icon_color: IconColor | None = field(default=None, metadata=field_options(alias="iconColor"))
+
+
+@dataclass
+class Booking(DataClassORJSONMixin):
+    creation_date: datetime = field(metadata=field_options(alias="creationDate"))
+    confirmation_date: datetime = field(metadata=field_options(alias="confirmationDate"))
+    closed_date: datetime = field(metadata=field_options(alias="closedDate"))
+    update_date: datetime = field(metadata=field_options(alias="updateDate"))
+    service_partner: ServicePartner = field(metadata=field_options(alias="servicePartner"))
+    booking_id: str = field(metadata=field_options(alias="bookingId"))
+    mileage_in_km: int = field(metadata=field_options(alias="mileageInKm"))
+    resolution: Resolution
+    booking_type: BookingType = field(metadata=field_options(alias="type"))
+    warnings: list[CarWarning]
+    appointment_date: datetime | None = field(
+        default=None, metadata=field_options(alias="appointmentDate")
+    )
+    accepted_date: datetime | None = field(
+        default=None, metadata=field_options(alias="acceptedDate")
+    )
+    contacted_date: datetime | None = field(
+        default=None, metadata=field_options(alias="contactedDate")
+    )
+
+
+@dataclass
+class CustomerService(DataClassORJSONMixin):
+    active_bookings: list[Booking] = field(metadata=field_options(alias="activeBookings"))
+    booking_history: list[Booking] = field(metadata=field_options(alias="bookingHistory"))
+
+
 @dataclass
 class Maintenance(BaseResponse):
     maintenance_report: MaintenanceReport | None = field(
@@ -92,8 +145,11 @@ class Maintenance(BaseResponse):
     preferred_service_partner: ServicePartner | None = field(
         default=None, metadata=field_options(alias="preferredServicePartner")
     )
+    customer_service: CustomerService | None = field(
+        default=None, metadata=field_options(alias="customerService")
+    )
 
 
 @dataclass
-class MaintReport(BaseResponse, MaintenanceReport):
+class MaintenanceReportResponse(BaseResponse, MaintenanceReport):
     pass

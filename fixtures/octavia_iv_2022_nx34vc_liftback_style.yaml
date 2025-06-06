@@ -654,6 +654,83 @@ reports:
     url: /v3/vehicle-maintenance/vehicles/TMOCKAA0AA000000
     result:
       timestamp: null
+      customer_service:
+        active_bookings: []
+        booking_history:
+          - accepted_date: '2024-11-01T07:54:58+00:00'
+            appointment_date: '2024-11-26T06:30:00+00:00'
+            booking_id: '956eddd4-5ec3-4ba7-904e-eca2e1db4a48-1730442597887'
+            booking_type: AUTO
+            closed_date: '2024-11-26T06:30:00+00:00'
+            confirmation_date: '2024-11-01T06:35:01.494000+00:00'
+            contacted_date: null
+            creation_date: '2024-11-01T06:29:53+00:00'
+            mileage_in_km: 43843
+            resolution: APPOINTMENT
+            service_partner:
+              address:
+                country_code: DEU
+                zip_code: '54321'
+                house_number: '15'
+                street: Example Avenue
+                city: Example City
+                country: null
+              brand: C
+              contact:
+                email: user@example.com
+                phone: +49 1234 567890
+                url: 'https://example.com'
+              id: DEU11111
+              location:
+                latitude: 53.470636
+                longitude: 9.689872
+              name: Example Service Partner
+              opening_hours: []
+              partner_number: '1111'
+            update_date: '2024-11-26T23:09:16.372000+00:00'
+            warnings:
+              - icon_color: WHITE
+                icon_name: ''
+                message_id: 'A640'
+                notification_id: 42560
+                text: 'Oil change service in 900 km.(id: 42560)'
+          - accepted_date: '2024-02-16T09:52:03+00:00'
+            appointment_date: null
+            booking_id: 'b8290ec5-6335-4511-b941-f7a8eef9f70c-1708076799016'
+            booking_type: AUTO
+            closed_date: '2024-02-20T08:26:06+00:00'
+            confirmation_date: '2024-02-16T09:50:03.272000+00:00'
+            contacted_date: '2024-02-16T09:54:03+00:00'
+            creation_date: '2024-02-16T09:39:33+00:00'
+            mileage_in_km: 30490
+            resolution: REJECTED
+            service_partner:
+              address:
+                country_code: DEU
+                zip_code: '54321'
+                house_number: '15'
+                street: Example Avenue
+                city: Example City
+                country: null
+              brand: C
+              contact:
+                email: user@example.com
+                phone: +49 1234 567890
+                url: 'https://example.com'
+              id: DEU11111
+              location:
+                latitude: 53.470636
+                longitude: 9.689872
+              name: Example Service Partner
+              opening_hours: []
+              partner_number: '1111'
+            update_date: '2024-02-20T08:30:14.721000+00:00'
+            warnings:
+              - icon_color: null
+                icon_name: ''
+                message_id: 'A260'
+                notification_id: 41568
+                text: 'Transmission is too hot. You can continue driving.(id: 41568)'
       maintenance_report:
         captured_at: '2024-12-05T18:27:20+00:00'
         mileage_in_km: 45073

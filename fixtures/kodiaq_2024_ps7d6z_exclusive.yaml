@@ -442,6 +442,46 @@ reports:
     "C_1_01", "messageId": "A21C", "notificationId": 41500, "text": "Fault: Wipers"}]}]}}'
   result:
     timestamp: null
+    customer_service:
+      active_bookings: []
+      booking_history:
+        - accepted_date: '2024-10-10T12:51:10+00:00'
+          appointment_date: null
+          booking_id: 'd2d13797-1b2b-4162-817e-c25863f1f521-1727887595638'
+          booking_type: AUTO
+          closed_date: '2024-10-14T10:49:19+00:00'
+          confirmation_date: '2024-10-02T16:50:06.331000+00:00'
+          contacted_date: '2024-10-14T10:49:19+00:00'
+          creation_date: '2024-10-02T11:09:58+00:00'
+          mileage_in_km: 7829
+          resolution: REJECTED
+          service_partner:
+            address:
+              city: Example City
+              country: null
+              country_code: DEU
+              house_number: '15'
+              street: Example Avenue
+              zip_code: '54321'
+            brand: C
+            contact:
+              email: user@example.com
+              phone: +49 1234 567890
+              url: https://example.com
+            id: DEU11111
+            location:
+              latitude: 53.470636
+              longitude: 9.689872
+            name: Example Service Partner
+            opening_hours: []
+            partner_number: '1111'
+          update_date: '2024-10-14T10:50:23.420000+00:00'
+          warnings:
+            - icon_color: null
+              icon_name: 'C_1_01'
+              message_id: 'A21C'
+              notification_id: 41500
+              text: 'Fault: Wipers'
     maintenance_report:
       captured_at: '2024-11-08T09:30:02+00:00'
       inspection_due_in_days: 576

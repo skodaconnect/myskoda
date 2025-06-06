@@ -360,6 +360,7 @@ reports:
     "user@example.com", "phone": "+49 1234 567890"}}}'
   result:
     timestamp: null
+    customer_service: null
     maintenance_report: null
     predictive_maintenance:
       setting:
