@@ -148,3 +148,8 @@ class Maintenance(BaseResponse):
     customer_service: CustomerService | None = field(
         default=None, metadata=field_options(alias="customerService")
     )
+
+
+@dataclass
+class MaintenanceReportResponse(BaseResponse, MaintenanceReport):
+    pass

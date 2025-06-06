@@ -230,7 +230,7 @@ head -n 9 docs/api_endpoints.md && tail -n +10 docs/api_endpoints.md | sort --fi
 | EnergyX | GET    | api/v3/vehicle-maintenance/service-partners/{servicePartnerId}             |       |         |
 | EnergyX | GET    | api/v3/vehicle-maintenance/service-partners/{servicePartnerId}/encoded-url |       |         |
 | EnergyX | GET    | api/v3/vehicle-maintenance/vehicles/{vin}                                  | ✅     |         |
-| EnergyX | GET    | api/v3/vehicle-maintenance/vehicles/{vin}/report                           |       | <pre lang="json"> {"capturedAt":"2025-03-19T07:33:41.681Z","inspectionDueInDays":84,"mileageInKm":91870}</pre> |
+| EnergyX | GET    | api/v3/vehicle-maintenance/vehicles/{vin}/report                           | ✅     | <pre lang="json"> {"capturedAt":"2025-03-19T07:33:41.681Z","inspectionDueInDays":84,"mileageInKm":91870}</pre> |
 | EnergyX | POST   | api/v3/vehicle-maintenance/vehicles/{vin}/service-booking                  |       |         |
 | EnergyX | DELETE | api/v3/vehicle-maintenance/vehicles/{vin}/service-partner                  |       |         |
 | EnergyX | PUT    | api/v3/vehicle-maintenance/vehicles/{vin}/service-partner                  |       |         |
