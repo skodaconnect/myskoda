@@ -85,7 +85,7 @@ from .models.event import (
 )
 from .models.health import Health
 from .models.info import CapabilityId, Info
-from .models.maintenance import Maintenance, MaintenanceReportResponse
+from .models.maintenance import Maintenance, MaintenanceReport
 from .models.position import Positions
 from .models.spin import Spin
 from .models.status import Status
@@ -316,9 +316,7 @@ class MySkoda:
         """Retrieve maintenance report, settings and history."""
         return (await self.rest_api.get_maintenance(vin, anonymize=anonymize)).result
 
-    async def get_maintenance_report(
-        self, vin: Vin, anonymize: bool = False
-    ) -> MaintenanceReportResponse:
+    async def get_maintenance_report(self, vin: Vin, anonymize: bool = False) -> MaintenanceReport:
         """Retrieve maintenance report only."""
         return (await self.rest_api.get_maintenance_report(vin, anonymize=anonymize)).result
 
