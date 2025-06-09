@@ -11,7 +11,7 @@ from .common import Address, BaseResponse, Coordinates, Weekday
 
 
 @dataclass
-class MaintenanceReport(DataClassORJSONMixin):
+class MaintenanceReport(BaseResponse):
     captured_at: datetime = field(metadata=field_options(alias="capturedAt"))
     mileage_in_km: int | None = field(default=None, metadata=field_options(alias="mileageInKm"))
     inspection_due_in_days: int | None = field(

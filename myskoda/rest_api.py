@@ -49,7 +49,7 @@ from .models.departure import DepartureInfo, DepartureTimer
 from .models.driving_range import DrivingRange
 from .models.health import Health
 from .models.info import Info
-from .models.maintenance import Maintenance
+from .models.maintenance import Maintenance, MaintenanceReport
 from .models.position import Positions
 from .models.spin import Spin
 from .models.status import Status
@@ -254,7 +254,7 @@ class RestApi:
     async def get_maintenance(
         self, vin: str, anonymize: bool = False
     ) -> GetEndpointResult[Maintenance]:
-        """Retrieve maintenance report."""
+        """Retrieve maintenance report, settings and history."""
         url = f"/v3/vehicle-maintenance/vehicles/{vin}"
         raw = self.process_json(
             data=await self._make_get_request(url),
@@ -263,6 +263,19 @@ class RestApi:
         )
         result = self._deserialize(raw, Maintenance.from_json)
         url = anonymize_url(url) if anonymize else url
+        return GetEndpointResult(url=url, raw=raw, result=result)
+
+    async def get_maintenance_report(
+        self, vin: str, anonymize: bool = False
+    ) -> GetEndpointResult[MaintenanceReport]:
+        """Retrieve just the maintenance report."""
+        url = f"/v3/vehicle-maintenance/vehicles/{vin}/report"
+        raw = self.process_json(
+            data=await self._make_get_request(url),
+            anonymize=anonymize,
+            anonymization_fn=anonymize_maintenance,
+        )
+        result = self._deserialize(raw, MaintenanceReport.from_json)
         return GetEndpointResult(url=url, raw=raw, result=result)
 
     async def get_health(self, vin: str, anonymize: bool = False) -> GetEndpointResult[Health]:

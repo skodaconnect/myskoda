@@ -103,6 +103,15 @@ async def maintenance(ctx: Context, vin: str, anonymize: bool) -> None:
 @click.argument("vin")
 @click.option("anonymize", "--anonymize", help="Strip all personal data.", is_flag=True)
 @click.pass_context
+async def maintenance_report(ctx: Context, vin: str, anonymize: bool) -> None:
+    """Print the vehicle's maintenance report."""
+    await handle_request(ctx, ctx.obj["myskoda"].get_maintenance_report, vin, anonymize)
+
+
+@click.command()
+@click.argument("vin")
+@click.option("anonymize", "--anonymize", help="Strip all personal data.", is_flag=True)
+@click.pass_context
 async def driving_range(ctx: Context, vin: str, anonymize: bool) -> None:
     """Print the vehicle's estimated driving range information."""
     await handle_request(ctx, ctx.obj["myskoda"].get_driving_range, vin, anonymize)
