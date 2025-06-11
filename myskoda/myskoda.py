@@ -24,7 +24,6 @@ import logging
 from collections import defaultdict
 from collections.abc import Callable, Coroutine
 from datetime import UTC, datetime, timedelta
-from ssl import SSLContext
 from traceback import format_exc
 from types import SimpleNamespace
 from typing import Any
@@ -149,7 +148,6 @@ class MySkoda:
     rest_api: RestApi
     mqtt: MySkodaMqttClient | None = None
     authorization: MySkodaAuthorization
-    ssl_context: SSLContext | None = None
     user: User | None = None
     _vehicles: dict[Vin, Vehicle]
     _callbacks: dict[Vin, list[Callable[[], Coroutine[Any, Any, None]]]]
@@ -157,7 +155,6 @@ class MySkoda:
     def __init__(
         self,
         session: ClientSession,
-        ssl_context: SSLContext | None = None,
         mqtt_enabled: bool = True,
     ) -> None:
         self._callbacks = defaultdict(list)
@@ -165,7 +162,6 @@ class MySkoda:
         self.session = session
         self.authorization = MySkodaAuthorization(session)
         self.rest_api = RestApi(self.session, self.authorization)
-        self.ssl_context = ssl_context  # TODO @dvx76: this isn't used anywhere?
         if mqtt_enabled:
             self.mqtt = self._create_mqtt_client()
 
