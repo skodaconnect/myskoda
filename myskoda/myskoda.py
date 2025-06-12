@@ -614,6 +614,13 @@ class MySkoda:
             self._notify_callbacks(vin)
 
     @async_debounce(immediate=True)
+    async def refresh_maintenance_report(self, vin: Vin, notify: bool = True) -> None:
+        """Refresh only the maintenance report for the provided Vin."""
+        self._vehicles[vin].maintenance.maintenance_report = await self.get_maintenance_report(vin)
+        if notify:
+            self._notify_callbacks(vin)
+
+    @async_debounce(immediate=True)
     async def refresh_health(self, vin: Vin, notify: bool = True) -> None:
         """Refresh health data for the provided Vin."""
         self._vehicles[vin].health = await self.get_health(vin)
@@ -814,8 +821,7 @@ class MySkoda:
         elif isinstance(event, ServiceEventDeparture):
             await self.refresh_positions(event.vin)
         elif isinstance(event, ServiceEventOdometer):
-            await self.refresh_info(event.vin)
-            await self.refresh_maintenance(event.vin)
+            await self.refresh_maintenance_report(event.vin)
 
     async def _process_operation_event(self, event: OperationEvent) -> None:
         """Refresh the appropriate vehicle data based on the operation details."""
