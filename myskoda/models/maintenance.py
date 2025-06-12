@@ -116,7 +116,6 @@ class CarWarning(DataClassORJSONMixin):
 class Booking(DataClassORJSONMixin):
     creation_date: datetime = field(metadata=field_options(alias="creationDate"))
     confirmation_date: datetime = field(metadata=field_options(alias="confirmationDate"))
-    closed_date: datetime = field(metadata=field_options(alias="closedDate"))
     update_date: datetime = field(metadata=field_options(alias="updateDate"))
     service_partner: ServicePartner = field(metadata=field_options(alias="servicePartner"))
     booking_id: str = field(metadata=field_options(alias="bookingId"))
@@ -130,6 +129,7 @@ class Booking(DataClassORJSONMixin):
     accepted_date: datetime | None = field(
         default=None, metadata=field_options(alias="acceptedDate")
     )
+    closed_date: datetime | None = field(default=None, metadata=field_options(alias="closedDate"))
     contacted_date: datetime | None = field(
         default=None, metadata=field_options(alias="contactedDate")
     )
