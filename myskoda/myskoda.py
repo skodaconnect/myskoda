@@ -165,7 +165,7 @@ class MySkoda:
         self.session = session
         self.authorization = MySkodaAuthorization(session)
         self.rest_api = RestApi(self.session, self.authorization)
-        self.ssl_context = ssl_context  # TODO @dvx76: this isn't used anywhere?
+        self.ssl_context = ssl_context
         if mqtt_enabled:
             self.mqtt = self._create_mqtt_client()
 
@@ -788,7 +788,7 @@ class MySkoda:
                 task.add_done_callback(background_tasks.discard)
 
     def _create_mqtt_client(self) -> MySkodaMqttClient:
-        mqtt = MySkodaMqttClient(authorization=self.authorization)
+        mqtt = MySkodaMqttClient(authorization=self.authorization, ssl_context=self.ssl_context)
         mqtt.subscribe(self._on_mqtt_event)
         return mqtt
 
