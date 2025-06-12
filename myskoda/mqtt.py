@@ -116,6 +116,7 @@ class MySkodaMqttClient:
         self,
         authorization: Authorization,
         mqtt_client: AbstractMqttClientWrapper | None = None,
+        ssl_context: ssl.SSLContext | None = None,
     ) -> None:
         self.authorization = authorization
         self.vehicle_vins = []
@@ -128,7 +129,7 @@ class MySkodaMqttClient:
                 port=MQTT_BROKER_PORT,
                 identifier="Id" + str(APP_UUID) + "#" + str(uuid.uuid4()),
                 logger=_LOGGER,
-                tls_context=_SSL_CONTEXT,
+                tls_context=ssl_context if ssl_context else _SSL_CONTEXT,
                 keepalive=MQTT_KEEPALIVE,
                 clean_session=True,
             )
