@@ -93,7 +93,14 @@ class BookingType(StrEnum):
 
 
 class IconColor(StrEnum):
+    black = "BLACK"
+    blue = "BLUE"
+    cyan = "CYAN"
+    green = "GREEN"
+    magenta = "MAGENTA"
+    red = "RED"
     white = "WHITE"
+    yellow = "YELLOW"
 
 
 @dataclass
