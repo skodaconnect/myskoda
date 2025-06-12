@@ -7,7 +7,7 @@ from enum import StrEnum
 from mashumaro import field_options
 from mashumaro.mixins.orjson import DataClassORJSONMixin
 
-from .common import ActiveState, BaseResponse, CaseInsensitiveStrEnum, EnabledState
+from .common import ActiveState, BaseResponse, CaseInsensitiveStrEnum, EnabledState, Percentage
 
 
 class ChargingErrorType(StrEnum):
@@ -81,14 +81,14 @@ class Settings(DataClassORJSONMixin):
     preferred_charge_mode: ChargeMode | None = field(
         default=None, metadata=field_options(alias="preferredChargeMode")
     )
-    target_state_of_charge_in_percent: int | None = field(
+    target_state_of_charge_in_percent: Percentage | None = field(
         default=None, metadata=field_options(alias="targetStateOfChargeInPercent")
     )
 
 
 @dataclass
 class Battery(DataClassORJSONMixin):
-    state_of_charge_in_percent: int | None = field(
+    state_of_charge_in_percent: Percentage | None = field(
         default=None, metadata=field_options(alias="stateOfChargeInPercent")
     )
     remaining_cruising_range_in_meters: int | None = field(

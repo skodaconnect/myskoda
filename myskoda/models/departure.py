@@ -10,7 +10,7 @@ from mashumaro.config import BaseConfig
 from mashumaro.mixins.orjson import DataClassORJSONMixin
 
 from .air_conditioning import TemperatureUnit, TimerMode
-from .common import BaseResponse, Weekday
+from .common import BaseResponse, Percentage, Weekday
 
 
 @dataclass
@@ -60,7 +60,7 @@ class DepartureTimer(DataClassORJSONMixin):
     recurring_on: list[Weekday] | None = field(
         default=None, metadata=field_options(alias="recurringOn")
     )
-    target_battery_state_of_charge_in_percent: int | None = field(
+    target_battery_state_of_charge_in_percent: Percentage | None = field(
         default=None, metadata=field_options(alias="targetBatteryStateOfChargeInPercent")
     )
     time: datetime_time | None = field(default=None, metadata=field_options(alias="time"))
@@ -83,7 +83,7 @@ class DepartureTimer(DataClassORJSONMixin):
 class DepartureSettings(DataClassORJSONMixin):
     """Information related to DepartureSettings."""
 
-    minimum_battery_state_of_charge_in_percent: int | None = field(
+    minimum_battery_state_of_charge_in_percent: Percentage | None = field(
         default=None, metadata=field_options(alias="minimumBatteryStateOfChargeInPercent")
     )
 
@@ -98,7 +98,7 @@ class DepartureInfo(BaseResponse):
     first_occurring_timer_id: int | None = field(
         default=None, metadata=field_options(alias="firstOccurringTimerId")
     )
-    minimum_battery_state_of_charge_in_percent: int | None = field(
+    minimum_battery_state_of_charge_in_percent: Percentage | None = field(
         default=None, metadata=field_options(alias="minimumBatteryStateOfChargeInPercent")
     )
     target_temperature: DepartureTemperature | None = field(

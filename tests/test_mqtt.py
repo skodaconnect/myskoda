@@ -11,6 +11,7 @@ import pytest
 
 from myskoda.anonymize import USER_ID, VIN
 from myskoda.models.charging import ChargeMode, ChargingState
+from myskoda.models.common import Percentage
 from myskoda.models.event import (
     BaseEvent,
     EventType,
@@ -419,7 +420,7 @@ async def test_subscribe_event(
                 user_id=USER_ID,
                 vin=VIN,
                 charged_range=307,
-                soc=91,
+                soc=Percentage(91),
                 state=ChargingState.CHARGING,
                 mode=ChargeMode.MANUAL,
                 time_to_finish=40,
@@ -437,7 +438,7 @@ async def test_subscribe_event(
                 user_id=USER_ID,
                 vin=VIN,
                 charged_range=500,
-                soc=100,
+                soc=Percentage(100),
                 state=ChargingState.CONSERVING,
                 mode=ChargeMode.MANUAL,
                 time_to_finish=0,
