@@ -26,6 +26,7 @@ from mashumaro import field_options
 from mashumaro.types import Discriminator
 
 from myskoda.models.charging import ChargeMode, ChargingState
+from myskoda.models.common import Percentage
 
 from .base import BaseEvent, BaseEventData, EventType
 
@@ -118,7 +119,7 @@ class ServiceEventChangeSocData(ServiceEventData):
 
     mode: ChargeMode | None = None
     state: ChargingState | None = None
-    soc: int | None = field(default=None)
+    soc: Percentage | None = field(default=None)
     charged_range: int | None = field(default=None, metadata=field_options(alias="chargedRange"))
     time_to_finish: int | None = field(
         default=None,

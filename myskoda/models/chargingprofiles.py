@@ -8,7 +8,7 @@ from mashumaro.mixins.orjson import DataClassORJSONMixin
 
 from .air_conditioning import TimerMode
 from .charging import MaxChargeCurrent, PlugUnlockMode
-from .common import BaseResponse, Weekday
+from .common import BaseResponse, Percentage, Weekday
 
 
 @dataclass
@@ -25,7 +25,7 @@ class ChargingTimes(DataClassORJSONMixin):
 class MinBatterySOC(DataClassORJSONMixin):
     """Settings for minimal battery SOC."""
 
-    minimum_battery_state_of_charge_in_percent: int = field(
+    minimum_battery_state_of_charge_in_percent: Percentage = field(
         metadata=field_options(alias="minimumBatteryStateOfChargeInPercent")
     )
 
@@ -40,7 +40,7 @@ class ProfileSettings(DataClassORJSONMixin):
     min_battery_state_of_charge: MinBatterySOC = field(
         metadata=field_options(alias="minBatteryStateOfCharge")
     )
-    target_state_of_charge_in_percent: int = field(
+    target_state_of_charge_in_percent: Percentage = field(
         metadata=field_options(alias="targetStateOfChargeInPercent")
     )
     auto_unlock_plug_when_charged: PlugUnlockMode = field(
@@ -78,7 +78,7 @@ class CurrentProfile(DataClassORJSONMixin):
 
     id: int
     name: str
-    target_state_of_charge_in_percent: int = field(
+    target_state_of_charge_in_percent: Percentage = field(
         metadata=field_options(alias="targetStateOfChargeInPercent")
     )
     next_charging_time: time | None = field(
