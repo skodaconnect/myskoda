@@ -67,6 +67,15 @@ async def positions(ctx: Context, vin: str, anonymize: bool) -> None:
 @click.argument("vin")
 @click.option("anonymize", "--anonymize", help="Strip all personal data.", is_flag=True)
 @click.pass_context
+async def parking_position(ctx: Context, vin: str, anonymize: bool) -> None:
+    """Print the vehicle's current position."""
+    await handle_request(ctx, ctx.obj["myskoda"].get_parking_position, vin, anonymize)
+
+
+@click.command()
+@click.argument("vin")
+@click.option("anonymize", "--anonymize", help="Strip all personal data.", is_flag=True)
+@click.pass_context
 async def health(ctx: Context, vin: str, anonymize: bool) -> None:
     """Print the vehicle's mileage."""
     await handle_request(ctx, ctx.obj["myskoda"].get_health, vin, anonymize)

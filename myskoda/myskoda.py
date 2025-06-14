@@ -86,7 +86,7 @@ from .models.event import (
 from .models.health import Health
 from .models.info import CapabilityId, Info
 from .models.maintenance import Maintenance, MaintenanceReport
-from .models.position import Positions
+from .models.position import ParkingPositionV3, Positions
 from .models.spin import Spin
 from .models.status import Status
 from .models.trip_statistics import TripStatistics
@@ -303,6 +303,10 @@ class MySkoda:
     async def get_positions(self, vin: Vin, anonymize: bool = False) -> Positions:
         """Retrieve the current position for the specified vehicle."""
         return (await self.rest_api.get_positions(vin, anonymize=anonymize)).result
+
+    async def get_parking_position(self, vin: Vin, anonymize: bool = False) -> ParkingPositionV3:
+        """Retrieve last known parking positions for the vehicle."""
+        return (await self.rest_api.get_parking_position(vin, anonymize=anonymize)).result
 
     async def get_driving_range(self, vin: Vin, anonymize: bool = False) -> DrivingRange:
         """Retrieve estimated driving range for combustion vehicles."""

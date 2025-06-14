@@ -21,6 +21,7 @@ from myskoda.anonymize import (
     anonymize_health,
     anonymize_info,
     anonymize_maintenance,
+    anonymize_parking_position,
     anonymize_positions,
     anonymize_status,
     anonymize_trip_statistics,
@@ -28,9 +29,6 @@ from myskoda.anonymize import (
     anonymize_user,
     anonymize_vehicle_connection_status,
 )
-from myskoda.models.charging import ChargeMode
-from myskoda.models.garage import Garage
-from myskoda.models.position import Position, PositionType
 
 from .auth.authorization import Authorization
 from .const import BASE_URL_SKODA, REQUEST_TIMEOUT_IN_SECONDS
@@ -43,14 +41,16 @@ from .models.air_conditioning import (
     WindowHeating,
 )
 from .models.auxiliary_heating import AuxiliaryConfig, AuxiliaryHeating, AuxiliaryHeatingTimer
-from .models.charging import Charging
+from .models.charging import ChargeMode, Charging
 from .models.chargingprofiles import ChargingProfiles
+from .models.common import Vin
 from .models.departure import DepartureInfo, DepartureTimer
 from .models.driving_range import DrivingRange
+from .models.garage import Garage
 from .models.health import Health
 from .models.info import Info
 from .models.maintenance import Maintenance, MaintenanceReport
-from .models.position import Positions
+from .models.position import ParkingPositionV3, Position, Positions, PositionType
 from .models.spin import Spin
 from .models.status import Status
 from .models.trip_statistics import TripStatistics
@@ -221,6 +221,19 @@ class RestApi:
         )
         result = self._deserialize(raw, Positions.from_json)
         url = anonymize_url(url) if anonymize else url
+        return GetEndpointResult(url=url, raw=raw, result=result)
+
+    async def get_parking_position(
+        self, vin: Vin, anonymize: bool = False
+    ) -> GetEndpointResult[ParkingPositionV3]:
+        """Retrieve the last known parking position for the specified vehicle."""
+        url = f"/v3/maps/positions/vehicles/{vin}/parking"
+        raw = self.process_json(
+            data=await self._make_get_request(url),
+            anonymize=anonymize,
+            anonymization_fn=anonymize_parking_position,
+        )
+        result = self._deserialize(raw, ParkingPositionV3.from_json)
         return GetEndpointResult(url=url, raw=raw, result=result)
 
     async def get_driving_range(
