@@ -43,6 +43,7 @@ SERVICE_PARTNER = {
     "address": ADDRESS,
     "location": LOCATION,
 }
+FORMATTED_ADDRESS = "1600 Pennsylvania Ave NW, Washington, DC 20500, USA"
 
 
 def anonymize_info(data: dict) -> dict:
@@ -97,6 +98,14 @@ def anonymize_positions(data: dict) -> dict:
         for position in data["positions"]:
             position["gpsCoordinates"] = LOCATION
             position["address"] = ADDRESS
+    return data
+
+
+def anonymize_parking_position(data: dict) -> dict:
+    if "parkingPosition" in data:
+        data["parkingPosition"]["gpsCoordinates"] = LOCATION
+    if "formattedAddress" in data:
+        data["formattedAddress"] = FORMATTED_ADDRESS
     return data
 
 
