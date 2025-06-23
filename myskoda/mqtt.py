@@ -37,7 +37,7 @@ APP_UUID = uuid.uuid4()
 
 def _create_ssl_context() -> ssl.SSLContext:
     """Create a SSL context for the MQTT connection."""
-    context = ssl.SSLContext(ssl.PROTOCOL_TLS)
+    context = ssl.SSLContext(ssl.PROTOCOL_TLS_CLIENT)
     context.load_default_certs()
     return context
 
