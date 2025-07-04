@@ -16,6 +16,8 @@ head -n 9 docs/api_endpoints.md && tail -n +10 docs/api_endpoints.md | sort --fi
 | sonar98 | DELETE | api/v1/charging/{vin}/certificates/{certificateId}                         |       |         |
 | sonar98 | POST   | api/v1/charging/{vin}/certificates/{certificateId}                         |       |         |
 | lglerup | GET    | api/v1/charging/{vin}/history                                              |       |         |
+| lglerup | GET    | api/v1/charging/{vin}/history/export                                       |       |         |
+| lglerup | POST   | api/v1/charging/{vin}/profiles                                             |       |         |
 | sonar98 | GET    | api/v1/charging/{vin}/profiles                                             |       | <pre lang="json"> {'chargingProfiles': [{'id': 1, 'name': 'testloc', 'settings': {'maxChargingCurrent': 'MAXIMUM', 'minBatteryStateOfCharge': {'minimumBatteryStateOfChargeInPercent': 0}, 'targetStateOfChargeInPercent': 80, 'autoUnlockPlugWhenCharged': 'OFF'}, 'preferredChargingTimes': [{'id': 1, 'enabled': False, 'startTime': '22:00', 'endTime': '06:00'}, {'id': 2, 'enabled': False, 'startTime': '22:00', 'endTime': '06:00'}, {'id': 3, 'enabled': False, 'startTime': '22:00', 'endTime': '06:00'}, {'id': 4, 'enabled': False, 'startTime': '22:00', 'endTime': '06:00'}], 'timers': [{'id': 1, 'enabled': False, 'time': '07:00', 'type': 'RECURRING', 'recurringOn': ['MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY']}, {'id': 2, 'enabled': False, 'time': '09:00', 'type': 'RECURRING', 'recurringOn': ['SATURDAY', 'SUNDAY']}, {'id': 3, 'enabled': False, 'time': '07:00', 'type': 'RECURRING', 'recurringOn': ['MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY', 'SUNDAY']}]}], 'carCapturedTimestamp': '2025-03-25T08:23:15.128Z'} </pre> |
 | sonar98 | PUT    | api/v1/charging/{vin}/profiles/{id}                                        |       |         |
 | sonar98 | PUT    | api/v1/charging/{vin}/set-auto-unlock-plug                                 | ✅     |         |
@@ -72,6 +74,8 @@ head -n 9 docs/api_endpoints.md && tail -n +10 docs/api_endpoints.md | sort --fi
 | sonar98 | POST   | api/v1/trip-statistics/{vin}/fuel-prices                                   |       |         |
 | sonar98 | DELETE | api/v1/trip-statistics/{vin}/fuel-prices/{fuelPriceId}                     |       |         |
 | sonar98 | PUT    | api/v1/trip-statistics/{vin}/fuel-prices/{fuelPriceId}                     |       |         |
+| lglerup | GET    | api/v1/trip-statistics/{vin}/single-trips                                  |       |         |
+| lglerup | GET    | api/v1/trip-statistics/{vin}/single-trips/export                           |       |         |
 | sonar98 | DELETE | api/v1/users                                                               |       |         |
 | prior98 | GET    | api/v1/users                                                               | ✅     |         |
 | sonar98 | POST   | api/v1/users/agent-id                                                      |       |         |
@@ -135,6 +139,7 @@ head -n 9 docs/api_endpoints.md && tail -n +10 docs/api_endpoints.md | sort --fi
 | EnergyX | GET    | api/v2/car-configurator/url                                                |       |         |
 | lglerup | GET    | api/v2/connection-status/{vin}/readiness                                   | ✅     | <pre lang="json"> {'unreachable': False, 'inMotion': False, 'batteryProtectionLimitOn': False} </pre> |
 | EnergyX | POST   | api/v2/consents                                                            |       |         |
+| lglerup | GET    | api/v2/consents/accessibility-statement                                    |       |         |
 | EnergyX | PATCH  | api/v2/consents/eprivacy/{vin}                                             |       |         |
 | EnergyX | GET    | api/v2/consents/eprivacy/{vin}                                             |       | <pre lang="json"> {"consented":false,"link":"https://www.skoda-auto.com/other/eprivacy-nl"}</pre> |
 | EnergyX | PATCH  | api/v2/consents/location-access                                            |       |         |
@@ -185,6 +190,7 @@ head -n 9 docs/api_endpoints.md && tail -n +10 docs/api_endpoints.md | sort --fi
 | EnergyX | PUT    | api/v2/loyalty-program/members/{id}/challenges/{challengeId}/enrollment    |       |         |
 | EnergyX | POST   | api/v2/loyalty-program/members/{id}/daily-check-in                         |       |         |
 | lglerup | GET    | api/v2/loyalty-program/members/{id}/games                                  |       |         |
+| lglerup | PUT    | api/v2/loyalty-program/members/{id}/games/{gameId}/enrollment              |       |         |
 | EnergyX | GET    | api/v2/loyalty-program/members/{id}/rewards                                |       |         |
 | EnergyX | POST   | api/v2/loyalty-program/members/{id}/rewards                                |       |         |
 | EnergyX | GET    | api/v2/loyalty-program/members/{id}/transactions                           |       |         |
