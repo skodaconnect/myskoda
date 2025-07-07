@@ -38,6 +38,7 @@ class VehicleEventName(StrEnum):
 
     VEHICLE_AWAKE = "vehicle-awake"
     VEHICLE_CONNECTION_ONLINE = "vehicle-connection-online"
+    VEHICLE_CONNECTION_OFFLINE = "vehicle-connection-offline"
     VEHICLE_WARNING_BATTEYLEVEL = "vehicle-warning-batterylevel"
     VEHICLE_IGNITION_STATUS_CHANGED = "vehicle-ignition-status-changed"
 
