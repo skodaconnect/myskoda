@@ -7,7 +7,7 @@ from enum import StrEnum
 from mashumaro import field_options
 from mashumaro.mixins.orjson import DataClassORJSONMixin
 
-from .common import BaseResponse
+from .common import BaseResponse, Percentage
 
 
 class EngineType(StrEnum):
@@ -22,10 +22,10 @@ class EngineType(StrEnum):
 @dataclass
 class EngineRange(DataClassORJSONMixin):
     engine_type: EngineType = field(metadata=field_options(alias="engineType"))
-    current_fuel_level_in_percent: int | None = field(
+    current_fuel_level_in_percent: Percentage | None = field(
         default=None, metadata=field_options(alias="currentFuelLevelInPercent")
     )
-    current_soc_in_percent: int | None = field(
+    current_soc_in_percent: Percentage | None = field(
         default=None, metadata=field_options(alias="currentSoCInPercent")
     )
     remaining_range_in_km: int | None = field(

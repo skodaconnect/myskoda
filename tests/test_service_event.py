@@ -9,6 +9,7 @@ from pathlib import Path
 import pytest
 
 from myskoda.models.charging import ChargeMode, ChargingState
+from myskoda.models.common import Percentage
 from myskoda.models.event import (
     BaseEvent,
     ServiceEvent,
@@ -69,7 +70,7 @@ def test_parse_service_events(service_events: list[str]) -> None:
             assert event.data == ServiceEventChangeSocData(
                 charged_range=195,
                 mode=ChargeMode.MANUAL,
-                soc=50,
+                soc=Percentage(50),
                 state=ChargingState.CHARGING,
                 time_to_finish=440,
                 user_id="ad0d7945-4814-43d0-801f-change-soc",

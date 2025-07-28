@@ -1,8 +1,10 @@
 """Common models used in multiple responses."""
 
+from collections.abc import Mapping
 from dataclasses import dataclass, field
 from datetime import UTC, datetime
 from enum import StrEnum
+from typing import Optional
 
 from mashumaro import field_options
 from mashumaro.mixins.orjson import DataClassORJSONMixin
@@ -112,3 +114,38 @@ class BaseResponse(DataClassORJSONMixin):
     """
 
     timestamp: datetime = field(default_factory=lambda: datetime.now(UTC), kw_only=True)
+
+
+class PercentageValueError(ValueError):
+    """Custom error message for Percentage invalid values."""
+
+    def __init__(self, value: int) -> None:
+        self.value = value
+        super().__init__(f"Percentage must be between 0 and 100, got {self.value}")
+
+
+@dataclass(frozen=True)
+class Percentage(DataClassORJSONMixin):
+    value: int
+
+    def __post_init__(self) -> None:
+        """Validate that the percentage value is within 0 to 100 inclusive.
+
+        Raises:
+            PercentageValueError: If `value` is outside the valid percentage range.
+
+        """
+        if not (0 <= self.value <= 100):  # noqa: PLR2004
+            raise PercentageValueError(self.value)
+
+    @classmethod
+    def _deserialize(
+        cls, value: object, _type: type, _context: Mapping[str, object]
+    ) -> Optional["Percentage"]:
+        if value is None:
+            return None
+        if not isinstance(value, int):
+            return None
+        if not (0 <= value <= 100):  # noqa: PLR2004
+            return None
+        return cls(value)
