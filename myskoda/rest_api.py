@@ -42,6 +42,7 @@ from .models.air_conditioning import (
 )
 from .models.auxiliary_heating import AuxiliaryConfig, AuxiliaryHeating, AuxiliaryHeatingTimer
 from .models.charging import ChargeMode, Charging
+from .models.charging_history import ChargingHistory
 from .models.chargingprofiles import ChargingProfiles
 from .models.common import Vin
 from .models.departure import DepartureInfo, DepartureTimer
@@ -167,6 +168,17 @@ class RestApi:
         )
         result = self._deserialize(raw, ChargingProfiles.from_json)
         url = anonymize_url(url) if anonymize else url
+        return GetEndpointResult(url=url, raw=raw, result=result)
+
+    async def get_charging_history(self, vin: str) -> GetEndpointResult[ChargingHistory]:
+        """Retrieve charging history information for the specified vehicle."""
+        url = f"/v1/charging/{vin}/history?userTimezone=UTC"
+        raw = self.process_json(
+            data=await self._make_get_request(url),
+            anonymize=False,
+            anonymization_fn=anonymize_info,
+        )
+        result = self._deserialize(raw, ChargingHistory.from_json)
         return GetEndpointResult(url=url, raw=raw, result=result)
 
     async def get_status(self, vin: str, anonymize: bool = False) -> GetEndpointResult[Status]:
