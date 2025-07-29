@@ -18,7 +18,7 @@ class ChargingCurrentType(StrEnum):
 @dataclass
 class ChargingSession(DataClassORJSONMixin):
     start_at: datetime = field(metadata=field_options(alias="startAt"))
-    charged_in_kwh: float = field(metadata=field_options(alias="chargedInKwH"))
+    charged_in_kwh: float = field(metadata=field_options(alias="chargedInKWh"))
     duration_in_minutes: int = field(metadata=field_options(alias="durationInMinutes"))
     current_type: ChargingCurrentType = field(metadata=field_options(alias="currentType"))
 
