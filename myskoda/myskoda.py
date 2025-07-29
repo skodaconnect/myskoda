@@ -66,6 +66,7 @@ from .models.auxiliary_heating import (
     AuxiliaryHeatingTimer,
 )
 from .models.charging import ChargeMode, Charging, ChargingStatus
+from .models.charging_history import ChargingHistory
 from .models.chargingprofiles import ChargingProfiles
 from .models.common import Vin
 from .models.departure import DepartureInfo, DepartureTimer
@@ -287,6 +288,10 @@ class MySkoda:
     async def get_charging_profiles(self, vin: Vin, anonymize: bool = False) -> ChargingProfiles:
         """Retrieve information related to charging profiles for the specified vehicle."""
         return (await self.rest_api.get_charging_profiles(vin, anonymize=anonymize)).result
+
+    async def get_charging_history(self, vin: Vin) -> ChargingHistory:
+        """Retrieve the charging history of the specified vehicle."""
+        return (await self.rest_api.get_charging_history(vin)).result
 
     async def get_status(self, vin: Vin, anonymize: bool = False) -> Status:
         """Retrieve the current status for the specified vehicle."""
