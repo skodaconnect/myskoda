@@ -58,6 +58,7 @@ from myskoda.cli.requests import (
     list_vehicles,
     maintenance,
     maintenance_report,
+    parking_position,
     positions,
     status,
     trip_statistics,
@@ -152,6 +153,7 @@ cli.add_command(status)
 cli.add_command(air_conditioning)
 cli.add_command(auxiliary_heating)
 cli.add_command(positions)
+cli.add_command(parking_position)
 cli.add_command(health)
 cli.add_command(charging)
 cli.add_command(charging_profiles)
