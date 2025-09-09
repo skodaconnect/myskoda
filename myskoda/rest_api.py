@@ -57,6 +57,7 @@ from .models.status import Status
 from .models.trip_statistics import TripStatistics
 from .models.user import User
 from .models.vehicle_connection_status import VehicleConnectionStatus
+from .utils import to_iso8601
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -170,9 +171,23 @@ class RestApi:
         url = anonymize_url(url) if anonymize else url
         return GetEndpointResult(url=url, raw=raw, result=result)
 
-    async def get_charging_history(self, vin: str) -> GetEndpointResult[ChargingHistory]:
+    async def get_charging_history(
+        self,
+        vin: str,
+        cursor: datetime | None = None,
+        start: datetime | None = None,
+        end: datetime | None = None,
+        limit: int = 50,
+    ) -> GetEndpointResult[ChargingHistory]:
         """Retrieve charging history information for the specified vehicle."""
-        url = f"/v1/charging/{vin}/history?userTimezone=UTC"
+        url = f"/v1/charging/{vin}/history?userTimezone=UTC&limit={limit}"
+        if cursor:
+            url += f"&cursor={to_iso8601(cursor)}"
+        elif start or end:
+            if start:
+                url += f"&from={to_iso8601(start)}"
+            if end:
+                url += f"&to={to_iso8601(end)}"
         raw = self.process_json(
             data=await self._make_get_request(url),
             anonymize=False,
