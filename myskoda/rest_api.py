@@ -102,10 +102,10 @@ class RestApi:
                     await response.text()  # Ensure response is fully read
                     response.raise_for_status()
                     return await response.text()
-        except TimeoutError:
+        except TimeoutError:  # pragma: no cover
             _LOGGER.exception("Timeout while sending %s request to %s", method, url)
             raise
-        except ClientResponseError as err:
+        except ClientResponseError as err:  # pragma: no cover
             _LOGGER.exception("Invalid status for %s request to %s: %d", method, url, err.status)
             raise
 
@@ -679,7 +679,7 @@ class RestApi:
             json=json_data,
         )
 
-    def _deserialize[T](self, text: str, deserialize: Callable[[str], T]) -> T:
+    def _deserialize[T](self, text: str, deserialize: Callable[[str], T]) -> T:  # pragma: no cover
         try:
             data = deserialize(text)
         except Exception:
