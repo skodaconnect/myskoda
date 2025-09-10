@@ -716,6 +716,7 @@ reports:
     battery_protection_limit_on: false
     in_motion: false
     timestamp: '2025-06-02T08:23:53.237888+00:00'
+    ignition_on: null
     unreachable: false
   success: true
   type: get
