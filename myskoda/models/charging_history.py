@@ -33,5 +33,5 @@ class ChargingPeriod(DataClassORJSONMixin):
 
 @dataclass
 class ChargingHistory(BaseResponse):
-    next_cursor: datetime | None = field(default=None, metadata=field_options(alias="nextCursor"))
+    next_cursor: datetime = field(metadata=field_options(alias="nextCursor"))
     periods: list[ChargingPeriod] = field(default_factory=list)

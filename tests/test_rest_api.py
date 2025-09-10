@@ -14,6 +14,7 @@ from myskoda.models.departure import DepartureInfo
 from myskoda.models.status import DoorWindowState
 from myskoda.models.trip_statistics import VehicleType
 from myskoda.myskoda import MySkoda
+from myskoda.utils import to_iso8601
 
 FIXTURES_DIR = Path(__file__).parent.joinpath("fixtures")
 
@@ -316,6 +317,43 @@ async def test_vehicle_connection_status(
         assert (
             get_connection_status.battery_protection_limit_on
             == connection_status_json["batteryProtectionLimitOn"]
+        )
+
+
+@pytest.fixture(name="charging_histories")
+def load_charging_histories() -> list[str]:
+    """Load charging history fixtures."""
+    charging_histories = []
+    for path in [
+        "other/charging-history.json",
+    ]:
+        with FIXTURES_DIR.joinpath(path).open() as file:
+            charging_histories.append(file.read())
+    return charging_histories
+
+
+@pytest.mark.asyncio
+async def test_charging_history(
+    charging_histories: list[str], myskoda: MySkoda, responses: aioresponses
+) -> None:
+    """Unit test for RestAPI.get_charging_history(). Needs more work."""
+    for charging_history in charging_histories:
+        charging_history_json = json.loads(charging_history)
+
+        target_vin = "TMBJM0CKV1N12345"
+        request_limit: int = 50
+        responses.get(
+            url=f"https://mysmob.api.connect.skoda-auto.cz/api/v1/charging/{target_vin}/history?userTimezone=UTC&limit={request_limit}",
+            body=charging_history,
+        )
+
+        get_charging_history = await myskoda.get_charging_history(target_vin)
+        # Make sure the cursor is set
+        assert to_iso8601(get_charging_history.next_cursor) == charging_history_json["nextCursor"]
+        # Make sure we dont get more than we asked for
+        assert (
+            len([session for period in get_charging_history.periods for session in period.sessions])
+            < request_limit + 1
         )
 
 
