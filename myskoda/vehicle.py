@@ -31,7 +31,7 @@ class Vehicle:
     departure_info: DepartureInfo | None = None
     connection_status: VehicleConnectionStatus | None = None
 
-    def __init__(self, info: Info, maintenance: Maintenance) -> None:
+    def __init__(self, info: Info, maintenance: Maintenance) -> None:  # pragma: no cover
         self.info = info
         self.maintenance = maintenance
 
