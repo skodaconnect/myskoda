@@ -99,7 +99,7 @@ def test_to_iso8601_offset_datetime() -> None:
     Make sure time stays the same UTC value and end with Z
     """
     tz = timezone(timedelta(hours=2))
-    dt = datetime(2025, 9, 12, 10, 0, 0, tzinfo=tz)
+    dt = datetime(2025, 9, 10, 12, 0, 0, tzinfo=tz)
     result = to_iso8601(dt)
     assert result.startswith("2025-09-10T10:00")
     assert result.endswith("Z")
