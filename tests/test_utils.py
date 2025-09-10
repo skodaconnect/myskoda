@@ -1,10 +1,11 @@
 """Unit tests for utilities."""
 
 import asyncio
+from datetime import UTC, datetime, timedelta, timezone
 
 import pytest
 
-from myskoda.utils import async_debounce
+from myskoda.utils import async_debounce, to_iso8601
 
 
 @pytest.mark.asyncio
@@ -80,3 +81,25 @@ async def test_async_debounce_immediate_noqueue() -> None:
     await increment()
     await asyncio.sleep(0.3)
     assert test_val == 1
+
+
+def test_to_is8601_utc_datetime() -> None:
+    """Test the to_iso8601 function with UTC datetime input.
+
+    Make sure time stays the same and end with Z
+    """
+    dt = datetime(2025, 9, 10, 10, 0, 0, tzinfo=UTC)
+    result = to_iso8601(dt)
+    assert result == "2025-09-10T10:00:00Z"
+
+
+def test_to_iso8601_offset_datetime() -> None:
+    """Test the to_iso8601 function with non-UTC datetime input.
+
+    Make sure time stays the same UTC value and end with Z
+    """
+    tz = timezone(timedelta(hours=2))
+    dt = datetime(2025, 9, 12, 10, 0, 0, tzinfo=tz)
+    result = to_iso8601(dt)
+    assert result.startswith("2025-09-10T10:00")
+    assert result.endswith("Z")
