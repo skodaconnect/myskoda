@@ -111,7 +111,7 @@ class UnsupportedEndpointError(Exception):
     """Endpoint not implemented."""
 
 
-class UnknownVinError(Exception):
+class UnknownVinError(Exception):  # pragma: no cover
     """Requested Vin not found."""
 
     def __init__(self, vin: str) -> None:
@@ -736,7 +736,7 @@ class MySkoda:
 
     async def generate_get_fixture(
         self, name: str, description: str, vins: list[str], endpoint: Endpoint
-    ) -> Fixture:
+    ) -> Fixture:  # pragma: no cover
         """Generate a fixture for a get request."""
         vehicles = [
             (vin, create_fixture_vehicle(i, await self.get_info(vin))) for i, vin in enumerate(vins)

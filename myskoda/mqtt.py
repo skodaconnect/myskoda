@@ -60,7 +60,7 @@ class OperationListener:
         self.future = future
 
 
-class OperationFailedError(Exception):
+class OperationFailedError(Exception):  # pragma: no cover
     def __init__(self, event: OperationEvent) -> None:
         op = event.operation
         error = event.error_code
@@ -233,7 +233,7 @@ class MySkodaMqttClient:
 
         try:
             self._emit(BaseEvent.from_mqtt_message(topic=topic, payload=payload))
-        except Exception as exc:  # noqa: BLE001
+        except Exception as exc:  # noqa: BLE001  pragma: no cover
             _LOGGER.warning("Exception parsing MQTT event: %s", exc)
 
     def _emit(self, event: BaseEvent) -> None:
