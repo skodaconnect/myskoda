@@ -61,7 +61,6 @@ target-version = "py313"
 ignore = [
   "COM812", # missing-trailing-comma
   "D101", # undocumented-public-class
-  "D103", # undocumented-public-function
   "D107", # undocumented-public-init
   "D203", # one-blank-line-before-class
   "D211", # blank-line-before-class
@@ -82,6 +81,7 @@ convention = "google"
 [tool.ruff.lint.per-file-ignores]
 "tests/*" = ["D"]
 "**/test_*.py" = ["D"]
+"myskoda/cli/*" = ["D"]
 
 [tool.pytest.ini_options]
 asyncio_mode = "auto"
