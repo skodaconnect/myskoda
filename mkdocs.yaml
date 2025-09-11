@@ -19,6 +19,9 @@ plugins:
       handlers:
         python:
           paths: [myskoda]
+          options:
+            docstring_style: google
+            show_source: false
 
 nav:
   - Home: README.md
