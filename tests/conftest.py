@@ -29,18 +29,18 @@ REQUEST_ID = "b9bc1258-2d0c-43c2-8d67-44d9f6c8cb9f"
 
 class FakeAuthorization(Authorization):
     @property
-    def client_id(self) -> str | None:  # noqa: D102
+    def client_id(self) -> str | None:
         return "1"
 
     @property
-    def redirect_uri(self) -> str | None:  # noqa: D102
+    def redirect_uri(self) -> str | None:
         return "https://fake/auth/redirect"
 
     @property
-    def base_url(self) -> str | None:  # noqa: D102
+    def base_url(self) -> str | None:
         return "https://fake/auth"
 
-    async def get_access_token(self) -> str:  # noqa: D102
+    async def get_access_token(self) -> str:
         return "access_token"
 
 
@@ -56,11 +56,11 @@ class SimpleAsyncIterator:
         if items:
             self.items = items
 
-    def __aiter__(self):  # noqa: ANN204, D105
+    def __aiter__(self):  # noqa: ANN204
         return self
 
     @property
-    def items(self) -> list[Any]:  # noqa: D102
+    def items(self) -> list[Any]:
         return self._items
 
     @items.setter
@@ -87,7 +87,7 @@ class FakeMqttClientWrapper(AbstractAsyncContextManager):
     def __init__(self, messages: list[aiomqtt.Message]) -> None:
         self._aiter = SimpleAsyncIterator(messages)
 
-    async def __aexit__(  # noqa: D105
+    async def __aexit__(
         self,
         exc_type: type[BaseException] | None,
         exc: BaseException | None,
@@ -95,17 +95,17 @@ class FakeMqttClientWrapper(AbstractAsyncContextManager):
     ) -> None:
         pass
 
-    def set_messages(self, messages: list[aiomqtt.Message]) -> None:  # noqa: D102
+    def set_messages(self, messages: list[aiomqtt.Message]) -> None:
         self._aiter.items = messages
 
     @property
-    def messages(self) -> AsyncIterator:  # noqa: D102
+    def messages(self) -> AsyncIterator:
         return self._aiter
 
-    async def subscribe(self, topic: str) -> None:  # noqa: D102
+    async def subscribe(self, topic: str) -> None:
         print(f"Fake subscribed to topic {topic}")
 
-    def update_username_password(self, username: str, password: str) -> None:  # noqa: D102
+    def update_username_password(self, username: str, password: str) -> None:
         print(f"Fake updated username/password as {username}/{password}")
 
 

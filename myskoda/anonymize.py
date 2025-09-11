@@ -47,6 +47,14 @@ FORMATTED_ADDRESS = "1600 Pennsylvania Ave NW, Washington, DC 20500, USA"
 
 
 def anonymize_info(data: dict) -> dict:
+    """Anonymize select parts if the input from the info dict.
+
+    Args:
+        data: input dictionary
+
+    Returns:
+        dict
+    """
     data["vin"] = VIN
     data["name"] = VEHICLE_NAME
     if "licensePlate" in data:
@@ -57,6 +65,14 @@ def anonymize_info(data: dict) -> dict:
 
 
 def anonymize_maintenance(data: dict) -> dict:
+    """Anonymize select parts if the input from the maintenance dict.
+
+    Args:
+        data: input dictionary
+
+    Returns:
+        dict
+    """
     if "preferredServicePartner" in data:
         data["preferredServicePartner"].update(SERVICE_PARTNER)
     if "predictiveMaintenance" in data:
@@ -70,30 +86,86 @@ def anonymize_maintenance(data: dict) -> dict:
 
 
 def anonymize_charging(data: dict) -> dict:
+    """Anonymize select parts if the input from the charging dict.
+
+    Args:
+        data: input dictionary
+
+    Returns:
+        dict
+    """
     return data
 
 
 def anonymize_chargingprofiles(data: dict) -> dict:
+    """Anonymize select parts if the input from the chargingprofiles dict.
+
+    Args:
+        data: input dictionary
+
+    Returns:
+        dict
+    """
     return data
 
 
 def anonymize_status(data: dict) -> dict:
+    """Anonymize select parts if the input from the status dict.
+
+    Args:
+        data: input dictionary
+
+    Returns:
+        dict
+    """
     return data
 
 
 def anonymize_air_conditioning(data: dict) -> dict:
+    """Anonymize select parts if the input from the air_conditioning dict.
+
+    Args:
+        data: input dictionary
+
+    Returns:
+        dict
+    """
     return data
 
 
 def anonymize_auxiliary_heating(data: dict) -> dict:
+    """Anonymize select parts if the input from the auxiliary_heating dict.
+
+    Args:
+        data: input dictionary
+
+    Returns:
+        dict
+    """
     return data
 
 
 def anonymize_departure_timers(data: dict) -> dict:
+    """Anonymize select parts if the input from the departure timers dict.
+
+    Args:
+        data: input dictionary
+
+    Returns:
+        dict
+    """
     return data
 
 
 def anonymize_positions(data: dict) -> dict:
+    """Anonymize select parts if the input from the positions dict.
+
+    Args:
+        data: input dictionary
+
+    Returns:
+        dict
+    """
     if "positions" in data:
         for position in data["positions"]:
             position["gpsCoordinates"] = LOCATION
@@ -102,6 +174,14 @@ def anonymize_positions(data: dict) -> dict:
 
 
 def anonymize_parking_position(data: dict) -> dict:
+    """Anonymize select parts if the input from the parking_position dict.
+
+    Args:
+        data: input dictionary
+
+    Returns:
+        dict
+    """
     if "parkingPosition" in data:
         data["parkingPosition"]["gpsCoordinates"] = LOCATION
     if "formattedAddress" in data:
@@ -110,22 +190,62 @@ def anonymize_parking_position(data: dict) -> dict:
 
 
 def anonymize_driving_range(data: dict) -> dict:
+    """Anonymize select parts if the input from the driving_range dict.
+
+    Args:
+        data: input dictionary
+
+    Returns:
+        dict
+    """
     return data
 
 
 def anonymize_trip_statistics(data: dict) -> dict:
+    """Anonymize select parts if the input from the trip_statistics dict.
+
+    Args:
+        data: input dictionary
+
+    Returns:
+        dict
+    """
     return data
 
 
 def anonymize_vehicle_connection_status(data: dict) -> dict:
+    """Anonymize select parts if the input from the vehicle_connection_status dict.
+
+    Args:
+        data: input dictionary
+
+    Returns:
+        dict
+    """
     return data
 
 
 def anonymize_health(data: dict) -> dict:
+    """Anonymize select parts if the input from the health dict.
+
+    Args:
+        data: input dictionary
+
+    Returns:
+        dict
+    """
     return data
 
 
 def anonymize_user(data: dict) -> dict:
+    """Anonymize select parts if the input from the user dict.
+
+    Args:
+        data: input dictionary
+
+    Returns:
+        dict
+    """
     data["email"] = EMAIL
     data["firstName"] = FIRST_NAME
     data["lastName"] = LAST_NAME
@@ -138,16 +258,40 @@ def anonymize_user(data: dict) -> dict:
 
 
 def anonymize_garage_entry(data: dict) -> dict:
+    """Anonymize select parts if the input from the vehicle dict.
+
+    Args:
+        data: input dictionary
+
+    Returns:
+        dict
+    """
     data["vin"] = VIN
     data["name"] = VEHICLE_NAME
     return data
 
 
 def anonymize_garage(data: dict) -> dict:
+    """Anonymize select parts if the input from the garage dict.
+
+    Args:
+        data: input dictionary
+
+    Returns:
+        dict
+    """
     if "vehicles" in data:
         data["vehicles"] = [anonymize_garage_entry(vehicle) for vehicle in data["vehicles"]]
     return data
 
 
 def anonymize_url(url: str) -> str:
+    """Anonymize a VIN found in a URL.
+
+    Args:
+        url: input URL string
+
+    Returns:
+        str: URL string with any VIN anonymized
+    """
     return VIN_REGEX.sub(VIN, url)
