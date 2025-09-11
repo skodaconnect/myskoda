@@ -188,6 +188,7 @@ class RestApi:
                 url += f"&from={to_iso8601(start)}"
             if end:
                 url += f"&to={to_iso8601(end)}"
+
         raw = self.process_json(
             data=await self._make_get_request(url),
             anonymize=False,

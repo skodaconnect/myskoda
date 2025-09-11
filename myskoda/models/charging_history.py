@@ -25,13 +25,13 @@ class ChargingSession(DataClassORJSONMixin):
 
 @dataclass
 class ChargingPeriod(DataClassORJSONMixin):
-    total_charged_in_kwh: float | None = field(
-        default=None, metadata=field_options(alias="totalChargedInKWh")
+    total_charged_in_kwh: float = field(
+        default=0.0, metadata=field_options(alias="totalChargedInKWh")
     )
     sessions: list[ChargingSession] = field(default_factory=list)
 
 
 @dataclass
 class ChargingHistory(BaseResponse):
-    next_cursor: datetime = field(metadata=field_options(alias="nextCursor"))
+    next_cursor: datetime | None = field(default=None, metadata=field_options(alias="nextCursor"))
     periods: list[ChargingPeriod] = field(default_factory=list)

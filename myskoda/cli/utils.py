@@ -2,6 +2,7 @@
 
 import json
 from collections.abc import Awaitable, Callable
+from datetime import datetime
 from enum import StrEnum
 from functools import update_wrapper
 from typing import TYPE_CHECKING, Any
@@ -10,6 +11,7 @@ import asyncclick as click
 import yaml
 from aiohttp.client_exceptions import ClientResponseError
 from asyncclick.core import Context
+from dateutil.parser import isoparse
 from pygments import highlight
 from pygments.formatters import TerminalFormatter
 from pygments.lexers import JsonLexer, YamlLexer
@@ -18,10 +20,15 @@ if TYPE_CHECKING:
     from myskoda import MySkoda
 
 
-async def handle_request(ctx: Context, func: Callable[..., Awaitable], *args: Any) -> None:  # noqa: ANN401
+async def handle_request(
+    ctx: Context,
+    func: Callable[..., Awaitable],
+    *args: Any,  # noqa: ANN401
+    **kwargs: Any,  # noqa: ANN401
+) -> None:
     """Handle API requests and perform error handling."""
     try:
-        result = await func(*args)
+        result = await func(*args, **kwargs)
         if hasattr(result, "to_dict"):
             ctx.obj["print"](result.to_dict())
         else:
@@ -55,3 +62,17 @@ def print_json(data: dict) -> None:
 
 def print_yaml(data: dict) -> None:
     print(highlight(yaml.dump(data), YamlLexer(), TerminalFormatter()))
+
+
+def iso8601_datetime(
+    _: click.Context,
+    param: click.Parameter,
+    value: str | None,
+) -> datetime | None:
+    if value is None:
+        return None
+    try:
+        return isoparse(value)
+    except (ValueError, TypeError) as e:
+        err_str = f"{param.name} must be a valid ISO8601 datetime"
+        raise click.BadParameter(err_str) from e

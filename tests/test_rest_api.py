@@ -348,13 +348,17 @@ async def test_charging_history(
         )
 
         get_charging_history = await myskoda.get_charging_history(target_vin)
-        # Make sure the cursor is set
-        assert to_iso8601(get_charging_history.next_cursor) == charging_history_json["nextCursor"]
+        # Make sure the cursor is correct
+        if get_charging_history.next_cursor:
+            assert (
+                to_iso8601(get_charging_history.next_cursor) == charging_history_json["nextCursor"]
+            )
         # Make sure we dont get more than we asked for
         assert (
             len([session for period in get_charging_history.periods for session in period.sessions])
             < request_limit + 1
         )
+        assert len(get_charging_history.periods) > 0
 
 
 @pytest.fixture(name="spin_statuses")

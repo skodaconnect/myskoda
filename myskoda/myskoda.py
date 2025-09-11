@@ -319,7 +319,7 @@ class MySkoda:
 
         total_sessions = sessions.copy()
 
-        while len(sessions) == request_limit:
+        while (len(sessions) == request_limit) and cursor:
             charging_history = await self.rest_api.get_charging_history(
                 vin, cursor, limit=request_limit
             )
