@@ -34,7 +34,8 @@ cli = [
   "asyncclick ~=8.1",
   "coloredlogs ~=15.0",
   "termcolor ~=3.0",
-  "pygments ~=2.18"
+  "pygments ~=2.18",
+  "python-dateutil ~=2.9"
 ]
 docs = [
   "mkdocs ~=1.6",

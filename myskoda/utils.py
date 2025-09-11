@@ -3,6 +3,7 @@
 import asyncio
 import functools
 from collections.abc import Awaitable, Callable
+from datetime import UTC, datetime
 from typing import ParamSpec
 
 from .const import DEFAULT_DEBOUNCE_WAIT_SECONDS
@@ -57,3 +58,16 @@ def async_debounce(
         return wrapper
 
     return decorator
+
+
+def to_iso8601(dt: datetime) -> str:
+    """Convert a datetime object to an ISO 8601 string.
+
+    - Adds 'Z' if datetime is UTC.
+    - Converts naive datetimes to UTC before formatting.
+    """
+    if dt.tzinfo is None:
+        # Assume naive datetimes are in UTC
+        dt = dt.replace(tzinfo=UTC)
+    dt_utc = dt.astimezone(UTC)
+    return dt_utc.isoformat().replace("+00:00", "Z")
