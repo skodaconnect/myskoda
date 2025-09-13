@@ -66,6 +66,7 @@ from .models.auxiliary_heating import (
     AuxiliaryHeatingTimer,
 )
 from .models.charging import ChargeMode, Charging, ChargingStatus
+from .models.charging_history import ChargingHistory, ChargingSession
 from .models.chargingprofiles import ChargingProfiles
 from .models.common import Vin
 from .models.departure import DepartureInfo, DepartureTimer
@@ -287,6 +288,46 @@ class MySkoda:
     async def get_charging_profiles(self, vin: Vin, anonymize: bool = False) -> ChargingProfiles:
         """Retrieve information related to charging profiles for the specified vehicle."""
         return (await self.rest_api.get_charging_profiles(vin, anonymize=anonymize)).result
+
+    async def get_charging_history(
+        self,
+        vin: Vin,
+        cursor: datetime | None = None,
+        start: datetime | None = None,
+        end: datetime | None = None,
+        limit: int = 50,
+    ) -> ChargingHistory:
+        """Retrieve the charging history of the specified vehicle."""
+        return (await self.rest_api.get_charging_history(vin, cursor, start, end, limit)).result
+
+    async def get_all_charging_sessions(
+        self, vin: Vin, start: datetime | None = None, end: datetime | None = None
+    ) -> list[ChargingSession]:
+        """Retrieve all sessions for a timeperiod."""
+
+        def extract_sessions(history: ChargingHistory) -> list[ChargingSession]:
+            if history.periods:
+                return [session for period in history.periods for session in period.sessions]
+            return []
+
+        request_limit: int = 50
+        charging_history = await self.rest_api.get_charging_history(
+            vin, start, end, limit=request_limit
+        )
+        sessions = extract_sessions(charging_history.result)
+        cursor = charging_history.result.next_cursor
+
+        total_sessions = sessions.copy()
+
+        while (len(sessions) == request_limit) and cursor:
+            charging_history = await self.rest_api.get_charging_history(
+                vin, cursor, limit=request_limit
+            )
+            sessions = extract_sessions(charging_history.result)
+            total_sessions.extend(sessions)
+            cursor = charging_history.result.next_cursor
+
+        return total_sessions
 
     async def get_status(self, vin: Vin, anonymize: bool = False) -> Status:
         """Retrieve the current status for the specified vehicle."""

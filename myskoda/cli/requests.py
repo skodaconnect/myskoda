@@ -1,11 +1,12 @@
 """Commands dealing with reading data from the Rest API."""
 
-from typing import TYPE_CHECKING
+from datetime import datetime
+from typing import TYPE_CHECKING, Any
 
 import asyncclick as click
 from asyncclick.core import Context
 
-from myskoda.cli.utils import handle_request
+from myskoda.cli.utils import handle_request, iso8601_datetime
 
 if TYPE_CHECKING:
     from myskoda.myskoda import MySkoda
@@ -97,6 +98,61 @@ async def charging(ctx: Context, vin: str, anonymize: bool) -> None:
 async def charging_profiles(ctx: Context, vin: str, anonymize: bool) -> None:
     """Print the vehicle's charging profiles."""
     await handle_request(ctx, ctx.obj["myskoda"].get_charging_profiles, vin, anonymize)
+
+
+@click.command()
+@click.argument("vin")
+@click.option("--start", "start", help="ISO8601 compatible start date", callback=iso8601_datetime)
+@click.option("--end", "end", help="ISO8601 compatible end date", callback=iso8601_datetime)
+@click.option(
+    "--cursor",
+    "cursor",
+    help="ISO8601 compatible cursor date. When this is set, --start and --end are ignored",
+    callback=iso8601_datetime,
+)
+@click.option(
+    "--limit",
+    "limit",
+    help="Maximum amount of sessions in the result",
+    type=click.IntRange(1, 99),
+    default=50,
+)
+@click.pass_context
+async def charging_history(  # noqa: PLR0913
+    ctx: Context,
+    vin: str,
+    start: datetime | None = None,
+    end: datetime | None = None,
+    cursor: datetime | None = None,
+    limit: int = 50,
+) -> None:
+    """Print the vehicle's charging history."""
+
+    if cursor is None and (start is None or end is None):
+        err_msg = "Either --cursor must be set, or both --start and --end must be provided."
+        raise click.BadParameter(err_msg)
+
+    kwargs: dict[str, Any] = {
+        k: v
+        for k, v in (
+            ("vin", vin),
+            ("start", start),
+            ("end", end),
+            ("cursor", cursor),
+            ("limit", limit),
+        )
+        if v is not None
+    }
+
+    await handle_request(ctx, ctx.obj["myskoda"].get_charging_history, **kwargs)
+
+
+@click.command()
+@click.argument("vin")
+@click.pass_context
+async def all_charging_sessions(ctx: Context, vin: str) -> None:
+    """Print all vehicles charging sessions."""
+    await handle_request(ctx, ctx.obj["myskoda"].get_all_charging_sessions, vin)
 
 
 @click.command()

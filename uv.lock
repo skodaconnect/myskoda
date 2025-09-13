@@ -509,6 +509,7 @@ cli = [
     { name = "asyncclick" },
     { name = "coloredlogs" },
     { name = "pygments" },
+    { name = "python-dateutil" },
     { name = "termcolor" },
 ]
 docs = [
@@ -543,6 +544,7 @@ requires-dist = [
     { name = "mkdocstrings", extras = ["python"], marker = "extra == 'docs'", specifier = ">=0.26.1,<0.30.0" },
     { name = "pygments", marker = "extra == 'cli'", specifier = "~=2.18" },
     { name = "pyjwt", specifier = "~=2.10" },
+    { name = "python-dateutil", marker = "extra == 'cli'", specifier = "~=2.9" },
     { name = "pyyaml", specifier = "~=6.0" },
     { name = "termcolor", marker = "extra == 'cli'", specifier = "~=3.0" },
 ]
