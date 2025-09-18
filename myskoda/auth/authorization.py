@@ -124,6 +124,33 @@ class Authorization(ABC):
         if self.idk_session is None:
             raise AuthorizationFailedError
 
+    async def authorize_refresh_token(self, refresh_token: str) -> None:
+        """Authorize by exchanging an existing OpenID refresh token.
+
+        This bypasses the username/password flow and initializes `idk_session`
+        by calling the refresh endpoint with the provided refresh token.
+        """
+        if not self.client_id or not self.redirect_uri or not self.base_url:
+            raise BrandError
+
+        if self.is_refresh_token_expired(refresh_token):
+            log_str = "Refresh token has expired. Please authorize using username/password."
+            _LOGGER.error(log_str)
+            raise TokenExpiredError
+
+        async with self.session.post(
+            f"{self.base_url}/api/v1/authentication/refresh-token?tokenType=CONNECT",
+            json={"token": refresh_token},
+        ) as response:
+            if not response.ok:
+                _LOGGER.error("Refresh token authorization failed with status %s", response.status)
+                raise AuthorizationFailedError
+            try:
+                self.idk_session = IDKSession.from_json(await response.text())
+            except Exception as ex:
+                _LOGGER.exception("Failed to parse tokens from refresh endpoint.")
+                raise AuthorizationFailedError from ex
+
     async def _initial_oidc_authorize(self, verifier: str) -> CSRFState:
         """First step of the login process.
 
@@ -292,6 +319,19 @@ class Authorization(ABC):
         expiry = datetime.fromtimestamp(float(meta.get("exp")), tz=UTC)
         return datetime.now(tz=UTC) + timedelta(minutes=10) > expiry
 
+    def is_refresh_token_expired(self, refresh_token: str | None = None) -> bool:
+        """Check whether the refresh token is expired."""
+        if refresh_token:
+            meta = jwt.decode(refresh_token, options={"verify_signature": False})
+
+        elif not self.idk_session:
+            raise NotAuthorizedError
+        else:
+            meta = jwt.decode(self.idk_session.refresh_token, options={"verify_signature": False})
+
+        expiry = datetime.fromtimestamp(float(meta.get("exp")), tz=UTC)
+        return datetime.now(tz=UTC) + timedelta(minutes=1) > expiry
+
     async def _perform_refresh_token(self) -> bool:
         if not self.client_id or not self.redirect_uri or not self.base_url:
             raise BrandError
@@ -394,3 +434,7 @@ class MarketingConsentError(Exception):
 
 class BrandError(Exception):
     """No valid brand configuration found."""
+
+
+class TokenExpiredError(Exception):
+    """Presented token has expired."""
