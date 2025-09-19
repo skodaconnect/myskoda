@@ -84,8 +84,9 @@ if sys_platform.lower().startswith("win") and sys_version_info >= (3, 8):
 
 @click.group()
 @click.version_option()
-@click.option("username", "--user", help="Username used for login.", required=True)
-@click.option("password", "--password", help="Password used for login.", required=True)
+@click.option("username", "--user", help="Username used for login.")
+@click.option("password", "--password", help="Password used for login.")
+@click.option("refresh_token", "--refresh-token", help="OpenID refresh token to authenticate.")
 @click.option("verbose", "--verbose", help="Enable verbose logging.", is_flag=True)
 @click.option(
     "output_format",
@@ -99,8 +100,9 @@ if sys_platform.lower().startswith("win") and sys_version_info >= (3, 8):
 @click.pass_context
 async def cli(  # noqa: PLR0913
     ctx: Context,
-    username: str,
-    password: str,
+    username: str | None,
+    password: str | None,
+    refresh_token: str | None,
     verbose: bool,
     output_format: Format,
     trace: bool,
@@ -111,6 +113,7 @@ async def cli(  # noqa: PLR0913
     ctx.ensure_object(dict)
     ctx.obj["username"] = username
     ctx.obj["password"] = password
+    ctx.obj["refresh_token"] = refresh_token
     if output_format == Format.JSON:
         ctx.obj["print"] = print_json
     elif output_format == Format.YAML:
@@ -122,9 +125,18 @@ async def cli(  # noqa: PLR0913
     if trace:
         trace_configs.append(TRACE_CONFIG)
 
+    auth_usage_str = "Provide --refresh-token or both --user and --password."
+    if not refresh_token and (not username or not password):
+        raise click.UsageError(auth_usage_str)
+
     session = ClientSession(trace_configs=trace_configs)
     myskoda = MySkoda(session, mqtt_enabled=False)
-    await myskoda.connect(username, password)
+    if refresh_token:
+        await myskoda.connect_with_refresh_token(refresh_token)
+    elif username and password:
+        await myskoda.connect(username, password)
+    else:
+        raise click.UsageError(auth_usage_str)
 
     ctx.obj["myskoda"] = myskoda
     ctx.obj["session"] = session
