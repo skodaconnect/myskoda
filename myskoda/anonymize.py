@@ -107,7 +107,7 @@ def anonymize_chargingprofiles(data: dict) -> dict:
     Returns:
         dict
     """
-    if len(data["chargingProfiles"] > 1):
+    if len(data["chargingProfiles"]) > 1:
         for profile in data["chargingProfiles"]:
             profile["name"].update(PROFILE_NAME)
             if "location" in profile:
