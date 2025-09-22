@@ -476,6 +476,7 @@ reports:
     charging_profiles:
     - id: 2
       name: Julianastraat
+      location: null
       preferred_charging_times:
       - enabled: false
         end_time: 06:00:00
