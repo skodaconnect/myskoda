@@ -8,7 +8,7 @@ from mashumaro.mixins.orjson import DataClassORJSONMixin
 
 from .air_conditioning import TimerMode
 from .charging import MaxChargeCurrent, PlugUnlockMode
-from .common import BaseResponse, Weekday
+from .common import BaseResponse, Coordinates, Weekday
 
 
 @dataclass
@@ -70,6 +70,7 @@ class ChargingProfile(DataClassORJSONMixin):
         metadata=field_options(alias="preferredChargingTimes")
     )
     timers: list[ChargingTimers]
+    location: Coordinates | None = field(default=None)
 
 
 @dataclass
