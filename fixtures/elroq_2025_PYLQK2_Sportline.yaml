@@ -126,6 +126,8 @@ reports:
         statuses: []
       - id: CHARGING_MEB
         statuses: []
+      - id: CHARGING_PROFILES_CREATE
+        statuses: []
       - id: CUBIC
         statuses: []
       - id: DESTINATIONS
@@ -135,6 +137,8 @@ reports:
       - id: E_PRIVACY
         statuses: []
       - id: EV_ROUTE_PLANNING
+        statuses: []
+      - id: EV_SERVICE_BOOKING
         statuses: []
       - id: EXTENDED_CHARGING_SETTINGS
         statuses: []
@@ -807,6 +811,10 @@ vehicles:
   - id: VEHICLE_WAKE_UP_TRIGGER
     statuses: []
   - id: WINDOW_HEATING
+    statuses: []
+  - id: CHARGING_PROFILES_CREATE
+    statuses: []
+  - id: EV_SERVICE_BOOKING
     statuses: []
   device_platform: WCAR
   id: 0
