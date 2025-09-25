@@ -47,6 +47,7 @@ class ChargingState(CaseInsensitiveStrEnum):
     CONNECT_CABLE = "CONNECT_CABLE"
     CONSERVING = "CONSERVING"
     CHARGING = "CHARGING"
+    ERROR = "ERROR"
 
 
 class ChargeType(StrEnum):
