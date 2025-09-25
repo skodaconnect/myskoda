@@ -96,6 +96,11 @@ class VehicleEventConnectionOnline(VehicleEvent):
 
 
 @dataclass(frozen=True)
+class VehicleEventConnectionOffline(VehicleEvent):
+    name = VehicleEventName.VEHICLE_CONNECTION_OFFLINE
+
+
+@dataclass(frozen=True)
 class VehicleEventIgnitionStatusChanged(VehicleEvent):
     name = VehicleEventName.VEHICLE_IGNITION_STATUS_CHANGED
     data: VehicleEventVehicleIgnitionStatusData
