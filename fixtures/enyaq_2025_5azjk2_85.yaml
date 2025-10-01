@@ -442,7 +442,7 @@ reports:
   vehicle_id: 0
 - endpoint: charging_profiles
   error: null
-  raw: '{"chargingProfiles": [{"id": 1, "name": "Thuis", "settings": {"maxChargingCurrent":
+  raw: '{"chargingProfiles": [{"id": 1, "name": "Example Profile", "settings": {"maxChargingCurrent":
     "MAXIMUM", "minBatteryStateOfCharge": {"minimumBatteryStateOfChargeInPercent":
     0}, "targetStateOfChargeInPercent": 80, "autoUnlockPlugWhenCharged": "PERMANENT"},
     "preferredChargingTimes": [{"id": 1, "enabled": false, "startTime": "22:00", "endTime":
@@ -454,13 +454,13 @@ reports:
     "09:00", "type": "RECURRING", "recurringOn": ["SATURDAY", "SUNDAY"]}, {"id": 3,
     "enabled": false, "time": "07:00", "type": "RECURRING", "recurringOn": ["MONDAY",
     "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY", "SATURDAY", "SUNDAY"]}]}], "currentVehiclePositionProfile":
-    {"id": 1, "name": "Thuis", "targetStateOfChargeInPercent": 80}, "carCapturedTimestamp":
+    {"id": 1, "name": "Example Profile", "targetStateOfChargeInPercent": 80}, "carCapturedTimestamp":
     "2025-04-25T08:46:08.061Z"}'
   result:
     car_captured_timestamp: '2025-04-25T08:46:08.061000+00:00'
     charging_profiles:
     - id: 1
-      name: Thuis
+      name: Example Profile
       location: null
       preferred_charging_times:
       - enabled: false
@@ -517,7 +517,7 @@ reports:
         type: RECURRING
     current_vehicle_position_profile:
       id: 1
-      name: Thuis
+      name: Example Profile
       next_charging_time: null
       target_state_of_charge_in_percent: 80
     timestamp: '2025-04-25T10:39:46.210998+00:00'

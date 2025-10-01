@@ -112,6 +112,8 @@ def anonymize_chargingprofiles(data: dict) -> dict:
             profile["name"] = PROFILE_NAME
             if "location" in profile:
                 profile["location"] = LOCATION
+    if "currentVehiclePositionProfile" in data:
+        data["currentVehiclePositionProfile"]["name"] = PROFILE_NAME
     return data
 
 
