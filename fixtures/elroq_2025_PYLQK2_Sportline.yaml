@@ -485,8 +485,8 @@ reports:
   vehicle_id: 0
 - endpoint: charging_profiles
   error: null
-  raw: '{"chargingProfiles": [{"id": 1, "name": "Home", "location": {"latitude":
-    51.493592, "longitude": 0.012345}, "settings": {"maxChargingCurrent": "REDUCED",
+  raw: '{"chargingProfiles": [{"id": 1, "name": "Example Profile", "location": {"latitude":
+    53.470636, "longitude": 9.689872}, "settings": {"maxChargingCurrent": "REDUCED",
     "minBatteryStateOfCharge": {"minimumBatteryStateOfChargeInPercent": 0}, "targetStateOfChargeInPercent":
     80, "autoUnlockPlugWhenCharged": "OFF"}, "preferredChargingTimes": [{"id": 1,
     "enabled": false, "startTime": "22:00", "endTime": "06:00"}, {"id": 2, "enabled":
@@ -499,15 +499,15 @@ reports:
     {"id": 3, "enabled": false, "startClimatisation": false, "time": "07:00", "type":
     "RECURRING", "recurringOn": ["MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY",
     "SATURDAY", "SUNDAY"]}]}], "currentVehiclePositionProfile": {"id": 1, "name":
-    "Home", "targetStateOfChargeInPercent": 80}, "carCapturedTimestamp": "2025-09-20T15:50:38.403Z"}'
+    "Example Profile", "targetStateOfChargeInPercent": 80}, "carCapturedTimestamp": "2025-09-20T15:50:38.403Z"}'
   result:
     car_captured_timestamp: '2025-09-20T15:50:38.403000+00:00'
     charging_profiles:
     - id: 1
-      name: Home
+      name: Example Profile
       location:
-        latitude: 51.493592
-        longitude: 0.012345
+        latitude: 53.470636
+        longitude: 9.689872
       preferred_charging_times:
       - enabled: false
         end_time: 06:00:00
@@ -563,7 +563,7 @@ reports:
         type: RECURRING
     current_vehicle_position_profile:
       id: 1
-      name: Home
+      name: Example Profile
       next_charging_time: null
       target_state_of_charge_in_percent: 80
     timestamp: '2025-09-21T14:16:25.140899+00:00'

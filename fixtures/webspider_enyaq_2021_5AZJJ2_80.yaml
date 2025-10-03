@@ -459,7 +459,7 @@ reports:
   vehicle_id: 0
 - endpoint: charging_profiles
   error: null
-  raw: '{"chargingProfiles": [{"id": 2, "name": "Julianastraat", "settings": {"maxChargingCurrent":
+  raw: '{"chargingProfiles": [{"id": 2, "name": "Example Profile", "settings": {"maxChargingCurrent":
     "MAXIMUM", "minBatteryStateOfCharge": {"minimumBatteryStateOfChargeInPercent":
     0}, "targetStateOfChargeInPercent": 80, "autoUnlockPlugWhenCharged": "OFF"}, "preferredChargingTimes":
     [{"id": 5, "enabled": false, "startTime": "22:00", "endTime": "06:00"}, {"id":
@@ -475,7 +475,7 @@ reports:
     car_captured_timestamp: '2025-06-02T07:26:13.529000+00:00'
     charging_profiles:
     - id: 2
-      name: Julianastraat
+      name: Example Profile
       location: null
       preferred_charging_times:
       - enabled: false
