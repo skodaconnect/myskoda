@@ -27,6 +27,7 @@ from myskoda.models.event import (
     ServiceEventName,
     VehicleEventAwake,
     VehicleEventConnectionOnline,
+    VehicleEventConnectionOffline,
     VehicleEventData,
     VehicleEventIgnitionStatusChanged,
     VehicleEventName,
@@ -277,6 +278,26 @@ async def test_subscribe_event(
                     "traceId": trace_id,
                     "timestamp": timestamp_str,
                     "producer": "SKODA_MHUB",
+                    "name": "vehicle-connection-offline",
+                    "data": {
+                        "userId": USER_ID,
+                        "vin": VIN,
+                    },
+                }
+            ),
+            qos=1,
+            retain=False,
+            mid=1,
+            properties=None,
+        ),
+        aiomqtt.Message(
+            topic=f"{base_topic}/vehicle-event/vehicle-connection-status-update",
+            payload=json.dumps(
+                {
+                    "version": 1,
+                    "traceId": trace_id,
+                    "timestamp": timestamp_str,
+                    "producer": "SKODA_MHUB",
                     "name": "vehicle-awake",
                     "data": {
                         "userId": USER_ID,
@@ -469,6 +490,16 @@ async def test_subscribe_event(
             timestamp=timestamp,
             producer="SKODA_MHUB",
             name=VehicleEventName.VEHICLE_CONNECTION_ONLINE,
+            data=VehicleEventData(user_id=USER_ID, vin=VIN),
+        ),
+        VehicleEventConnectionOffline(
+            vin=VIN,
+            event_type=EventType.VEHICLE_EVENT,
+            version=1,
+            trace_id=trace_id,
+            timestamp=timestamp,
+            producer="SKODA_MHUB",
+            name=VehicleEventName.VEHICLE_CONNECTION_OFFLINE,
             data=VehicleEventData(user_id=USER_ID, vin=VIN),
         ),
         VehicleEventAwake(
