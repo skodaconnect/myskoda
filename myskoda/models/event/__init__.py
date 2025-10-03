@@ -25,6 +25,7 @@ from .service import (
 from .vehicle import (
     VehicleEventAwake,
     VehicleEventConnectionOnline,
+    VehicleEventConnectionOffline,
     VehicleEventData,
     VehicleEventIgnitionStatusChanged,
     VehicleEventName,
@@ -58,6 +59,7 @@ __all__ = [
     "ServiceEventOdometer",
     "VehicleEventAwake",
     "VehicleEventConnectionOnline",
+    "VehicleEventConnectionOffline",
     "VehicleEventData",
     "VehicleEventIgnitionStatusChanged",
     "VehicleEventName",
