@@ -10,15 +10,32 @@ We use [**uv**](https://github.com/astral-sh/uv) as our preferred Python package
 
 ### Step 1: Install `uv`
 
+**MacOS/Linux**
+
 ```bash
 curl -LsSf https://astral.sh/uv/install.sh | sh
 ```
 
+**Windows**
+
+```powershell
+powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
+```
+
 ### Step 2: Create and activate a virtual environment
+
+**MacOS/Linux**
 
 ```bash
 uv venv
 source .venv/bin/activate
+```
+
+**Windows**
+
+```bash
+uv venv
+source .venv\Scripts\activate
 ```
 
 ### Step 3: Install dependencies
