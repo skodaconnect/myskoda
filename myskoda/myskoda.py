@@ -162,7 +162,7 @@ class MySkoda:
         mqtt_enabled: bool = True,
     ) -> None:
         self._callbacks = defaultdict(list)
-        self._vehicles: dict[Vin, Vehicle] = {}
+        self._vehicles = {}
         self.session = session
         self.authorization = MySkodaAuthorization(session)
         self.rest_api = RestApi(self.session, self.authorization)
@@ -188,7 +188,18 @@ class MySkoda:
             user = await self.get_user()
             vehicles = await self.list_vehicle_vins()
             await self.mqtt.connect(user.id, vehicles)
-        _LOGGER.debug("MySkoda ready.")
+        _LOGGER.info("MySkoda connection ready.")
+
+    async def connect_with_refresh_token(self, refresh_token: str) -> None:
+        """Authenticate using an existing OpenID refresh token and connect MQTT."""
+        await self.authorization.authorize_refresh_token(refresh_token)
+        _LOGGER.debug("IDK Authorization via refresh token was successful.")
+
+        if self.mqtt:
+            user = await self.get_user()
+            vehicles = await self.list_vehicle_vins()
+            await self.mqtt.connect(user.id, vehicles)
+        _LOGGER.info("MySkoda connection ready.")
 
     async def disconnect(self) -> None:
         """Disconnect from the MQTT broker."""
