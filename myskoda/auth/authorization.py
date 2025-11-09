@@ -127,10 +127,11 @@ class Authorization(ABC):
             _LOGGER.error(log_str)
             raise TokenExpiredError
 
-        async with self.session.post(
-            f"{self.base_url}/api/v1/authentication/refresh-token?tokenType=CONNECT",
-            json={"token": refresh_token},
-        ) as response:
+        async with refresh_token_lock:
+            response = await self.session.post(
+                f"{self.base_url}/api/v1/authentication/refresh-token?tokenType=CONNECT",
+                json={"token": refresh_token},
+            )
             if not response.ok:
                 _LOGGER.error("Refresh token authorization failed with status %s", response.status)
                 raise AuthorizationFailedError
