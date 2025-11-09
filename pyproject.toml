@@ -3,9 +3,9 @@ name = "myskoda"
 dynamic = ["version"]
 description = "Library for interaction with the MySkoda APIs."
 authors = [
-  {name = "Frederick Gnodtke", email = "frederick@gnodtke.net"},
-  {name = "WebSpider", email = "bacardicoke@gmail.com"},
-  {name = "Fabrice Devaux", email = "fabrice.devaux@gmail.com"}
+  { name = "Frederick Gnodtke", email = "frederick@gnodtke.net" },
+  { name = "WebSpider", email = "bacardicoke@gmail.com" },
+  { name = "Fabrice Devaux", email = "fabrice.devaux@gmail.com" },
 ]
 readme = "README.md"
 requires-python = ">=3.13.0"
@@ -15,7 +15,7 @@ dependencies = [
   "asyncio ~=3.4",
   "mashumaro[orjson] ~=3.13",
   "pyjwt ~=2.10",
-  "pyyaml ~=6.0"
+  "pyyaml ~=6.0",
 ]
 
 [dependency-groups]
@@ -26,7 +26,7 @@ dev = [
   "pytest-asyncio ~=0.0",
   "pytest-cov >=5,<7",
   "ruff >=0.6.4,<0.12.0",
-  "setuptools >=75.2,<77.0"
+  "setuptools >=75.2,<77.0",
 ]
 
 [project.optional-dependencies]
@@ -35,13 +35,13 @@ cli = [
   "coloredlogs ~=15.0",
   "termcolor ~=3.0",
   "pygments ~=2.18",
-  "python-dateutil ~=2.9"
+  "python-dateutil ~=2.9",
 ]
 docs = [
   "mkdocs ~=1.6",
   "mkdocstrings[python] >=0.26.1,<0.30.0",
   "mkdocs-gen-files ~=0.5",
-  "mkdocs-literate-nav ~=0.6"
+  "mkdocs-literate-nav ~=0.6",
 ]
 
 [build-system]
@@ -61,18 +61,18 @@ target-version = "py313"
 [tool.ruff.lint]
 ignore = [
   "COM812", # missing-trailing-comma
-  "D101", # undocumented-public-class
-  "D107", # undocumented-public-init
-  "D203", # one-blank-line-before-class
-  "D211", # blank-line-before-class
-  "D213", # multi-line-summary-second-line
+  "D101",   # undocumented-public-class
+  "D107",   # undocumented-public-init
+  "D203",   # one-blank-line-before-class
+  "D211",   # blank-line-before-class
+  "D213",   # multi-line-summary-second-line
   "FBT001", # boolean-type-hint-positional-argument
   "FBT002", # boolean-default-value-positional-argument
   "FIX002", # line-contains-todo
   "ISC001", # single-line-implicit-string-concatenation
-  "S101", # assert (used in tests)
-  "T201", # print
-  "TD003", # missing-todo-link
+  "S101",   # assert (used in tests)
+  "T201",   # print
+  "TD003",  # missing-todo-link
 ]
 select = ["ALL"]
 
