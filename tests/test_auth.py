@@ -48,7 +48,7 @@ async def test_get_info(responses: aioresponses) -> None:
         return nonce
 
     responses.get(
-        url="https://identity.vwgroup.io/oidc/v1/authorize?client_id=7f045eee-7003-4379-9968-9355ed2adb06%2540apps_vw-dilab_com&code_challenge=GB77VCZkQqwqOPgKuV1f4TxM4_OxLWfBxprenr3kfE0&code_challenge_method=s256&nonce=abcdefghabcdefgh&prompt=login&redirect_uri=myskoda%253A%252F%252Fredirect%252Flogin%252F&response_type=code+id_token&scope=address+badge+birthdate+cars+driversLicense+dealers+email+mileage+mbb+nationalIdentifier+openid+phone+profession+profile+vin",
+        url="https://identity.vwgroup.io/oidc/v1/authorize?client_id=7f045eee-7003-4379-9968-9355ed2adb06%2540apps_vw-dilab_com&code_challenge=GB77VCZkQqwqOPgKuV1f4TxM4_OxLWfBxprenr3kfE0&code_challenge_method=s256&nonce=abcdefghabcdefgh&prompt=login&redirect_uri=myskoda%253A%252F%252Fredirect%252Flogin%252F&response_type=code&scope=address+badge+birthdate+cars+driversLicense+dealers+email+mileage+mbb+nationalIdentifier+openid+phone+profession+profile+vin",
         status=200,
         body=fixture("auth/signin.html"),
     )
@@ -60,7 +60,6 @@ async def test_get_info(responses: aioresponses) -> None:
     )
 
     jwt_login = "eyJ0eXAiOiI0ODEyODgzZi05Y2FiLTQwMWMtYTI5OC0wZmEyMTA5Y2ViY2EiLCJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJiOGJjMTI2Yy1lZTM2LTQwMmItODcyMy0yYzFjM2RmZjhkZWMiLCJhdWQiOiI3ZjA0NWVlZS03MDAzLTQzNzktOTk2OC05MzU1ZWQyYWRiMDZAYXBwc192dy1kaWxhYl9jb20iLCJhY3IiOiJodHRwczovL2lkZW50aXR5LnZ3Z3JvdXAuaW8vYXNzdXJhbmNlL2xvYS0yIiwic2NwIjoiYWRkcmVzcyBiYWRnZSBiaXJ0aGRhdGUgY2FycyBkcml2ZXJzTGljZW5zZSBkZWFsZXJzIGVtYWlsIG1pbGVhZ2UgbWJiIG5hdGlvbmFsSWRlbnRpZmllciBvcGVuaWQgcGhvbmUgcHJvZmVzc2lvbiBwcm9maWxlIHZpbiIsImFhdCI6ImlkZW50aXR5a2l0IiwiaXNzIjoiaHR0cHM6Ly9pZGVudGl0eS52d2dyb3VwLmlvIiwianR0IjoiYXV0aG9yaXphdGlvbl9jb2RlIiwiZXhwIjoxNzI4NTc2NDEwLCJpYXQiOjE3Mjg1NzYxMTAsIm5vbmNlIjoiYXNkZmdoYXNkZmdoIiwianRpIjoiOTdkODRiN2YtYzRhOC00NDcyLTllZjEtMzkyZWU4MTkwMzUwIn0.RllwxrkQTm8Z-2tIA4fGiBEP-b77QHLWzHAROhYBKVRne4s-aQdWtHFadIp0ikX6yyExeYYOVzcKBZf5FFnlaFjZB7hf5fVhfcp_TIbgs0Do_4cVz8wEFgYLFtBImeg9QhMfv11kYFEwkDBAtCeVsc6wdefIhzZrdszygW83wHN2hYuuyQYK0TWBC9yDsyQmEUuzqMkRgg0O_FdVYavJlL-orydiXn1DZiyCBfB4OHOQmbiCQr5CqMpgXV6dkE2WYi0w9NnxhtkWe-RXNpO4QzJkuMIJ1hOILIto5LM50GvO61M9hAcbp8fdx_WrTnZ1ENlsLBCojOHrvSdY4RMelA"  # noqa: E501
-    jwt_id = "eyJ0eXAiOiI0ODEyODgzZi05Y2FiLTQwMWMtYTI5OC0wZmEyMTA5Y2ViY2EiLCJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJiOGJjMTI2Yy1lZTM2LTQwMmItODcyMy0yYzFjM2RmZjhkZWMiLCJlbWFpbF92ZXJpZmllZCI6dHJ1ZSwiY29yIjoiREUiLCJpc3MiOiJodHRwczovL2lkZW50aXR5LnZ3Z3JvdXAuaW8iLCJqdHQiOiJpZF90b2tlbiIsInR5cGUiOiJpZGVudGl0eSIsIm5vbmNlIjoiYXNkZmdoYXNkZmdoIiwibGVlIjpbIlNLT0RBIl0sImF1ZCI6WyI3ZjA0NWVlZS03MDAzLTQzNzktOTk2OC05MzU1ZWQyYWRiMDZAYXBwc192dy1kaWxhYl9jb20iLCJodHRwczovL2FwaS52YXMuZXUuZHAxNS52d2ctY29ubmVjdC5jb20iLCJodHRwczovL2FwaS52YXMuZXUud2NhcmRwLmlvIiwiaHR0cHM6Ly9wcm9kLmVjZS5nYXV0aC12d2FjLmNvbSIsIlZXR01CQjAxQ05BUFAxIiwiVldHTUJCMDFERUxJVjEiXSwiYWNyIjoiaHR0cHM6Ly9pZGVudGl0eS52d2dyb3VwLmlvL2Fzc3VyYW5jZS9sb2EtMiIsImNfaGFzaCI6Ikt4OUhabno3NWNuaUZnWU44WGJ6aksiLCJ1cGRhdGVkX2F0IjoxNzE2OTcyNjY2NDg2LCJhYXQiOiJpZGVudGl0eWtpdCIsImV4cCI6MTcyODU3OTcxMCwiaWF0IjoxNzI4NTc2MTEwLCJqdGkiOiI5N2Q4NGI3Zi1jNGE4LTQ0NzItOWVmMS0zOTJlZTgxOTAzNTAiLCJlbWFpbCI6InVzZXJAZXhhbXBsZS5jb20ifQ.GH9KryRU3J-GSvQ2uC7_yUyddrIDpwpouGnVDdzT-0Q4aEUloSspo75odS0i8ASTB64jaBYtSBardVdVACjzc2c_0Wvt5guNDif70nmi9RIoXQDdBSHux1B1AsBzS42BAqUkxTxnJNVOCGNe4l8MRFIUPgn-5Vxl56qww5t-BIfjnquhqOxZcSEk0l6zJabbdIZ5S1m8fa9RLdhXXu-Bd0cZuagv4R8vFn1k5RQPb-t6ZPNrqdS-9nixPtf0BJ2Ds6LVgWxBDq4vvVevuvOHBddTY6IFWN2AiPTQW7j8eELRhx_eB3iAA45m6XvGhY4WK0dmZUROWZN7xCPcX99wzA"  # noqa: E501
 
     redirect_loop(
         responses,
@@ -69,7 +68,7 @@ async def test_get_info(responses: aioresponses) -> None:
             f"{BASE_URL_IDENT}/oidc/v1/oauth/sso?HMAC={hmac}&clientId=7f045eee-7003-4379-9968-9355ed2adb06%2540apps_vw-dilab_com&relayState={relay_state}&userId={user_id}",
             f"{BASE_URL_IDENT}/signin-service/v1/consent/users/{user_id}/{CLIENT_ID}?scopes=address%20badge%20birthdate%20cars%20driversLicense%20dealers%20email%20mileage%20mbb%20nationalIdentifier%20openid%20phone%20profession%20profile%20vin&relayState={relay_state}&callback={BASE_URL_IDENT}/oidc/v1/oauth/client/callback&hmac={hmac}",
             f"{BASE_URL_IDENT}/oidc/v1/oauth/client/callback/success?user_id={user_id}&client_id={CLIENT_ID}&scopes=address%20badge%20birthdate%20cars%20driversLicense%20dealers%20email%20mileage%20mbb%20nationalIdentifier%20openid%20phone%20profession%20profile%20vin&consentedScopes=address%20badge%20birthdate%20cars%20driversLicense%20dealers%20email%20mileage%20mbb%20nationalIdentifier%20openid%20phone%20profession%20profile%20vin&relayState={relay_state}&hmac={hmac}",
-            f"myskoda://redirect/login/#code={jwt_login}&token_type=bearer&id_token={jwt_id}",
+            f"myskoda://redirect/login/?code={jwt_login}",
         ],
     )
 

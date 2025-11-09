@@ -5,7 +5,6 @@ from .auth.authorization import (
     Authorization,
     AuthorizationError,
     AuthorizationFailedError,
-    IDKAuthorizationCode,
     IDKSession,
 )
 from .models import (
@@ -28,7 +27,6 @@ __all__ = [
     "Authorization",
     "AuthorizationError",
     "AuthorizationFailedError",
-    "IDKAuthorizationCode",
     "IDKSession",
     "MySkoda",
     "MySkodaMqttClient",
