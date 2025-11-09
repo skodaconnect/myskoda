@@ -17,13 +17,13 @@ def on_event(event: Event):
 myskoda.subscribe_event(on_event)
 ```
 
-The suggested approach is to check the event's `type` field to see what it contains. If you're using mypy or pyright, this will also narrow down the event's type and allow you to access specific fields:
+The suggested approach is to check the event's `event_type` field to see what it contains. If you're using mypy or pyright, this will also narrow down the event's type and allow you to access specific fields:
 
 ```python
 from myskoda.event import Event, EventType, ServiceEventTopic
 
 def on_event(event: Event):
-    if event.type == EventType.SERVICE_EVENT:
+    if event.event_type == EventType.SERVICE_EVENT:
         print("Received service event.")
         if event.topic == ServiceEventTopic.CHARGING:
             print(f"Battery is {event.event.data.soc}% charged.")

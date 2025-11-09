@@ -45,7 +45,7 @@ def pytest_generate_tests(metafunc: pytest.Metafunc) -> None:
     parameters = []
 
     for file in FIXTURES_DIR.glob("**/*.yaml"):
-        text = file.read_text()
+        text = file.read_text(encoding="utf-8")
         fixture = Fixture.from_yaml(text)
         if fixture.reports is None:
             continue

@@ -8,6 +8,7 @@ from asyncio import Lock
 from collections.abc import Callable
 from dataclasses import dataclass, field
 from datetime import UTC, datetime, timedelta
+from urllib.parse import parse_qsl, urlparse
 
 import jwt
 from aiohttp import ClientSession, FormData, InvalidUrlClientError
@@ -19,18 +20,6 @@ from myskoda.auth.utils import generate_nonce
 from myskoda.const import BASE_URL_IDENT, MAX_RETRIES
 
 _LOGGER = logging.getLogger(__name__)
-
-
-@dataclass
-class IDKAuthorizationCode(DataClassORJSONMixin):
-    """One-time authorization code that can be obtained by logging in.
-
-    This authorization code can later be exchanged for a set of JWT tokens.
-    """
-
-    code: str
-    token_type: str
-    id_token: str
 
 
 refresh_token_lock = Lock()
@@ -176,7 +165,7 @@ class Authorization(ABC):
             "client_id": self.client_id,
             "nonce": self.generate_nonce(),
             "redirect_uri": self.redirect_uri,
-            "response_type": "code id_token",
+            "response_type": "code",
             # OpenID scopes. Can be found here: https://identity.vwgroup.io/.well-known/openid-configuration
             "scope": "address badge birthdate cars driversLicense dealers email mileage mbb nationalIdentifier openid phone profession profile vin",  # noqa: E501
             "code_challenge": challenge,
@@ -210,7 +199,7 @@ class Authorization(ABC):
         ) as response:
             return self._extract_csrf(await response.text())
 
-    async def _enter_password(self, csrf: CSRFState) -> IDKAuthorizationCode:
+    async def _enter_password(self, csrf: CSRFState) -> str:
         """Third step in the login process.
 
         Post both the email address and the password to the backend.
@@ -231,7 +220,7 @@ class Authorization(ABC):
         # The last redirect will redirect back to the `MySkoda` app in Android,
         # using the `myskoda://` URL prefix.
         # The following loop will follow all redirects until the last redirect to `myskoda://` is
-        # encountered. This last URL will contain the token.
+        # encountered. This last URL will contain the authentication code token.
         try:
             async with self.session.post(
                 f"{BASE_URL_IDENT}/signin-service/v1/{self.client_id}/login/authenticate",
@@ -247,21 +236,18 @@ class Authorization(ABC):
                         raise MarketingConsentError(location)
                     async with self.session.get(location, allow_redirects=False) as response:
                         location = response.headers["Location"]
-                codes = location.replace(self.redirect_uri + "#", "")
-
         except InvalidUrlClientError:
             _LOGGER.exception("Error occurred while sending password. Password may be incorrect.")
             raise
 
         # The last redirection starting with `myskoda://` was encountered.
-        # The URL will contain the information we need as query parameters,
-        # without the leading `?`.
-        data = {}
-        for code in codes.split("&"):
-            [key, value] = code.split("=")
-            data[key] = value
-
-        return IDKAuthorizationCode.from_dict(data)
+        # The URI will contain the code as a query parameter.
+        try:
+            query_params = dict(parse_qsl(urlparse(location).query))
+            return query_params["code"]
+        except (KeyError, TypeError) as err:
+            message = f"Failed to extract authorization code from {location}"
+            raise AuthorizationError(message) from err
 
     async def _exchange_auth_code_for_idk_session(self, code: str, verifier: str) -> IDKSession:
         """Exchange the ident login code for an auth token from Skoda.
@@ -305,10 +291,10 @@ class Authorization(ABC):
 
         # Perform the actual login which will result in a token that can be exchanged for
         # an access token at the Skoda server.
-        authentication = await self._enter_password(login_meta)
+        authentication_code = await self._enter_password(login_meta)
 
         # Exchange the token for access and refresh tokens (JWT format).
-        return await self._exchange_auth_code_for_idk_session(authentication.code, verifier)
+        return await self._exchange_auth_code_for_idk_session(authentication_code, verifier)
 
     def is_token_expired(self) -> bool:
         """Check whether the login token is expired."""
