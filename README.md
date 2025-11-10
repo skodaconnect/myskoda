@@ -64,6 +64,26 @@ async def main():
 asyncio.run(main())
 ```
 
+or if you have an oidc2.0 refresh token available:
+
+```python
+import asyncio
+from aiohttp import ClientSession
+from myskoda import MySkoda
+
+TOKEN = "ey..."
+
+async def main():
+    async with ClientSession() as session:
+        myskoda = MySkoda(session)
+        await myskoda.connect_with_refresh_token(TOKEN)
+        for vin in await myskoda.list_vehicle_vins():
+            print(vin)
+        await myskoda.disconnect()
+
+asyncio.run(main())
+```
+
 ## Documentation
 
 Detailed documentation [is available at read the docs](https://myskoda.readthedocs.io/en/latest/):
