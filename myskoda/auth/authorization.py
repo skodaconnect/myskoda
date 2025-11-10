@@ -45,13 +45,18 @@ class Authorization(ABC):
     # Maybe also move to Protocol instead of ABC.
 
     session: ClientSession
+    testsuite: bool
     idk_session: IDKSession | None = None
 
     def __init__(
-        self, session: ClientSession, generate_nonce: Callable[[], str] = generate_nonce
+        self,
+        session: ClientSession,
+        generate_nonce: Callable[[], str] = generate_nonce,
+        testsuite: bool = False,
     ) -> None:
         self.session = session
         self.generate_nonce = generate_nonce
+        self.testsuite = testsuite
 
     def _extract_csrf(self, html: str) -> CSRFState:
         parser = CSRFParser()
@@ -122,7 +127,7 @@ class Authorization(ABC):
         if not self.client_id or not self.redirect_uri or not self.base_url:
             raise BrandError
 
-        if self.is_refresh_token_expired(refresh_token):
+        if self.is_refresh_token_expired(refresh_token) and not self.testsuite:
             log_str = "Refresh token has expired. Please authorize using username/password."
             _LOGGER.error(log_str)
             raise TokenExpiredError

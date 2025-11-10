@@ -38,7 +38,7 @@ def redirect_loop(responses: aioresponses, urls: list[str]) -> None:
 
 
 @pytest.mark.asyncio
-async def test_get_info(responses: aioresponses) -> None:
+async def test_get_tokens(responses: aioresponses) -> None:
     nonce = "abcdefghabcdefgh"
     relay_state = "d865b506bd6759b20e832c8c692c5ca2669ebd27"
     user_id = USER_ID
