@@ -384,6 +384,17 @@ class Authorization(ABC):
             await self.refresh_token()
         return self.idk_session.access_token
 
+    async def get_refresh_token(self) -> str:
+        """Get the refresh token.
+
+        Use this method instead of using `refresh_token` directly. In future releases it will
+        check if the JWT token is about to expire and refresh it.
+        """
+        if self.idk_session is None:
+            raise NotAuthorizedError
+
+        return self.idk_session.refresh_token
+
 
 class AuthorizationError(Exception):
     """Error to indicate that something unexpected happened during authorization."""

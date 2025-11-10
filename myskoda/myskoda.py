@@ -284,6 +284,10 @@ class MySkoda:
         """Retrieve the main access token for the IDK session."""
         return await self.rest_api.authorization.get_access_token()
 
+    async def get_refresh_token(self) -> str:
+        """Retrieve the refresh token for the IDK session."""
+        return await self.rest_api.authorization.get_refresh_token()
+
     async def get_user(self, anonymize: bool = False) -> User:
         """Retrieve user information about logged in user."""
         return (await self.rest_api.get_user(anonymize=anonymize)).result
