@@ -147,8 +147,9 @@ async def cli(  # noqa: PLR0913
 async def disconnect(  # noqa: PLR0913
     ctx: Context,
     result: None,  # noqa: ARG001
-    username: str,  # noqa: ARG001
-    password: str,  # noqa: ARG001
+    username: str | None,  # noqa: ARG001
+    password: str | None,  # noqa: ARG001
+    refresh_token: str | None,  # noqa: ARG001
     verbose: bool,  # noqa: ARG001
     output_format: Format,  # noqa: ARG001
     trace: bool,  # noqa: ARG001
