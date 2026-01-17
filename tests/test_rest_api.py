@@ -437,3 +437,48 @@ async def test_get_departure_timers(
             get_departure_timers_result = await myskoda.get_departure_timers(target_vin)
 
             assert get_departure_timers_result == DepartureInfo.from_json(departure_timer)
+
+
+@pytest.fixture(name="single_trips")
+def load_single_trips() -> list[str]:
+    """Load single trips fixture."""
+    single_trips = []
+    for path in [
+        "superb/single-trips-iV.json",
+    ]:
+        with FIXTURES_DIR.joinpath(path).open() as file:
+            single_trips.append(file.read())
+    return single_trips
+
+
+@pytest.mark.asyncio
+async def test_single_trips(
+    single_trips: list[str], myskoda: MySkoda, responses: aioresponses
+) -> None:
+    """Example unit test for RestAPI.single_trips(). Needs more work."""
+    for single_trips_input in single_trips:
+        single_trips_json = json.loads(single_trips_input)
+
+        target_vin = "TMBJM0CKV1N12345"
+        responses.get(
+            url=f"https://mysmob.api.connect.skoda-auto.cz/api/v1/trip-statistics/{target_vin}"
+            "/single-trips?timezone=Europe%2FBerlin",
+            body=single_trips_input,
+        )
+        get_single_trip_result = await myskoda.get_single_trip_statistics(target_vin)
+
+        overall_cost = get_single_trip_result.daily_trips[0].overall_cost
+        assert overall_cost is not None
+
+        assert (
+            overall_cost.total_cost
+            == single_trips_json["dailyTrips"][0]["overallCost"]["totalCost"]
+        )
+
+        day2 = get_single_trip_result.daily_trips[1]
+        assert day2.date == single_trips_json["dailyTrips"][1]["date"]
+        assert day2.trips is not None
+        assert len(day2.trips) == len(single_trips_json["dailyTrips"][1]["trips"])
+        assert day2.trips[0].end_time == single_trips_json["dailyTrips"][1]["trips"][0]["endTime"]
+
+        assert get_single_trip_result.vehicle_type == VehicleType.FUEL

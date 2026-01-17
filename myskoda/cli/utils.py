@@ -2,7 +2,7 @@
 
 import json
 from collections.abc import Awaitable, Callable
-from datetime import datetime
+from datetime import UTC, datetime
 from enum import StrEnum
 from functools import update_wrapper
 from typing import TYPE_CHECKING, Any
@@ -75,4 +75,18 @@ def iso8601_datetime(
         return isoparse(value)
     except (ValueError, TypeError) as e:
         err_str = f"{param.name} must be a valid ISO8601 datetime"
+        raise click.BadParameter(err_str) from e
+
+
+def simple_date(
+    _: click.Context,
+    param: click.Parameter,
+    value: str | None,
+) -> datetime | None:
+    if value is None:
+        return None
+    try:
+        return datetime.strptime(value, "%Y-%m-%d").replace(tzinfo=UTC)
+    except (ValueError, TypeError) as e:
+        err_str = f"{param.name} must be a valid YYYY-MM-DD date"
         raise click.BadParameter(err_str) from e

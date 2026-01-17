@@ -75,3 +75,62 @@ class TripStatistics(BaseResponse):
     overall_travel_time_in_min: int | None = field(
         default=None, metadata=field_options(alias="overallTravelTimeInMin")
     )
+
+
+@dataclass
+class FuelCost(DataClassORJSONMixin):
+    cost: float | None = field(default=None, metadata=field_options(alias="cost"))
+    cost_currency: str | None = field(default=None, metadata=field_options(alias="costCurrency"))
+    price_per_unit: float | None = field(default=None, metadata=field_options(alias="pricePerUnit"))
+
+
+@dataclass
+class OverallCost(DataClassORJSONMixin):
+    total_cost: float | None = field(default=None, metadata=field_options(alias="totalCost"))
+    total_cost_currency: str | None = field(
+        default=None, metadata=field_options(alias="totalCostCurrency")
+    )
+    fuel_cost: FuelCost | None = field(default=None, metadata=field_options(alias="fuelCost"))
+
+
+@dataclass
+class Trip(DataClassORJSONMixin):
+    id: str | None = field(default=None, metadata=field_options(alias="id"))
+    end_time: str | None = field(default=None, metadata=field_options(alias="endTime"))
+    start_mileage_in_km: int | None = field(
+        default=None, metadata=field_options(alias="startMileageInKm")
+    )
+    end_mileage_in_km: int | None = field(
+        default=None, metadata=field_options(alias="endMileageInKm")
+    )
+    mileage_in_km: int | None = field(default=None, metadata=field_options(alias="mileageInKm"))
+    travel_time_in_min: int | None = field(
+        default=None, metadata=field_options(alias="travelTimeInMin")
+    )
+    average_speed_in_kmph: int | None = field(
+        default=None, metadata=field_options(alias="averageSpeedInKmph")
+    )
+    average_fuel_consumption: float | None = field(
+        default=None, metadata=field_options(alias="averageFuelConsumption")
+    )
+    cost: OverallCost | None = field(default=None, metadata=field_options(alias="cost"))
+
+
+@dataclass
+class DailyTrip(DataClassORJSONMixin):
+    date: str
+    overall_mileage: int | None = field(
+        default=None, metadata=field_options(alias="overallMileage")
+    )
+    overall_cost: OverallCost | None = field(
+        default=None, metadata=field_options(alias="overallCost")
+    )
+    trips: list[Trip] | None = field(default=None, metadata=field_options(alias="trips"))
+
+
+@dataclass
+class SingleTrips(BaseResponse):
+    daily_trips: list[DailyTrip] = field(metadata=field_options(alias="dailyTrips"))
+    vehicle_type: VehicleType | None = field(
+        default=None, metadata=field_options(alias="vehicleType")
+    )

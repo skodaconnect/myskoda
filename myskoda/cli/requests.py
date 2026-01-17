@@ -6,7 +6,7 @@ from typing import TYPE_CHECKING, Any
 import asyncclick as click
 from asyncclick.core import Context
 
-from myskoda.cli.utils import handle_request, iso8601_datetime
+from myskoda.cli.utils import handle_request, iso8601_datetime, simple_date
 
 if TYPE_CHECKING:
     from myskoda.myskoda import MySkoda
@@ -197,6 +197,42 @@ async def user(ctx: Context, anonymize: bool) -> None:
 async def trip_statistics(ctx: Context, vin: str, anonymize: bool) -> None:
     """Print the last trip statics."""
     await handle_request(ctx, ctx.obj["myskoda"].get_trip_statistics, vin, anonymize)
+
+
+@click.command()
+@click.argument("vin")
+@click.option(
+    "--start", "start", help="start date in format YYYY-MM-DD (inclusive)", callback=simple_date
+)
+@click.option(
+    "--end", "end", help="end date in format YYYY-MM-DD (exclusive)", callback=simple_date
+)
+@click.option("anonymize", "--anonymize", help="Strip all personal data.", is_flag=True)
+@click.pass_context
+async def single_trip_statistics(
+    ctx: Context,
+    vin: str,
+    anonymize: bool,
+    start: datetime | None = None,
+    end: datetime | None = None,
+) -> None:
+    """Retrieve detailed statistics about past trips.
+    If you want to filter by date, provide both start and end date."""
+    if (start is None) ^ (end is None):
+        err_msg = "Both --start and --end must be provided."
+        raise click.BadParameter(err_msg)
+
+    kwargs: dict[str, Any] = {
+        k: v
+        for k, v in (
+            ("vin", vin),
+            ("start", start),
+            ("end", end),
+            ("anonymize", anonymize),
+        )
+        if v is not None
+    }
+    await handle_request(ctx, ctx.obj["myskoda"].get_single_trip_statistics, **kwargs)
 
 
 @click.command()
