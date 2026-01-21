@@ -397,8 +397,8 @@ async def test_honk_and_flash(
     url = f"{BASE_URL_SKODA}/api/v1/vehicle-access/{VIN}/honk-and-flash"
     responses.post(url=url)
 
-    lat = LOCATION["latitude"]
-    lng = LOCATION["longitude"]
+    lat = LOCATION.latitude
+    lng = LOCATION.longitude
 
     responses.get(
         url=f"{BASE_URL_SKODA}/api/v1/maps/positions?vin={VIN}",
@@ -430,8 +430,8 @@ async def test_flash(
     url = f"{BASE_URL_SKODA}/api/v1/vehicle-access/{VIN}/honk-and-flash"
     responses.post(url=url)
 
-    lat = LOCATION["latitude"]
-    lng = LOCATION["longitude"]
+    lat = LOCATION.latitude
+    lng = LOCATION.longitude
 
     responses.get(
         url=f"{BASE_URL_SKODA}/api/v1/maps/positions?vin={VIN}",
