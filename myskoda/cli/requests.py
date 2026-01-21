@@ -6,7 +6,7 @@ from typing import TYPE_CHECKING, Any
 import asyncclick as click
 from asyncclick.core import Context
 
-from myskoda.cli.utils import handle_request, iso8601_datetime, simple_date
+from myskoda.cli.utils import MethodArgument, handle_request, iso8601_datetime, simple_date
 
 if TYPE_CHECKING:
     from myskoda.myskoda import MySkoda
@@ -222,13 +222,13 @@ async def single_trip_statistics(
         err_msg = "Both --start and --end must be provided."
         raise click.BadParameter(err_msg)
 
-    kwargs: dict[str, Any] = {
+    kwargs: dict[str, datetime | bool | str] = {
         k: v
         for k, v in (
-            ("vin", vin),
-            ("start", start),
-            ("end", end),
-            ("anonymize", anonymize),
+            ("vin", MethodArgument(text=vin).text),
+            ("start", MethodArgument(timestamp=start).timestamp),
+            ("end", MethodArgument(timestamp=end).timestamp),
+            ("anonymize", MethodArgument(flag=anonymize).flag),
         )
         if v is not None
     }

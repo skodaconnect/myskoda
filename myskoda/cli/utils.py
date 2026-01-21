@@ -2,6 +2,7 @@
 
 import json
 from collections.abc import Awaitable, Callable
+from dataclasses import dataclass
 from datetime import UTC, datetime
 from enum import StrEnum
 from functools import update_wrapper
@@ -90,3 +91,10 @@ def simple_date(
     except (ValueError, TypeError) as e:
         err_str = f"{param.name} must be a valid YYYY-MM-DD date"
         raise click.BadParameter(err_str) from e
+
+
+@dataclass
+class MethodArgument:
+    timestamp: datetime | None = None
+    flag: bool | None = None
+    text: str | None = None
