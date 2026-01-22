@@ -30,6 +30,7 @@ class OnOffState(StrEnum):
     ON = "ON"
     OFF = "OFF"
     INVALID = "INVALID"
+    UNKNOWN = "UNKNOWN"
 
 
 class EnabledState(StrEnum):
