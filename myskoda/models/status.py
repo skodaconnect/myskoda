@@ -48,8 +48,8 @@ class Overall(DataClassORJSONMixin):
     lights: OnOffState
     locked: DoorLockedState
     windows: OpenState
-    reliable_lock_status: ReliableLockState = field(
-        metadata=field_options(alias="reliableLockStatus")
+    reliable_lock_status: ReliableLockState | None = field(
+        metadata=field_options(default=None, alias="reliableLockStatus")
     )
 
 
