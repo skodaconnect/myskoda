@@ -49,7 +49,7 @@ class Overall(DataClassORJSONMixin):
     locked: DoorLockedState
     windows: OpenState
     reliable_lock_status: ReliableLockState | None = field(
-        metadata=field_options(default=None, alias="reliableLockStatus")
+        default=None, metadata=field_options(alias="reliableLockStatus")
     )
 
 
