@@ -51,6 +51,12 @@ class OpenState(StrEnum):
     UNKNOWN = "UNKNOWN"
 
 
+class ReliableLockState(StrEnum):
+    LOCKED = "LOCKED"
+    UNLOCKED = "UNLOCKED"
+    UNKNOWN = "UNKNOWN"
+
+
 class DoorLockedState(StrEnum):
     LOCKED = "YES"
     OPENED = "OPENED"

@@ -9,7 +9,7 @@ from urllib.parse import parse_qs, urlparse
 from mashumaro import field_options
 from mashumaro.mixins.orjson import DataClassORJSONMixin
 
-from .common import BaseResponse, DoorLockedState, OnOffState, OpenState
+from .common import BaseResponse, DoorLockedState, OnOffState, OpenState, ReliableLockState
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -48,6 +48,9 @@ class Overall(DataClassORJSONMixin):
     lights: OnOffState
     locked: DoorLockedState
     windows: OpenState
+    reliable_lock_status: ReliableLockState = field(
+        metadata=field_options(alias="reliableLockStatus")
+    )
 
 
 @dataclass
