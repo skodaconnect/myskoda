@@ -307,6 +307,7 @@ reports:
         lights: 'OFF'
         locked: 'NO'
         windows: UNSUPPORTED
+        reliable_lock_status: null
       renders:
         light_mode:
           one_x: >-

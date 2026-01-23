@@ -352,6 +352,7 @@ reports:
         lights: 'OFF'
         locked: 'YES'
         windows: CLOSED
+        reliable_lock_status: null
       renders:
         light_mode:
           one_x: >-
