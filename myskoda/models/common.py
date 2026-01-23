@@ -30,6 +30,7 @@ class OnOffState(StrEnum):
     ON = "ON"
     OFF = "OFF"
     INVALID = "INVALID"
+    UNKNOWN = "UNKNOWN"
 
 
 class EnabledState(StrEnum):
@@ -47,6 +48,12 @@ class OpenState(StrEnum):
     OPEN = "OPEN"
     CLOSED = "CLOSED"
     UNSUPPORTED = "UNSUPPORTED"
+    UNKNOWN = "UNKNOWN"
+
+
+class ReliableLockState(StrEnum):
+    LOCKED = "LOCKED"
+    UNLOCKED = "UNLOCKED"
     UNKNOWN = "UNKNOWN"
 
 

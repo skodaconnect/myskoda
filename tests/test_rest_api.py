@@ -66,6 +66,7 @@ def load_vehicle_status() -> list[str]:
         "superb/vehicle-status-doors-closed.json",
         "superb/vehicle-status-right-front-door-opened.json",
         "superb/vehicle-status-left-back-door-trunk-bonnet-opened.json",
+        "superb/vehicle-status-unknown.json",
     ]:
         with FIXTURES_DIR.joinpath(path).open() as file:
             vehicle_statuses.append(file.read())
