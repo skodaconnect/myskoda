@@ -152,7 +152,7 @@ class MySkoda:
     ssl_context: SSLContext | None = None
     user: User | None = None
     _vehicles: dict[Vin, Vehicle]
-    _callbacks: dict[Vin, list[Callable[[], Coroutine[Any, Any, None]]]]
+    _callbacks: dict[Vin, list[Callable[[Vin], Coroutine[Any, Any, None]]]]
 
     def __init__(
         self,
