@@ -1,11 +1,11 @@
 """Contains API representation for the MySkoda REST API."""
 
 import asyncio
+import json
 import logging
 from collections.abc import Callable
 from dataclasses import dataclass
 from datetime import UTC, datetime
-from typing import TypeVar
 from urllib.parse import quote
 
 from aiohttp import ClientResponseError, ClientSession
@@ -14,7 +14,6 @@ from myskoda.anonymize import (
     anonymize_air_conditioning,
     anonymize_auxiliary_heating,
     anonymize_charging,
-    anonymize_charginghistory,
     anonymize_chargingprofiles,
     anonymize_departure_timers,
     anonymize_driving_range,
@@ -22,11 +21,9 @@ from myskoda.anonymize import (
     anonymize_health,
     anonymize_info,
     anonymize_maintenance,
-    anonymize_maintenancereport,
     anonymize_parking_position,
     anonymize_positions,
     anonymize_single_trip_statistics,
-    anonymize_spin,
     anonymize_status,
     anonymize_trip_statistics,
     anonymize_url,
@@ -48,7 +45,7 @@ from .models.auxiliary_heating import AuxiliaryConfig, AuxiliaryHeating, Auxilia
 from .models.charging import ChargeMode, Charging
 from .models.charging_history import ChargingHistory
 from .models.chargingprofiles import ChargingProfiles
-from .models.common import BaseResponse, Vin
+from .models.common import Vin
 from .models.departure import DepartureInfo, DepartureTimer
 from .models.driving_range import DrivingRange
 from .models.garage import Garage
@@ -73,9 +70,6 @@ class GetEndpointResult[T]:
     result: T
 
 
-BT = TypeVar("BT", bound=BaseResponse)
-
-
 class RestApi:
     """API hub class that can perform all calls to the MySkoda API."""
 
@@ -86,16 +80,18 @@ class RestApi:
         self.session = session
         self.authorization = authorization
 
-    def anonymize_model(
+    def process_json(
         self,
-        model: BT,
+        data: str,
         anonymize: bool,
-        anonymization_fn: Callable[[BT], BT],
-    ) -> BT:
-        """Process the model object to remove sensitive data."""
+        anonymization_fn: Callable[[dict], dict],
+    ) -> str:
+        """Process the raw json returned by the API with some preprocessor logic."""
         if not anonymize:
-            return model
-        return anonymization_fn(model)
+            return data
+        parsed = json.loads(data)
+        anonymized = anonymization_fn(parsed)
+        return json.dumps(anonymized)
 
     async def _make_request(self, url: str, method: str, json: dict | None = None) -> str:
         try:
@@ -129,36 +125,36 @@ class RestApi:
         """Verify SPIN."""
         url = "/v1/spin/verify"
         json_data = {"currentSpin": spin}
-        raw = await self._make_post_request(url, json_data)
-        result = self.anonymize_model(
-            self._deserialize(raw, Spin.from_json),
+        raw = self.process_json(
+            data=await self._make_post_request(url, json_data),
             anonymize=anonymize,
-            anonymization_fn=anonymize_spin,
+            anonymization_fn=anonymize_info,
         )
+        result = self._deserialize(raw, Spin.from_json)
         url = anonymize_url(url) if anonymize else url
         return GetEndpointResult(url=url, raw=raw, result=result)
 
     async def get_info(self, vin: str, anonymize: bool = False) -> GetEndpointResult[Info]:
         """Retrieve information related to basic information for the specified vehicle."""
         url = f"/v2/garage/vehicles/{vin}?connectivityGenerations=MOD1&connectivityGenerations=MOD2&connectivityGenerations=MOD3&connectivityGenerations=MOD4"  # noqa: E501
-        raw = await self._make_get_request(url)
-        result = self.anonymize_model(
-            self._deserialize(raw, Info.from_json),
+        raw = self.process_json(
+            data=await self._make_get_request(url),
             anonymize=anonymize,
             anonymization_fn=anonymize_info,
         )
+        result = self._deserialize(raw, Info.from_json)
         url = anonymize_url(url) if anonymize else url
         return GetEndpointResult(url=url, raw=raw, result=result)
 
     async def get_charging(self, vin: str, anonymize: bool = False) -> GetEndpointResult[Charging]:
         """Retrieve information related to charging for the specified vehicle."""
         url = f"/v1/charging/{vin}"
-        raw = await self._make_get_request(url)
-        result = self.anonymize_model(
-            self._deserialize(raw, Charging.from_json),
+        raw = self.process_json(
+            data=await self._make_get_request(url),
             anonymize=anonymize,
             anonymization_fn=anonymize_charging,
         )
+        result = self._deserialize(raw, Charging.from_json)
         url = anonymize_url(url) if anonymize else url
         return GetEndpointResult(url=url, raw=raw, result=result)
 
@@ -167,12 +163,12 @@ class RestApi:
     ) -> GetEndpointResult[ChargingProfiles]:
         """Retrieve information related to chargingprofiles for the specified vehicle."""
         url = f"/v1/charging/{vin}/profiles"
-        raw = await self._make_get_request(url)
-        result = self.anonymize_model(
-            self._deserialize(raw, ChargingProfiles.from_json),
+        raw = self.process_json(
+            data=await self._make_get_request(url),
             anonymize=anonymize,
             anonymization_fn=anonymize_chargingprofiles,
         )
+        result = self._deserialize(raw, ChargingProfiles.from_json)
         url = anonymize_url(url) if anonymize else url
         return GetEndpointResult(url=url, raw=raw, result=result)
 
@@ -188,23 +184,23 @@ class RestApi:
         url = f"/v1/charging/{vin}/history?userTimezone=UTC&limit={limit}"
         url = self._apply_date_filter(url, cursor=cursor, start=start, end=end)
 
-        raw = await self._make_get_request(url)
-        result = self.anonymize_model(
-            self._deserialize(raw, ChargingHistory.from_json),
+        raw = self.process_json(
+            data=await self._make_get_request(url),
             anonymize=False,
-            anonymization_fn=anonymize_charginghistory,
+            anonymization_fn=anonymize_info,
         )
+        result = self._deserialize(raw, ChargingHistory.from_json)
         return GetEndpointResult(url=url, raw=raw, result=result)
 
     async def get_status(self, vin: str, anonymize: bool = False) -> GetEndpointResult[Status]:
         """Retrieve the current status for the specified vehicle."""
         url = f"/v2/vehicle-status/{vin}"
-        raw = await self._make_get_request(url)
-        result = self.anonymize_model(
-            self._deserialize(raw, Status.from_json),
+        raw = self.process_json(
+            data=await self._make_get_request(url),
             anonymize=anonymize,
             anonymization_fn=anonymize_status,
         )
+        result = self._deserialize(raw, Status.from_json)
         url = anonymize_url(url) if anonymize else url
         return GetEndpointResult(url=url, raw=raw, result=result)
 
@@ -213,12 +209,12 @@ class RestApi:
     ) -> GetEndpointResult[AirConditioning]:
         """Retrieve the current air conditioning status for the specified vehicle."""
         url = f"/v2/air-conditioning/{vin}"
-        raw = await self._make_get_request(url)
-        result = self.anonymize_model(
-            self._deserialize(raw, AirConditioning.from_json),
+        raw = self.process_json(
+            data=await self._make_get_request(url),
             anonymize=anonymize,
             anonymization_fn=anonymize_air_conditioning,
         )
+        result = self._deserialize(raw, AirConditioning.from_json)
         url = anonymize_url(url) if anonymize else url
         return GetEndpointResult(url=url, raw=raw, result=result)
 
@@ -227,12 +223,12 @@ class RestApi:
     ) -> GetEndpointResult[AuxiliaryHeating]:
         """Retrieve the current auxiliary heating status for the specified vehicle."""
         url = f"/v2/air-conditioning/{vin}/auxiliary-heating"
-        raw = await self._make_get_request(url)
-        result = self.anonymize_model(
-            self._deserialize(raw, AuxiliaryHeating.from_json),
+        raw = self.process_json(
+            data=await self._make_get_request(url),
             anonymize=anonymize,
             anonymization_fn=anonymize_auxiliary_heating,
         )
+        result = self._deserialize(raw, AuxiliaryHeating.from_json)
         url = anonymize_url(url) if anonymize else url
         return GetEndpointResult(url=url, raw=raw, result=result)
 
@@ -241,12 +237,12 @@ class RestApi:
     ) -> GetEndpointResult[Positions]:
         """Retrieve the current position for the specified vehicle."""
         url = f"/v1/maps/positions?vin={vin}"
-        raw = await self._make_get_request(url)
-        result = self.anonymize_model(
-            self._deserialize(raw, Positions.from_json),
+        raw = self.process_json(
+            data=await self._make_get_request(url),
             anonymize=anonymize,
             anonymization_fn=anonymize_positions,
         )
+        result = self._deserialize(raw, Positions.from_json)
         url = anonymize_url(url) if anonymize else url
         return GetEndpointResult(url=url, raw=raw, result=result)
 
@@ -255,12 +251,12 @@ class RestApi:
     ) -> GetEndpointResult[ParkingPositionV3]:
         """Retrieve the last known parking position for the specified vehicle."""
         url = f"/v3/maps/positions/vehicles/{vin}/parking"
-        raw = await self._make_get_request(url)
-        result = self.anonymize_model(
-            self._deserialize(raw, ParkingPositionV3.from_json),
+        raw = self.process_json(
+            data=await self._make_get_request(url),
             anonymize=anonymize,
             anonymization_fn=anonymize_parking_position,
         )
+        result = self._deserialize(raw, ParkingPositionV3.from_json)
         return GetEndpointResult(url=url, raw=raw, result=result)
 
     async def get_driving_range(
@@ -268,12 +264,12 @@ class RestApi:
     ) -> GetEndpointResult[DrivingRange]:
         """Retrieve estimated driving range for combustion vehicles."""
         url = f"/v2/vehicle-status/{vin}/driving-range"
-        raw = await self._make_get_request(url)
-        result = self.anonymize_model(
-            self._deserialize(raw, DrivingRange.from_json),
+        raw = self.process_json(
+            data=await self._make_get_request(url),
             anonymize=anonymize,
             anonymization_fn=anonymize_driving_range,
         )
+        result = self._deserialize(raw, DrivingRange.from_json)
         url = anonymize_url(url) if anonymize else url
         return GetEndpointResult(url=url, raw=raw, result=result)
 
@@ -282,12 +278,12 @@ class RestApi:
     ) -> GetEndpointResult[TripStatistics]:
         """Retrieve statistics about past trips."""
         url = f"/v1/trip-statistics/{vin}?offsetType=week&offset=0&timezone=Europe%2FBerlin"
-        raw = await self._make_get_request(url)
-        result = self.anonymize_model(
-            self._deserialize(raw, TripStatistics.from_json),
+        raw = self.process_json(
+            data=await self._make_get_request(url),
             anonymize=anonymize,
             anonymization_fn=anonymize_trip_statistics,
         )
+        result = self._deserialize(raw, TripStatistics.from_json)
         url = anonymize_url(url) if anonymize else url
         return GetEndpointResult(url=url, raw=raw, result=result)
 
@@ -304,12 +300,12 @@ class RestApi:
         """
         url = f"/v1/trip-statistics/{vin}/single-trips?timezone=Europe%2FBerlin"
         url = self._apply_date_filter(url, cursor=None, start=start, end=end)
-        raw = await self._make_get_request(url)
-        result = self.anonymize_model(
-            self._deserialize(raw, SingleTrips.from_json),
+        raw = self.process_json(
+            data=await self._make_get_request(url),
             anonymize=anonymize,
             anonymization_fn=anonymize_single_trip_statistics,
         )
+        result = self._deserialize(raw, SingleTrips.from_json)
         url = anonymize_url(url) if anonymize else url
         return GetEndpointResult(url=url, raw=raw, result=result)
 
@@ -318,12 +314,12 @@ class RestApi:
     ) -> GetEndpointResult[Maintenance]:
         """Retrieve maintenance report, settings and history."""
         url = f"/v3/vehicle-maintenance/vehicles/{vin}"
-        raw = await self._make_get_request(url)
-        result = self.anonymize_model(
-            self._deserialize(raw, Maintenance.from_json),
+        raw = self.process_json(
+            data=await self._make_get_request(url),
             anonymize=anonymize,
             anonymization_fn=anonymize_maintenance,
         )
+        result = self._deserialize(raw, Maintenance.from_json)
         url = anonymize_url(url) if anonymize else url
         return GetEndpointResult(url=url, raw=raw, result=result)
 
@@ -332,46 +328,46 @@ class RestApi:
     ) -> GetEndpointResult[MaintenanceReport]:
         """Retrieve just the maintenance report."""
         url = f"/v3/vehicle-maintenance/vehicles/{vin}/report"
-        raw = await self._make_get_request(url)
-        result = self.anonymize_model(
-            self._deserialize(raw, MaintenanceReport.from_json),
+        raw = self.process_json(
+            data=await self._make_get_request(url),
             anonymize=anonymize,
-            anonymization_fn=anonymize_maintenancereport,
+            anonymization_fn=anonymize_maintenance,
         )
+        result = self._deserialize(raw, MaintenanceReport.from_json)
         return GetEndpointResult(url=url, raw=raw, result=result)
 
     async def get_health(self, vin: str, anonymize: bool = False) -> GetEndpointResult[Health]:
         """Retrieve health information for the specified vehicle."""
         url = f"/v1/vehicle-health-report/warning-lights/{vin}"
-        raw = await self._make_get_request(url)
-        result = self.anonymize_model(
-            self._deserialize(raw, Health.from_json),
+        raw = self.process_json(
+            data=await self._make_get_request(url),
             anonymize=anonymize,
             anonymization_fn=anonymize_health,
         )
+        result = self._deserialize(raw, Health.from_json)
         url = anonymize_url(url) if anonymize else url
         return GetEndpointResult(url=url, raw=raw, result=result)
 
     async def get_user(self, anonymize: bool = False) -> GetEndpointResult[User]:
         """Retrieve user information about logged in user."""
         url = "/v1/users"
-        raw = await self._make_get_request(url)
-        result = self.anonymize_model(
-            self._deserialize(raw, User.from_json),
+        raw = self.process_json(
+            data=await self._make_get_request(url),
             anonymize=anonymize,
             anonymization_fn=anonymize_user,
         )
+        result = self._deserialize(raw, User.from_json)
         return GetEndpointResult(url=url, raw=raw, result=result)
 
     async def get_garage(self, anonymize: bool = False) -> GetEndpointResult[Garage]:
         """Fetch the garage (list of vehicles with limited info)."""
         url = "/v2/garage?connectivityGenerations=MOD1&connectivityGenerations=MOD2&connectivityGenerations=MOD3&connectivityGenerations=MOD4"  # noqa: E501
-        raw = await self._make_get_request(url)
-        result = self.anonymize_model(
-            self._deserialize(raw, Garage.from_json),
+        raw = self.process_json(
+            data=await self._make_get_request(url),
             anonymize=anonymize,
             anonymization_fn=anonymize_garage,
         )
+        result = self._deserialize(raw, Garage.from_json)
         return GetEndpointResult(url=url, raw=raw, result=result)
 
     async def get_departure_timers(
@@ -392,12 +388,12 @@ class RestApi:
             f"/v1/vehicle-automatization/{vin}/departure/timers"
             f"?deviceDateTime={quote(formatted_time, safe='')}"
         )
-        raw = await self._make_get_request(url)
-        result = self.anonymize_model(
-            self._deserialize(raw, DepartureInfo.from_json),
+        raw = self.process_json(
+            data=await self._make_get_request(url),
             anonymize=anonymize,
             anonymization_fn=anonymize_departure_timers,
         )
+        result = self._deserialize(raw, DepartureInfo.from_json)
         url = anonymize_url(url) if anonymize else url
         return GetEndpointResult(url=url, raw=raw, result=result)
 
@@ -406,12 +402,12 @@ class RestApi:
     ) -> GetEndpointResult[VehicleConnectionStatus]:
         """Retrieve vehicle connection status."""
         url = f"/v2/connection-status/{vin}/readiness"
-        raw = await self._make_get_request(url)
-        result = self.anonymize_model(
-            self._deserialize(raw, VehicleConnectionStatus.from_json),
+        raw = self.process_json(
+            data=await self._make_get_request(url),
             anonymize=anonymize,
             anonymization_fn=anonymize_vehicle_connection_status,
         )
+        result = self._deserialize(raw, VehicleConnectionStatus.from_json)
         url = anonymize_url(url) if anonymize else url
         return GetEndpointResult(url=url, raw=raw, result=result)
 

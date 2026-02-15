@@ -1,47 +1,25 @@
 """Methods for anonymizing data from the API."""
 
-import datetime
 import re
-
-from myskoda.models.air_conditioning import AirConditioning
-from myskoda.models.auxiliary_heating import AuxiliaryHeating
-from myskoda.models.charging import Charging
-from myskoda.models.charging_history import ChargingHistory
-from myskoda.models.chargingprofiles import ChargingProfiles
-from myskoda.models.common import Address, Coordinates
-from myskoda.models.departure import DepartureInfo
-from myskoda.models.driving_range import DrivingRange
-from myskoda.models.garage import Garage, GarageEntry
-from myskoda.models.health import Health
-from myskoda.models.info import Info
-from myskoda.models.maintenance import (
-    Contact,
-    Maintenance,
-    MaintenanceReport,
-    ServicePartner,
-)
-from myskoda.models.position import ParkingPositionV3, Positions
-from myskoda.models.spin import Spin
-from myskoda.models.status import Status
-from myskoda.models.trip_statistics import SingleTrips, TripStatistics
-from myskoda.models.user import User
-from myskoda.models.vehicle_connection_status import VehicleConnectionStatus
 
 ACCESS_TOKEN = "eyJ0eXAiOiI0ODEyODgzZi05Y2FiLTQwMWMtYTI5OC0wZmEyMTA5Y2ViY2EiLCJhbGciOiJSUzI1NiJ9"  # noqa: S105
 USER_ID = "b8bc126c-ee36-402b-8723-2c1c3dff8dec"
 VIN = "TMOCKAA0AA000000"
 VIN_REGEX = re.compile(r"TMB\w{14}")
-ADDRESS = Address(
-    city="Example City",
-    street="Example Avenue",
-    house_number="15",
-    zip_code="54321",
-    country_code="DEU",
-)
+ADDRESS = {
+    "city": "Example City",
+    "street": "Example Avenue",
+    "houseNumber": "15",
+    "zipCode": "54321",
+    "countryCode": "DEU",
+}
 SERVICE_PARTNER_ID = "DEU11111"
 PARTNER_NUMBER = "1111"
 PARTNER_NAME = "Example Service Partner"
-LOCATION = Coordinates(latitude=53.470636, longitude=9.689872)
+LOCATION = {
+    "latitude": 53.470636,
+    "longitude": 9.689872,
+}
 EMAIL = "user@example.com"
 PHONE = "+49 1234 567890"
 VEHICLE_NAME = "Example Car"
@@ -51,328 +29,279 @@ FIRST_NAME = "John"
 LAST_NAME = "Dough"
 NICKNAME = "Johnny D."
 PROFILE_PICTURE_URL = "https://example.com/profile.jpg"
-DATE_OF_BIRTH = datetime.date(2000, 1, 1)
-CONTACT = Contact(
-    phone=PHONE,
-    url=URL,
-    email=EMAIL,
-)
+DATE_OF_BIRTH = "2000-01-01"
+
+SERVICE_PARTNER = {
+    "name": PARTNER_NAME,
+    "partnerNumber": PARTNER_NUMBER,
+    "id": SERVICE_PARTNER_ID,
+    "contact": {
+        "phone": PHONE,
+        "url": URL,
+        "email": EMAIL,
+    },
+    "address": ADDRESS,
+    "location": LOCATION,
+}
 FORMATTED_ADDRESS = "1600 Pennsylvania Ave NW, Washington, DC 20500, USA"
 PROFILE_NAME = "Example Profile"
 
 
-def anonymize_spin(data: Spin) -> Spin:
-    """Anonymize Spin object.
+def anonymize_info(data: dict) -> dict:
+    """Anonymize select parts if the input from the info dict.
 
     Args:
-        data: Spin object
+        data: input dictionary
 
     Returns:
-        Spin object
+        dict
+    """
+    data["vin"] = VIN
+    data["name"] = VEHICLE_NAME
+    if "licensePlate" in data:
+        data["licensePlate"] = LICENSE_PLATE
+    if "servicePartner" in data:
+        data["servicePartner"]["servicePartnerId"] = SERVICE_PARTNER_ID
+    return data
+
+
+def anonymize_maintenance(data: dict) -> dict:
+    """Anonymize select parts if the input from the maintenance dict.
+
+    Args:
+        data: input dictionary
+
+    Returns:
+        dict
+    """
+    if "preferredServicePartner" in data:
+        data["preferredServicePartner"].update(SERVICE_PARTNER)
+    if "predictiveMaintenance" in data:
+        data["predictiveMaintenance"]["setting"]["email"] = EMAIL
+        data["predictiveMaintenance"]["setting"]["phone"] = PHONE
+    for booking in data.get("customerService", {}).get("bookingHistory", []):
+        booking["servicePartner"].update(SERVICE_PARTNER)
+    for booking in data.get("customerService", {}).get("activeBookings", []):
+        booking["servicePartner"].update(SERVICE_PARTNER)
+    return data
+
+
+def anonymize_charging(data: dict) -> dict:
+    """Anonymize select parts if the input from the charging dict.
+
+    Args:
+        data: input dictionary
+
+    Returns:
+        dict
     """
     return data
 
 
-def anonymize_info(data: Info) -> Info:
-    """Anonymize Info object.
+def anonymize_chargingprofiles(data: dict) -> dict:
+    """Anonymize select parts if the input from the chargingprofiles dict.
 
     Args:
-        data: Info object
+        data: input dictionary
 
     Returns:
-        Info object
+        dict
     """
-    data.vin = VIN
-    data.name = VEHICLE_NAME
-    if data.license_plate:
-        data.license_plate = LICENSE_PLATE
-    if data.service_partner:
-        data.service_partner.id = SERVICE_PARTNER_ID
+    if len(data["chargingProfiles"]) >= 1:
+        for profile in data["chargingProfiles"]:
+            profile["name"] = PROFILE_NAME
+            if "location" in profile:
+                profile["location"] = LOCATION
+    if "currentVehiclePositionProfile" in data:
+        data["currentVehiclePositionProfile"]["name"] = PROFILE_NAME
     return data
 
 
-def anonymize_maintenancereport(data: MaintenanceReport) -> MaintenanceReport:
-    """Anonymize MaintenanceReport object.
+def anonymize_status(data: dict) -> dict:
+    """Anonymize select parts if the input from the status dict.
 
     Args:
-        data: MaintenanceReport object
+        data: input dictionary
 
     Returns:
-        MaintenanceReport object
-    """
-    return data
-
-
-def anonymize_servicepartenr(data: ServicePartner) -> ServicePartner:
-    """Anonymize ServicePartner object.
-
-    Args:
-        data: ServicePartner object
-
-    Returns:
-        ServicePartner object
-    """
-    data.name = PARTNER_NAME
-    data.partner_number = PARTNER_NUMBER
-    data.id = SERVICE_PARTNER_ID
-    data.address = ADDRESS
-    data.location = LOCATION
-    data.contact = CONTACT
-    return data
-
-
-def anonymize_maintenance(data: Maintenance) -> Maintenance:
-    """Anonymize Maintenance object.
-
-    Args:
-        data: Maintenance object
-
-    Returns:
-        Maintenance object
-    """
-    if data.preferred_service_partner:
-        data.preferred_service_partner = anonymize_servicepartenr(data.preferred_service_partner)
-
-    if data.predictive_maintenance:
-        data.predictive_maintenance.setting.email = EMAIL
-        data.predictive_maintenance.setting.phone = PHONE
-
-    if data.customer_service:
-        for booking in data.customer_service.booking_history:
-            booking.service_partner = anonymize_servicepartenr(booking.service_partner)
-        for booking in data.customer_service.active_bookings:
-            booking.service_partner = anonymize_servicepartenr(booking.service_partner)
-    return data
-
-
-def anonymize_charging(data: Charging) -> Charging:
-    """Anonymize Charging object.
-
-    Args:
-        data: Charging object
-
-    Returns:
-        Charging object
+        dict
     """
     return data
 
 
-def anonymize_charginghistory(data: ChargingHistory) -> ChargingHistory:
-    """Anonymize ChargingHistory object.
+def anonymize_air_conditioning(data: dict) -> dict:
+    """Anonymize select parts if the input from the air_conditioning dict.
 
     Args:
-        data: ChargingHistory object
+        data: input dictionary
 
     Returns:
-        ChargingHistory object
+        dict
     """
     return data
 
 
-def anonymize_chargingprofiles(data: ChargingProfiles) -> ChargingProfiles:
-    """Anonymize ChargingProfiles object.
+def anonymize_auxiliary_heating(data: dict) -> dict:
+    """Anonymize select parts if the input from the auxiliary_heating dict.
 
     Args:
-        data: ChargingProfiles object
+        data: input dictionary
 
     Returns:
-        ChargingProfiles object
-    """
-    if len(data.charging_profiles) >= 1:
-        for profile in data.charging_profiles:
-            profile.name = PROFILE_NAME
-            if profile.location:
-                profile.location = LOCATION
-    if data.current_vehicle_position_profile:
-        data.current_vehicle_position_profile.name = PROFILE_NAME
-    return data
-
-
-def anonymize_status(data: Status) -> Status:
-    """Anonymize Status object.
-
-    Args:
-        data: Status object
-
-    Returns:
-        Status object
+        dict
     """
     return data
 
 
-def anonymize_air_conditioning(data: AirConditioning) -> AirConditioning:
-    """Anonymize AirConditioning object.
+def anonymize_departure_timers(data: dict) -> dict:
+    """Anonymize select parts if the input from the departure timers dict.
 
     Args:
-        data: AirConditioning object
+        data: input dictionary
 
     Returns:
-        AirConditioning object
+        dict
     """
     return data
 
 
-def anonymize_auxiliary_heating(data: AuxiliaryHeating) -> AuxiliaryHeating:
-    """Anonymize AirConditioning object.
+def anonymize_positions(data: dict) -> dict:
+    """Anonymize select parts if the input from the positions dict.
 
     Args:
-        data: AirConditioning object
+        data: input dictionary
 
     Returns:
-        AirConditioning object
+        dict
+    """
+    if "positions" in data:
+        for position in data["positions"]:
+            position["gpsCoordinates"] = LOCATION
+            position["address"] = ADDRESS
+    return data
+
+
+def anonymize_parking_position(data: dict) -> dict:
+    """Anonymize select parts if the input from the parking_position dict.
+
+    Args:
+        data: input dictionary
+
+    Returns:
+        dict
+    """
+    if "parkingPosition" in data:
+        data["parkingPosition"]["gpsCoordinates"] = LOCATION
+    if "formattedAddress" in data:
+        data["formattedAddress"] = FORMATTED_ADDRESS
+    return data
+
+
+def anonymize_driving_range(data: dict) -> dict:
+    """Anonymize select parts if the input from the driving_range dict.
+
+    Args:
+        data: input dictionary
+
+    Returns:
+        dict
     """
     return data
 
 
-def anonymize_departure_timers(data: DepartureInfo) -> DepartureInfo:
-    """Anonymize DepartureInfo object.
+def anonymize_trip_statistics(data: dict) -> dict:
+    """Anonymize select parts if the input from the trip_statistics dict.
 
     Args:
-        data: DepartureInfo object
+        data: input dictionary
 
     Returns:
-        DepartureInfo object
+        dict
     """
     return data
 
 
-def anonymize_positions(data: Positions) -> Positions:
-    """Anonymize Positions object.
+def anonymize_single_trip_statistics(data: dict) -> dict:
+    """Anonymize select parts if the input from the single_trip_statistics dict.
 
     Args:
-        data: Positions object
+        data: input dictionary
 
     Returns:
-        Positions object
-    """
-    if data.positions:
-        for position in data.positions:
-            position.gps_coordinates = LOCATION
-            position.address = ADDRESS
-    return data
-
-
-def anonymize_parking_position(data: ParkingPositionV3) -> ParkingPositionV3:
-    """Anonymize ParkingPositionV3 object.
-
-    Args:
-        data: ParkingPositionV3 object
-
-    Returns:
-        ParkingPositionV3 object
-    """
-    if data.parking_position:
-        data.parking_position.gps_coordinates = LOCATION
-    if data.parking_position.formatted_address:
-        data.parking_position.formatted_address = FORMATTED_ADDRESS
-    return data
-
-
-def anonymize_driving_range(data: DrivingRange) -> DrivingRange:
-    """Anonymize DrivingRange object.
-
-    Args:
-        data: DrivingRange object
-
-    Returns:
-        DrivingRange object
+        dict
     """
     return data
 
 
-def anonymize_trip_statistics(data: TripStatistics) -> TripStatistics:
-    """Anonymize TripStatistics object.
+def anonymize_vehicle_connection_status(data: dict) -> dict:
+    """Anonymize select parts if the input from the vehicle_connection_status dict.
 
     Args:
-        data: TripStatistics object
+        data: input dictionary
 
     Returns:
-        TripStatistics object
+        dict
     """
     return data
 
 
-def anonymize_single_trip_statistics(data: SingleTrips) -> SingleTrips:
-    """Anonymize SingleTrips object.
+def anonymize_health(data: dict) -> dict:
+    """Anonymize select parts if the input from the health dict.
 
     Args:
-        data: SingleTrips object
+        data: input dictionary
 
     Returns:
-        SingleTrips object
+        dict
     """
     return data
 
 
-def anonymize_vehicle_connection_status(data: VehicleConnectionStatus) -> VehicleConnectionStatus:
-    """Anonymize VehicleConnectionStatus object.
+def anonymize_user(data: dict) -> dict:
+    """Anonymize select parts if the input from the user dict.
 
     Args:
-        data: VehicleConnectionStatus object
+        data: input dictionary
 
     Returns:
-        VehicleConnectionStatus object
+        dict
     """
-    return data
-
-
-def anonymize_health(data: Health) -> Health:
-    """Anonymize Health object.
-
-    Args:
-        data: Health object
-
-    Returns:
-        Health object
-    """
-    return data
-
-
-def anonymize_user(data: User) -> User:
-    """Anonymize User object.
-
-    Args:
-        data: User object
-
-    Returns:
-        User object
-    """
-    data.email = EMAIL
-    data.first_name = FIRST_NAME
-    data.last_name = LAST_NAME
-    data.nickname = NICKNAME
-    data.profile_picture_url = PROFILE_PICTURE_URL
-    data.date_of_birth = DATE_OF_BIRTH
-    data.phone = PHONE
+    data["email"] = EMAIL
+    data["firstName"] = FIRST_NAME
+    data["lastName"] = LAST_NAME
+    data["nickname"] = NICKNAME
+    data["profilePictureUrl"] = PROFILE_PICTURE_URL
+    data["dateOfBirth"] = DATE_OF_BIRTH
+    data["phone"] = PHONE
 
     return data
 
 
-def anonymize_garage_entry(data: GarageEntry) -> GarageEntry:
-    """Anonymize GarageEntry object.
+def anonymize_garage_entry(data: dict) -> dict:
+    """Anonymize select parts if the input from the vehicle dict.
 
     Args:
-        data: GarageEntry object
+        data: input dictionary
 
     Returns:
-        GarageEntry object
+        dict
     """
-    data.vin = VIN
-    data.name = VEHICLE_NAME
+    data["vin"] = VIN
+    data["name"] = VEHICLE_NAME
     return data
 
 
-def anonymize_garage(data: Garage) -> Garage:
-    """Anonymize Garage object.
+def anonymize_garage(data: dict) -> dict:
+    """Anonymize select parts if the input from the garage dict.
 
     Args:
-        data: Garage object
+        data: input dictionary
 
     Returns:
-        Garage object
+        dict
     """
-    if data.vehicles:
-        data.vehicles = [anonymize_garage_entry(vehicle) for vehicle in data.vehicles]
+    if "vehicles" in data:
+        data["vehicles"] = [anonymize_garage_entry(vehicle) for vehicle in data["vehicles"]]
     return data
 
 
