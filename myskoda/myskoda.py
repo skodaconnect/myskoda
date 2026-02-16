@@ -848,7 +848,14 @@ class MySkoda:
     def _notify_callbacks(self, vin: Vin) -> None:
         """Execute registered callback functions for the vin."""
         for callback in self._callbacks.get(vin, []):
-            result = callback(vin)
+            try:
+                result = callback(vin)
+            except TypeError:
+                """For backwards compatibility only."""
+                _LOGGER.warning(
+                    "Callbacks registered with subscribe_events() receive the VIN as parameter now, please update your code."
+                )
+                result = callback()
             if result is not None:
                 task = asyncio.create_task(result)
                 background_tasks.add(task)
