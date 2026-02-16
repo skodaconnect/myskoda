@@ -877,7 +877,8 @@ class MySkoda:
             except TypeError:
                 """For backwards compatibility only."""
                 _LOGGER.warning(
-                    "Callbacks registered with subscribe_events() receive the VIN as parameter now, please update your code."
+                    "Callbacks registered with subscribe_events() receive the VIN "
+                    "as parameter now, please update your code."
                 )
                 result = callback()
             if result is not None:
