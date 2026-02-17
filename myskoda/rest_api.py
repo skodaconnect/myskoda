@@ -23,6 +23,7 @@ from myskoda.anonymize import (
     anonymize_maintenance,
     anonymize_parking_position,
     anonymize_positions,
+    anonymize_single_trip_statistics,
     anonymize_status,
     anonymize_trip_statistics,
     anonymize_url,
@@ -54,7 +55,7 @@ from .models.maintenance import Maintenance, MaintenanceReport
 from .models.position import ParkingPositionV3, Position, Positions, PositionType
 from .models.spin import Spin
 from .models.status import Status
-from .models.trip_statistics import TripStatistics
+from .models.trip_statistics import SingleTrips, TripStatistics
 from .models.user import User
 from .models.vehicle_connection_status import VehicleConnectionStatus
 from .utils import to_iso8601
@@ -181,13 +182,7 @@ class RestApi:
     ) -> GetEndpointResult[ChargingHistory]:
         """Retrieve charging history information for the specified vehicle."""
         url = f"/v1/charging/{vin}/history?userTimezone=UTC&limit={limit}"
-        if cursor:
-            url += f"&cursor={to_iso8601(cursor)}"
-        elif start or end:
-            if start:
-                url += f"&from={to_iso8601(start)}"
-            if end:
-                url += f"&to={to_iso8601(end)}"
+        url = self._apply_date_filter(url, cursor=cursor, start=start, end=end)
 
         raw = self.process_json(
             data=await self._make_get_request(url),
@@ -289,6 +284,28 @@ class RestApi:
             anonymization_fn=anonymize_trip_statistics,
         )
         result = self._deserialize(raw, TripStatistics.from_json)
+        url = anonymize_url(url) if anonymize else url
+        return GetEndpointResult(url=url, raw=raw, result=result)
+
+    async def get_single_trip_statistics(
+        self,
+        vin: str,
+        start: datetime | None = None,
+        end: datetime | None = None,
+        anonymize: bool = False,
+    ) -> GetEndpointResult[SingleTrips]:
+        """Retrieve detailed statistics about past trips.
+
+        If you want to filter by date, provide both start and end date.
+        """
+        url = f"/v1/trip-statistics/{vin}/single-trips?timezone=Europe%2FBerlin"
+        url = self._apply_date_filter(url, cursor=None, start=start, end=end)
+        raw = self.process_json(
+            data=await self._make_get_request(url),
+            anonymize=anonymize,
+            anonymization_fn=anonymize_single_trip_statistics,
+        )
+        result = self._deserialize(raw, SingleTrips.from_json)
         url = anonymize_url(url) if anonymize else url
         return GetEndpointResult(url=url, raw=raw, result=result)
 
@@ -715,3 +732,20 @@ class RestApi:
             raise
         else:
             return data
+
+    def _apply_date_filter(
+        self,
+        url: str,
+        cursor: datetime | None = None,
+        start: datetime | None = None,
+        end: datetime | None = None,
+    ) -> str:
+        """Apply date filter to URL."""
+        if cursor:
+            url += f"&cursor={to_iso8601(cursor)}"
+        elif start or end:
+            if start:
+                url += f"&from={to_iso8601(start)}"
+            if end:
+                url += f"&to={to_iso8601(end)}"
+        return url
