@@ -152,7 +152,7 @@ class MySkoda:
     ssl_context: SSLContext | None = None
     user: User | None = None
     _vehicles: dict[Vin, Vehicle]
-    _callbacks: dict[Vin, list[Callable[[Vin | None], Coroutine[Any, Any, None]]]]
+    _callbacks: dict[Vin, list[Callable[[Vin], Coroutine[Any, Any, None] | Callable[[], Coroutine[Any, Any, None]]]]
 
     def __init__(
         self,
@@ -219,7 +219,7 @@ class MySkoda:
         self.subscribe_events(callback=callback)
 
     def subscribe_updates(
-        self, vin: Vin, callback: Callable[[Vin | None], Coroutine[Any, Any, None]]
+        self, vin: Vin, callback: Callable[[Vin], Coroutine[Any, Any, None] | Callable[[], Coroutine[Any, Any, None]]
     ) -> None:
         """Subscribe a callback function to be called when Vehicle data is updated."""
         self._callbacks[vin].append(callback)
