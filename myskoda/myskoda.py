@@ -90,7 +90,7 @@ from .models.maintenance import Maintenance, MaintenanceReport
 from .models.position import ParkingPositionV3, Positions
 from .models.spin import Spin
 from .models.status import Status
-from .models.trip_statistics import TripStatistics
+from .models.trip_statistics import SingleTrips, TripStatistics
 from .models.user import User
 from .models.vehicle_connection_status import VehicleConnectionStatus
 from .mqtt import MySkodaMqttClient
@@ -367,6 +367,23 @@ class MySkoda:
     async def get_driving_range(self, vin: Vin, anonymize: bool = False) -> DrivingRange:
         """Retrieve estimated driving range for combustion vehicles."""
         return (await self.rest_api.get_driving_range(vin, anonymize=anonymize)).result
+
+    async def get_single_trip_statistics(
+        self,
+        vin: Vin,
+        start: datetime | None = None,
+        end: datetime | None = None,
+        anonymize: bool = False,
+    ) -> SingleTrips:
+        """Retrieve detailed statistics about past trips.
+
+        If you want to filter by date, provide both start and end date.
+        """
+        return (
+            await self.rest_api.get_single_trip_statistics(
+                vin, start=start, end=end, anonymize=anonymize
+            )
+        ).result
 
     async def get_trip_statistics(self, vin: Vin, anonymize: bool = False) -> TripStatistics:
         """Retrieve statistics about past trips."""

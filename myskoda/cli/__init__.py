@@ -62,6 +62,7 @@ from myskoda.cli.requests import (
     maintenance_report,
     parking_position,
     positions,
+    single_trip_statistics,
     status,
     trip_statistics,
     user,
@@ -179,6 +180,7 @@ cli.add_command(maintenance_report)
 cli.add_command(driving_range)
 cli.add_command(user)
 cli.add_command(trip_statistics)
+cli.add_command(single_trip_statistics)
 cli.add_command(connection_status)
 cli.add_command(garage)
 cli.add_command(auth)

@@ -221,6 +221,18 @@ def anonymize_trip_statistics(data: dict) -> dict:
     return data
 
 
+def anonymize_single_trip_statistics(data: dict) -> dict:
+    """Anonymize select parts if the input from the single_trip_statistics dict.
+
+    Args:
+        data: input dictionary
+
+    Returns:
+        dict
+    """
+    return data
+
+
 def anonymize_vehicle_connection_status(data: dict) -> dict:
     """Anonymize select parts if the input from the vehicle_connection_status dict.
 
