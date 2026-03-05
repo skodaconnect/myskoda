@@ -42,8 +42,12 @@ function extractCSRF(string $html): array {
     // templateModel is a JSON object containing "hmac" and "relayState" among other fields.
     // We search the full HTML directly — these field names are unique enough.
 
-    // csrf_token is an unquoted key in the window._IDK JS object
+    // csrf_token — try both unquoted and quoted key variants
     if (preg_match('/csrf_token:\s*"([^"]+)"/', $html, $m)) {
+        $result['csrf'] = $m[1];
+    } elseif (preg_match('/"csrf_token"\s*:\s*"([^"]+)"/', $html, $m)) {
+        $result['csrf'] = $m[1];
+    } elseif (preg_match('/["\']?csrf["\']?\s*:\s*"([^"]+)"/', $html, $m)) {
         $result['csrf'] = $m[1];
     }
 
@@ -192,9 +196,13 @@ function performLogin(string $email, string $password): array {
     $debug['step1']['csrf_result'] = $csrf;
 
     if (!$csrf['csrf']) {
-        // Try to find what script tags exist for debugging
-        preg_match_all('/<script[^>]*>(.*?)<\/script>/si', $resp['body'], $scripts);
-        $debug['step1']['script_contents'] = array_map(fn($s) => substr(trim($s), 0, 300), $scripts[1] ?? []);
+        // Show the window._IDK block content (up to 2000 chars) for debugging
+        if (preg_match('/window\._IDK\s*=\s*(\{.{0,2000})/s', $resp['body'], $idkMatch)) {
+            $debug['step1']['idk_block'] = $idkMatch[1];
+        }
+        // Find all occurrences of "csrf" in the HTML
+        preg_match_all('/(.{0,40}csrf.{0,40})/i', $resp['body'], $csrfMatches);
+        $debug['step1']['csrf_occurrences'] = array_unique(array_map(fn($s) => trim($s), $csrfMatches[0] ?? []));
         return ['error' => 'Step 1: Could not extract CSRF token', 'debug' => $debug];
     }
 
