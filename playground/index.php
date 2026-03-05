@@ -191,11 +191,31 @@ function performLogin(string $email, string $password): array {
         'prompt' => 'login',
     ]);
 
-    $resp = curlRequest(BASE_URL_IDENT . "/oidc/v1/authorize?$params", array_merge($cookieOpts, ['follow' => true]));
-    if ($resp['error']) return ['error' => "Step 1 failed: {$resp['error']}"];
+    $authorizeUrl = BASE_URL_IDENT . "/oidc/v1/authorize?$params";
+    $resp = curlRequest($authorizeUrl, array_merge($cookieOpts, ['follow' => true]));
+
+    $debug = [];
+    $debug['step1'] = [
+        'url' => $authorizeUrl,
+        'final_url' => $resp['url'],
+        'status' => $resp['status'],
+        'curl_error' => $resp['error'] ?: null,
+        'body_length' => strlen($resp['body']),
+        'body_snippet' => substr($resp['body'], 0, 500),
+        'has_window_idk' => str_contains($resp['body'], 'window._IDK'),
+    ];
+
+    if ($resp['error']) return ['error' => "Step 1 failed: {$resp['error']}", 'debug' => $debug];
 
     $csrf = extractCSRF($resp['body']);
-    if (!$csrf['csrf']) return ['error' => 'Step 1: Could not extract CSRF token', 'html' => substr($resp['body'], 0, 2000)];
+    $debug['step1']['csrf_result'] = $csrf;
+
+    if (!$csrf['csrf']) {
+        // Try to find what script tags exist for debugging
+        preg_match_all('/<script[^>]*>(.*?)<\/script>/si', $resp['body'], $scripts);
+        $debug['step1']['script_contents'] = array_map(fn($s) => substr(trim($s), 0, 300), $scripts[1] ?? []);
+        return ['error' => 'Step 1: Could not extract CSRF token', 'debug' => $debug];
+    }
 
     // Step 2: Submit email
     $postData = http_build_query([
@@ -205,14 +225,32 @@ function performLogin(string $email, string $password): array {
         '_csrf' => $csrf['csrf'],
     ]);
 
+    $step2Url = BASE_URL_IDENT . "/signin-service/v1/" . CLIENT_ID . "/login/identifier";
     $resp = curlRequest(
-        BASE_URL_IDENT . "/signin-service/v1/" . CLIENT_ID . "/login/identifier",
+        $step2Url,
         array_merge($cookieOpts, ['post_fields' => $postData, 'follow' => true])
     );
-    if ($resp['error']) return ['error' => "Step 2 failed: {$resp['error']}"];
+
+    $debug['step2'] = [
+        'url' => $step2Url,
+        'final_url' => $resp['url'],
+        'status' => $resp['status'],
+        'curl_error' => $resp['error'] ?: null,
+        'body_length' => strlen($resp['body']),
+        'body_snippet' => substr($resp['body'], 0, 500),
+        'has_window_idk' => str_contains($resp['body'], 'window._IDK'),
+    ];
+
+    if ($resp['error']) return ['error' => "Step 2 failed: {$resp['error']}", 'debug' => $debug];
 
     $csrf = extractCSRF($resp['body']);
-    if (!$csrf['csrf']) return ['error' => 'Step 2: Could not extract CSRF token from email step'];
+    $debug['step2']['csrf_result'] = $csrf;
+
+    if (!$csrf['csrf']) {
+        preg_match_all('/<script[^>]*>(.*?)<\/script>/si', $resp['body'], $scripts);
+        $debug['step2']['script_contents'] = array_map(fn($s) => substr(trim($s), 0, 300), $scripts[1] ?? []);
+        return ['error' => 'Step 2: Could not extract CSRF token from email step', 'debug' => $debug];
+    }
 
     // Step 3: Submit password (no follow, manual redirect chase)
     $postData = http_build_query([
@@ -721,6 +759,10 @@ $isLoggedIn = !empty($_SESSION['logged_in']);
             </button>
         </form>
         <div id="loginError" style="margin-top:12px; color:var(--red); font-size:0.85rem; display:none;"></div>
+        <div id="loginDebug" style="margin-top:12px; display:none; background:var(--bg); border:1px solid var(--border); border-radius:8px; padding:12px; max-height:400px; overflow:auto;">
+            <div style="font-size:0.75rem; color:var(--text-dim); margin-bottom:8px; font-weight:600;">Debug-Informationen</div>
+            <pre id="loginDebugContent" style="font-family:'SF Mono','Fira Code',monospace; font-size:0.75rem; color:var(--text-dim); white-space:pre-wrap; word-break:break-all;"></pre>
+        </div>
     </div>
 
     <?php else: ?>
@@ -991,6 +1033,12 @@ async function doLogin(e) {
         if (data.error) {
             errEl.textContent = data.error;
             errEl.style.display = 'block';
+            if (data.debug) {
+                const debugEl = document.getElementById('loginDebug');
+                const debugContent = document.getElementById('loginDebugContent');
+                debugContent.textContent = JSON.stringify(data.debug, null, 2);
+                debugEl.style.display = 'block';
+            }
             btn.disabled = false;
             btn.innerHTML = 'Anmelden';
         } else {
