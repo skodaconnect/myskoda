@@ -42,12 +42,29 @@ function extractCSRF(string $html): array {
     // templateModel is a JSON object containing "hmac" and "relayState" among other fields.
     // We search the full HTML directly — these field names are unique enough.
 
-    // csrf_token — try both unquoted and quoted key variants
-    if (preg_match('/csrf_token:\s*"([^"]+)"/', $html, $m)) {
+    // csrf_token — try multiple patterns:
+    // 1. Unquoted key in window._IDK block: csrf_token: "..."
+    if (preg_match('/csrf_token\s*:\s*"([^"]+)"/s', $html, $m)) {
         $result['csrf'] = $m[1];
-    } elseif (preg_match('/"csrf_token"\s*:\s*"([^"]+)"/', $html, $m)) {
+    }
+    // 2. Quoted key: "csrf_token": "..."
+    elseif (preg_match('/"csrf_token"\s*:\s*"([^"]+)"/s', $html, $m)) {
         $result['csrf'] = $m[1];
-    } elseif (preg_match('/["\']?csrf["\']?\s*:\s*"([^"]+)"/', $html, $m)) {
+    }
+    // 3. Hidden input field: <input type="hidden" name="_csrf" value="...">
+    elseif (preg_match('/name=["\']_csrf["\']\s+value=["\']([^"\']+)["\']/i', $html, $m)) {
+        $result['csrf'] = $m[1];
+    }
+    // 4. Hidden input (reversed attr order): <input value="..." name="_csrf">
+    elseif (preg_match('/value=["\']([^"\']+)["\']\s+name=["\']_csrf["\']/i', $html, $m)) {
+        $result['csrf'] = $m[1];
+    }
+    // 5. Meta tag: <meta name="_csrf" content="...">
+    elseif (preg_match('/name=["\']_csrf["\']\s+content=["\']([^"\']+)["\']/i', $html, $m)) {
+        $result['csrf'] = $m[1];
+    }
+    // 6. Any key containing "csrf" with a quoted value
+    elseif (preg_match('/["\']?csrf[_-]?token["\']?\s*:\s*["\']([^"\']+)["\']/i', $html, $m)) {
         $result['csrf'] = $m[1];
     }
 
@@ -196,13 +213,22 @@ function performLogin(string $email, string $password): array {
     $debug['step1']['csrf_result'] = $csrf;
 
     if (!$csrf['csrf']) {
-        // Show the window._IDK block content (up to 2000 chars) for debugging
-        if (preg_match('/window\._IDK\s*=\s*(\{.{0,2000})/s', $resp['body'], $idkMatch)) {
-            $debug['step1']['idk_block'] = $idkMatch[1];
+        // Show the full window._IDK script tag content for debugging
+        if (preg_match('/(window\._IDK\s*=\s*\{.{0,3000})/s', $resp['body'], $idkMatch)) {
+            $debug['step1']['idk_block_3000chars'] = $idkMatch[1];
         }
-        // Find all occurrences of "csrf" in the HTML
-        preg_match_all('/(.{0,40}csrf.{0,40})/i', $resp['body'], $csrfMatches);
-        $debug['step1']['csrf_occurrences'] = array_unique(array_map(fn($s) => trim($s), $csrfMatches[0] ?? []));
+        // Check if the literal strings exist in the body
+        $debug['step1']['has_csrf_token_string'] = str_contains($resp['body'], 'csrf_token');
+        $debug['step1']['has__csrf_string'] = str_contains($resp['body'], '_csrf');
+        $debug['step1']['has_csrfToken_string'] = str_contains($resp['body'], 'csrfToken');
+        // Find all occurrences of "csrf" with context
+        preg_match_all('/(.{0,60}csrf.{0,60})/i', $resp['body'], $csrfMatches);
+        $debug['step1']['csrf_occurrences'] = array_values(array_unique(
+            array_map(fn($s) => trim(preg_replace('/\s+/', ' ', $s)), $csrfMatches[0] ?? [])
+        ));
+        // Also check for hidden input fields
+        preg_match_all('/<input[^>]*type=["\']hidden["\'][^>]*>/i', $resp['body'], $hiddenInputs);
+        $debug['step1']['hidden_inputs'] = $hiddenInputs[0] ?? [];
         return ['error' => 'Step 1: Could not extract CSRF token', 'debug' => $debug];
     }
 
