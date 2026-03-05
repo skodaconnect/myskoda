@@ -37,30 +37,42 @@ function generatePKCE(): array {
 function extractCSRF(string $html): array {
     $result = ['csrf' => '', 'relay_state' => '', 'hmac' => ''];
 
-    // Extract _csrf
-    if (preg_match('/name="_csrf"\s+value="([^"]+)"/', $html, $m)) {
-        $result['csrf'] = $m[1];
-    } elseif (preg_match('/name="_csrf"\s+content="([^"]+)"/', $html, $m)) {
-        $result['csrf'] = $m[1];
+    // The CSRF data lives inside a <script> tag as:
+    //   window._IDK = {
+    //     csrf_token: "...",
+    //     templateModel: {
+    //       hmac: "...",
+    //       relayState: "...",
+    //     }
+    //   }
+    // The format is YAML-like (unquoted keys, trailing commas) — not valid JSON.
+    // We extract the block after "window._IDK =" and convert it to valid JSON.
+
+    if (!preg_match('/window\._IDK\s*=\s*((?:\n|.)*?)$/m', $html, $match)) {
+        return $result;
     }
 
-    // Extract relayState
-    if (preg_match('/name="relayState"\s+value="([^"]+)"/', $html, $m)) {
-        $result['relay_state'] = $m[1];
+    $raw = $match[1];
+
+    // Convert YAML-like JS object to valid JSON:
+    // 1. Quote unquoted keys (word characters before a colon)
+    $json = preg_replace('/(?<=[{,\n])\s*(\w+)\s*:/m', '"$1":', $raw);
+    // 2. Remove trailing commas before } or ]
+    $json = preg_replace('/,\s*([}\]])/m', '$1', $json);
+
+    $parsed = json_decode($json, true);
+    if (!$parsed) {
+        return $result;
     }
 
-    // Extract hmac
-    if (preg_match('/name="hmac"\s+value="([^"]+)"/', $html, $m)) {
-        $result['hmac'] = $m[1];
+    if (isset($parsed['csrf_token'])) {
+        $result['csrf'] = $parsed['csrf_token'];
     }
-
-    // Try JSON templateModel as fallback
-    if (preg_match('/templateModel\s*[:=]\s*({[^}]+})/', $html, $m)) {
-        $json = json_decode($m[1], true);
-        if ($json) {
-            if (!$result['relay_state'] && isset($json['relayState'])) $result['relay_state'] = $json['relayState'];
-            if (!$result['hmac'] && isset($json['hmac'])) $result['hmac'] = $json['hmac'];
-        }
+    if (isset($parsed['templateModel']['relayState'])) {
+        $result['relay_state'] = $parsed['templateModel']['relayState'];
+    }
+    if (isset($parsed['templateModel']['hmac'])) {
+        $result['hmac'] = $parsed['templateModel']['hmac'];
     }
 
     return $result;
