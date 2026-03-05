@@ -93,33 +93,28 @@ function curlRequest(string $url, array $options = []): array {
         CURLOPT_COOKIEJAR => $options['cookie_file'] ?? '',
     ]);
 
+    // Set HTTP method
+    if (isset($options['method'])) {
+        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, strtoupper($options['method']));
+    }
+
+    // Set form data (for auth flow)
     if (isset($options['post_fields'])) {
         curl_setopt($ch, CURLOPT_POST, true);
         curl_setopt($ch, CURLOPT_POSTFIELDS, $options['post_fields']);
     }
 
+    // Build headers — always include provided headers
+    $headers = $options['headers'] ?? [];
+
+    // Set JSON body
     if (isset($options['json'])) {
-        curl_setopt($ch, CURLOPT_POST, true);
         curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($options['json']));
-        curl_setopt($ch, CURLOPT_HTTPHEADER, array_merge(
-            $options['headers'] ?? [],
-            ['Content-Type: application/json']
-        ));
+        $headers[] = 'Content-Type: application/json';
     }
 
-    if (isset($options['method'])) {
-        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, strtoupper($options['method']));
-        if (isset($options['json'])) {
-            curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($options['json']));
-            curl_setopt($ch, CURLOPT_HTTPHEADER, array_merge(
-                $options['headers'] ?? [],
-                ['Content-Type: application/json']
-            ));
-        }
-    }
-
-    if (isset($options['headers']) && !isset($options['json']) && !isset($options['method'])) {
-        curl_setopt($ch, CURLOPT_HTTPHEADER, $options['headers']);
+    if (!empty($headers)) {
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
     }
 
     $response = curl_exec($ch);
@@ -157,12 +152,14 @@ function apiRequest(string $method, string $path, ?array $json = null): array {
 
     if ($json !== null) {
         $options['json'] = $json;
-        $options['headers'][] = 'Content-Type: application/json';
     }
 
     $start = microtime(true);
     $result = curlRequest($url, $options);
     $duration = round((microtime(true) - $start) * 1000);
+
+    // Show token info for debugging (first/last 8 chars)
+    $tokenPreview = $token ? (substr($token, 0, 8) . '...' . substr($token, -8)) : '(empty)';
 
     return [
         'method' => $method,
@@ -171,6 +168,12 @@ function apiRequest(string $method, string $path, ?array $json = null): array {
         'body' => $result['body'],
         'error' => $result['error'],
         'duration_ms' => $duration,
+        'debug' => [
+            'token_preview' => $tokenPreview,
+            'token_length' => strlen($token),
+            'request_headers' => ["Authorization: Bearer $tokenPreview"],
+            'curl_error' => $result['error'] ?: null,
+        ],
     ];
 }
 
@@ -748,6 +751,9 @@ $isLoggedIn = !empty($_SESSION['logged_in']);
                 <span id="statusText"><?= $isLoggedIn ? 'Verbunden' : 'Nicht verbunden' ?></span>
             </span>
             <?php if ($isLoggedIn): ?>
+                <span style="font-size:0.7rem; color:var(--text-dim); font-family:monospace;">
+                    Token: <?= substr($_SESSION['access_token'] ?? '', 0, 12) ?>...<?= substr($_SESSION['access_token'] ?? '', -8) ?>
+                </span>
                 <button class="btn-ghost btn-sm" onclick="doRefresh()">Token Refresh</button>
                 <button class="btn-red btn-sm" onclick="doLogout()">Logout</button>
             <?php endif; ?>
@@ -1018,6 +1024,10 @@ $isLoggedIn = !empty($_SESSION['logged_in']);
                         <span>URL: <code id="respUrl" style="font-size:0.75rem;"></code></span>
                     </div>
                 </div>
+                <div style="display:none; margin-bottom:12px;">
+                    <div class="section-label">Request Debug</div>
+                    <pre class="response-body" id="respDebug" style="max-height:150px; font-size:0.75rem;"></pre>
+                </div>
                 <div class="response-body" id="respBody"></div>
             </div>
         </main>
@@ -1168,6 +1178,15 @@ async function sendRequest() {
 
         document.getElementById('respTime').textContent = data.duration_ms || '?';
         document.getElementById('respUrl').textContent = data.url || '';
+
+        // Show debug info (token, headers, errors)
+        const debugEl = document.getElementById('respDebug');
+        if (data.debug) {
+            debugEl.textContent = JSON.stringify(data.debug, null, 2);
+            debugEl.parentElement.style.display = 'block';
+        } else {
+            debugEl.parentElement.style.display = 'none';
+        }
 
         const bodyContent = data.body_formatted || data.body || '';
         document.getElementById('respBody').innerHTML = syntaxHighlight(bodyContent);
