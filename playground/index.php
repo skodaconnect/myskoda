@@ -751,8 +751,13 @@ $isLoggedIn = !empty($_SESSION['logged_in']);
                 <span id="statusText"><?= $isLoggedIn ? 'Verbunden' : 'Nicht verbunden' ?></span>
             </span>
             <?php if ($isLoggedIn): ?>
-                <span style="font-size:0.7rem; color:var(--text-dim); font-family:monospace;">
-                    Token: <?= substr($_SESSION['access_token'] ?? '', 0, 12) ?>...<?= substr($_SESSION['access_token'] ?? '', -8) ?>
+                <?php
+                    $at = $_SESSION['access_token'] ?? '';
+                    $rt = $_SESSION['refresh_token'] ?? '';
+                    $tokenInfo = $at ? (substr($at, 0, 12) . '...' . substr($at, -8) . ' (' . strlen($at) . ' chars)') : 'LEER!';
+                ?>
+                <span style="font-size:0.7rem; color:<?= $at ? 'var(--green)' : 'var(--red)' ?>; font-family:monospace;">
+                    Token: <?= htmlspecialchars($tokenInfo) ?>
                 </span>
                 <button class="btn-ghost btn-sm" onclick="doRefresh()">Token Refresh</button>
                 <button class="btn-red btn-sm" onclick="doLogout()">Logout</button>
@@ -787,6 +792,15 @@ $isLoggedIn = !empty($_SESSION['logged_in']);
     </div>
 
     <?php else: ?>
+
+    <!-- Session Debug -->
+    <div style="background:var(--surface2); border:1px solid var(--border); border-radius:8px; padding:10px 14px; margin-bottom:16px; font-family:monospace; font-size:0.7rem; color:var(--text-dim);">
+        <strong>Session:</strong>
+        access_token: <?= strlen($_SESSION['access_token'] ?? '') ?> chars |
+        refresh_token: <?= strlen($_SESSION['refresh_token'] ?? '') ?> chars |
+        id_token: <?= strlen($_SESSION['id_token'] ?? '') ?> chars |
+        logged_in: <?= var_export($_SESSION['logged_in'] ?? false, true) ?>
+    </div>
 
     <!-- PLAYGROUND -->
     <div class="main-grid">
