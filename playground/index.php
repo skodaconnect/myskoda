@@ -37,33 +37,22 @@ function generatePKCE(): array {
 function extractCSRF(string $html): array {
     $result = ['csrf' => '', 'relay_state' => '', 'hmac' => ''];
 
-    // The CSRF data lives inside a <script> tag as window._IDK = { ... }
-    // The outer object has unquoted keys (YAML-like), but the templateModel
-    // value is a full JSON object with quoted keys. Instead of parsing the
-    // whole thing, we extract the three values we need directly:
-    //   - csrf_token: "..."           (top-level, unquoted key)
-    //   - "hmac":"..."                (inside templateModel JSON)
-    //   - "relayState":"..."          (inside templateModel JSON)
+    // Python reference: myskoda/auth/csrf_parser.py
+    // The HTML contains a <script> with: window._IDK = { csrf_token: "...", templateModel: {...} }
+    // templateModel is a JSON object containing "hmac" and "relayState" among other fields.
+    // We search the full HTML directly — these field names are unique enough.
 
-    // First, find the script block containing window._IDK
-    if (!preg_match('/window\._IDK\s*=\s*\{(.+?)\n\s*\}\s*;?\s*(?:<\/script>|$)/s', $html, $match)) {
-        return $result;
-    }
-
-    $block = $match[1];
-
-    // Extract csrf_token (unquoted key, quoted value)
-    if (preg_match('/csrf_token:\s*"([^"]+)"/', $block, $m)) {
+    // csrf_token is an unquoted key in the window._IDK JS object
+    if (preg_match('/csrf_token:\s*"([^"]+)"/', $html, $m)) {
         $result['csrf'] = $m[1];
     }
 
-    // Extract hmac from the templateModel JSON (quoted key, quoted value)
-    if (preg_match('/"hmac"\s*:\s*"([^"]+)"/', $block, $m)) {
+    // hmac and relayState are quoted keys inside the templateModel JSON value
+    if (preg_match('/"hmac"\s*:\s*"([^"]+)"/', $html, $m)) {
         $result['hmac'] = $m[1];
     }
 
-    // Extract relayState from the templateModel JSON (quoted key, quoted value)
-    if (preg_match('/"relayState"\s*:\s*"([^"]+)"/', $block, $m)) {
+    if (preg_match('/"relayState"\s*:\s*"([^"]+)"/', $html, $m)) {
         $result['relay_state'] = $m[1];
     }
 
