@@ -37,42 +37,34 @@ function generatePKCE(): array {
 function extractCSRF(string $html): array {
     $result = ['csrf' => '', 'relay_state' => '', 'hmac' => ''];
 
-    // The CSRF data lives inside a <script> tag as:
-    //   window._IDK = {
-    //     csrf_token: "...",
-    //     templateModel: {
-    //       hmac: "...",
-    //       relayState: "...",
-    //     }
-    //   }
-    // The format is YAML-like (unquoted keys, trailing commas) — not valid JSON.
-    // We extract the block after "window._IDK =" and convert it to valid JSON.
+    // The CSRF data lives inside a <script> tag as window._IDK = { ... }
+    // The outer object has unquoted keys (YAML-like), but the templateModel
+    // value is a full JSON object with quoted keys. Instead of parsing the
+    // whole thing, we extract the three values we need directly:
+    //   - csrf_token: "..."           (top-level, unquoted key)
+    //   - "hmac":"..."                (inside templateModel JSON)
+    //   - "relayState":"..."          (inside templateModel JSON)
 
-    if (!preg_match('/window\._IDK\s*=\s*((?:\n|.)*?)$/m', $html, $match)) {
+    // First, find the script block containing window._IDK
+    if (!preg_match('/window\._IDK\s*=\s*\{(.+?)\n\s*\}\s*;?\s*(?:<\/script>|$)/s', $html, $match)) {
         return $result;
     }
 
-    $raw = $match[1];
+    $block = $match[1];
 
-    // Convert YAML-like JS object to valid JSON:
-    // 1. Quote unquoted keys (word characters before a colon)
-    $json = preg_replace('/(?<=[{,\n])\s*(\w+)\s*:/m', '"$1":', $raw);
-    // 2. Remove trailing commas before } or ]
-    $json = preg_replace('/,\s*([}\]])/m', '$1', $json);
-
-    $parsed = json_decode($json, true);
-    if (!$parsed) {
-        return $result;
+    // Extract csrf_token (unquoted key, quoted value)
+    if (preg_match('/csrf_token:\s*"([^"]+)"/', $block, $m)) {
+        $result['csrf'] = $m[1];
     }
 
-    if (isset($parsed['csrf_token'])) {
-        $result['csrf'] = $parsed['csrf_token'];
+    // Extract hmac from the templateModel JSON (quoted key, quoted value)
+    if (preg_match('/"hmac"\s*:\s*"([^"]+)"/', $block, $m)) {
+        $result['hmac'] = $m[1];
     }
-    if (isset($parsed['templateModel']['relayState'])) {
-        $result['relay_state'] = $parsed['templateModel']['relayState'];
-    }
-    if (isset($parsed['templateModel']['hmac'])) {
-        $result['hmac'] = $parsed['templateModel']['hmac'];
+
+    // Extract relayState from the templateModel JSON (quoted key, quoted value)
+    if (preg_match('/"relayState"\s*:\s*"([^"]+)"/', $block, $m)) {
+        $result['relay_state'] = $m[1];
     }
 
     return $result;
