@@ -65,7 +65,7 @@ from .models.auxiliary_heating import (
     AuxiliaryHeating,
     AuxiliaryHeatingTimer,
 )
-from .models.charging import ChargeMode, Charging, ChargingStatus
+from .models.charging import ChargeMode, Charging
 from .models.charging_history import ChargingHistory, ChargingSession
 from .models.chargingprofiles import ChargingProfiles
 from .models.common import Vin
@@ -79,7 +79,6 @@ from .models.event import (
     ServiceEventAccess,
     ServiceEventAirConditioning,
     ServiceEventChangeSoc,
-    ServiceEventChangeSocData,
     ServiceEventCharging,
     ServiceEventDeparture,
     ServiceEventOdometer,
@@ -967,49 +966,77 @@ class MySkoda:
         await self.refresh_driving_range(event.vin, notify=False)
 
         vehicle = self._vehicles[event.vin]
-        if vehicle.charging and (status := vehicle.charging.status):
-            self._process_charging_event_update_charging(status, event.data)
+        if charging := vehicle.charging:
+            self._process_charging_event_update_charging(
+                charging,
+                event,
+            )
 
         if driving_range := vehicle.driving_range:
-            self._process_charging_event_update_driving_range(driving_range, event.data)
+            self._process_charging_event_update_driving_range(
+                driving_range,
+                event,
+            )
 
         self._notify_callbacks(event.vin)
 
     @staticmethod
     def _process_charging_event_update_charging(
-        charging_status: ChargingStatus, event_data: ServiceEventChangeSocData
+        charging: Charging,
+        event: ServiceEventChangeSoc,
     ) -> None:
-        """Update charging_status with the event_data."""
-        if event_data.charged_range:
-            charging_status.battery.remaining_cruising_range_in_meters = (
-                event_data.charged_range * 1000
+        """Update charging with the event_data when the event is newer."""
+        if charging.car_captured_timestamp and event.timestamp <= charging.car_captured_timestamp:
+            _LOGGER.debug(
+                "Ignoring stale charging MQTT event: event timestamp %s, charging snapshot %s",
+                event.timestamp,
+                charging.car_captured_timestamp,
             )
-        if event_data.soc:
-            charging_status.battery.state_of_charge_in_percent = event_data.soc
-        if event_data.time_to_finish:
-            charging_status.remaining_time_to_fully_charged_in_minutes = event_data.time_to_finish
-        if event_data.state:
-            charging_status.state = event_data.state
+            return
+
+        if not (charging_status := charging.status):
+            return
+
+        if event.data.charged_range:
+            charging_status.battery.remaining_cruising_range_in_meters = (
+                event.data.charged_range * 1000
+            )
+        if event.data.soc:
+            charging_status.battery.state_of_charge_in_percent = event.data.soc
+        if event.data.time_to_finish:
+            charging_status.remaining_time_to_fully_charged_in_minutes = event.data.time_to_finish
+        if event.data.state:
+            charging_status.state = event.data.state
 
     @staticmethod
     def _process_charging_event_update_driving_range(
-        driving_range: DrivingRange, event_data: ServiceEventChangeSocData
+        driving_range: DrivingRange,
+        event: ServiceEventChangeSoc,
     ) -> None:
-        """Update driving_range with the event_data."""
+        """Update driving_range with the event_data when the event is newer."""
+        if event.timestamp <= driving_range.car_captured_timestamp:
+            _LOGGER.debug(
+                "Ignoring stale driving-range MQTT event: "
+                "event timestamp %s, driving-range snapshot %s",
+                event.timestamp,
+                driving_range.car_captured_timestamp,
+            )
+            return
+
         per = driving_range.primary_engine_range
         ser = False
 
         if driving_range.secondary_engine_range:
             ser = driving_range.secondary_engine_range
 
-        if event_data.soc:
+        if event.data.soc:
             if per.engine_type == EngineType.ELECTRIC:
-                per.current_soc_in_percent = event_data.soc
+                per.current_soc_in_percent = event.data.soc
             elif ser and ser.engine_type == EngineType.ELECTRIC:
-                ser.current_soc_in_percent = event_data.soc
+                ser.current_soc_in_percent = event.data.soc
 
-        if event_data.charged_range:
-            range_in_km = int(event_data.charged_range / 1000)
+        if event.data.charged_range:
+            range_in_km = int(event.data.charged_range / 1000)
             if per.engine_type == EngineType.ELECTRIC:
                 per.remaining_range_in_km = range_in_km
             elif ser and ser.engine_type == EngineType.ELECTRIC:
