@@ -684,6 +684,13 @@ class MySkoda:
             self._notify_callbacks(vin)
 
     @async_debounce(immediate=True)
+    async def refresh_single_trip_statistics(self, vin: Vin, notify: bool = True) -> None:
+        """Refresh single_trip_statistics data for the provided Vin."""
+        self._vehicles[vin].single_trip_statistics = await self.get_single_trip_statistics(vin)
+        if notify:
+            self._notify_callbacks(vin)
+
+    @async_debounce(immediate=True)
     async def refresh_maintenance(self, vin: Vin, notify: bool = True) -> None:
         """Refresh maintenance data for the provided Vin."""
         self._vehicles[vin].maintenance = await self.get_maintenance(vin)
@@ -840,6 +847,7 @@ class MySkoda:
     async def _request_trip_statistics(self, vin: Vin) -> None:
         """Update state with trip statistics data."""
         self._vehicles[vin].trip_statistics = await self.get_trip_statistics(vin)
+        self._vehicles[vin].single_trip_statistics = await self.get_single_trip_statistics(vin)
 
     async def _request_health(self, vin: Vin) -> None:
         """Update state with vehicle health inspection data."""

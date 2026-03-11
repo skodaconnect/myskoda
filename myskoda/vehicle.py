@@ -10,7 +10,7 @@ from .models.info import CapabilityId, Info
 from .models.maintenance import Maintenance
 from .models.position import ParkingPositionV3, Positions
 from .models.status import Status
-from .models.trip_statistics import TripStatistics
+from .models.trip_statistics import SingleTrips, TripStatistics
 from .models.vehicle_connection_status import VehicleConnectionStatus
 
 
@@ -26,6 +26,7 @@ class Vehicle:
     parking_position: ParkingPositionV3 | None = None
     driving_range: DrivingRange | None = None
     trip_statistics: TripStatistics | None = None
+    single_trip_statistics: SingleTrips | None = None
     maintenance: Maintenance
     health: Health | None = None
     departure_info: DepartureInfo | None = None
