@@ -96,6 +96,20 @@ for entry in tripstatistics.detailed_statistics:
     print(f"{entry.date}: {entry.milage_in_km}km")
 ```
 
+## Single Trip Statistics
+
+Information about recent individual trips grouped by day.
+
+```python
+from myskoda.models.trip_statistics import SingleTrips
+
+vin = "TMBJB9NY6RF999999" # See `MySkoda.list_vehicle_vins()`.
+single_trips: SingleTrips = await myskoda.get_single_trip_statistics(vin)
+if single_trips.daily_trips and single_trips.daily_trips[0].trips:
+    last_trip = single_trips.daily_trips[0].trips[0]
+    print(f"Last trip mileage: {last_trip.mileage_in_km}km")
+```
+
 ## Maintenance
 
 Maintenance information about the car, such as the total mileage or next scheduled maintenance.
