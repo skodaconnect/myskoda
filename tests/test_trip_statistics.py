@@ -21,9 +21,12 @@ def test_parse_single_trips() -> None:
 
     raw_data = json.loads(json_data)
     assert parsed.daily_trips[0].date == raw_data["dailyTrips"][0]["date"]
-    
+
     if parsed.daily_trips[0].trips:
-        assert parsed.daily_trips[0].trips[0].end_time == raw_data["dailyTrips"][0]["trips"][0]["endTime"]
+        assert (
+            parsed.daily_trips[0].trips[0].end_time
+            == raw_data["dailyTrips"][0]["trips"][0]["endTime"]
+        )
 
 
 def test_parse_trip_statistics() -> None:
@@ -34,7 +37,7 @@ def test_parse_trip_statistics() -> None:
     parsed = TripStatistics.from_json(json_data)
 
     assert parsed is not None
-    
+
     raw_data = json.loads(json_data)
     assert parsed.overall_mileage_in_km == raw_data.get("overallMileageInKm")
     assert parsed.overall_average_speed_in_kmph == raw_data.get("overallAverageSpeedInKmph")

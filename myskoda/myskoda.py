@@ -952,9 +952,7 @@ class MySkoda:
             OperationName.UNLOCK,
         ]:
             await self.refresh_status(event.vin)
-        elif event.operation in [
-            OperationName.UPDATE_DEPARTURE_TIMERS,
-        ]:
+        elif event.operation == OperationName.UPDATE_DEPARTURE_TIMERS:
             await self.refresh_departure_info(event.vin)
 
     async def _process_charging_event(self, event: ServiceEventChangeSoc) -> None:

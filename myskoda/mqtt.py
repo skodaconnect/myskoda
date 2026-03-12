@@ -129,7 +129,7 @@ class MySkodaMqttClient:
                 port=MQTT_BROKER_PORT,
                 identifier="Id" + str(APP_UUID) + "#" + str(uuid.uuid4()),
                 logger=_LOGGER,
-                tls_context=ssl_context if ssl_context else _SSL_CONTEXT,
+                tls_context=ssl_context or _SSL_CONTEXT,
                 keepalive=MQTT_KEEPALIVE,
                 clean_session=True,
             )
