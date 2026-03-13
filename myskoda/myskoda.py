@@ -153,7 +153,7 @@ class MySkoda:
     ssl_context: SSLContext | None = None
     user: User | None = None
     _vehicles: dict[Vin, Vehicle]
-    _callbacks: dict[Vin, list[Callable[[], Coroutine[Any, Any, None]]]]
+    _callbacks: dict[Vin, list[Callable[[Vin], Coroutine[Any, Any, None]]]]
 
     def __init__(
         self,
@@ -220,7 +220,7 @@ class MySkoda:
         self.subscribe_events(callback=callback)
 
     def subscribe_updates(
-        self, vin: Vin, callback: Callable[[], Coroutine[Any, Any, None]]
+        self, vin: Vin, callback: Callable[[Vin], Coroutine[Any, Any, None]]
     ) -> None:
         """Subscribe a callback function to be called when Vehicle data is updated."""
         self._callbacks[vin].append(callback)
@@ -873,7 +873,15 @@ class MySkoda:
     def _notify_callbacks(self, vin: Vin) -> None:
         """Execute registered callback functions for the vin."""
         for callback in self._callbacks.get(vin, []):
-            result = callback()
+            try:
+                result = callback(vin)
+            except TypeError:
+                """For backwards compatibility only."""
+                _LOGGER.warning(
+                    "Callbacks registered with subscribe_events() receive the VIN "
+                    "as parameter now, please update your code."
+                )
+                result = callback(vin)
             if result is not None:
                 task = asyncio.create_task(result)
                 background_tasks.add(task)
