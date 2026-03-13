@@ -59,6 +59,7 @@ class ServiceEventName(StrEnum):
 class ServiceEventError(StrEnum):
     STOPPED_DEVICE = "STOPPED_DEVICE"
     CLIMA = "CLIMA"
+    STOPPED_POWER = "STOPPED_POWER"
 
 
 def _deserialize_time_to_finish(value: int | str) -> int | None:
