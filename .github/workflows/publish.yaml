@@ -21,7 +21,7 @@ jobs:
 
       # https://docs.astral.sh/uv/guides/integration/github/#installation
       - name: Install uv
-        uses: astral-sh/setup-uv@v5
+        uses: astral-sh/setup-uv@v7
         with:
           version: "0.6.9"
 
