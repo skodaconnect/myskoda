@@ -58,7 +58,7 @@ async def test_wait_for_operation(
 
     assert future.done() is False
 
-    in_progress = json.dumps(
+    in_progress = json2mqtt(
         {
             "version": 1,
             "operation": "start-air-conditioning",
@@ -67,7 +67,7 @@ async def test_wait_for_operation(
             "requestId": "72f24950-b3db-4b7e-948f-7032f533773a",
         }
     )
-    complete = json.dumps(
+    complete = json2mqtt(
         {
             "version": 1,
             "operation": "start-air-conditioning",
@@ -90,6 +90,11 @@ async def test_wait_for_operation(
     await future
 
 
+def json2mqtt(data: dict) -> bytes:
+    """Convert plain json to passable format for aiomqtt."""
+    return json.dumps(data).encode()
+
+
 @pytest.mark.asyncio
 async def test_subscribe_event(
     connected_mqtt_client: MySkodaMqttClient, fake_mqtt_client_wrapper: FakeMqttClientWrapper
@@ -106,7 +111,7 @@ async def test_subscribe_event(
     messages = [
         aiomqtt.Message(
             topic=f"{base_topic}/operation-request/air-conditioning/start-stop-air-conditioning",
-            payload=json.dumps(
+            payload=json2mqtt(
                 {
                     "version": 1,
                     "operation": "stop-air-conditioning",
@@ -122,7 +127,7 @@ async def test_subscribe_event(
         ),
         aiomqtt.Message(
             topic=f"{base_topic}/service-event/vehicle-status/lights",
-            payload=json.dumps(
+            payload=json2mqtt(
                 {
                     "version": 1,
                     "traceId": trace_id,
@@ -142,7 +147,7 @@ async def test_subscribe_event(
         ),
         aiomqtt.Message(
             topic=f"{base_topic}/service-event/vehicle-status/odometer",
-            payload=json.dumps(
+            payload=json2mqtt(
                 {
                     "version": 1,
                     "traceId": trace_id,
@@ -162,7 +167,7 @@ async def test_subscribe_event(
         ),
         aiomqtt.Message(
             topic=f"{base_topic}/service-event/vehicle-status/access",
-            payload=json.dumps(
+            payload=json2mqtt(
                 {
                     "version": 1,
                     "traceId": trace_id,
@@ -182,7 +187,7 @@ async def test_subscribe_event(
         ),
         aiomqtt.Message(
             topic=f"{base_topic}/service-event/charging",
-            payload=json.dumps(
+            payload=json2mqtt(
                 {
                     "version": 1,
                     "traceId": trace_id,
@@ -207,7 +212,7 @@ async def test_subscribe_event(
         ),
         aiomqtt.Message(
             topic=f"{base_topic}/service-event/charging",
-            payload=json.dumps(
+            payload=json2mqtt(
                 {
                     "version": 1,
                     "traceId": trace_id,
@@ -232,7 +237,7 @@ async def test_subscribe_event(
         ),
         aiomqtt.Message(
             topic=f"{base_topic}/service-event/charging",
-            payload=json.dumps(
+            payload=json2mqtt(
                 {
                     "version": 1,
                     "traceId": trace_id,
@@ -252,7 +257,7 @@ async def test_subscribe_event(
         ),
         aiomqtt.Message(
             topic=f"{base_topic}/vehicle-event/vehicle-connection-status-update",
-            payload=json.dumps(
+            payload=json2mqtt(
                 {
                     "version": 1,
                     "traceId": trace_id,
@@ -272,7 +277,7 @@ async def test_subscribe_event(
         ),
         aiomqtt.Message(
             topic=f"{base_topic}/vehicle-event/vehicle-connection-status-update",
-            payload=json.dumps(
+            payload=json2mqtt(
                 {
                     "version": 1,
                     "traceId": trace_id,
@@ -292,7 +297,7 @@ async def test_subscribe_event(
         ),
         aiomqtt.Message(
             topic=f"{base_topic}/vehicle-event/vehicle-connection-status-update",
-            payload=json.dumps(
+            payload=json2mqtt(
                 {
                     "version": 1,
                     "traceId": trace_id,
@@ -312,7 +317,7 @@ async def test_subscribe_event(
         ),
         aiomqtt.Message(
             topic=f"{base_topic}/vehicle-event/vehicle-connection-status-update",
-            payload=json.dumps(
+            payload=json2mqtt(
                 {
                     "version": 1,
                     "traceId": trace_id,
@@ -332,7 +337,7 @@ async def test_subscribe_event(
         ),
         aiomqtt.Message(
             topic=f"{base_topic}/vehicle-event/vehicle-ignition-status",
-            payload=json.dumps(
+            payload=json2mqtt(
                 {
                     "version": 1,
                     "traceId": trace_id,
@@ -353,7 +358,7 @@ async def test_subscribe_event(
         ),
         aiomqtt.Message(
             topic=f"{base_topic}/vehicle-event/vehicle-ignition-status",
-            payload=json.dumps(
+            payload=json2mqtt(
                 {
                     "version": 1,
                     "traceId": trace_id,
