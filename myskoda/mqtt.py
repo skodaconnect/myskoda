@@ -32,7 +32,6 @@ from .models.event import BaseEvent, OperationEvent, OperationName, OperationSta
 
 _LOGGER = logging.getLogger(__name__)
 TOPIC_RE = re.compile("^(.*?)/(.*?)/(.*?)/(.*?)$")
-APP_UUID = uuid.uuid4()
 
 
 def _create_ssl_context() -> ssl.SSLContext:
@@ -127,7 +126,7 @@ class MySkodaMqttClient:
             self.mqtt_client = AioMqttClientWrapper(
                 hostname=MQTT_BROKER_HOST,
                 port=MQTT_BROKER_PORT,
-                identifier="Id" + str(APP_UUID) + "#" + str(uuid.uuid4()),
+                identifier=str(uuid.uuid4()) + "#" + str(uuid.uuid4()),
                 logger=_LOGGER,
                 tls_context=ssl_context or _SSL_CONTEXT,
                 keepalive=MQTT_KEEPALIVE,
@@ -184,7 +183,7 @@ class MySkodaMqttClient:
             try:
                 assert self.mqtt_client is not None
                 password = await self.authorization.get_access_token()
-                self.mqtt_client.update_username_password(username="android-app", password=password)
+                self.mqtt_client.update_username_password(username=self.user_id, password=password)
                 async with self.mqtt_client as client:
                     _LOGGER.info("Connected to MQTT")
                     _LOGGER.debug("using MQTT client %s", client)
