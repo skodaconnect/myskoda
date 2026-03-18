@@ -183,7 +183,7 @@ class MySkodaMqttClient:
             try:
                 assert self.mqtt_client is not None
                 password = await self.authorization.get_access_token()
-                self.mqtt_client.update_username_password(username=self.user_id, password=password)
+                self.mqtt_client.update_username_password(username=self.user_id | "android-app", password=password)
                 async with self.mqtt_client as client:
                     _LOGGER.info("Connected to MQTT")
                     _LOGGER.debug("using MQTT client %s", client)
