@@ -50,6 +50,7 @@ class CapabilityId(StrEnum):
     DESTINATION_IMPORT_UPGRADABLE = "DESTINATION_IMPORT_UPGRADABLE"
     DIGICERT = "DIGICERT"
     DRIVING_SCORE = "DRIVING_SCORE"
+    DRIVING_SCORE_WITH_BONUS = "DRIVING_SCORE_WITH_BONUS"
     E_PRIVACY = "E_PRIVACY"
     EMERGENCY_CALLING = "EMERGENCY_CALLING"
     EV_ROUTE_PLANNING = "EV_ROUTE_PLANNING"
@@ -221,6 +222,15 @@ class Gearbox(DataClassORJSONMixin):
 
 
 @dataclass
+class Dimensions(DataClassORJSONMixin):
+    """Vehicle dimensions."""
+
+    length: int | None = field(default=None, metadata=field_options(alias="lengthInMm"))
+    width: int | None = field(default=None, metadata=field_options(alias="widthInMm"))
+    height: int | None = field(default=None, metadata=field_options(alias="heightInMm"))
+
+
+@dataclass
 class Specification(DataClassORJSONMixin):
     """Car specification. Model for the physical features of the car."""
 
@@ -237,6 +247,12 @@ class Specification(DataClassORJSONMixin):
         default=None, metadata=field_options(alias="maxChargingPowerInKW")
     )
     trim_level: str | None = field(default=None, metadata=field_options(alias="trimLevel"))
+    exterior_colour: str | None = field(
+        default=None, metadata=field_options(alias="exteriorColour")
+    )
+    exterior_dimensions: Dimensions | None = field(
+        default=None, metadata=field_options(alias="exteriorDimensions")
+    )
 
 
 @dataclass
