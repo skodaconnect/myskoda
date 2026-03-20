@@ -145,6 +145,8 @@ reports:
       system_model_id: NW44KD
       title: "\u0160koda Kamiq"
       trim_level: null
+      exterior_colour: null
+      exterior_dimensions: null
     state: ACTIVATED
     vin: TMOCKAA0AA000000
     workshop_mode_enabled: false

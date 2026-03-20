@@ -210,6 +210,8 @@ reports:
       system_model_id: NX36QD
       title: "\u0160koda Octavia"
       trim_level: RS PLUS
+      exterior_colour: null
+      exterior_dimensions: null
     state: ACTIVATED
     vin: TMOCKAA0AA000000
     workshop_mode_enabled: false

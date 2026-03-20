@@ -198,6 +198,8 @@ reports:
         system_model_id: NX34ED
         title: "\u0160koda Octavia"
         trim_level: STYLE
+        exterior_colour: null
+        exterior_dimensions: null
       state: ACTIVATED
       timestamp: null
       vin: TMOCKAA0AA000000

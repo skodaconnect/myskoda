@@ -215,6 +215,8 @@ reports:
           capacity: 77
         max_charging_power: 125
         trim_level: '80'
+        exterior_colour: null
+        exterior_dimensions: null
       vin: TMOCKAA0AA000000
       name: Example Car
       capabilities:

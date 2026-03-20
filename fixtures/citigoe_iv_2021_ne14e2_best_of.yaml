@@ -183,6 +183,8 @@ reports:
       system_model_id: NE14E2
       title: "\u0160koda CitigoE iV"
       trim_level: BEST OF
+      exterior_colour: null
+      exterior_dimensions: null
     state: ACTIVATED
     vin: TMOCKAA0AA000000
     workshop_mode_enabled: false

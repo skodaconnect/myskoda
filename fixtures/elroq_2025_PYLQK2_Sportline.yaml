@@ -250,6 +250,11 @@ reports:
       system_model_id: PYLQK2
       title: "\u0160koda Elroq"
       trim_level: Sportline
+      exterior_colour: 'Graphite grey metallic (5X5X)'
+      exterior_dimensions:
+        height: 1655
+        length: 4488
+        width: 1884
     state: ACTIVATED
     timestamp: '2025-09-21T14:16:23.449479+00:00'
     vin: TMOCKAA0AA000000

@@ -241,6 +241,8 @@ reports:
       system_model_id: 5AZJK2
       title: "\u0160koda Enyaq"
       trim_level: '85'
+      exterior_colour: null
+      exterior_dimensions: null
     state: ACTIVATED
     timestamp: null
     vin: TMOCKAA0AA000000
