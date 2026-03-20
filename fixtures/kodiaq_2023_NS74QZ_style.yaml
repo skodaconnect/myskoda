@@ -131,6 +131,8 @@ reports:
         battery:
         max_charging_power:
         trim_level: Style
+        exterior_colour: null
+        exterior_dimensions: null
       vin: TMOCKAA0AA000000
       name: Example Car
       capabilities:

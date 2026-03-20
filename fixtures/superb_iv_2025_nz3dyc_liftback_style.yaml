@@ -213,6 +213,11 @@ reports:
       system_model_id: NZ3DYC
       title: "\u0160koda Superb"
       trim_level: Style Explore
+      exterior_colour: 'Graphite Grey, metalliväri (5X5X)'
+      exterior_dimensions:
+        height: 1511
+        length: 4912
+        width: 1849
     state: ACTIVATED
     timestamp: '2025-08-27T16:16:37.225752+00:00'
     vin: TMOCKAA0AA000000

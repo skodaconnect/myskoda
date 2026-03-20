@@ -1,0 +1,621 @@
+name: Octavia
+description: Fixtures for Octavia Selection 2025
+generation_time: "2025-11-10T13:10:52.493869+00:00"
+library_version: 2.4.4
+vehicles:
+  - id: 0
+    device_platform: MBB_ODP
+    system_model_id: PV5D7D
+    model: Octavia
+    model_year: "2025"
+    trim_level: Selection
+    software_version: null
+    capabilities:
+      - id: ACCESS
+        statuses: []
+      - id: ACTIVE_VENTILATION
+        statuses: []
+      - id: DEALER_APPOINTMENT
+        statuses:
+          - INITIALLY_DISABLED
+      - id: HONK_AND_FLASH
+        statuses: []
+      - id: MEASUREMENTS
+        statuses: []
+      - id: PARKING_POSITION
+        statuses: []
+      - id: ROADSIDE_ASSISTANT
+        statuses: []
+      - id: STATE
+        statuses: []
+      - id: THEFT_WARNING
+        statuses: []
+      - id: TRIP_STATISTICS
+        statuses: []
+      - id: VEHICLE_HEALTH_INSPECTION
+        statuses: []
+      - id: WARNING_LIGHTS
+        statuses: []
+      - id: VEHICLE_WAKE_UP
+        statuses: []
+      - id: ACCIDENT_DAMAGE_MANAGEMENT
+        statuses: []
+      - id: CARE_AND_INSURANCE
+        statuses: []
+      - id: CUBIC
+        statuses: []
+      - id: DESTINATIONS
+        statuses: []
+      - id: DIGICERT
+        statuses: []
+      - id: E_PRIVACY
+        statuses: []
+      - id: FLEET_SUPPORTED
+        statuses: []
+      - id: FUEL_STATUS
+        statuses: []
+      - id: GUEST_USER_MANAGEMENT
+        statuses: []
+      - id: ICE_VEHICLE_RTS
+        statuses: []
+      - id: MISUSE_PROTECTION
+        statuses: []
+      - id: ONLINE_SPEECH_GPS
+        statuses: []
+      - id: OUTSIDE_TEMPERATURE
+        statuses: []
+      - id: PAY_TO_FUEL
+        statuses: []
+      - id: PAY_TO_PARK
+        statuses: []
+      - id: ROUTE_IMPORT
+        statuses: []
+      - id: SERVICE_PARTNER
+        statuses: []
+      - id: SUBSCRIPTIONS
+        statuses: []
+      - id: VEHICLE_HEALTH_WARNINGS
+        statuses: []
+reports:
+  - type: get
+    vehicle_id: 0
+    success: true
+    endpoint: info
+    raw: '{"vin": "TMOCKAA0AA000000", "name": "Example Car", "workshopModeEnabled": false, "licensePlate": "HH AA 1234", "state": "ACTIVATED", "devicePlatform": "MBB_ODP", "specification": {"title": "\u0160koda Octavia Combi", "manufacturingDate": "2024-07-26", "model": "Octavia", "modelYear": "2025", "body": "Combi", "exteriorColour": "Black-Magic Perleffekt (1Z1Z)", "exteriorDimensions": {"lengthInMm": 4698, "widthInMm": 1829, "heightInMm": 1491}, "trimLevel": "Selection", "systemCode": "UNKNOWN", "systemModelId": "PV5D7D", "engine": {"type": "TDI", "powerInKW": 110, "capacityInLiters": 2.0}, "gearbox": {"type": "A7F"}}, "renders": [], "compositeRenders": [{"layers": [{"url": "https://iprenders.blob.core.windows.net/basepv5v25100013/1Z1ZG2yIcnql4.9Ewit8DVfo-LaIvV98Zg62li0toDerBFS-u3GV7LmyxjZpd.tJgR1f-VGYCFK-79xs6z.13-TBWFINbQM-19201080dayvext_side1080.png", "viewPoint": "exterior_side", "type": "REAL", "order": 0}], "viewType": "UNMODIFIED_EXTERIOR_SIDE"}, {"layers": [{"url": "https://iprenders.blob.core.windows.net/basepv5v25100013/1Z1ZG2yIcnql4.9Ewit8DVfo-LaIvV98Zg62li0toDerBFS-u3GV7LmyxjZpd.tJgR1f-VGYCFK-79xs6z.13-TBWFINbQM-19201080dayvext_side1080.png", "viewPoint": "exterior_side", "type": "REAL", "order": 0}], "modifications": {"adjustSpaceInPx": {"top": -367, "bottom": -189, "left": -157, "right": -96}, "densityIndependentHeight": 270, "flipHorizontal": false, "anchorTo": "LEFT"}, "viewType": "HOME"}], "capabilities": {"capabilities": [{"id": "ACCESS", "statuses": []}, {"id": "ACTIVE_VENTILATION", "statuses": []}, {"id": "DEALER_APPOINTMENT", "statuses": ["INITIALLY_DISABLED"]}, {"id": "HONK_AND_FLASH", "statuses": []}, {"id": "MEASUREMENTS", "statuses": []}, {"id": "PARKING_POSITION", "statuses": []}, {"id": "ROADSIDE_ASSISTANT", "statuses": []}, {"id": "STATE", "statuses": []}, {"id": "THEFT_WARNING", "statuses": []}, {"id": "TRIP_STATISTICS", "statuses": []}, {"id": "VEHICLE_HEALTH_INSPECTION", "statuses": []}, {"id": "WARNING_LIGHTS", "statuses": []}, {"id": "VEHICLE_WAKE_UP", "statuses": []}, {"id": "ACCIDENT_DAMAGE_MANAGEMENT", "statuses": []}, {"id": "CARE_AND_INSURANCE", "statuses": []}, {"id": "CUBIC", "statuses": []}, {"id": "DESTINATIONS", "statuses": []}, {"id": "DIGICERT", "statuses": []}, {"id": "E_PRIVACY", "statuses": []}, {"id": "FLEET_SUPPORTED", "statuses": []}, {"id": "FUEL_STATUS", "statuses": []}, {"id": "GUEST_USER_MANAGEMENT", "statuses": []}, {"id": "ICE_VEHICLE_RTS", "statuses": []}, {"id": "MISUSE_PROTECTION", "statuses": []}, {"id": "ONLINE_SPEECH_GPS", "statuses": []}, {"id": "OUTSIDE_TEMPERATURE", "statuses": []}, {"id": "PAY_TO_FUEL", "statuses": []}, {"id": "PAY_TO_PARK", "statuses": []}, {"id": "ROUTE_IMPORT", "statuses": []}, {"id": "SERVICE_PARTNER", "statuses": []}, {"id": "SUBSCRIPTIONS", "statuses": []}, {"id": "VEHICLE_HEALTH_WARNINGS", "statuses": []}]}, "sunset2g3gImpact": "OCU_UNKNOWN"}'
+    url: /v2/garage/vehicles/TMOCKAA0AA000000?connectivityGenerations=MOD1&connectivityGenerations=MOD2&connectivityGenerations=MOD3&connectivityGenerations=MOD4
+    result:
+      timestamp: "2025-11-10T13:10:45.765003+00:00"
+      state: ACTIVATED
+      specification:
+        body: Combi
+        engine:
+          power: 110
+          type: TDI
+          capacity_in_liters: 2.0
+        model: Octavia
+        title: Škoda Octavia Combi
+        manufacturing_date: "2024-07-26"
+        model_year: "2025"
+        system_code: UNKNOWN
+        system_model_id: PV5D7D
+        battery: null
+        max_charging_power: null
+        trim_level: Selection
+        exterior_colour: 'Black-Magic Perleffekt (1Z1Z)'
+        exterior_dimensions:
+          height: 1491
+          length: 4698
+          width: 1829
+      vin: TMOCKAA0AA000000
+      name: Example Car
+      capabilities:
+        capabilities:
+          - id: ACCESS
+            statuses: []
+          - id: ACTIVE_VENTILATION
+            statuses: []
+          - id: DEALER_APPOINTMENT
+            statuses:
+              - INITIALLY_DISABLED
+          - id: HONK_AND_FLASH
+            statuses: []
+          - id: MEASUREMENTS
+            statuses: []
+          - id: PARKING_POSITION
+            statuses: []
+          - id: ROADSIDE_ASSISTANT
+            statuses: []
+          - id: STATE
+            statuses: []
+          - id: THEFT_WARNING
+            statuses: []
+          - id: TRIP_STATISTICS
+            statuses: []
+          - id: VEHICLE_HEALTH_INSPECTION
+            statuses: []
+          - id: WARNING_LIGHTS
+            statuses: []
+          - id: VEHICLE_WAKE_UP
+            statuses: []
+          - id: ACCIDENT_DAMAGE_MANAGEMENT
+            statuses: []
+          - id: CARE_AND_INSURANCE
+            statuses: []
+          - id: CUBIC
+            statuses: []
+          - id: DESTINATIONS
+            statuses: []
+          - id: DIGICERT
+            statuses: []
+          - id: E_PRIVACY
+            statuses: []
+          - id: FLEET_SUPPORTED
+            statuses: []
+          - id: FUEL_STATUS
+            statuses: []
+          - id: GUEST_USER_MANAGEMENT
+            statuses: []
+          - id: ICE_VEHICLE_RTS
+            statuses: []
+          - id: MISUSE_PROTECTION
+            statuses: []
+          - id: ONLINE_SPEECH_GPS
+            statuses: []
+          - id: OUTSIDE_TEMPERATURE
+            statuses: []
+          - id: PAY_TO_FUEL
+            statuses: []
+          - id: PAY_TO_PARK
+            statuses: []
+          - id: ROUTE_IMPORT
+            statuses: []
+          - id: SERVICE_PARTNER
+            statuses: []
+          - id: SUBSCRIPTIONS
+            statuses: []
+          - id: VEHICLE_HEALTH_WARNINGS
+            statuses: []
+        errors: null
+      renders: []
+      device_platform: MBB_ODP
+      workshop_mode_enabled: false
+      composite_renders:
+        - layers:
+            - url: https://iprenders.blob.core.windows.net/basepv5v25100013/1Z1ZG2yIcnql4.9Ewit8DVfo-LaIvV98Zg62li0toDerBFS-u3GV7LmyxjZpd.tJgR1f-VGYCFK-79xs6z.13-TBWFINbQM-19201080dayvext_side1080.png
+              type: REAL
+              order: 0
+              view_point: exterior_side
+          view_type: UNMODIFIED_EXTERIOR_SIDE
+        - layers:
+            - url: https://iprenders.blob.core.windows.net/basepv5v25100013/1Z1ZG2yIcnql4.9Ewit8DVfo-LaIvV98Zg62li0toDerBFS-u3GV7LmyxjZpd.tJgR1f-VGYCFK-79xs6z.13-TBWFINbQM-19201080dayvext_side1080.png
+              type: REAL
+              order: 0
+              view_point: exterior_side
+          view_type: HOME
+      service_partner: null
+      software_version: null
+      license_plate: HH AA 1234
+      errors: null
+    error: null
+  - type: get
+    vehicle_id: 0
+    success: true
+    endpoint: status
+    raw: '{"overall": {"doorsLocked": "YES", "locked": "YES", "doors": "CLOSED", "windows": "CLOSED", "lights": "OFF", "reliableLockStatus": "LOCKED"}, "detail": {"sunroof": "UNSUPPORTED", "trunk": "CLOSED", "bonnet": "CLOSED"}, "renders": {"lightMode": {"oneX": "https://mysmob.api.connect.skoda-auto.cz/api/v2/vehicle-status/render?carType=COMBI&vehicleState=1-1-1-1-0-0-0-0-0&lastModifiedAt=1760965735&dimension=1x&theme=LIGHT", "oneAndHalfX": "https://mysmob.api.connect.skoda-auto.cz/api/v2/vehicle-status/render?carType=COMBI&vehicleState=1-1-1-1-0-0-0-0-0&lastModifiedAt=1760965735&dimension=1-5x&theme=LIGHT", "twoX": "https://mysmob.api.connect.skoda-auto.cz/api/v2/vehicle-status/render?carType=COMBI&vehicleState=1-1-1-1-0-0-0-0-0&lastModifiedAt=1760965735&dimension=2x&theme=LIGHT", "threeX": "https://mysmob.api.connect.skoda-auto.cz/api/v2/vehicle-status/render?carType=COMBI&vehicleState=1-1-1-1-0-0-0-0-0&lastModifiedAt=1760965735&dimension=3x&theme=LIGHT"}, "darkMode": {"oneX": "https://mysmob.api.connect.skoda-auto.cz/api/v2/vehicle-status/render?carType=COMBI&vehicleState=1-1-1-1-0-0-0-0-0&lastModifiedAt=1760965735&dimension=1x&theme=DARK", "oneAndHalfX": "https://mysmob.api.connect.skoda-auto.cz/api/v2/vehicle-status/render?carType=COMBI&vehicleState=1-1-1-1-0-0-0-0-0&lastModifiedAt=1760965735&dimension=1-5x&theme=DARK", "twoX": "https://mysmob.api.connect.skoda-auto.cz/api/v2/vehicle-status/render?carType=COMBI&vehicleState=1-1-1-1-0-0-0-0-0&lastModifiedAt=1760965735&dimension=2x&theme=DARK", "threeX": "https://mysmob.api.connect.skoda-auto.cz/api/v2/vehicle-status/render?carType=COMBI&vehicleState=1-1-1-1-0-0-0-0-0&lastModifiedAt=1760965735&dimension=3x&theme=DARK"}}, "carCapturedTimestamp": "2025-11-10T12:36:12Z"}'
+    url: /v2/vehicle-status/TMOCKAA0AA000000
+    result:
+      timestamp: "2025-11-10T13:10:45.938092+00:00"
+      detail:
+        bonnet: CLOSED
+        sunroof: UNSUPPORTED
+        trunk: CLOSED
+      overall:
+        doors: CLOSED
+        doors_locked: "YES"
+        lights: "OFF"
+        locked: "YES"
+        windows: CLOSED
+        reliable_lock_status: LOCKED
+      renders:
+        light_mode:
+          one_x: https://mysmob.api.connect.skoda-auto.cz/api/v2/vehicle-status/render?carType=COMBI&vehicleState=1-1-1-1-0-0-0-0-0&lastModifiedAt=1760965735&dimension=1x&theme=LIGHT
+          one_and_half_x: https://mysmob.api.connect.skoda-auto.cz/api/v2/vehicle-status/render?carType=COMBI&vehicleState=1-1-1-1-0-0-0-0-0&lastModifiedAt=1760965735&dimension=1-5x&theme=LIGHT
+          two_x: https://mysmob.api.connect.skoda-auto.cz/api/v2/vehicle-status/render?carType=COMBI&vehicleState=1-1-1-1-0-0-0-0-0&lastModifiedAt=1760965735&dimension=2x&theme=LIGHT
+          three_x: https://mysmob.api.connect.skoda-auto.cz/api/v2/vehicle-status/render?carType=COMBI&vehicleState=1-1-1-1-0-0-0-0-0&lastModifiedAt=1760965735&dimension=3x&theme=LIGHT
+        dark_mode:
+          one_x: https://mysmob.api.connect.skoda-auto.cz/api/v2/vehicle-status/render?carType=COMBI&vehicleState=1-1-1-1-0-0-0-0-0&lastModifiedAt=1760965735&dimension=1x&theme=DARK
+          one_and_half_x: https://mysmob.api.connect.skoda-auto.cz/api/v2/vehicle-status/render?carType=COMBI&vehicleState=1-1-1-1-0-0-0-0-0&lastModifiedAt=1760965735&dimension=1-5x&theme=DARK
+          two_x: https://mysmob.api.connect.skoda-auto.cz/api/v2/vehicle-status/render?carType=COMBI&vehicleState=1-1-1-1-0-0-0-0-0&lastModifiedAt=1760965735&dimension=2x&theme=DARK
+          three_x: https://mysmob.api.connect.skoda-auto.cz/api/v2/vehicle-status/render?carType=COMBI&vehicleState=1-1-1-1-0-0-0-0-0&lastModifiedAt=1760965735&dimension=3x&theme=DARK
+      car_captured_timestamp: "2025-11-10T12:36:12+00:00"
+    error: null
+  - type: get
+    vehicle_id: 0
+    success: true
+    endpoint: air_conditioning
+    raw: '{"state": "INVALID", "runningRequests": [], "steeringWheelPosition": "LEFT", "windowHeatingState": {"front": "INVALID", "rear": "INVALID", "unspecified": "INVALID"}, "timers": [{"id": 1, "enabled": false, "time": "00:00", "type": "ONE_OFF", "selectedDays": ["SATURDAY"]}, {"id": 2, "enabled": false, "time": "00:00", "type": "ONE_OFF", "selectedDays": ["SATURDAY"]}, {"id": 3, "enabled": false, "time": "00:00", "type": "ONE_OFF", "selectedDays": ["SATURDAY"]}], "carCapturedTimestamp": "2025-11-10T10:06:24Z", "outsideTemperature": {"temperatureValue": 7.0, "temperatureUnit": "CELSIUS", "carCapturedTimestamp": "2025-11-10T10:06:25Z"}, "errors": [{"type": "UNAVAILABLE_VEHICLE_INFORMATION", "description": "APIs for obtaining seat heating status are not available"}, {"type": "UNAVAILABLE_CHARGING_INFORMATION", "description": "APIs for obtaining power cable connection/lock information are not available"}]}'
+    url: /v2/air-conditioning/TMOCKAA0AA000000
+    result:
+      timestamp: "2025-11-10T13:10:46.252043+00:00"
+      timers:
+        - enabled: false
+          id: 1
+          time: 00:00
+          type: ONE_OFF
+          selected_days:
+            - SATURDAY
+        - enabled: false
+          id: 2
+          time: 00:00
+          type: ONE_OFF
+          selected_days:
+            - SATURDAY
+        - enabled: false
+          id: 3
+          time: 00:00
+          type: ONE_OFF
+          selected_days:
+            - SATURDAY
+      errors:
+        - type: UNAVAILABLE_VEHICLE_INFORMATION
+          description: APIs for obtaining seat heating status are not available
+        - type: UNAVAILABLE_CHARGING_INFORMATION
+          description: APIs for obtaining power cable connection/lock information are not available
+      state: INVALID
+      steering_wheel_position: LEFT
+      window_heating_state:
+        front: INVALID
+        rear: INVALID
+        unspecified: INVALID
+      car_captured_timestamp: "2025-11-10T10:06:24+00:00"
+      air_conditioning_at_unlock: null
+      charger_connection_state: null
+      charger_lock_state: null
+      estimated_date_time_to_reach_target_temperature: null
+      heater_source: null
+      seat_heating_activated: null
+      target_temperature: null
+      window_heating_enabled: null
+      air_conditioning_without_external_power: null
+      outside_temperature:
+        temperature_value: 7.0
+        unit_in_car: CELSIUS
+        car_captured_timestamp: "2025-11-10T10:06:25+00:00"
+    error: null
+  - type: get
+    vehicle_id: 0
+    success: true
+    endpoint: auxiliary_heating
+    raw: '{"state": "INVALID", "durationInSeconds": 0, "timers": [{"id": 1, "enabled": false, "time": "00:00", "type": "ONE_OFF", "selectedDays": ["SATURDAY"]}, {"id": 2, "enabled": false, "time": "00:00", "type": "ONE_OFF", "selectedDays": ["SATURDAY"]}, {"id": 3, "enabled": false, "time": "00:00", "type": "ONE_OFF", "selectedDays": ["SATURDAY"]}], "carCapturedTimestamp": "2025-11-10T10:06:24Z", "outsideTemperature": {"temperatureValue": 7.0, "temperatureUnit": "CELSIUS", "carCapturedTimestamp": "2025-11-10T10:06:25Z"}, "errors": []}'
+    url: /v2/air-conditioning/TMOCKAA0AA000000/auxiliary-heating
+    result:
+      timestamp: "2025-11-10T13:10:46.644909+00:00"
+      timers:
+        - enabled: false
+          id: 1
+          time: 00:00
+          type: ONE_OFF
+          selected_days:
+            - SATURDAY
+        - enabled: false
+          id: 2
+          time: 00:00
+          type: ONE_OFF
+          selected_days:
+            - SATURDAY
+        - enabled: false
+          id: 3
+          time: 00:00
+          type: ONE_OFF
+          selected_days:
+            - SATURDAY
+      errors: []
+      state: INVALID
+      start_mode: null
+      duration_in_seconds: 0
+      target_temperature: null
+      car_captured_timestamp: "2025-11-10T10:06:24+00:00"
+      estimated_date_time_to_reach_target_temperature: null
+      outside_temperature:
+        temperature_value: 7.0
+        unit_in_car: CELSIUS
+        car_captured_timestamp: "2025-11-10T10:06:25+00:00"
+    error: null
+  - type: get
+    vehicle_id: 0
+    success: true
+    endpoint: positions
+    raw: '{"positions": [{"type": "VEHICLE", "gpsCoordinates": {"latitude": 53.470636, "longitude": 9.689872}, "address": {"city": "Example City", "street": "Example Avenue", "houseNumber": "15", "zipCode": "54321", "countryCode": "DEU"}}], "errors": []}'
+    url: /v1/maps/positions?vin=TMOCKAA0AA000000
+    result:
+      timestamp: "2025-11-10T13:10:46.810651+00:00"
+      errors: []
+      positions:
+        - gps_coordinates:
+            latitude: 53.470636
+            longitude: 9.689872
+          type: VEHICLE
+          address:
+            country_code: DEU
+            zip_code: "54321"
+            house_number: "15"
+            street: Example Avenue
+            city: Example City
+            country: null
+    error: null
+  - type: get
+    vehicle_id: 0
+    success: true
+    endpoint: health
+    raw: '{"capturedAt": "2025-11-10T12:36:08Z", "mileageInKm": 35491, "warningLights": [{"category": "ASSISTANCE", "defects": []}, {"category": "COMFORT", "defects": []}, {"category": "BRAKE", "defects": []}, {"category": "ENGINE", "defects": []}, {"category": "LIGHTING", "defects": []}, {"category": "TIRE", "defects": []}, {"category": "OTHER", "defects": []}]}'
+    url: /v1/vehicle-health-report/warning-lights/TMOCKAA0AA000000
+    result:
+      timestamp: "2025-11-10T13:10:49.348825+00:00"
+      warning_lights:
+        - category: ASSISTANCE
+          defects: []
+        - category: COMFORT
+          defects: []
+        - category: BRAKE
+          defects: []
+        - category: ENGINE
+          defects: []
+        - category: LIGHTING
+          defects: []
+        - category: TIRE
+          defects: []
+        - category: OTHER
+          defects: []
+      mileage_in_km: 35491
+      captured_at: "2025-11-10T12:36:08+00:00"
+    error: null
+  - type: get
+    vehicle_id: 0
+    success: false
+    endpoint: charging
+    raw: null
+    url: null
+    result: null
+    error: |
+      Traceback (most recent call last):
+        File "/usr/local/lib/python3.13/site-packages/myskoda/myskoda.py", line 687, in generate_fixture_report
+          result = await self.get_endpoint(vin, endpoint, anonymize=True)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        File "/usr/local/lib/python3.13/site-packages/myskoda/myskoda.py", line 735, in get_endpoint
+          return await method(vin, anonymize=anonymize)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        File "/usr/local/lib/python3.13/site-packages/myskoda/rest_api.py", line 152, in get_charging
+          data=await self._make_get_request(url),
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        File "/usr/local/lib/python3.13/site-packages/myskoda/rest_api.py", line 115, in _make_get_request
+          return await self._make_request(url=url, method="GET")
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        File "/usr/local/lib/python3.13/site-packages/myskoda/rest_api.py", line 105, in _make_request
+          response.raise_for_status()
+          ~~~~~~~~~~~~~~~~~~~~~~~~~^^
+        File "/usr/local/lib/python3.13/site-packages/aiohttp/client_reqrep.py", line 636, in raise_for_status
+          raise ClientResponseError(
+          ...<5 lines>...
+          )
+      aiohttp.client_exceptions.ClientResponseError: 500, message='Internal Server Error', url='https://mysmob.api.connect.skoda-auto.cz/api/v1/charging/TMOCKAA0AA000000'
+  - type: get
+    vehicle_id: 0
+    success: false
+    endpoint: charging_profiles
+    raw: null
+    url: null
+    result: null
+    error: |
+      Traceback (most recent call last):
+        File "/usr/local/lib/python3.13/site-packages/myskoda/myskoda.py", line 687, in generate_fixture_report
+          result = await self.get_endpoint(vin, endpoint, anonymize=True)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        File "/usr/local/lib/python3.13/site-packages/myskoda/myskoda.py", line 735, in get_endpoint
+          return await method(vin, anonymize=anonymize)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        File "/usr/local/lib/python3.13/site-packages/myskoda/rest_api.py", line 166, in get_charging_profiles
+          data=await self._make_get_request(url),
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        File "/usr/local/lib/python3.13/site-packages/myskoda/rest_api.py", line 115, in _make_get_request
+          return await self._make_request(url=url, method="GET")
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        File "/usr/local/lib/python3.13/site-packages/myskoda/rest_api.py", line 105, in _make_request
+          response.raise_for_status()
+          ~~~~~~~~~~~~~~~~~~~~~~~~~^^
+        File "/usr/local/lib/python3.13/site-packages/aiohttp/client_reqrep.py", line 636, in raise_for_status
+          raise ClientResponseError(
+          ...<5 lines>...
+          )
+      aiohttp.client_exceptions.ClientResponseError: 403, message='Forbidden', url='https://mysmob.api.connect.skoda-auto.cz/api/v1/charging/TMOCKAA0AA000000/profiles'
+  - type: get
+    vehicle_id: 0
+    success: true
+    endpoint: maintenance
+    raw: '{"maintenanceReport": {"capturedAt": "2025-11-10T12:36:08Z", "inspectionDueInDays": 682, "inspectionDueInKm": 24800, "mileageInKm": 35491, "oilServiceDueInDays": 514, "oilServiceDueInKm": 12900}, "predictiveMaintenance": {"setting": {"serviceActivated": false, "email": "user@example.com", "phone": "+49 1234 567890"}}}'
+    url: /v3/vehicle-maintenance/vehicles/TMOCKAA0AA000000
+    result:
+      timestamp: "2025-11-10T13:10:50.178492+00:00"
+      maintenance_report:
+        timestamp: "2025-11-10T13:10:50.178452+00:00"
+        captured_at: "2025-11-10T12:36:08+00:00"
+        mileage_in_km: 35491
+        inspection_due_in_days: 682
+        inspection_due_in_km: 24800
+        oil_service_due_in_days: 514
+        oil_service_due_in_km: 12900
+      predictive_maintenance:
+        setting:
+          email: user@example.com
+          service_activated: false
+          phone: +49 1234 567890
+          preferred_channel: null
+      preferred_service_partner: null
+      customer_service: null
+    error: null
+  - type: get
+    vehicle_id: 0
+    success: true
+    endpoint: driving_range
+    raw: '{"carType": "diesel", "adBlueRange": 3500, "totalRangeInKm": 680, "primaryEngineRange": {"engineType": "diesel", "currentSoCInPercent": 84, "currentFuelLevelInPercent": 84, "remainingRangeInKm": 680}, "carCapturedTimestamp": "2025-11-10T12:36:12Z"}'
+    url: /v2/vehicle-status/TMOCKAA0AA000000/driving-range
+    result:
+      timestamp: "2025-11-10T13:10:50.247946+00:00"
+      car_captured_timestamp: "2025-11-10T12:36:12+00:00"
+      car_type: diesel
+      primary_engine_range:
+        engine_type: diesel
+        current_fuel_level_in_percent: 84
+        current_soc_in_percent: 84
+        remaining_range_in_km: 680
+      secondary_engine_range: null
+      total_range_in_km: 680
+      ad_blue_range: 3500
+    error: null
+  - type: get
+    vehicle_id: 0
+    success: true
+    endpoint: trip_statistics
+    raw: '{"overallCost": {"totalCost": 4.11, "totalCostCurrency": "EUR", "fuelCost": {"cost": 4.11, "costCurrency": "EUR", "pricePerUnit": 1.53}}, "overallMileageInKm": 44, "overallTravelTimeInMin": 92, "overallAverageMileageInKm": 44, "overallAverageTravelTimeInMin": 92, "overallAverageFuelConsumption": 6.1, "overallAverageSpeedInKmph": 29, "vehicleType": "FUEL", "detailedStatistics": [{"cost": {"totalCost": 4.11, "totalCostCurrency": "EUR", "fuelCost": {"cost": 4.11, "costCurrency": "EUR", "pricePerUnit": 1.53}}, "date": "2025-11-10", "tripIds": ["5329962121"], "mileageInKm": 44, "travelTimeInMin": 92, "averageFuelConsumption": 6.1, "averageSpeedInKmph": 29}, {"date": "2025-11-11"}, {"date": "2025-11-12"}, {"date": "2025-11-13"}, {"date": "2025-11-14"}, {"date": "2025-11-15"}, {"date": "2025-11-16"}]}'
+    url: /v1/trip-statistics/TMOCKAA0AA000000?offsetType=week&offset=0&timezone=Europe%2FBerlin
+    result:
+      timestamp: "2025-11-10T13:10:50.558645+00:00"
+      vehicle_type: FUEL
+      detailed_statistics:
+        - date: "2025-11-10"
+          average_fuel_consumption: 6.1
+          average_gas_consumption: null
+          average_speed_in_kmph: 29
+          average_electric_consumption: null
+          average_recuperation: null
+          average_aux_consumption: null
+          mileage_in_km: 44
+          travel_time_in_min: 92
+          trip_ids:
+            - 5329962121
+        - date: "2025-11-11"
+          average_fuel_consumption: null
+          average_gas_consumption: null
+          average_speed_in_kmph: null
+          average_electric_consumption: null
+          average_recuperation: null
+          average_aux_consumption: null
+          mileage_in_km: null
+          travel_time_in_min: null
+          trip_ids: null
+        - date: "2025-11-12"
+          average_fuel_consumption: null
+          average_gas_consumption: null
+          average_speed_in_kmph: null
+          average_electric_consumption: null
+          average_recuperation: null
+          average_aux_consumption: null
+          mileage_in_km: null
+          travel_time_in_min: null
+          trip_ids: null
+        - date: "2025-11-13"
+          average_fuel_consumption: null
+          average_gas_consumption: null
+          average_speed_in_kmph: null
+          average_electric_consumption: null
+          average_recuperation: null
+          average_aux_consumption: null
+          mileage_in_km: null
+          travel_time_in_min: null
+          trip_ids: null
+        - date: "2025-11-14"
+          average_fuel_consumption: null
+          average_gas_consumption: null
+          average_speed_in_kmph: null
+          average_electric_consumption: null
+          average_recuperation: null
+          average_aux_consumption: null
+          mileage_in_km: null
+          travel_time_in_min: null
+          trip_ids: null
+        - date: "2025-11-15"
+          average_fuel_consumption: null
+          average_gas_consumption: null
+          average_speed_in_kmph: null
+          average_electric_consumption: null
+          average_recuperation: null
+          average_aux_consumption: null
+          mileage_in_km: null
+          travel_time_in_min: null
+          trip_ids: null
+        - date: "2025-11-16"
+          average_fuel_consumption: null
+          average_gas_consumption: null
+          average_speed_in_kmph: null
+          average_electric_consumption: null
+          average_recuperation: null
+          average_aux_consumption: null
+          mileage_in_km: null
+          travel_time_in_min: null
+          trip_ids: null
+      overall_average_electric_consumption: null
+      overall_average_fuel_consumption: 6.1
+      overall_average_gas_consumption: null
+      overall_average_mileage_in_km: 44
+      overall_average_speed_in_kmph: 29
+      overall_average_travel_time_in_min: 92
+      overall_mileage_in_km: 44
+      overall_travel_time_in_min: 92
+    error: null
+  - type: get
+    vehicle_id: 0
+    success: false
+    endpoint: departure_info
+    raw: null
+    url: null
+    result: null
+    error: |
+      Traceback (most recent call last):
+        File "/usr/local/lib/python3.13/site-packages/myskoda/myskoda.py", line 687, in generate_fixture_report
+          result = await self.get_endpoint(vin, endpoint, anonymize=True)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        File "/usr/local/lib/python3.13/site-packages/myskoda/myskoda.py", line 735, in get_endpoint
+          return await method(vin, anonymize=anonymize)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        File "/usr/local/lib/python3.13/site-packages/myskoda/rest_api.py", line 375, in get_departure_timers
+          data=await self._make_get_request(url),
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        File "/usr/local/lib/python3.13/site-packages/myskoda/rest_api.py", line 115, in _make_get_request
+          return await self._make_request(url=url, method="GET")
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        File "/usr/local/lib/python3.13/site-packages/myskoda/rest_api.py", line 105, in _make_request
+          response.raise_for_status()
+          ~~~~~~~~~~~~~~~~~~~~~~~~~^^
+        File "/usr/local/lib/python3.13/site-packages/aiohttp/client_reqrep.py", line 636, in raise_for_status
+          raise ClientResponseError(
+          ...<5 lines>...
+          )
+      aiohttp.client_exceptions.ClientResponseError: 500, message='Internal Server Error', url='https://mysmob.api.connect.skoda-auto.cz/api/v1/vehicle-automatization/TMOCKAA0AA000000/departure/timers?deviceDateTime=2025-11-10T14:10:50.558808%2B01:00'
+  - type: get
+    vehicle_id: 0
+    success: false
+    endpoint: vehicle_connection_status
+    raw: null
+    url: null
+    result: null
+    error: |
+      Traceback (most recent call last):
+        File "/usr/local/lib/python3.13/site-packages/myskoda/myskoda.py", line 687, in generate_fixture_report
+          result = await self.get_endpoint(vin, endpoint, anonymize=True)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        File "/usr/local/lib/python3.13/site-packages/myskoda/myskoda.py", line 735, in get_endpoint
+          return await method(vin, anonymize=anonymize)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        File "/usr/local/lib/python3.13/site-packages/myskoda/rest_api.py", line 389, in get_vehicle_connection_status
+          data=await self._make_get_request(url),
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        File "/usr/local/lib/python3.13/site-packages/myskoda/rest_api.py", line 115, in _make_get_request
+          return await self._make_request(url=url, method="GET")
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        File "/usr/local/lib/python3.13/site-packages/myskoda/rest_api.py", line 105, in _make_request
+          response.raise_for_status()
+          ~~~~~~~~~~~~~~~~~~~~~~~~~^^
+        File "/usr/local/lib/python3.13/site-packages/aiohttp/client_reqrep.py", line 636, in raise_for_status
+          raise ClientResponseError(
+          ...<5 lines>...
+          )
+      aiohttp.client_exceptions.ClientResponseError: 500, message='Internal Server Error', url='https://mysmob.api.connect.skoda-auto.cz/api/v2/connection-status/TMOCKAA0AA000000/readiness'

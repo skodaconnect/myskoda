@@ -232,6 +232,8 @@ reports:
       system_model_id: 5AZJK2
       title: "\u0160koda Enyaq"
       trim_level: Business Edition
+      exterior_colour: null
+      exterior_dimensions: null
     state: GUEST_USER
     timestamp: '2025-04-25T10:39:41.551480+00:00'
     vin: TMOCKAA0AA000000

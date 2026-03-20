@@ -251,6 +251,8 @@ reports:
       system_model_id: PYLJK2
       title: "\u0160koda Elroq"
       trim_level: '85'
+      exterior_colour: null
+      exterior_dimensions: null
     state: ACTIVATED
     timestamp: '2025-05-14T20:55:24.155958+00:00'
     vin: TMOCKAA0AA000000

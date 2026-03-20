@@ -211,6 +211,11 @@ reports:
       system_model_id: NZ5DDD
       title: "\u0160koda Superb Combi"
       trim_level: Edition 130
+      exterior_colour: 'Szary Graphite metalizowany (5X5X)'
+      exterior_dimensions:
+        height: 1521
+        length: 4902
+        width: 1849
     state: ACTIVATED
     timestamp: '2026-01-01T21:23:44.657415+00:00'
     vin: TMOCKAA0AA000000

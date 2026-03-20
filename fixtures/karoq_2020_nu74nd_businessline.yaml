@@ -121,6 +121,8 @@ reports:
       timestamp: null
       state: ACTIVATED
       specification:
+        exterior_colour: null
+        exterior_dimensions: null
         body: SUV
         engine:
           power: 110
@@ -135,6 +137,8 @@ reports:
         battery:
         max_charging_power:
         trim_level: STYLE BUSINESSLINE
+        exterior_colour: null
+        exterior_dimensions: null
       vin: TMOCKAA0AA000000
       name: Example Car
       capabilities:

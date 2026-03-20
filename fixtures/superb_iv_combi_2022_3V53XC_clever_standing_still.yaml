@@ -240,6 +240,8 @@ reports:
       system_model_id: 3V53XC
       title: "\u0160koda Superb Combi"
       trim_level: CLEVER
+      exterior_colour: null
+      exterior_dimensions: null
     state: ACTIVATED
     vin: TMOCKAA0AA000000
     workshop_mode_enabled: false

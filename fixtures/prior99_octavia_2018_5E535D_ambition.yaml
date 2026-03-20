@@ -123,6 +123,8 @@ reports:
       system_model_id: 5E535D
       title: "\u0160koda Octavia Combi"
       trim_level: Ambition
+      exterior_colour: null
+      exterior_dimensions: null
     state: ACTIVATED
     vin: TMOCKAA0AA000000
     workshop_mode_enabled: false
