@@ -12,7 +12,6 @@ requires-python = ">=3.13.0"
 dependencies = [
   "aiohttp ~=3.11",
   "aiomqtt ~=2.2",
-  "asyncio ~=3.4",
   "mashumaro[orjson] ~=3.13",
   "pyjwt ~=2.10,<2.11",
   "pyyaml ~=6.0",
