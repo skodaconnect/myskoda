@@ -2,7 +2,7 @@
 
 import asyncio
 import json
-from datetime import datetime
+from datetime import UTC, datetime, timedelta
 from pathlib import Path
 from unittest.mock import ANY
 
@@ -10,7 +10,15 @@ import aiomqtt
 import pytest
 
 from myskoda.anonymize import USER_ID, VIN
-from myskoda.models.charging import ChargeMode, ChargingState
+from myskoda.models.charging import (
+    Battery,
+    ChargeMode,
+    Charging,
+    ChargingState,
+    ChargingStatus,
+    Settings,
+)
+from myskoda.models.driving_range import DrivingRange, EngineRange, EngineType
 from myskoda.models.event import (
     BaseEvent,
     EventType,
@@ -36,6 +44,7 @@ from myskoda.models.event import (
 )
 from myskoda.models.vehicle_ignition_status import IgnitionStatus
 from myskoda.mqtt import MySkodaMqttClient
+from myskoda.myskoda import MySkoda
 
 from .conftest import FakeMqttClientWrapper
 
@@ -552,3 +561,113 @@ async def test_subscribe_event(
             ),
         ),
     ]
+
+
+@pytest.mark.parametrize(
+    (
+        "event_offset",
+        "api_soc",
+        "event_soc",
+        "expected_soc",
+        "expected_state",
+        "expected_time_to_finish",
+    ),
+    [
+        (-30, 49, 52, 49, ChargingState.CONNECT_CABLE, 0),
+        (5, 49, 52, 52, ChargingState.CHARGING, 470),
+    ],
+)
+def test_process_charging_event_update_charging_respects_timestamp(  # noqa: PLR0913
+    event_offset: int,
+    api_soc: int,
+    event_soc: int,
+    expected_soc: int,
+    expected_state: ChargingState,
+    expected_time_to_finish: int,
+) -> None:
+    api_timestamp = datetime(2026, 2, 26, 9, 0, tzinfo=UTC)
+    charging = Charging(
+        errors=[],
+        settings=Settings(available_charge_modes=[ChargeMode.MANUAL]),
+        is_vehicle_in_saved_location=False,
+        car_captured_timestamp=api_timestamp,
+        status=ChargingStatus(
+            battery=Battery(
+                state_of_charge_in_percent=api_soc,
+                remaining_cruising_range_in_meters=188000,
+            ),
+            state=ChargingState.CONNECT_CABLE,
+            remaining_time_to_fully_charged_in_minutes=0,
+        ),
+    )
+    event = ServiceEventChangeSoc(
+        vin=VIN,
+        event_type=EventType.SERVICE_EVENT,
+        version=1,
+        trace_id="7a59299d06535a6756d10e96e0c75ed3",
+        timestamp=api_timestamp + timedelta(minutes=event_offset),
+        producer="SKODA_MHUB",
+        name=ServiceEventName.CHANGE_SOC,
+        data=ServiceEventChangeSocData(
+            user_id=USER_ID,
+            vin=VIN,
+            soc=event_soc,
+            state=ChargingState.CHARGING,
+            mode=ChargeMode.MANUAL,
+            time_to_finish=470,
+        ),
+    )
+
+    MySkoda._process_charging_event_update_charging(charging, event)  # noqa: SLF001
+
+    assert charging.status is not None
+    assert charging.status.battery.state_of_charge_in_percent == expected_soc
+    assert charging.status.state == expected_state
+    assert charging.status.remaining_time_to_fully_charged_in_minutes == expected_time_to_finish
+
+
+@pytest.mark.parametrize(
+    ("event_offset", "api_soc", "event_soc", "expected_soc"),
+    [
+        (-30, 49, 52, 49),
+        (5, 49, 52, 52),
+    ],
+)
+def test_process_charging_event_update_driving_range_respects_timestamp(
+    event_offset: int,
+    api_soc: int,
+    event_soc: int,
+    expected_soc: int,
+) -> None:
+    api_timestamp = datetime(2026, 2, 26, 9, 0, tzinfo=UTC)
+    driving_range = DrivingRange(
+        car_captured_timestamp=api_timestamp,
+        car_type=EngineType.ELECTRIC,
+        primary_engine_range=EngineRange(
+            engine_type=EngineType.ELECTRIC,
+            current_soc_in_percent=api_soc,
+            remaining_range_in_km=188,
+        ),
+        total_range_in_km=188,
+    )
+    event = ServiceEventChangeSoc(
+        vin=VIN,
+        event_type=EventType.SERVICE_EVENT,
+        version=1,
+        trace_id="7a59299d06535a6756d10e96e0c75ed3",
+        timestamp=api_timestamp + timedelta(minutes=event_offset),
+        producer="SKODA_MHUB",
+        name=ServiceEventName.CHANGE_SOC,
+        data=ServiceEventChangeSocData(
+            user_id=USER_ID,
+            vin=VIN,
+            soc=event_soc,
+            state=ChargingState.CHARGING,
+            mode=ChargeMode.MANUAL,
+            time_to_finish=470,
+        ),
+    )
+
+    MySkoda._process_charging_event_update_driving_range(driving_range, event)  # noqa: SLF001
+
+    assert driving_range.primary_engine_range.current_soc_in_percent == expected_soc
