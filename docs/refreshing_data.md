@@ -17,9 +17,9 @@ Update callback functions are registered for a specific vehicle VIN and are call
 ```python
 VIN = "YOUR_VIN"
 
-async def on_myskoda_update():
-    latest = myskoda.vehicle(VIN)
-    print(f"Latest data for {VIN}: {latest})
+async def on_myskoda_update(vin: Vin):
+    latest = myskoda.vehicle(vin)
+    print(f"Latest data for {vin}: {latest})
 
 myskoda = MySkoda(session)
 myskoda.subscribe_updates(VIN, on_myskoda_update)
