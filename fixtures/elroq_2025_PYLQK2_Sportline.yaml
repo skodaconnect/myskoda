@@ -714,6 +714,7 @@ reports:
     in_motion: false
     timestamp: '2025-09-21T14:16:26.205133+00:00'
     unreachable: false
+    update_status: null
   success: true
   type: get
   url: /v2/connection-status/TMOCKAA0AA000000/readiness

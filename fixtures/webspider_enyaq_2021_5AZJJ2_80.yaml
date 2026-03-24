@@ -722,6 +722,7 @@ reports:
     timestamp: '2025-06-02T08:23:53.237888+00:00'
     ignition_on: null
     unreachable: false
+    update_status: null
   success: true
   type: get
   url: /v2/connection-status/TMOCKAA0AA000000/readiness
