@@ -248,7 +248,7 @@ async def connection_status(ctx: Context, vin: str, anonymize: bool) -> None:
 @click.argument("vin")
 @click.option("anonymize", "--anonymize", help="Strip all personal data.", is_flag=True)
 @click.pass_context
-async def software_upgrade_status(ctx: Context, vin: str, anonymize: bool) -> None:
+async def software_update_status(ctx: Context, vin: str, anonymize: bool) -> None:
     """Get the software update state."""
     await handle_request(ctx, ctx.obj["myskoda"].get_software_update_status, vin, anonymize)
 
