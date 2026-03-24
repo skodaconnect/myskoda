@@ -54,6 +54,7 @@ from myskoda.cli.requests import (
     connection_status,
     departure_timers,
     driving_range,
+    driving_score,
     garage,
     health,
     info,
@@ -214,6 +215,7 @@ cli.add_command(departure_timers)
 cli.add_command(set_departure_timer)
 cli.add_command(set_ac_timer)
 cli.add_command(set_aux_timer)
+cli.add_command(driving_score)
 
 
 if __name__ == "__main__":
