@@ -490,7 +490,7 @@ def load_software_updates() -> list[str]:
     """Load software updates fixture."""
     software_updates = []
     for path in [
-        "enyaq/software_update.json",
+        "enyaq/software-version.json",
     ]:
         with FIXTURES_DIR.joinpath(path).open() as file:
             software_updates.append(file.read())
