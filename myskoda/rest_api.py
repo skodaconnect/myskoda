@@ -417,7 +417,7 @@ class RestApi:
         self, vin: str, anonymize: bool = False
     ) -> GetEndpointResult[SoftwareUpdateStatus]:
         """Retrieve software update status."""
-        url = f"v1/vehicle-information/{vin}/software-version/update-status"
+        url = f"/v1/vehicle-information/{vin}/software-version/update-status"
         raw = self.process_json(
             data=await self._make_get_request(url),
             anonymize=anonymize,
