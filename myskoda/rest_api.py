@@ -24,6 +24,7 @@ from myskoda.anonymize import (
     anonymize_parking_position,
     anonymize_positions,
     anonymize_single_trip_statistics,
+    anonymize_software_update_status,
     anonymize_status,
     anonymize_trip_statistics,
     anonymize_url,
@@ -53,6 +54,7 @@ from .models.health import Health
 from .models.info import Info
 from .models.maintenance import Maintenance, MaintenanceReport
 from .models.position import ParkingPositionV3, Position, Positions, PositionType
+from .models.software_status import SoftwareUpdateStatus
 from .models.spin import Spin
 from .models.status import Status
 from .models.trip_statistics import SingleTrips, TripStatistics
@@ -408,6 +410,20 @@ class RestApi:
             anonymization_fn=anonymize_vehicle_connection_status,
         )
         result = self._deserialize(raw, VehicleConnectionStatus.from_json)
+        url = anonymize_url(url) if anonymize else url
+        return GetEndpointResult(url=url, raw=raw, result=result)
+
+    async def get_software_update_status(
+        self, vin: str, anonymize: bool = False
+    ) -> GetEndpointResult[SoftwareUpdateStatus]:
+        """Retrieve software update status."""
+        url = f"v1/vehicle-information/{vin}/software-version/update-status"
+        raw = self.process_json(
+            data=await self._make_get_request(url),
+            anonymize=anonymize,
+            anonymization_fn=anonymize_software_update_status,
+        )
+        result = self._deserialize(raw, SoftwareUpdateStatus.from_json)
         url = anonymize_url(url) if anonymize else url
         return GetEndpointResult(url=url, raw=raw, result=result)
 

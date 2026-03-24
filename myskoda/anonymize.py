@@ -245,6 +245,18 @@ def anonymize_vehicle_connection_status(data: dict) -> dict:
     return data
 
 
+def anonymize_software_update_status(data: dict) -> dict:
+    """Anonymize select parts if the input from the software_update_status dict.
+
+    Args:
+        data: input dictionary
+
+    Returns:
+        dict
+    """
+    return data
+
+
 def anonymize_health(data: dict) -> dict:
     """Anonymize select parts if the input from the health dict.
 

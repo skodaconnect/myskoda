@@ -15,6 +15,9 @@ class VehicleConnectionStatus(BaseResponse):
         metadata=field_options(alias="batteryProtectionLimitOn")
     )
     ignition_on: bool | None = field(default=None, metadata=field_options(alias="ignitionOn"))
+    update_status: str | None = field(
+        default=None, metadata=field_options(alias="softwareUpdateStatus")
+    )
 
 
 class UnexpectedVehicleConnectionStatusError(Exception):
