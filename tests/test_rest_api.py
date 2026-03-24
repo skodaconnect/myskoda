@@ -483,3 +483,41 @@ async def test_single_trips(
         assert day2.trips[0].end_time == single_trips_json["dailyTrips"][1]["trips"][0]["endTime"]
 
         assert get_single_trip_result.vehicle_type == VehicleType.FUEL
+
+
+@pytest.fixture(name="software_updates")
+def load_software_updates() -> list[str]:
+    """Load software updates fixture."""
+    software_updates = []
+    for path in [
+        "enyaq/software_update.json",
+    ]:
+        with FIXTURES_DIR.joinpath(path).open() as file:
+            software_updates.append(file.read())
+    return software_updates
+
+
+@pytest.mark.asyncio
+async def test_software_updates(
+    software_updates: list[str], myskoda: MySkoda, responses: aioresponses
+) -> None:
+    """Example unit test for RestAPI.software_updates(). Needs more work."""
+    for software_updates_input in software_updates:
+        software_updates_json = json.loads(software_updates_input)
+
+        target_vin = "TMBJM0CKV1N12345"
+        responses.get(
+            url=f"https://mysmob.api.connect.skoda-auto.cz/api/v1/vehicle-information/{target_vin}/software-version/update-status",
+            body=software_updates_input,
+        )
+        get_software_version_result = await myskoda.get_software_update_status(target_vin)
+
+        assert get_software_version_result.status == software_updates_json["status"]
+        assert (
+            get_software_version_result.release_notes_url
+            == software_updates_json["releaseNotesUrl"]
+        )
+        assert (
+            get_software_version_result.current_software_version
+            == software_updates_json["currentSoftwareVersion"]
+        )
