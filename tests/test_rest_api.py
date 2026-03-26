@@ -535,7 +535,7 @@ async def test_driving_score(
 
 
 def assert_driving_score_result(
-    driving_score_result: DrivingScoreResult, driving_score_json: dict
+    driving_score_result: DrivingScoreResult | None, driving_score_json: dict
 ) -> None:
     assert driving_score_result is not None
     assert driving_score_result.main == driving_score_json["main"]
