@@ -17,6 +17,7 @@ from myskoda.anonymize import (
     anonymize_chargingprofiles,
     anonymize_departure_timers,
     anonymize_driving_range,
+    anonymize_driving_score,
     anonymize_garage,
     anonymize_health,
     anonymize_info,
@@ -49,6 +50,7 @@ from .models.chargingprofiles import ChargingProfiles
 from .models.common import Vin
 from .models.departure import DepartureInfo, DepartureTimer
 from .models.driving_range import DrivingRange
+from .models.driving_score import DrivingScore
 from .models.garage import Garage
 from .models.health import Health
 from .models.info import Info
@@ -396,6 +398,20 @@ class RestApi:
             anonymization_fn=anonymize_departure_timers,
         )
         result = self._deserialize(raw, DepartureInfo.from_json)
+        url = anonymize_url(url) if anonymize else url
+        return GetEndpointResult(url=url, raw=raw, result=result)
+
+    async def get_driving_score(
+        self, vin: str, anonymize: bool = False
+    ) -> GetEndpointResult[DrivingScore]:
+        """Retrieve driving score for the specified vehicle."""
+        url = f"/v2/vehicle-status/{vin}/driving-score"
+        raw = self.process_json(
+            data=await self._make_get_request(url),
+            anonymize=anonymize,
+            anonymization_fn=anonymize_driving_score,
+        )
+        result = self._deserialize(raw, DrivingScore.from_json)
         url = anonymize_url(url) if anonymize else url
         return GetEndpointResult(url=url, raw=raw, result=result)
 

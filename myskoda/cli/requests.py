@@ -285,3 +285,12 @@ async def auth(ctx: Context) -> None:
     """Extract the auth token."""
     myskoda: MySkoda = ctx.obj["myskoda"]
     print(await myskoda.get_auth_token())
+
+
+@click.command()
+@click.argument("vin")
+@click.option("anonymize", "--anonymize", help="Strip all personal data.", is_flag=True)
+@click.pass_context
+async def driving_score(ctx: Context, vin: str, anonymize: bool) -> None:
+    """Print the driving score."""
+    await handle_request(ctx, ctx.obj["myskoda"].get_driving_score, vin, anonymize)

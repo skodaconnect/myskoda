@@ -71,6 +71,7 @@ from .models.chargingprofiles import ChargingProfiles
 from .models.common import Vin
 from .models.departure import DepartureInfo, DepartureTimer
 from .models.driving_range import DrivingRange, EngineType
+from .models.driving_score import DrivingScore
 from .models.event import (
     BaseEvent,
     OperationEvent,
@@ -404,6 +405,10 @@ class MySkoda:
     async def get_departure_timers(self, vin: Vin, anonymize: bool = False) -> DepartureInfo:
         """Retrieve departure timers for the specified vehicle."""
         return (await self.rest_api.get_departure_timers(vin, anonymize=anonymize)).result
+
+    async def get_driving_score(self, vin: Vin, anonymize: bool = False) -> DrivingScore:
+        """Retrieve driving score for the specified vehicle."""
+        return (await self.rest_api.get_driving_score(vin, anonymize=anonymize)).result
 
     async def get_connection_status(
         self, vin: Vin, anonymize: bool = False
@@ -768,6 +773,7 @@ class MySkoda:
             Endpoint.TRIP_STATISTICS: self.rest_api.get_trip_statistics,
             Endpoint.DEPARTURE_INFO: self.rest_api.get_departure_timers,
             Endpoint.VEHICLE_CONNECTION_STATUS: self.rest_api.get_vehicle_connection_status,
+            Endpoint.DRIVING_SCORE: self.rest_api.get_driving_score,
         }
 
         # Look up the method, or raise an error if unsupported

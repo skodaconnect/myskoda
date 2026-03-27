@@ -317,6 +317,18 @@ def anonymize_garage(data: dict) -> dict:
     return data
 
 
+def anonymize_driving_score(data: dict) -> dict:
+    """Anonymize driving_score dict.
+
+    Args:
+        data: input dictionary
+
+    Returns:
+        dict
+    """
+    return data
+
+
 def anonymize_url(url: str) -> str:
     """Anonymize a VIN found in a URL.
 

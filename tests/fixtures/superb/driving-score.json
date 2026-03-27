@@ -1,0 +1,60 @@
+{
+    "lastCalculationDate": "2026-03-24",
+    "dailyScore": {
+        "main": 91,
+        "braking": 100,
+        "inFlow": 77,
+        "acceleration": 101,
+        "energyLevel": 60,
+        "favorableConditions": 102,
+        "excessiveTrip": 103,
+        "averageConsumption": 1,
+        "mainBonus": 17,
+        "mastered": 4
+    },
+    "weeklyScore": {
+        "main": 92,
+        "braking": 104,
+        "inFlow": 78,
+        "acceleration": 105,
+        "energyLevel": 61,
+        "favorableConditions": 106,
+        "excessiveTrip": 107,
+        "averageConsumption": 2,
+        "mainBonus": 18,
+        "mastered": 5
+    },
+    "monthlyScore": {
+        "main": 86,
+        "braking": 99,
+        "inFlow": 87,
+        "acceleration": 108,
+        "energyLevel": 95,
+        "favorableConditions": 91,
+        "excessiveTrip": 109,
+        "averageConsumption": 47,
+        "mainBonus": 7,
+        "mastered": 6
+    },
+    "quarterlyScore": {
+        "main": 82,
+        "braking": 98,
+        "inFlow": 85,
+        "acceleration": 110,
+        "energyLevel": 97,
+        "favorableConditions": 92,
+        "excessiveTrip": 111,
+        "averageConsumption": 26,
+        "mainBonus": 8,
+        "mastered": 3
+    },
+    "masteredTotal": 9,
+    "maxScore": 112,
+    "brakingBonus": 5,
+    "inFlowBonus": 10,
+    "accelerationBonus": 11,
+    "energyLevelBonus": 2,
+    "favorableConditionsBonus": 12,
+    "excessiveTripBonus": 13,
+    "averageConsumptionBonus": 6
+}
