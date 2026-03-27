@@ -94,6 +94,7 @@ from .models.status import Status
 from .models.trip_statistics import SingleTrips, TripStatistics
 from .models.user import User
 from .models.vehicle_connection_status import VehicleConnectionStatus
+from .models.vehicle_info import VehicleEquipment, VehicleFullInfo, VehicleInfo, VehicleRenders
 from .mqtt import MySkodaMqttClient
 from .rest_api import GetEndpointResult, RestApi
 from .utils import async_debounce
@@ -401,6 +402,25 @@ class MySkoda:
     async def get_health(self, vin: Vin, anonymize: bool = False) -> Health:
         """Retrieve health information for the specified vehicle."""
         return (await self.rest_api.get_health(vin, anonymize=anonymize)).result
+
+    async def get_vehicle_info(self, vin: Vin, anonymize: bool = False) -> VehicleInfo:
+        """Retrieve health information for the specified vehicle."""
+        return (await self.rest_api.get_vehicle_info(vin, anonymize=anonymize)).result
+
+    async def get_vehicle_renders(self, vin: Vin, anonymize: bool = False) -> VehicleRenders:
+        """Retrieve vehicle renders for the specified vehicle."""
+        return (await self.rest_api.get_vehicle_renders(vin, anonymize=anonymize)).result
+
+    async def get_vehicle_equipment(self, vin: Vin, anonymize: bool = False) -> VehicleEquipment:
+        """Retrieve vehicle equipment information for the specified vehicle."""
+        return (await self.rest_api.get_vehicle_equipment(vin, anonymize=anonymize)).result
+
+    async def get_vehicle_full_info(self, vin: Vin, anonymize: bool = False) -> VehicleFullInfo:
+        """Retrieve all available information for the specified vehicle."""
+        vehicle_info = await self.get_vehicle_info(vin, anonymize=anonymize)
+        equipment = await self.get_vehicle_equipment(vin, anonymize=anonymize)
+        renders = await self.get_vehicle_renders(vin, anonymize=anonymize)
+        return VehicleFullInfo(info=vehicle_info, equipment=equipment, renders=renders)
 
     async def get_departure_timers(self, vin: Vin, anonymize: bool = False) -> DepartureInfo:
         """Retrieve departure timers for the specified vehicle."""

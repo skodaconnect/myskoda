@@ -1,0 +1,112 @@
+{
+    "equipment": [
+        {
+            "name": "Braking Assists",
+            "description": "To help you drive safely, braking assists watch your car’s surroundings and stop or slow down whenever they detect possible danger. Better safe than sorry!",
+            "videoUrl": "https://player.vimeo.com/video/1082101661?h=bf47581084",
+            "videoThumbnailUrl": "https://assets.skoda-auto.com/content/dam/hosting/global/videos/thumbnails/jpg/braking_assists.jpg"
+        },
+        {
+            "name": "Kessy Advanced",
+            "description": "Your car is equipped with Kessy Advanced.",
+            "videoUrl": "https://player.vimeo.com/video/1022826883?h=bb94660656",
+            "videoThumbnailUrl": "https://assets.skoda-auto.com/content/dam/hosting/global/videos/thumbnails/jpg/kessy.jpg"
+        },
+        {
+            "name": "Ergo Seats",
+            "description": "Your car is equipped with ergo seats.",
+            "videoUrl": "https://player.vimeo.com/video/1022112664?h=f9e0de68d3",
+            "videoThumbnailUrl": "https://assets.skoda-auto.com/content/dam/hosting/global/videos/thumbnails/jpg/superb_ergo.jpg"
+        },
+        {
+            "name": "Superb Combi Trunk",
+            "description": "Vast storage space with many smart tricks, like pockets, compartments and hooks. Net programme to keep things in place and easy way to fold the seats.",
+            "videoUrl": "https://player.vimeo.com/video/1022085128?h=a91eeef6e0",
+            "videoThumbnailUrl": "https://assets.skoda-auto.com/content/dam/hosting/global/videos/thumbnails/jpg/superb_combi_trunk.jpg"
+        },
+        {
+            "name": "Top Area View 360°",
+            "description": "Your car is equipped with Top Area View 360°.",
+            "videoUrl": "https://player.vimeo.com/video/1022824702?h=ebea2d1bd5",
+            "videoThumbnailUrl": "https://assets.skoda-auto.com/content/dam/hosting/global/videos/thumbnails/jpg/area_view.jpg"
+        },
+        {
+            "name": "New infotainment",
+            "description": "Easy way to control everything. Have it all on hand thanks to customizable widgets and quick access menu or ask voice assistant Laura for help.",
+            "videoUrl": "https://player.vimeo.com/video/1022121574?h=099c4942f9",
+            "videoThumbnailUrl": "https://assets.skoda-auto.com/content/dam/hosting/global/videos/thumbnails/jpg/superb_kodiaq_MIB.jpg"
+        },
+        {
+            "name": "Smart Dials",
+            "description": "Three digital yet tactile rotary controls. Outer control temperature and seat cooling/heating, the middle one can be assigned up to four different functions.",
+            "videoUrl": "https://player.vimeo.com/video/1022816308?h=06a8070c2d",
+            "videoThumbnailUrl": "https://assets.skoda-auto.com/content/dam/hosting/global/videos/thumbnails/jpg/smart_dials.jpg"
+        },
+        {
+            "name": "Travel Assist",
+            "description": "A set of assist systems to help you keep the right speed, stay in your lane or drive in the traffic jam. They’ll even stop the car if you’re in trouble and can’t.",
+            "videoUrl": "https://player.vimeo.com/video/1022843948?h=e66a4020e8",
+            "videoThumbnailUrl": "https://assets.skoda-auto.com/content/dam/hosting/global/videos/thumbnails/jpg/travel_assist.jpg"
+        },
+        {
+            "name": "ICE SCRAPER",
+            "description": "Your car is equipped with an ice scraper.",
+            "videoUrl": "https://player.vimeo.com/video/880819319?h=1c056825ef",
+            "videoThumbnailUrl": "https://go.skoda.eu/SC_IceScraper_thb"
+        },
+        {
+            "name": "Virtual Pedal",
+            "description": "Got your hands full? Open the boot with your foot. A simple kick straight under the bumper will automatically open the tailgate for you to load your things.",
+            "videoUrl": "https://player.vimeo.com/video/1022832742?h=c971c14a9f",
+            "videoThumbnailUrl": "https://assets.skoda-auto.com/content/dam/hosting/global/videos/thumbnails/jpg/virtual_pedal.jpg"
+        },
+        {
+            "name": "Park Assistants",
+            "description": "Parking can be easy for anyone. Let your car park itself in parallel or perpendicular space, or train it to automatically park in your favourite spots.",
+            "videoUrl": "https://player.vimeo.com/video/1022842715?h=842d840bb3",
+            "videoThumbnailUrl": "https://assets.skoda-auto.com/content/dam/hosting/global/videos/thumbnails/jpg/park_assist.jpg"
+        },
+        {
+            "name": "Parking Position - Honk and Flash",
+            "description": "Not sure where you left your car? No problem! Check the parking position in your app. Honk the horn or flash the warning lights to make finding it easier.",
+            "videoUrl": "https://player.vimeo.com/video/1134233307?h=cf4b2619f0",
+            "videoThumbnailUrl": "https://assets.skoda-auto.com/content/dam/hosting/global/videos/thumbnails/jpg/Honk_and_flash.jpg"
+        },
+        {
+            "name": "Auxiliary Heater",
+            "description": "Enjoy the warm when you get in your car. Activate and deactivate the auxiliary heating remotely with your phone or set up a plan for the day or week.",
+            "videoUrl": "https://player.vimeo.com/video/1134225633?h=a61360576d",
+            "videoThumbnailUrl": "https://assets.skoda-auto.com/content/dam/hosting/global/videos/thumbnails/jpg/Auxiliary_heater.jpg"
+        },
+        {
+            "name": "Driving Data",
+            "description": "Everything about how you drive right in the app. See the fuel consumption and average speed for the day, week or month. Calculate the running costs. ",
+            "videoUrl": "https://player.vimeo.com/video/1134230730?h=583846ccbc",
+            "videoThumbnailUrl": "https://assets.skoda-auto.com/content/dam/hosting/global/videos/thumbnails/jpg/Driving_data.jpg"
+        },
+        {
+            "name": "Online Ventilation",
+            "description": "Return to the fresh air inside your car. Activate and deactivate the ventilation remotely with your phone or set up a plan for the day or the week.",
+            "videoUrl": "https://player.vimeo.com/video/1134231897?h=800d4136a6",
+            "videoThumbnailUrl": "https://assets.skoda-auto.com/content/dam/hosting/global/videos/thumbnails/jpg/Online_ventilation.jpg"
+        },
+        {
+            "name": "DCC (Dynamic Chassis Control)",
+            "description": "Do you prefer a sporty or comfy suspension? Why not have both! With DCC, you can select the suspension firmness in 15 steps, from sportiest to most comfortable.",
+            "videoUrl": "https://player.vimeo.com/video/1134262552?h=8fe111cf8a",
+            "videoThumbnailUrl": "https://assets.skoda-auto.com/content/dam/hosting/global/videos/thumbnails/jpg/DCC_Octavia.jpg"
+        },
+        {
+            "name": "LED Matrix beam headlights",
+            "description": "Make the night almost as bright as a day and avoid dazzling other drivers at the same time. The headlights dim where needed, providing full illumination around.",
+            "videoUrl": "https://player.vimeo.com/video/1134245355?h=8a01e74edc",
+            "videoThumbnailUrl": "https://assets.skoda-auto.com/content/dam/hosting/global/videos/thumbnails/jpg/LED_Matrix_beam_headlights.jpg"
+        },
+        {
+            "name": "Parking Position",
+            "description": "See where your car is now. No matter how far away it is, you will see its icon on the map. Need detailed location? Just zoom in!",
+            "videoUrl": "https://player.vimeo.com/video/1134232670?h=fa2a3db8c9",
+            "videoThumbnailUrl": "https://assets.skoda-auto.com/content/dam/hosting/global/videos/thumbnails/jpg/Parking_position.jpg"
+        }
+    ]
+}

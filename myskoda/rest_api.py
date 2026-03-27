@@ -62,6 +62,7 @@ from .models.status import Status
 from .models.trip_statistics import SingleTrips, TripStatistics
 from .models.user import User
 from .models.vehicle_connection_status import VehicleConnectionStatus
+from .models.vehicle_info import VehicleEquipment, VehicleInfo, VehicleRenders
 from .utils import to_iso8601
 
 _LOGGER = logging.getLogger(__name__)
@@ -349,6 +350,48 @@ class RestApi:
             anonymization_fn=anonymize_health,
         )
         result = self._deserialize(raw, Health.from_json)
+        url = anonymize_url(url) if anonymize else url
+        return GetEndpointResult(url=url, raw=raw, result=result)
+
+    async def get_vehicle_info(
+        self, vin: str, anonymize: bool = False
+    ) -> GetEndpointResult[VehicleInfo]:
+        """Retrieve vehicle info for the specified vehicle."""
+        url = f"/v1/vehicle-information/{vin}"
+        raw = self.process_json(
+            data=await self._make_get_request(url),
+            anonymize=anonymize,
+            anonymization_fn=anonymize_health,
+        )
+        result = self._deserialize(raw, VehicleInfo.from_json)
+        url = anonymize_url(url) if anonymize else url
+        return GetEndpointResult(url=url, raw=raw, result=result)
+
+    async def get_vehicle_renders(
+        self, vin: str, anonymize: bool = False
+    ) -> GetEndpointResult[VehicleRenders]:
+        """Retrieve vehicle renders for the specified vehicle."""
+        url = f"/v1/vehicle-information/{vin}/renders"
+        raw = self.process_json(
+            data=await self._make_get_request(url),
+            anonymize=anonymize,
+            anonymization_fn=anonymize_health,
+        )
+        result = self._deserialize(raw, VehicleRenders.from_json)
+        url = anonymize_url(url) if anonymize else url
+        return GetEndpointResult(url=url, raw=raw, result=result)
+
+    async def get_vehicle_equipment(
+        self, vin: str, anonymize: bool = False
+    ) -> GetEndpointResult[VehicleEquipment]:
+        """Retrieve vehicle equipment information for the specified vehicle."""
+        url = f"/v1/vehicle-information/{vin}/equipment"
+        raw = self.process_json(
+            data=await self._make_get_request(url),
+            anonymize=anonymize,
+            anonymization_fn=anonymize_health,
+        )
+        result = self._deserialize(raw, VehicleEquipment.from_json)
         url = anonymize_url(url) if anonymize else url
         return GetEndpointResult(url=url, raw=raw, result=result)
 
