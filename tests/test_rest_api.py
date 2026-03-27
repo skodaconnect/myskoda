@@ -11,6 +11,7 @@ from aioresponses import aioresponses
 
 from myskoda.models.common import OpenState
 from myskoda.models.departure import DepartureInfo
+from myskoda.models.driving_score import DrivingScoreResult
 from myskoda.models.status import DoorWindowState
 from myskoda.models.trip_statistics import VehicleType
 from myskoda.myskoda import MySkoda
@@ -483,3 +484,67 @@ async def test_single_trips(
         assert day2.trips[0].end_time == single_trips_json["dailyTrips"][1]["trips"][0]["endTime"]
 
         assert get_single_trip_result.vehicle_type == VehicleType.FUEL
+
+
+@pytest.fixture(name="driving_score")
+def load_driving_score() -> list[str]:
+    """Load driving score fixture."""
+    driving_score = []
+    for path in [
+        "superb/driving-score.json",
+    ]:
+        with FIXTURES_DIR.joinpath(path).open() as file:
+            driving_score.append(file.read())
+    return driving_score
+
+
+@pytest.mark.asyncio
+async def test_driving_score(
+    driving_score: list[str], myskoda: MySkoda, responses: aioresponses
+) -> None:
+    """Example unit test for RestAPI.single_trips(). Needs more work."""
+    for driving_score_input in driving_score:
+        driving_score_json = json.loads(driving_score_input)
+
+        target_vin = "TMBJM0CKV1N12345"
+        responses.get(
+            url=f"https://mysmob.api.connect.skoda-auto.cz/api/v2/vehicle-status/{target_vin}/driving-score",
+            body=driving_score_input,
+        )
+        driving_score_result = await myskoda.get_driving_score(target_vin)
+
+        calc_date = driving_score_result.last_calculation_date
+        assert calc_date is not None
+        assert calc_date.isoformat() == driving_score_json["lastCalculationDate"]
+
+        daily_score = driving_score_result.daily_score
+        daily_score_json = driving_score_json["dailyScore"]
+        assert_driving_score_result(daily_score, daily_score_json)
+
+        weekly_score = driving_score_result.weekly_score
+        weekly_score_json = driving_score_json["weeklyScore"]
+        assert_driving_score_result(weekly_score, weekly_score_json)
+
+        monthly_score = driving_score_result.monthly_score
+        monthly_score_json = driving_score_json["monthlyScore"]
+        assert_driving_score_result(monthly_score, monthly_score_json)
+
+        quarterly_score = driving_score_result.quarterly_score
+        quarterly_score_json = driving_score_json["quarterlyScore"]
+        assert_driving_score_result(quarterly_score, quarterly_score_json)
+
+
+def assert_driving_score_result(
+    driving_score_result: DrivingScoreResult | None, driving_score_json: dict
+) -> None:
+    assert driving_score_result is not None
+    assert driving_score_result.main == driving_score_json["main"]
+    assert driving_score_result.braking == driving_score_json["braking"]
+    assert driving_score_result.in_flow == driving_score_json["inFlow"]
+    assert driving_score_result.acceleration == driving_score_json["acceleration"]
+    assert driving_score_result.energy_level == driving_score_json["energyLevel"]
+    assert driving_score_result.favorable_conditions == driving_score_json["favorableConditions"]
+    assert driving_score_result.excessive_trip == driving_score_json["excessiveTrip"]
+    assert driving_score_result.average_consumption == driving_score_json["averageConsumption"]
+    assert driving_score_result.main_bonus == driving_score_json["mainBonus"]
+    assert driving_score_result.mastered == driving_score_json["mastered"]
