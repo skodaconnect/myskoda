@@ -9,7 +9,6 @@ from .models.health import Health
 from .models.info import CapabilityId, Info
 from .models.maintenance import Maintenance
 from .models.position import ParkingPositionV3, Positions
-from .models.software_status import SoftwareUpdateStatus
 from .models.status import Status
 from .models.trip_statistics import SingleTrips, TripStatistics
 from .models.vehicle_connection_status import VehicleConnectionStatus
@@ -32,7 +31,6 @@ class Vehicle:
     health: Health | None = None
     departure_info: DepartureInfo | None = None
     connection_status: VehicleConnectionStatus | None = None
-    software_update_status: SoftwareUpdateStatus | None = None
 
     def __init__(self, info: Info, maintenance: Maintenance) -> None:  # pragma: no cover
         self.info = info
