@@ -88,6 +88,7 @@ from .models.health import Health
 from .models.info import CapabilityId, Info
 from .models.maintenance import Maintenance, MaintenanceReport
 from .models.position import ParkingPositionV3, Positions
+from .models.software_status import SoftwareUpdateStatus
 from .models.spin import Spin
 from .models.status import Status
 from .models.trip_statistics import SingleTrips, TripStatistics
@@ -414,6 +415,12 @@ class MySkoda:
     ) -> VehicleConnectionStatus:
         """Retrieve vehicle connection status for the specified vehicle."""
         return (await self.rest_api.get_vehicle_connection_status(vin, anonymize=anonymize)).result
+
+    async def get_software_update_status(
+        self, vin: Vin, anonymize: bool = False
+    ) -> SoftwareUpdateStatus:
+        """Retrieve software update status for the specified vehicle."""
+        return (await self.rest_api.get_software_update_status(vin, anonymize=anonymize)).result
 
     async def start_charging(self, vin: Vin) -> None:
         """Start charging the car."""
@@ -865,6 +872,10 @@ class MySkoda:
     async def _request_connection_status(self, vin: Vin) -> None:
         """Update state with connection status data."""
         self._vehicles[vin].connection_status = await self.get_connection_status(vin)
+
+    async def _request_software_update_status(self, vin: Vin) -> None:
+        """Update state with software update status."""
+        self._vehicles[vin].software_update_status = await self.get_software_update_status(vin)
 
     async def _wait_for_operation(self, operation: OperationName) -> None:
         if self.mqtt is None:
