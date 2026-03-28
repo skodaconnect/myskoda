@@ -6,6 +6,8 @@ from datetime import date
 from mashumaro import field_options
 from mashumaro.mixins.orjson import DataClassORJSONMixin
 
+from .common import BaseResponse
+
 
 @dataclass
 class DrivingScoreResult(DataClassORJSONMixin):
@@ -26,7 +28,7 @@ class DrivingScoreResult(DataClassORJSONMixin):
 
 
 @dataclass
-class DrivingScore(DataClassORJSONMixin):
+class DrivingScore(BaseResponse):
     """Information about driver's driving score."""
 
     last_calculation_date: date | None = field(
