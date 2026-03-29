@@ -67,7 +67,7 @@ from .models.auxiliary_heating import (
 )
 from .models.charging import ChargeMode, Charging
 from .models.charging_history import ChargingHistory, ChargingSession
-from .models.chargingprofiles import ChargingProfiles
+from .models.chargingprofiles import ChargingProfiles, ChargingTimes, ChargingProfile
 from .models.common import Vin
 from .models.departure import DepartureInfo, DepartureTimer
 from .models.driving_range import DrivingRange, EngineType
@@ -576,6 +576,33 @@ class MySkoda:
         await self.rest_api.set_ac_timer(vin, timer)
         await future
 
+    async def set_preferred_charging_times(self, vin: Vin, location: str, times: ChargingTimes) -> None:
+        """Update the proferred charging time of the vehicle at the location."""
+        #Get current setup
+        profiles = await self.get_charging_profiles(vin)
+        entry_replaced : bool = False
+        #find the correct charging times and replace it
+        for charging_profile in profiles.charging_profiles:
+                if (
+                    charging_profile.name == location
+                ):
+                    for idx, charging_time in enumerate(charging_profile.preferred_charging_times):
+                        if (
+                            charging_time.id == times.id
+                        ):
+                            charging_profile.preferred_charging_times[idx] = times
+                            entry_replaced = True
+                            break
+
+                    #update servers if and only if we actually did change something. Assumes valid entries (ie. id in range) send by the client code
+                    if (
+                        entry_replaced
+                    ):
+                        future = self._wait_for_operation(OperationName.UPDATE_CHARGING_PROFILES)
+                        await self.rest_api.set_charging_profile(vin, charging_profile)
+                        await future
+                        break
+    
     async def set_auxiliary_heating_timer(
         self, vin: Vin, timer: AuxiliaryHeatingTimer, spin: str
     ) -> None:

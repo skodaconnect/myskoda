@@ -46,7 +46,7 @@ from .models.air_conditioning import (
 from .models.auxiliary_heating import AuxiliaryConfig, AuxiliaryHeating, AuxiliaryHeatingTimer
 from .models.charging import ChargeMode, Charging
 from .models.charging_history import ChargingHistory
-from .models.chargingprofiles import ChargingProfiles
+from .models.chargingprofiles import ChargingProfiles, ChargingTimes, ChargingProfile
 from .models.common import Vin
 from .models.departure import DepartureInfo, DepartureTimer
 from .models.driving_range import DrivingRange
@@ -175,6 +175,14 @@ class RestApi:
         result = self._deserialize(raw, ChargingProfiles.from_json)
         url = anonymize_url(url) if anonymize else url
         return GetEndpointResult(url=url, raw=raw, result=result)
+
+    async def set_charging_profile(self, vin: str, charging_profile: ChargingProfile) -> None:
+        """Update Charging Profile"""
+        json_data = charging_profile.to_dict()
+        await self._make_put_request(
+            url=f"/v1/charging/{vin}/profiles/{charging_profile.id}",
+            json=json_data
+        )
 
     async def get_charging_history(
         self,
