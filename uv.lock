@@ -696,19 +696,19 @@ dev = [
 
 [package.metadata]
 requires-dist = [
-    { name = "aiohttp", specifier = "~=3.11" },
-    { name = "aiomqtt", specifier = "~=2.2" },
+    { name = "aiohttp", specifier = ">=3.11" },
+    { name = "aiomqtt", specifier = ">=2.2" },
     { name = "asyncclick", marker = "extra == 'cli'", specifier = "~=8.1" },
     { name = "coloredlogs", marker = "extra == 'cli'", specifier = "~=15.0" },
-    { name = "mashumaro", extras = ["orjson"], specifier = "~=3.13" },
+    { name = "mashumaro", extras = ["orjson"], specifier = ">=3.13" },
     { name = "mkdocs", marker = "extra == 'docs'", specifier = "~=1.6" },
     { name = "mkdocs-gen-files", marker = "extra == 'docs'", specifier = "~=0.5" },
     { name = "mkdocs-literate-nav", marker = "extra == 'docs'", specifier = "~=0.6" },
     { name = "mkdocstrings", extras = ["python"], marker = "extra == 'docs'", specifier = ">=0.26.1,<1.1.0" },
     { name = "pygments", marker = "extra == 'cli'", specifier = "~=2.18" },
-    { name = "pyjwt", specifier = "~=2.10,<2.11" },
+    { name = "pyjwt", specifier = ">=2.10" },
     { name = "python-dateutil", marker = "extra == 'cli'", specifier = "~=2.9" },
-    { name = "pyyaml", specifier = "~=6.0" },
+    { name = "pyyaml", specifier = ">=6.0" },
     { name = "termcolor", marker = "extra == 'cli'", specifier = "~=3.0" },
 ]
 provides-extras = ["cli", "docs"]
