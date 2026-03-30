@@ -53,9 +53,9 @@ jobs:
       - name: Fetch HA versions from PyPI
         id: fetch
         run: |
-          VERSIONS=${curl -s https://pypi.org/pypi/homeassistant/json | \
+          VERSIONS=$(curl -s https://pypi.org/pypi/homeassistant/json | \
             jq --arg min "$MIN_HA" \
-              '[.releases | keys[] | select(. >= $min) | select(test("a|b|rc|dev") | not)]'
+              '[.releases | keys[] | select(. >= $min) | select(test("a|b|rc|dev") | not)]')
           echo "versions=$VERSIONS" >> "$GITHUB_OUTPUT"
           echo "versions: $VERSIONS"
 
