@@ -74,6 +74,7 @@ jobs:
 
       - name: Check dependency resolution with HA ${{ matrix.ha-version }}
         run: |
+          uv venv && \
           uv pip install \
             "homeassistant==${{ matrix.ha-version }}" \
             "."
