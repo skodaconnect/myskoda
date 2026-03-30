@@ -7,6 +7,9 @@ import asyncclick as click
 from asyncclick.core import Context
 
 from myskoda.cli.utils import mqtt_required
+from myskoda.models.chargingprofiles import ChargingProfile, ChargingProfiles, ChargingTimes
+
+from datetime import datetime, time
 
 if TYPE_CHECKING:
     from myskoda import MySkoda
@@ -508,3 +511,67 @@ async def set_aux_timer(  # noqa: PLR0913
                 print(f"No timer found with ID {timer_id}.")
         else:
             print("No AuxiliaryHeating found for the given VIN.")
+
+@click.command()
+@click.option("timeout", "--timeout", type=float, default=300)
+@click.argument("vin")
+@click.option("location", "--location", type=str, required=True)
+@click.option("id", "--id", type=click.Choice(["1", "2", "3","4"]), required=True)
+@click.option("enabled", "--enabled", type=bool, required=False)
+@click.option("start", "--start", type=str, required=False)
+@click.option("end", "--end", type=str, required=False)
+@click.pass_context
+#@mqtt_required
+async def set_preferred_charging(
+    ctx: Context,
+    timeout: float,
+    vin: str,
+    location:str,
+    id: str,
+    enabled: bool,
+    start: str,
+    end: str
+) -> None:
+    """Update preferred charging times"""
+    charging_times_id = int(id)
+    myskoda: MySkoda = ctx.obj["myskoda"]
+    async with asyncio.timeout(timeout):
+        #Get the complete charging profiles first
+        all_profiles: ChargingProfiles = await myskoda.get_charging_profiles(vin)
+        #First, find the relevant charging time profile, the update the provided information, and write it back
+        if all_profiles is not None:
+            selected_location_profile = (
+                next((t for t in all_profiles.charging_profiles if t.name == location), None)
+                if all_profiles.charging_profiles
+                else None
+            )
+            if selected_location_profile is not None:
+                selected_charging_times = (
+                    next((t for t in selected_location_profile.preferred_charging_times if t.id == charging_times_id), None)
+                    if selected_location_profile.preferred_charging_times
+                    else None
+                )
+                if selected_charging_times is not None and (enabled is not None or start is not None or end is not None):
+                    if enabled is not None:
+                        selected_charging_times.enabled= enabled
+                    if start is not None:
+                        parsed_start = datetime.strptime(start, "%H:%M")
+                        if parsed_start is not None:
+                            selected_charging_times.start_time = parsed_start.time()
+                        else:
+                            print(f"Invalid start time {start}, expected HH:MM format.")
+                    if end is not None:
+                        parsed_end = datetime.strptime(end, "%H:%M")
+                        if parsed_end is not None:
+                            selected_charging_times.end_time = parsed_end.time()
+                        else:
+                            print(f"Invalid end time {end}, expected HH:MM format.")
+
+                    await myskoda.set_preferred_charging_times(vin, location, selected_charging_times)
+                else:
+                    print("No information to update was provided")
+            else:
+                print(f"No charging location found with name {location}.")
+        else:
+            print("No Charging profiles found for the given VIN")
+
