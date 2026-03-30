@@ -555,16 +555,18 @@ async def set_preferred_charging(
                     if enabled is not None:
                         selected_charging_times.enabled= enabled
                     if start is not None:
-                        parsed_start = datetime.strptime(start, "%H:%M")
-                        if parsed_start is not None:
-                            selected_charging_times.start_time = parsed_start.time()
-                        else:
+                        try:
+                            parsed_start = datetime.strptime(start, "%H:%M")
+                            if parsed_start is not None:
+                                selected_charging_times.start_time = parsed_start.time()
+                        except ValueError:
                             print(f"Invalid start time {start}, expected HH:MM format.")
                     if end is not None:
-                        parsed_end = datetime.strptime(end, "%H:%M")
-                        if parsed_end is not None:
-                            selected_charging_times.end_time = parsed_end.time()
-                        else:
+                        try:
+                            parsed_end = datetime.strptime(end, "%H:%M")
+                            if parsed_end is not None:
+                                selected_charging_times.end_time = parsed_end.time()
+                        except ValueError:
                             print(f"Invalid end time {end}, expected HH:MM format.")
 
                     await myskoda.set_preferred_charging_times(vin, location, selected_charging_times)
