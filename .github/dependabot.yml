@@ -4,6 +4,16 @@ updates:
     directory: "/" # Location of package manifests
     schedule:
       interval: "daily"
+
+    # Ignore the main runtime dependencies
+    # We update these manually as new code features require it
+    ignore:
+      - dependency-name: "aiohttp"
+      - dependency-name: "aiomqtt"
+      - dependency-name: "mashumaro"
+      - dependency-name: "pyjwt"
+      - dependency-name: "pyyaml"
+
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
