@@ -1,7 +1,7 @@
 name: Lint and test
 
 env:
-  MIN_HA: "2025.3.2"
+  MIN_HA: "2025.8.0"
 on:
   push:
   pull_request:
