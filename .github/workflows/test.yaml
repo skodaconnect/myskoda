@@ -1,5 +1,7 @@
 name: Lint and test
 
+env:
+  MIN_HA: "2025.3.2"
 on:
   push:
   pull_request:
@@ -42,3 +44,36 @@ jobs:
         with:
           file: coverage.xml
           fail-on-error: false
+
+  get-ha-versions:
+    runs-on: ubuntu-latest
+    outputs:
+      ha-versions: ${{ steps.fetch.outputs.versions }}
+    steps:
+      - name: Fetch HA versions from PyPI
+        id: fetch
+        run: |
+          VERSIONS=${curl -s https://pypi.org/pypi/homeassistant/json | \
+            jq --arg min "$MIN_HA" \
+              '[.releases | keys[] | select(. >= $min) | select(test("a|b|rc|dev") | not)]'
+          echo "versions=$VERSIONS" >> "$GITHUB_OUTPUT"
+          echo "versions: $VERSIONS"
+
+  ha-compat:
+    needs: get-ha-versions
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fase: false
+      matrix:
+        ha-version: ${{ fromJson(needs.get-ha-versions.outputs.ha-versions) }}
+    name: HA ${{ matrix.ha-version }}
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: astral-sh/setup-uv@v7
+
+      - name: Check dependency resolution with HA ${{ matrix.ha-version }}
+        run: |
+          uv pip install \
+            "homeassistant==${{ matrix.ha-version }}" \
+            "."
