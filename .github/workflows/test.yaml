@@ -63,7 +63,7 @@ jobs:
     needs: get-ha-versions
     runs-on: ubuntu-latest
     strategy:
-      fail-fase: false
+      fail-fast: false
       matrix:
         ha-version: ${{ fromJson(needs.get-ha-versions.outputs.ha-versions) }}
     name: HA ${{ matrix.ha-version }}
