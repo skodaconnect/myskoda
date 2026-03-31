@@ -62,7 +62,7 @@ def print_json(data: dict) -> None:
 
 
 def print_yaml(data: dict) -> None:
-    print(highlight(yaml.dump(data), YamlLexer(), TerminalFormatter()))
+    print(highlight(yaml.dump(data, allow_unicode=True), YamlLexer(), TerminalFormatter()))
 
 
 def iso8601_datetime(

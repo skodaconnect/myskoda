@@ -183,6 +183,8 @@ reports:
         capacity_in_liters: 1.5
         power: 110
         type: TSI
+      gearbox:
+        type: A7F
       manufacturing_date: '2021-07-15'
       max_charging_power: null
       model: Karoq

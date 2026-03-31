@@ -131,6 +131,8 @@ reports:
           power: 61
           type: null
           capacity_in_liters: null
+        gearbox:
+          type: E1F
         model: CitigoE iV
         title: Škoda CitigoE iV
         manufacturing_date: '2020-08-12'

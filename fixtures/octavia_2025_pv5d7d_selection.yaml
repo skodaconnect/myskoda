@@ -92,6 +92,8 @@ reports:
           power: 110
           type: TDI
           capacity_in_liters: 2.0
+        gearbox:
+          type: A7F
         model: Octavia
         title: Škoda Octavia Combi
         manufacturing_date: "2024-07-26"

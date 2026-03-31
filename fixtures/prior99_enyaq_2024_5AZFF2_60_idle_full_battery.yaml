@@ -239,6 +239,8 @@ reports:
         capacity_in_liters: null
         power: 132
         type: iV
+      gearbox:
+        type: E1H
       manufacturing_date: '2024-05-09'
       max_charging_power: 100
       model: Enyaq

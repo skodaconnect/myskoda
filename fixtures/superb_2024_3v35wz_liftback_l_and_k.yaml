@@ -176,6 +176,8 @@ reports:
           power: 206
           type: TSI
           capacity_in_liters: 2.0
+        gearbox:
+          type: A7A
         model: Superb
         title: Škoda Superb
         manufacturing_date: '2023-08-23'

@@ -128,6 +128,8 @@ reports:
           power: 110
           type: TSI
           capacity_in_liters: 1.5
+        gearbox:
+          type: A7F
         model: Karoq
         title: Škoda Karoq
         manufacturing_date: "2020-03-17"

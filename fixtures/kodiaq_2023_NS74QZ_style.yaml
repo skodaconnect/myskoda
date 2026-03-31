@@ -122,6 +122,8 @@ reports:
           power: 140
           type: TSI
           capacity_in_liters: 2
+        gearbox:
+          type: A7A
         model: Kodiaq
         title: Škoda Kodiaq
         manufacturing_date: "2023-02-12"

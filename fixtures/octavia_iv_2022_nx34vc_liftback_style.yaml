@@ -180,6 +180,8 @@ reports:
           power: 150
           type: TSI iV
           capacity_in_liters: 1.4
+        gearbox:
+          type: A6F
         model: Octavia
         title: Škoda Octavia
         manufacturing_date: '2022-02-03'

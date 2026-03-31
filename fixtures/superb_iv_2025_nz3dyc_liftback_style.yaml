@@ -205,6 +205,8 @@ reports:
         capacity_in_liters: 1.5
         power: 150
         type: TSI PHEV
+      gearbox:
+        type: A6F
       manufacturing_date: '2025-06-24'
       max_charging_power: null
       model: Superb

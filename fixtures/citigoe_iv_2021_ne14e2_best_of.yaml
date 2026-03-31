@@ -175,6 +175,8 @@ reports:
         capacity_in_liters: null
         power: 61
         type: null
+      gearbox:
+        type: E1F
       manufacturing_date: '2020-09-08'
       max_charging_power: null
       model: CitigoE iV

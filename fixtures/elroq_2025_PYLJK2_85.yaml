@@ -243,6 +243,8 @@ reports:
         capacity_in_liters: null
         power: 210
         type: iV
+      gearbox:
+        type: E1H
       manufacturing_date: '2025-02-26'
       max_charging_power: 125
       model: Elroq

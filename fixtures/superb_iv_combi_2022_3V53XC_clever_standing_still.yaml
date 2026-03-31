@@ -232,6 +232,8 @@ reports:
         capacity_in_liters: 1.4
         power: 160
         type: TSI iV
+      gearbox:
+        type: A6F
       manufacturing_date: '2022-04-29'
       max_charging_power: null
       model: Superb

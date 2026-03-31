@@ -185,6 +185,8 @@ reports:
           power: 180
           type: TSI iV
           capacity_in_liters: 1.4
+        gearbox:
+          type: A6F
         model: Octavia
         title: Škoda Octavia Combi
         manufacturing_date: '2021-03-01'

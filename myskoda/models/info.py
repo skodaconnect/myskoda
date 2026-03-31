@@ -242,6 +242,7 @@ class Specification(DataClassORJSONMixin):
     model_year: str = field(metadata=field_options(alias="modelYear"))
     system_code: str = field(metadata=field_options(alias="systemCode"))
     system_model_id: str = field(metadata=field_options(alias="systemModelId"))
+    gearbox: Gearbox | None = field(default=None, metadata=field_options(alias="gearbox"))
     battery: Battery | None = field(default=None)
     max_charging_power: int | None = field(
         default=None, metadata=field_options(alias="maxChargingPowerInKW")
@@ -265,11 +266,30 @@ class ServicePartner(DataClassORJSONMixin):
 class ViewType(StrEnum):
     UNMODIFIED_EXTERIOR_SIDE = "UNMODIFIED_EXTERIOR_SIDE"
     UNMODIFIED_EXTERIOR_FRONT = "UNMODIFIED_EXTERIOR_FRONT"
+    UNMODIFIED_INTERIOR_SIDE = "UNMODIFIED_INTERIOR_SIDE"
+    UNMODIFIED_EXTERIOR_REAR = "UNMODIFIED_EXTERIOR_REAR"
+    UNMODIFIED_INTERIOR_FRONT = "UNMODIFIED_INTERIOR_FRONT"
+    UNMODIFIED_INTERIOR_BOOT = "UNMODIFIED_INTERIOR_BOOT"
     HOME = "HOME"
     CHARGING_LIGHT = "CHARGING_LIGHT"
     CHARGING_DARK = "CHARGING_DARK"
     PLUGGED_IN_DARK = "PLUGGED_IN_DARK"
     PLUGGED_IN_LIGHT = "PLUGGED_IN_LIGHT"
+
+
+class ViewPoint(StrEnum):
+    exterior_side = "exterior_side"
+    exterior_front = "exterior_front"
+    garage_l = "garage_l"
+    main = "main"
+    EXTERIOR_SIDE = "EXTERIOR_SIDE"
+    EXTERIOR_FRONT = "EXTERIOR_FRONT"
+    INTERIOR_SIDE = "INTERIOR_SIDE"
+    EXTERIOR_REAR = "EXTERIOR_REAR"
+    INTERIOR_FRONT = "INTERIOR_FRONT"
+    INTERIOR_BOOT = "INTERIOR_BOOT"
+    GARAGE_L = "GARAGE_L"
+    MAIN = "MAIN"
 
 
 class RenderType(StrEnum):
@@ -281,7 +301,7 @@ class Render(DataClassORJSONMixin):
     url: str
     type: RenderType
     order: int
-    view_point: str = field(metadata=field_options(alias="viewPoint"))
+    view_point: ViewPoint = field(metadata=field_options(alias="viewPoint"))
 
 
 @dataclass

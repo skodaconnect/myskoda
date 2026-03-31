@@ -190,6 +190,8 @@ reports:
           capacity_in_liters: 1.5
           power: 96
           type: TSI G-TEC
+        gearbox:
+          type: A7F
         manufacturing_date: "2022-06-23"
         max_charging_power: null
         model: Octavia

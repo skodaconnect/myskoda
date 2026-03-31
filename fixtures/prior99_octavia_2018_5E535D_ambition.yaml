@@ -115,6 +115,8 @@ reports:
         capacity_in_liters: 1.6
         power: 85
         type: TDI
+      gearbox:
+        type: A7F
       manufacturing_date: '2017-08-17'
       max_charging_power: null
       model: Octavia

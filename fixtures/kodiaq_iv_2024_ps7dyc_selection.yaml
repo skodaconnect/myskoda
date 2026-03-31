@@ -169,6 +169,8 @@ reports:
           power: 150
           type: TSI PHEV
           capacity_in_liters: 1.5
+        gearbox:
+          type: A6F
         model: Kodiaq
         title: Škoda Kodiaq
         manufacturing_date: '2024-08-15'

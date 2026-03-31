@@ -193,6 +193,8 @@ reports:
         capacity_in_liters: 1.0
         power: 81
         type: TSI
+      gearbox:
+        type: M6F
       manufacturing_date: '2022-12-15'
       max_charging_power: null
       model: Octavia

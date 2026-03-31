@@ -634,9 +634,10 @@ async def test_vehicle_info(
         engine_json = vehicle_specification_json["engine"]
         assert engine.capacity_in_liters == engine_json["capacityInLiters"]
         assert engine.type == engine_json["type"]
-        assert engine.power_in_kw == engine_json["powerInKW"]
+        assert engine.power == engine_json["powerInKW"]
         gearbox = vehicle_specification.gearbox
         gearbox_json = vehicle_specification_json["gearbox"]
+        assert gearbox is not None
         assert gearbox.type == gearbox_json["type"]
 
         composite_renderers = get_vehicle_info_result.composite_renderers

@@ -207,6 +207,8 @@ reports:
         capacity_in_liters: 2.0
         power: 142
         type: TDI
+      gearbox:
+        type: A7A
       manufacturing_date: '2024-05-15'
       max_charging_power: null
       model: Kodiaq

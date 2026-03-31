@@ -164,6 +164,8 @@ reports:
           power: 96
           type: TSI G-TEC
           capacity_in_liters: 1.5
+        gearbox:
+          type: A7F
         model: Octavia
         title: Škoda Octavia Combi
         manufacturing_date: '2021-01-22'

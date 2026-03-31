@@ -202,6 +202,8 @@ reports:
         capacity_in_liters: 2.0
         power: 180
         type: TFSI
+      gearbox:
+        type: A7F
       manufacturing_date: '2021-11-08'
       max_charging_power: null
       model: Octavia
