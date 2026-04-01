@@ -112,6 +112,8 @@ reports:
         statuses: []
       - id: ICE_VEHICLE_RTS
         statuses: []
+      - id: LAURA_INITIAL_PROMPTS_ICE
+        statuses: []
       - id: MISUSE_PROTECTION
         statuses: []
       - id: ONLINE_SPEECH_GPS
