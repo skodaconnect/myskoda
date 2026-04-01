@@ -43,6 +43,7 @@ from myskoda.cli.operations import (
     unlock,
     wakeup,
 )
+from myskoda.cli.raw_request import raw_request
 from myskoda.cli.requests import (
     air_conditioning,
     all_charging_sessions,
@@ -128,6 +129,9 @@ async def cli(  # noqa: PLR0913
     if trace:
         trace_configs.append(TRACE_CONFIG)
 
+    if ctx.resilient_parsing:
+        return
+
     auth_usage_str = "Provide --refresh-token or both --user and --password."
     if not refresh_token and (not username or not password):
         raise click.UsageError(auth_usage_str)
@@ -144,25 +148,11 @@ async def cli(  # noqa: PLR0913
     ctx.obj["myskoda"] = myskoda
     ctx.obj["session"] = session
 
+    async def _disconnect() -> None:
+        await myskoda.disconnect()
+        await session.close()
 
-@cli.result_callback()
-@click.pass_context
-async def disconnect(  # noqa: PLR0913
-    ctx: Context,
-    result: None,  # noqa: ARG001
-    username: str | None,  # noqa: ARG001
-    password: str | None,  # noqa: ARG001
-    refresh_token: str | None,  # noqa: ARG001
-    verbose: bool,  # noqa: ARG001
-    output_format: Format,  # noqa: ARG001
-    trace: bool,  # noqa: ARG001
-    disable_mqtt: bool,  # noqa: ARG001
-) -> None:
-    myskoda: MySkoda = ctx.obj["myskoda"]
-    session: ClientSession = ctx.obj["session"]
-
-    await myskoda.disconnect()
-    await session.close()
+    ctx.call_on_close(_disconnect)
 
 
 cli.add_command(list_vehicles)
@@ -218,6 +208,7 @@ cli.add_command(set_ac_timer)
 cli.add_command(set_aux_timer)
 cli.add_command(software_update_status)
 cli.add_command(driving_score)
+cli.add_command(raw_request)
 
 
 if __name__ == "__main__":

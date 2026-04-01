@@ -116,6 +116,10 @@ class RestApi:
             _LOGGER.exception("Invalid status for %s request to %s: %d", method, url, err.status)
             raise
 
+    async def raw_request(self, url: str, method: str, json: dict | None = None) -> str:
+        """Send an authenticated request to the given API path."""
+        return await self._make_request(url=url, method=method, json=json)
+
     async def _make_get_request[T](self, url: str) -> str:
         return await self._make_request(url=url, method="GET")
 
