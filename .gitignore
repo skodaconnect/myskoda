@@ -7,3 +7,6 @@ site/
 coverage.xml
 .coverage
 .env
+.devcontainer?*
+.devcontainer/local/
+.envrc

@@ -26,6 +26,7 @@ dev = [
   "pytest-cov>=5,<8",
   "ruff>=0.6.4,<0.16.0",
   "setuptools>=75.2,<83.0",
+  "pre-commit>=3.3.0",
 ]
 
 [project.optional-dependencies]
