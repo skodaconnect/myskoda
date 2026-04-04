@@ -87,7 +87,7 @@ reports:
         statuses: []
       - id: VEHICLE_HEALTH_WARNINGS_WITH_WAKE_UP
         statuses: []
-      errors: null 
+      errors: null
     composite_renders: []
     device_platform: MBB
     timestamp: null
@@ -104,7 +104,7 @@ reports:
     - order: 0
       type: REAL
       url: https://ip-modcwp.azureedge.net/modcwp5e5b29180112/8E8EH--n8PUkVRvNb-rmhk5WeyPIvap-JnGFC-EJ5hTWqM1sZwoKdbOC9.j08-31Fr9cBTws5ohH8lMKOfzIu-Pi4mA9UckIyLze5g2o.ZsuG-B-700390dayvext_front1080.png?v=637887202120000000
-      view_point: main
+      view_point: MAIN
     service_partner:
       id: DEU11111
     software_version: null

@@ -9,7 +9,7 @@ from mashumaro import field_options
 from mashumaro.mixins.orjson import DataClassORJSONMixin
 from mashumaro.mixins.yaml import DataClassYAMLMixin
 
-from .common import BaseResponse
+from .common import BaseResponse, CaseInsensitiveStrEnum
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -278,18 +278,14 @@ class ViewType(StrEnum):
     PLUGGED_IN_LIGHT = "PLUGGED_IN_LIGHT"
 
 
-class ViewPoint(StrEnum):
-    exterior_side = "exterior_side"
-    exterior_front = "exterior_front"
-    garage_l = "garage_l"
-    main = "main"
-    EXTERIOR_SIDE = "EXTERIOR_SIDE"
+class ViewPoint(CaseInsensitiveStrEnum):
     EXTERIOR_FRONT = "EXTERIOR_FRONT"
-    INTERIOR_SIDE = "INTERIOR_SIDE"
     EXTERIOR_REAR = "EXTERIOR_REAR"
-    INTERIOR_FRONT = "INTERIOR_FRONT"
-    INTERIOR_BOOT = "INTERIOR_BOOT"
+    EXTERIOR_SIDE = "EXTERIOR_SIDE"
     GARAGE_L = "GARAGE_L"
+    INTERIOR_BOOT = "INTERIOR_BOOT"
+    INTERIOR_FRONT = "INTERIOR_FRONT"
+    INTERIOR_SIDE = "INTERIOR_SIDE"
     MAIN = "MAIN"
 
 

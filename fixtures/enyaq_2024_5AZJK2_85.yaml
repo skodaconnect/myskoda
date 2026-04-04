@@ -169,53 +169,53 @@ reports:
       - order: 0
         type: REAL
         url: https://iprenders.blob.core.windows.net/base5azv23200005/8X8XPUwFvBgM0DK-U9pbg0iQkdurY6BN8mR-9YvJAb12INPUxtyog6_B-Nwqxg0_cFBhHk3YT16uJsbRolW8-CKGNEBJ-19201080dayvext_side1080.png
-        view_point: exterior_side
+        view_point: EXTERIOR_SIDE
       view_type: UNMODIFIED_EXTERIOR_SIDE
     - layers:
       - order: 0
         type: REAL
         url: https://iprenders.blob.core.windows.net/base5azv23200005/8X8XPUwFvBgM0DK-U9pbg0iQkdurY6BN8mR-9YvJAb12INPUxtyog6_B-Nwqxg0_cFBhHk3YT16uJsbRolW8-CKGNEBJ-19201080dayvext_side1080.png
-        view_point: exterior_side
+        view_point: EXTERIOR_SIDE
       view_type: HOME
     - layers:
       - order: 0
         type: REAL
         url: https://iprenders.blob.core.windows.net/base5azv23200005/8X8XPUwFvBgM0DK-U9pbg0iQkdurY6BN8mR-9YvJAb12INPUxtyog6_B-Nwqxg0_cFBhHk3YT16uJsbRolW8-CKGNEBJ-19201080dayvext_side1080.png
-        view_point: exterior_side
+        view_point: EXTERIOR_SIDE
       - order: 1
         type: REAL
         url: https://mspgwlivestorage.blob.core.windows.net/renders/cables/enyaq_5A_cable_charging_light_v1.png
-        view_point: exterior_side
+        view_point: EXTERIOR_SIDE
       view_type: CHARGING_LIGHT
     - layers:
       - order: 0
         type: REAL
         url: https://iprenders.blob.core.windows.net/base5azv23200005/8X8XPUwFvBgM0DK-U9pbg0iQkdurY6BN8mR-9YvJAb12INPUxtyog6_B-Nwqxg0_cFBhHk3YT16uJsbRolW8-CKGNEBJ-19201080dayvext_side1080.png
-        view_point: exterior_side
+        view_point: EXTERIOR_SIDE
       - order: 1
         type: REAL
         url: https://mspgwlivestorage.blob.core.windows.net/renders/cables/enyaq_5A_cable_charging_dark_v1.png
-        view_point: exterior_side
+        view_point: EXTERIOR_SIDE
       view_type: CHARGING_DARK
     - layers:
       - order: 0
         type: REAL
         url: https://iprenders.blob.core.windows.net/base5azv23200005/8X8XPUwFvBgM0DK-U9pbg0iQkdurY6BN8mR-9YvJAb12INPUxtyog6_B-Nwqxg0_cFBhHk3YT16uJsbRolW8-CKGNEBJ-19201080dayvext_side1080.png
-        view_point: exterior_side
+        view_point: EXTERIOR_SIDE
       - order: 1
         type: REAL
         url: https://mspgwlivestorage.blob.core.windows.net/renders/cables/enyaq_5A_cable_plugged_in_light_v1.png
-        view_point: exterior_side
+        view_point: EXTERIOR_SIDE
       view_type: PLUGGED_IN_LIGHT
     - layers:
       - order: 0
         type: REAL
         url: https://iprenders.blob.core.windows.net/base5azv23200005/8X8XPUwFvBgM0DK-U9pbg0iQkdurY6BN8mR-9YvJAb12INPUxtyog6_B-Nwqxg0_cFBhHk3YT16uJsbRolW8-CKGNEBJ-19201080dayvext_side1080.png
-        view_point: exterior_side
+        view_point: EXTERIOR_SIDE
       - order: 1
         type: REAL
         url: https://mspgwlivestorage.blob.core.windows.net/renders/cables/enyaq_5A_cable_plugged_in_dark_v1.png
-        view_point: exterior_side
+        view_point: EXTERIOR_SIDE
       view_type: PLUGGED_IN_DARK
     device_platform: WCAR
     errors: null

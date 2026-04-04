@@ -138,57 +138,57 @@ reports:
       - order: 0
         type: REAL
         url: https://iprenders.blob.core.windows.net/basenz5v26200003/5X5Xvl4xX.GT2hrcp9jEYbA0eJt-VQ4yCnY2IqNacsL86GhAv.-kE4X0JPQBZ_5cMVw28x-ACH-19201080dayvext_side1080.png?v=639026175320000000
-        view_point: exterior_side
+        view_point: EXTERIOR_SIDE
       view_type: UNMODIFIED_EXTERIOR_SIDE
     - layers:
       - order: 0
         type: REAL
         url: https://mspgwlivestorage.blob.core.windows.net/renders/decorations/snowflakes_lower_v2.png
-        view_point: exterior_side
+        view_point: EXTERIOR_SIDE
       - order: 1
         type: REAL
         url: https://iprenders.blob.core.windows.net/basenz5v26200003/5X5Xvl4xX.GT2hrcp9jEYbA0eJt-VQ4yCnY2IqNacsL86GhAv.-kE4X0JPQBZ_5cMVw28x-ACH-19201080dayvext_side1080.png?v=639026175320000000
-        view_point: exterior_side
+        view_point: EXTERIOR_SIDE
       view_type: HOME
     - layers:
       - order: 0
         type: REAL
         url: https://iprenders.blob.core.windows.net/basenz5v26200003/5X5Xvl4xX.GT2hrcp9jEYbA0eJt-VQ4yCnY2IqNacsL86GhAv.-kE4X0JPQBZ_5cMVw28x-ACH-19201080dayvext_side1080.png?v=639026175320000000
-        view_point: exterior_side
+        view_point: EXTERIOR_SIDE
       - order: 1
         type: REAL
         url: https://mspgwlivestorage.blob.core.windows.net/renders/cables/superb_NZ_cable_charging_light_v1.png
-        view_point: exterior_side
+        view_point: EXTERIOR_SIDE
       view_type: CHARGING_LIGHT
     - layers:
       - order: 0
         type: REAL
         url: https://iprenders.blob.core.windows.net/basenz5v26200003/5X5Xvl4xX.GT2hrcp9jEYbA0eJt-VQ4yCnY2IqNacsL86GhAv.-kE4X0JPQBZ_5cMVw28x-ACH-19201080dayvext_side1080.png?v=639026175320000000
-        view_point: exterior_side
+        view_point: EXTERIOR_SIDE
       - order: 1
         type: REAL
         url: https://mspgwlivestorage.blob.core.windows.net/renders/cables/superb_NZ_cable_charging_dark_v1.png
-        view_point: exterior_side
+        view_point: EXTERIOR_SIDE
       view_type: CHARGING_DARK
     - layers:
       - order: 0
         type: REAL
         url: https://iprenders.blob.core.windows.net/basenz5v26200003/5X5Xvl4xX.GT2hrcp9jEYbA0eJt-VQ4yCnY2IqNacsL86GhAv.-kE4X0JPQBZ_5cMVw28x-ACH-19201080dayvext_side1080.png?v=639026175320000000
-        view_point: exterior_side
+        view_point: EXTERIOR_SIDE
       - order: 1
         type: REAL
         url: https://mspgwlivestorage.blob.core.windows.net/renders/cables/superb_NZ_cable_plugged_in_light_v1.png
-        view_point: exterior_side
+        view_point: EXTERIOR_SIDE
       view_type: PLUGGED_IN_LIGHT
     - layers:
       - order: 0
         type: REAL
         url: https://iprenders.blob.core.windows.net/basenz5v26200003/5X5Xvl4xX.GT2hrcp9jEYbA0eJt-VQ4yCnY2IqNacsL86GhAv.-kE4X0JPQBZ_5cMVw28x-ACH-19201080dayvext_side1080.png?v=639026175320000000
-        view_point: exterior_side
+        view_point: EXTERIOR_SIDE
       - order: 1
         type: REAL
         url: https://mspgwlivestorage.blob.core.windows.net/renders/cables/superb_NZ_cable_plugged_in_dark_v1.png
-        view_point: exterior_side
+        view_point: EXTERIOR_SIDE
       view_type: PLUGGED_IN_DARK
     device_platform: MBB_ODP
     errors: null

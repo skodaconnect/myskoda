@@ -255,62 +255,62 @@ reports:
                 https://iprenders.blob.core.windows.net/basenx5s21210312/0F0F6TpQN-cdV8ENILk.B-DiLl_KVcxpGn2tXZIf-5seFYkV3OC7tJ.whT9Nzd-j2DGKup8ZyUgfkMr3NIX5-CKAUMHFOTD-19201080dayvext_side1080.png
               type: REAL
               order: 0
-              view_point: exterior_side
+              view_point: EXTERIOR_SIDE
           view_type: UNMODIFIED_EXTERIOR_SIDE
         - layers:
             - url: >-
                 https://iprenders.blob.core.windows.net/basenx5s21210312/0F0F6TpQN-cdV8ENILk.B-DiLl_KVcxpGn2tXZIf-5seFYkV3OC7tJ.whT9Nzd-j2DGKup8ZyUgfkMr3NIX5-CKAUMHFOTD-19201080dayvext_side1080.png
               type: REAL
               order: 0
-              view_point: exterior_side
+              view_point: EXTERIOR_SIDE
           view_type: HOME
         - layers:
             - url: >-
                 https://iprenders.blob.core.windows.net/basenx5s21210312/0F0F6TpQN-cdV8ENILk.B-DiLl_KVcxpGn2tXZIf-5seFYkV3OC7tJ.whT9Nzd-j2DGKup8ZyUgfkMr3NIX5-CKAUMHFOTD-19201080dayvext_side1080.png
               type: REAL
               order: 0
-              view_point: exterior_side
+              view_point: EXTERIOR_SIDE
             - url: >-
                 https://mspgwlivestorage.blob.core.windows.net/renders/cables/octavia_NX_cable_charging_light_v1.png
               type: REAL
               order: 1
-              view_point: exterior_side
+              view_point: EXTERIOR_SIDE
           view_type: CHARGING_LIGHT
         - layers:
             - url: >-
                 https://iprenders.blob.core.windows.net/basenx5s21210312/0F0F6TpQN-cdV8ENILk.B-DiLl_KVcxpGn2tXZIf-5seFYkV3OC7tJ.whT9Nzd-j2DGKup8ZyUgfkMr3NIX5-CKAUMHFOTD-19201080dayvext_side1080.png
               type: REAL
               order: 0
-              view_point: exterior_side
+              view_point: EXTERIOR_SIDE
             - url: >-
                 https://mspgwlivestorage.blob.core.windows.net/renders/cables/octavia_NX_cable_charging_dark_v1.png
               type: REAL
               order: 1
-              view_point: exterior_side
+              view_point: EXTERIOR_SIDE
           view_type: CHARGING_DARK
         - layers:
             - url: >-
                 https://iprenders.blob.core.windows.net/basenx5s21210312/0F0F6TpQN-cdV8ENILk.B-DiLl_KVcxpGn2tXZIf-5seFYkV3OC7tJ.whT9Nzd-j2DGKup8ZyUgfkMr3NIX5-CKAUMHFOTD-19201080dayvext_side1080.png
               type: REAL
               order: 0
-              view_point: exterior_side
+              view_point: EXTERIOR_SIDE
             - url: >-
                 https://mspgwlivestorage.blob.core.windows.net/renders/cables/octavia_NX_cable_plugged_in_light_v1.png
               type: REAL
               order: 1
-              view_point: exterior_side
+              view_point: EXTERIOR_SIDE
           view_type: PLUGGED_IN_LIGHT
         - layers:
             - url: >-
                 https://iprenders.blob.core.windows.net/basenx5s21210312/0F0F6TpQN-cdV8ENILk.B-DiLl_KVcxpGn2tXZIf-5seFYkV3OC7tJ.whT9Nzd-j2DGKup8ZyUgfkMr3NIX5-CKAUMHFOTD-19201080dayvext_side1080.png
               type: REAL
               order: 0
-              view_point: exterior_side
+              view_point: EXTERIOR_SIDE
             - url: >-
                 https://mspgwlivestorage.blob.core.windows.net/renders/cables/octavia_NX_cable_plugged_in_dark_v1.png
               type: REAL
               order: 1
-              view_point: exterior_side
+              view_point: EXTERIOR_SIDE
           view_type: PLUGGED_IN_DARK
       service_partner:
         id: DEU11111
@@ -874,7 +874,7 @@ reports:
           confirmation_date: '2024-12-13T16:45:03.062000+00:00'
           contacted_date: '2024-12-23T08:04:35+00:00'
           creation_date: '2024-12-13T16:40:31+00:00'
-          mileage_in_km: 81048 
+          mileage_in_km: 81048
           resolution: REJECTED
           service_partner:
             address:

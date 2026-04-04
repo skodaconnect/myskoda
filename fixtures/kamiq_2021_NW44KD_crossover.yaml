@@ -102,13 +102,13 @@ reports:
       - order: 0
         type: REAL
         url: https://skodavinimagecache.blob.core.windows.net/cachenw4s21201021/0F0F.t8RiJgm-IcSa0qTEufOlvBkVdoQ-ZoU37WQvu9espcI0TxjG-epBt81ymG4_liJ-Z0Owlb.iL4rCSFKnQ8fx5-boDIdhkCTqWgnKRiZt-19201080dayvext_side1080.png
-        view_point: exterior_side
+        view_point: EXTERIOR_SIDE
       view_type: UNMODIFIED_EXTERIOR_SIDE
     - layers:
       - order: 0
         type: REAL
         url: https://skodavinimagecache.blob.core.windows.net/cachenw4s21201021/0F0F.t8RiJgm-IcSa0qTEufOlvBkVdoQ-ZoU37WQvu9espcI0TxjG-epBt81ymG4_liJ-Z0Owlb.iL4rCSFKnQ8fx5-boDIdhkCTqWgnKRiZt-19201080dayvext_side1080.png
-        view_point: exterior_side
+        view_point: EXTERIOR_SIDE
       view_type: HOME
     device_platform: MBB_ODP
     errors: null
@@ -118,15 +118,15 @@ reports:
     - order: 0
       type: REAL
       url: https://skodavinimagecache.blob.core.windows.net/cachenw4s21201021/0F0F.t8RiJgm-IcSa0qTEufOlvBkVdoQ-ZoU37WQvu9espcI0TxjG-epBt81ymG4_liJ-Z0Owlb.iL4rCSFKnQ8fx5-boDIdhkCTqWgnKRiZt-19201080dayvext_side1080.png
-      view_point: exterior_side
+      view_point: EXTERIOR_SIDE
     - order: 1
       type: REAL
       url: https://ip-modcwp.azureedge.net/modcwpnw4s21201021/0F0F.t8RiJgm-IcSa0qTEufOlvBkVdoQ-ZoU37WQvu9espcI0TxjG-epBt81ymG4_liJ-Z0Owlb.iL4rCSFKnQ8fx5-boDIdhkCTqWgnKRiZt-1920658dayvext_side1080.png?v=638625258530000000
-      view_point: garage_l
+      view_point: GARAGE_L
     - order: 2
       type: REAL
       url: https://ip-modcwp.azureedge.net/modcwpnw4s21201021/0F0F.t8RiJgm-IcSa0qTEufOlvBkVdoQ-ZoU37WQvu9espcI0TxjG-epBt81ymG4_liJ-Z0Owlb.iL4rCSFKnQ8fx5-boDIdhkCTqWgnKRiZt-700390dayvext_front1080.png?v=637859752970000000
-      view_point: main
+      view_point: MAIN
     service_partner:
       id: DEU11111
     software_version: null
@@ -398,7 +398,7 @@ reports:
             location:
               latitude: 53.470636
               longitude: 9.689872
-            name: Example Service Partner 
+            name: Example Service Partner
             opening_hours: []
             partner_number: '1111'
           update_date: '2024-03-30T02:11:11.255000+00:00'
@@ -435,7 +435,7 @@ reports:
             location:
               latitude: 53.470636
               longitude: 9.689872
-            name: Example Service Partner 
+            name: Example Service Partner
             opening_hours: []
             partner_number: '1111'
           update_date: '2023-08-18T06:00:05.449000+00:00'

@@ -141,65 +141,65 @@ reports:
         statuses: []
       - id: AIR_CONDITIONING
         statuses: []
-      errors: null 
+      errors: null
     composite_renders:
     - layers:
       - order: 0
         type: REAL
         url: https://skodavinimagecache.blob.core.windows.net/cache3v5s21101106/0F0FFJOA-mqt-Dcme9u-J084Eebv9r5jyuGXc-hCj1zYE5PnSNeLApWqbc-i3amYSBwWPK_NxbDfprtLhG8.z-XolZKiQNEfOWTIqGgC-19201080dayvext_side1080.png
-        view_point: exterior_front
+        view_point: EXTERIOR_FRONT
       view_type: UNMODIFIED_EXTERIOR_FRONT
     - layers:
       - order: 0
         type: REAL
         url: https://skodavinimagecache.blob.core.windows.net/cache3v5s21101106/0F0FFJOA-mqt-Dcme9u-J084Eebv9r5jyuGXc-hCj1zYE5PnSNeLApWqbc-i3amYSBwWPK_NxbDfprtLhG8.z-XolZKiQNEfOWTIqGgC-19201080dayvext_side1080.png
-        view_point: exterior_side
+        view_point: EXTERIOR_SIDE
       view_type: UNMODIFIED_EXTERIOR_SIDE
     - layers:
       - order: 0
         type: REAL
         url: https://skodavinimagecache.blob.core.windows.net/cache3v5s21101106/0F0FFJOA-mqt-Dcme9u-J084Eebv9r5jyuGXc-hCj1zYE5PnSNeLApWqbc-i3amYSBwWPK_NxbDfprtLhG8.z-XolZKiQNEfOWTIqGgC-19201080dayvext_side1080.png
-        view_point: exterior_side
+        view_point: EXTERIOR_SIDE
       view_type: HOME
     - layers:
       - order: 0
         type: REAL
         url: https://skodavinimagecache.blob.core.windows.net/cache3v5s21101106/0F0FFJOA-mqt-Dcme9u-J084Eebv9r5jyuGXc-hCj1zYE5PnSNeLApWqbc-i3amYSBwWPK_NxbDfprtLhG8.z-XolZKiQNEfOWTIqGgC-19201080dayvext_side1080.png
-        view_point: exterior_front
+        view_point: EXTERIOR_FRONT
       - order: 1
         type: REAL
         url: https://mspgwlivestorage.blob.core.windows.net/renders/cables/superb_3V_cable_charging_light_v1.png
-        view_point: exterior_front
+        view_point: EXTERIOR_FRONT
       view_type: CHARGING_LIGHT
     - layers:
       - order: 0
         type: REAL
         url: https://skodavinimagecache.blob.core.windows.net/cache3v5s21101106/0F0FFJOA-mqt-Dcme9u-J084Eebv9r5jyuGXc-hCj1zYE5PnSNeLApWqbc-i3amYSBwWPK_NxbDfprtLhG8.z-XolZKiQNEfOWTIqGgC-19201080dayvext_side1080.png
-        view_point: exterior_front
+        view_point: EXTERIOR_FRONT
       - order: 1
         type: REAL
         url: https://mspgwlivestorage.blob.core.windows.net/renders/cables/superb_3V_cable_charging_dark_v1.png
-        view_point: exterior_front
+        view_point: EXTERIOR_FRONT
       view_type: CHARGING_DARK
     - layers:
       - order: 0
         type: REAL
         url: https://skodavinimagecache.blob.core.windows.net/cache3v5s21101106/0F0FFJOA-mqt-Dcme9u-J084Eebv9r5jyuGXc-hCj1zYE5PnSNeLApWqbc-i3amYSBwWPK_NxbDfprtLhG8.z-XolZKiQNEfOWTIqGgC-19201080dayvext_side1080.png
-        view_point: exterior_front
+        view_point: EXTERIOR_FRONT
       - order: 1
         type: REAL
         url: https://mspgwlivestorage.blob.core.windows.net/renders/cables/superb_3V_cable_plugged_in_light_v1.png
-        view_point: exterior_front
+        view_point: EXTERIOR_FRONT
       view_type: PLUGGED_IN_LIGHT
     - layers:
       - order: 0
         type: REAL
         url: https://skodavinimagecache.blob.core.windows.net/cache3v5s21101106/0F0FFJOA-mqt-Dcme9u-J084Eebv9r5jyuGXc-hCj1zYE5PnSNeLApWqbc-i3amYSBwWPK_NxbDfprtLhG8.z-XolZKiQNEfOWTIqGgC-19201080dayvext_side1080.png
-        view_point: exterior_front
+        view_point: EXTERIOR_FRONT
       - order: 1
         type: REAL
         url: https://mspgwlivestorage.blob.core.windows.net/renders/cables/superb_3V_cable_plugged_in_dark_v1.png
-        view_point: exterior_front
+        view_point: EXTERIOR_FRONT
       view_type: PLUGGED_IN_DARK
     device_platform: MBB_ODP
     errors: null
@@ -209,19 +209,19 @@ reports:
     - order: 0
       type: REAL
       url: https://skodavinimagecache.blob.core.windows.net/cache3v5s21101106/0F0FFJOA-mqt-Dcme9u-J084Eebv9r5jyuGXc-hCj1zYE5PnSNeLApWqbc-i3amYSBwWPK_NxbDfprtLhG8.z-XolZKiQNEfOWTIqGgC-19201080dayvext_side1080.png
-      view_point: exterior_front
+      view_point: EXTERIOR_FRONT
     - order: 1
       type: REAL
       url: https://skodavinimagecache.blob.core.windows.net/cache3v5s21101106/0F0FFJOA-mqt-Dcme9u-J084Eebv9r5jyuGXc-hCj1zYE5PnSNeLApWqbc-i3amYSBwWPK_NxbDfprtLhG8.z-XolZKiQNEfOWTIqGgC-19201080dayvext_side1080.png
-      view_point: exterior_side
+      view_point: EXTERIOR_SIDE
     - order: 2
       type: REAL
       url: https://ip-modcwp.azureedge.net/modcwp3v5s21101106/0F0FFJOA-mqt-Dcme9u-J084Eebv9r5jyuGXc-hCj1zYE5PnSNeLApWqbc-i3amYSBwWPK_NxbDfprtLhG8.z-XolZKiQNEfOWTIqGgC-1920658dayvext_side1080.png?v=638474691400000000
-      view_point: garage_l
+      view_point: GARAGE_L
     - order: 3
       type: REAL
       url: https://ip-modcwp.azureedge.net/modcwp3v5s21101106/0F0FFJOA-mqt-Dcme9u-J084Eebv9r5jyuGXc-hCj1zYE5PnSNeLApWqbc-i3amYSBwWPK_NxbDfprtLhG8.z-XolZKiQNEfOWTIqGgC-700390dayvext_front1080.png?v=638474241490000000
-      view_point: main
+      view_point: MAIN
     service_partner:
       id: DEU11111
     software_version: null

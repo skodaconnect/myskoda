@@ -261,28 +261,28 @@ reports:
             statuses: []
           - id: AUXILIARY_HEATING_BASIC
             statuses: []
-        errors: null 
+        errors: null
       renders:
         - url: >-
             https://iprenders.blob.core.windows.net/base3v3v23200002/0F0FWBQ-6-RemtP8.jqZy0-ZqEczfhG_n50.tUwX-CWwFuhHKJkNPz40df893ms-Has5qeWchF.UzAl13y8jCtnK-CKFEIA-19201080dayvext_front1080.png
           type: REAL
           order: 0
-          view_point: exterior_front
+          view_point: EXTERIOR_FRONT
         - url: >-
             https://iprenders.blob.core.windows.net/base3v3v23200002/0F0FWBQ-6-RemtP8.jqZy0-ZqEczfhG_n50.tUwX-CWwFuhHKJkNPz40df893ms-Has5qeWchF.UzAl13y8jCtnK-CKFEIA-19201080dayvext_side1080.png
           type: REAL
           order: 1
-          view_point: exterior_side
+          view_point: EXTERIOR_SIDE
         - url: >-
             https://ip-modcwp.azureedge.net/modcwp3v3v23200002/0F0FWBQ-6-RemtP8.jqZy0-ZqEczfhG_n50.tUwX-CWwFuhHKJkNPz40df893ms-Has5qeWchF.UzAl13y8jCtnK-CKFEIA-1920658dayvext_side1080.png?v=638549957820000000
           type: REAL
           order: 2
-          view_point: garage_l
+          view_point: GARAGE_L
         - url: >-
             https://ip-modcwp.azureedge.net/modcwp3v3v23200002/0F0FWBQ-6-RemtP8.jqZy0-ZqEczfhG_n50.tUwX-CWwFuhHKJkNPz40df893ms-Has5qeWchF.UzAl13y8jCtnK-CKFEIA-700390dayvext_front1080.png?v=638304014770000000
           type: REAL
           order: 3
-          view_point: main
+          view_point: MAIN
       device_platform: MBB_ODP
       workshop_mode_enabled: false
       composite_renders:
@@ -291,69 +291,69 @@ reports:
                 https://iprenders.blob.core.windows.net/base3v3v23200002/0F0FWBQ-6-RemtP8.jqZy0-ZqEczfhG_n50.tUwX-CWwFuhHKJkNPz40df893ms-Has5qeWchF.UzAl13y8jCtnK-CKFEIA-19201080dayvext_front1080.png
               type: REAL
               order: 0
-              view_point: exterior_front
+              view_point: EXTERIOR_FRONT
           view_type: UNMODIFIED_EXTERIOR_FRONT
         - layers:
             - url: >-
                 https://iprenders.blob.core.windows.net/base3v3v23200002/0F0FWBQ-6-RemtP8.jqZy0-ZqEczfhG_n50.tUwX-CWwFuhHKJkNPz40df893ms-Has5qeWchF.UzAl13y8jCtnK-CKFEIA-19201080dayvext_side1080.png
               type: REAL
               order: 0
-              view_point: exterior_side
+              view_point: EXTERIOR_SIDE
           view_type: UNMODIFIED_EXTERIOR_SIDE
         - layers:
             - url: >-
                 https://iprenders.blob.core.windows.net/base3v3v23200002/0F0FWBQ-6-RemtP8.jqZy0-ZqEczfhG_n50.tUwX-CWwFuhHKJkNPz40df893ms-Has5qeWchF.UzAl13y8jCtnK-CKFEIA-19201080dayvext_side1080.png
               type: REAL
               order: 0
-              view_point: exterior_side
+              view_point: EXTERIOR_SIDE
           view_type: HOME
         - layers:
             - url: >-
                 https://iprenders.blob.core.windows.net/base3v3v23200002/0F0FWBQ-6-RemtP8.jqZy0-ZqEczfhG_n50.tUwX-CWwFuhHKJkNPz40df893ms-Has5qeWchF.UzAl13y8jCtnK-CKFEIA-19201080dayvext_front1080.png
               type: REAL
               order: 0
-              view_point: exterior_front
+              view_point: EXTERIOR_FRONT
             - url: >-
                 https://mspgwlivestorage.blob.core.windows.net/renders/cables/superb_3V_cable_charging_light_v1.png
               type: REAL
               order: 1
-              view_point: exterior_front
+              view_point: EXTERIOR_FRONT
           view_type: CHARGING_LIGHT
         - layers:
             - url: >-
                 https://iprenders.blob.core.windows.net/base3v3v23200002/0F0FWBQ-6-RemtP8.jqZy0-ZqEczfhG_n50.tUwX-CWwFuhHKJkNPz40df893ms-Has5qeWchF.UzAl13y8jCtnK-CKFEIA-19201080dayvext_front1080.png
               type: REAL
               order: 0
-              view_point: exterior_front
+              view_point: EXTERIOR_FRONT
             - url: >-
                 https://mspgwlivestorage.blob.core.windows.net/renders/cables/superb_3V_cable_charging_dark_v1.png
               type: REAL
               order: 1
-              view_point: exterior_front
+              view_point: EXTERIOR_FRONT
           view_type: CHARGING_DARK
         - layers:
             - url: >-
                 https://iprenders.blob.core.windows.net/base3v3v23200002/0F0FWBQ-6-RemtP8.jqZy0-ZqEczfhG_n50.tUwX-CWwFuhHKJkNPz40df893ms-Has5qeWchF.UzAl13y8jCtnK-CKFEIA-19201080dayvext_front1080.png
               type: REAL
               order: 0
-              view_point: exterior_front
+              view_point: EXTERIOR_FRONT
             - url: >-
                 https://mspgwlivestorage.blob.core.windows.net/renders/cables/superb_3V_cable_plugged_in_light_v1.png
               type: REAL
               order: 1
-              view_point: exterior_front
+              view_point: EXTERIOR_FRONT
           view_type: PLUGGED_IN_LIGHT
         - layers:
             - url: >-
                 https://iprenders.blob.core.windows.net/base3v3v23200002/0F0FWBQ-6-RemtP8.jqZy0-ZqEczfhG_n50.tUwX-CWwFuhHKJkNPz40df893ms-Has5qeWchF.UzAl13y8jCtnK-CKFEIA-19201080dayvext_front1080.png
               type: REAL
               order: 0
-              view_point: exterior_front
+              view_point: EXTERIOR_FRONT
             - url: >-
                 https://mspgwlivestorage.blob.core.windows.net/renders/cables/superb_3V_cable_plugged_in_dark_v1.png
               type: REAL
               order: 1
-              view_point: exterior_front
+              view_point: EXTERIOR_FRONT
           view_type: PLUGGED_IN_DARK
       service_partner:
         id: DEU11111
@@ -529,7 +529,7 @@ reports:
       outside_temperature:
         temperature_value: 3.0
         unit_in_car: CELSIUS
-        car_captured_timestamp: null      
+        car_captured_timestamp: null
     error: null
   - type: get
     vehicle_id: 0
