@@ -1,13 +1,12 @@
-"""Models for responses of /v2/widgets/vehicle-status/{vin} endpoint."""
+"""Models for responses of /api/v2/widgets/vehicle-status/{vin} endpoint."""
 
 from dataclasses import dataclass, field
 
 from mashumaro import field_options
 from mashumaro.mixins.orjson import DataClassORJSONMixin
 
-from .position import ParkingCoordinates
-
 from .common import BaseResponse
+from .position import ParkingCoordinates
 
 
 @dataclass
