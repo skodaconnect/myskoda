@@ -1,0 +1,22 @@
+{
+    "vehicle": {
+        "name": "Superb",
+        "licensePlate": "AB123CD",
+        "renderUrl": "https://mspgwlivestorage.blob.core.windows.net/widget-renders/TMBJN0NZ0.png?etag=0xAAAAAAAAAAAAAAA"
+    },
+    "vehicleStatus": {
+        "doorsLocked": "CLOSED",
+        "drivingRangeInKm": 820
+    },
+    "parkingPosition": {
+        "state": "PARKED",
+        "maps": {
+            "lightMapUrl": "https://mysmob.api.connect.skoda-auto.cz/api/v3/maps/image?latitude=50.123456&longitude=20.123456&width=533&height=400&zoom=17"
+        },
+        "gpsCoordinates": {
+            "latitude": 50.123456,
+            "longitude": 20.123456
+        },
+        "formattedAddress": "Rynek 1, Wrocław"
+    }
+}

@@ -40,6 +40,7 @@ from myskoda.models.fixtures import (
     FixtureVehicle,
     create_fixture_vehicle,
 )
+from myskoda.models.widget import WidgetResponse
 
 from .__version__ import __version__ as version
 from .auth.authorization import Authorization
@@ -433,6 +434,10 @@ class MySkoda:
             renders=renders,
             software_update_status=soft_status,
         )
+
+    async def get_widget(self, vin: Vin, anonymize: bool = False) -> WidgetResponse:
+        """Retrieve widget information for the specified vehicle."""
+        return (await self.rest_api.get_widget(vin, anonymize=anonymize)).result
 
     async def get_departure_timers(self, vin: Vin, anonymize: bool = False) -> DepartureInfo:
         """Retrieve departure timers for the specified vehicle."""

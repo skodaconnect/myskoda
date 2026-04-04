@@ -122,6 +122,15 @@ async def vehicle_full_info(ctx: Context, vin: str, anonymize: bool) -> None:
 @click.argument("vin")
 @click.option("anonymize", "--anonymize", help="Strip all personal data.", is_flag=True)
 @click.pass_context
+async def widget(ctx: Context, vin: str, anonymize: bool) -> None:
+    """Print widget information for the specified vehicle."""
+    await handle_request(ctx, ctx.obj["myskoda"].get_widget, vin, anonymize)
+
+
+@click.command()
+@click.argument("vin")
+@click.option("anonymize", "--anonymize", help="Strip all personal data.", is_flag=True)
+@click.pass_context
 async def charging(ctx: Context, vin: str, anonymize: bool) -> None:
     """Print the vehicle's current charging state."""
     await handle_request(ctx, ctx.obj["myskoda"].get_charging, vin, anonymize)

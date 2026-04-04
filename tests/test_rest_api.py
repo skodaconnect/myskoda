@@ -790,3 +790,64 @@ async def test_raw_request_http_error(api: RestApi, responses: aioresponses) -> 
         await api.raw_request(url="/v1/some/path", method="GET")
 
     assert exc_info.value.status == HTTP_NOT_FOUND
+
+
+@pytest.fixture(name="widgets")
+def load_widgets() -> list[str]:
+    """Load vehicle widgets fixture."""
+    widgets = []
+    for path in [
+        "other/widget.json",
+    ]:
+        with FIXTURES_DIR.joinpath(path).open() as file:
+            widgets.append(file.read())
+    return widgets
+
+
+@pytest.mark.asyncio
+async def test_widgets(widgets: list[str], myskoda: MySkoda, responses: aioresponses) -> None:
+    """Example unit test for RestAPI.widgets(). Needs more work."""
+    for widgets_input in widgets:
+        widgets_json = json.loads(widgets_input)
+
+        target_vin = "TMBJM0CKV1N12345"
+        responses.get(
+            url=f"https://mysmob.api.connect.skoda-auto.cz/api/v2/widgets/vehicle-status/{target_vin}",
+            body=widgets_input,
+        )
+        get_widgets_result = await myskoda.get_widget(target_vin)
+
+        # Add assertions for widget result
+
+        assert get_widgets_result is not None
+        assert get_widgets_result.vehicle is not None
+        assert get_widgets_result.vehicle.name == widgets_json["vehicle"]["name"]
+        assert get_widgets_result.vehicle.license_plate == widgets_json["vehicle"]["licensePlate"]
+        assert get_widgets_result.vehicle.render_url == widgets_json["vehicle"]["renderUrl"]
+        assert get_widgets_result.vehicle_status is not None
+        assert (
+            get_widgets_result.vehicle_status.doors_locked
+            == widgets_json["vehicleStatus"]["doorsLocked"]
+        )
+        assert (
+            get_widgets_result.vehicle_status.driving_range_in_km
+            == widgets_json["vehicleStatus"]["drivingRangeInKm"]
+        )
+        assert get_widgets_result.parking_position is not None
+        assert get_widgets_result.parking_position.state == widgets_json["parkingPosition"]["state"]
+        assert (
+            get_widgets_result.parking_position.maps.light_map_url
+            == widgets_json["parkingPosition"]["maps"]["lightMapUrl"]
+        )
+        assert (
+            get_widgets_result.parking_position.gps_coordinates.latitude
+            == widgets_json["parkingPosition"]["gpsCoordinates"]["latitude"]
+        )
+        assert (
+            get_widgets_result.parking_position.gps_coordinates.longitude
+            == widgets_json["parkingPosition"]["gpsCoordinates"]["longitude"]
+        )
+        assert (
+            get_widgets_result.parking_position.formatted_address
+            == widgets_json["parkingPosition"]["formattedAddress"]
+        )
