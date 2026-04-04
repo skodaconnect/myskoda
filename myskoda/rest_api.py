@@ -36,7 +36,6 @@ from myskoda.anonymize import (
     anonymize_vehicle_renders,
     anonymize_widget,
 )
-from myskoda.models.widget import WidgetResponse
 
 from .auth.authorization import Authorization
 from .const import BASE_URL_SKODA, REQUEST_TIMEOUT_IN_SECONDS
@@ -68,6 +67,7 @@ from .models.trip_statistics import SingleTrips, TripStatistics
 from .models.user import User
 from .models.vehicle_connection_status import VehicleConnectionStatus
 from .models.vehicle_info import VehicleEquipment, VehicleInfo, VehicleRenders
+from .models.widget import WidgetResponse
 from .utils import to_iso8601
 
 _LOGGER = logging.getLogger(__name__)

@@ -396,3 +396,17 @@ def anonymize_url(url: str) -> str:
         str: URL string with any VIN anonymized
     """
     return VIN_REGEX.sub(VIN, url)
+
+
+def anonymize_url_location(url: str) -> str:
+    """Anonymize a VIN found in a URL.
+
+    Args:
+        url: input URL string
+
+    Returns:
+        str: URL string with any VIN anonymized
+    """
+    return LOCATION_REGEX.sub(
+        f"latitude={LOCATION['latitude']}&longitude={LOCATION['longitude']}", url
+    )
