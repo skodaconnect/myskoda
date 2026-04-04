@@ -427,7 +427,12 @@ class MySkoda:
         equipment = await self.get_vehicle_equipment(vin, anonymize=anonymize)
         renders = await self.get_vehicle_renders(vin, anonymize=anonymize)
         soft_status = await self.get_software_update_status(vin, anonymize=anonymize)
-        return VehicleFullInfo(info=vehicle_info, equipment=equipment, renders=renders, software_update_status=soft_status)
+        return VehicleFullInfo(
+            info=vehicle_info,
+            equipment=equipment,
+            renders=renders,
+            software_update_status=soft_status,
+        )
 
     async def get_departure_timers(self, vin: Vin, anonymize: bool = False) -> DepartureInfo:
         """Retrieve departure timers for the specified vehicle."""

@@ -8,12 +8,14 @@ from mashumaro.mixins.orjson import DataClassORJSONMixin
 from myskoda.models.software_status import SoftwareUpdateStatus
 
 from .common import BaseResponse
-from .info import CompositeRender, Info, InfoBase, Render, Specification
+from .info import CompositeRender, InfoBase, Render, Specification
 
 
 @dataclass
 class VehicleInfo(InfoBase):
-    vehicle_specification: Specification = field(metadata=field_options(alias="vehicleSpecification"))
+    vehicle_specification: Specification = field(
+        metadata=field_options(alias="vehicleSpecification")
+    )
 
 
 @dataclass
