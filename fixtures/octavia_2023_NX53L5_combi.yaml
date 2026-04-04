@@ -112,59 +112,59 @@ reports:
         statuses: []
       - id: MISUSE_PROTECTION
         statuses: []
-      errors: null 
+      errors: null
     composite_renders:
     - layers:
       - order: 0
         type: REAL
         url: https://iprenders.blob.core.windows.net/basenx5v23100003/5X5X1XPLcdFET-LPqyoRvlx-kmtJ6SxG2_4YCMcO-PqLT3kFiaoYyCf._V7vtN-1L52rHbXPNRZvwBFneThz7fm-IRJSMEDO-19201080dayvext_side1080.png
-        view_point: exterior_side
+        view_point: EXTERIOR_SIDE
       view_type: UNMODIFIED_EXTERIOR_SIDE
     - layers:
       - order: 0
         type: REAL
         url: https://iprenders.blob.core.windows.net/basenx5v23100003/5X5X1XPLcdFET-LPqyoRvlx-kmtJ6SxG2_4YCMcO-PqLT3kFiaoYyCf._V7vtN-1L52rHbXPNRZvwBFneThz7fm-IRJSMEDO-19201080dayvext_side1080.png
-        view_point: exterior_side
+        view_point: EXTERIOR_SIDE
       view_type: HOME
     - layers:
       - order: 0
         type: REAL
         url: https://iprenders.blob.core.windows.net/basenx5v23100003/5X5X1XPLcdFET-LPqyoRvlx-kmtJ6SxG2_4YCMcO-PqLT3kFiaoYyCf._V7vtN-1L52rHbXPNRZvwBFneThz7fm-IRJSMEDO-19201080dayvext_side1080.png
-        view_point: exterior_side
+        view_point: EXTERIOR_SIDE
       - order: 1
         type: REAL
         url: https://mspgwlivestorage.blob.core.windows.net/renders/cables/octavia_NX_cable_charging_light_v1.png
-        view_point: exterior_side
+        view_point: EXTERIOR_SIDE
       view_type: CHARGING_LIGHT
     - layers:
       - order: 0
         type: REAL
         url: https://iprenders.blob.core.windows.net/basenx5v23100003/5X5X1XPLcdFET-LPqyoRvlx-kmtJ6SxG2_4YCMcO-PqLT3kFiaoYyCf._V7vtN-1L52rHbXPNRZvwBFneThz7fm-IRJSMEDO-19201080dayvext_side1080.png
-        view_point: exterior_side
+        view_point: EXTERIOR_SIDE
       - order: 1
         type: REAL
         url: https://mspgwlivestorage.blob.core.windows.net/renders/cables/octavia_NX_cable_charging_dark_v1.png
-        view_point: exterior_side
+        view_point: EXTERIOR_SIDE
       view_type: CHARGING_DARK
     - layers:
       - order: 0
         type: REAL
         url: https://iprenders.blob.core.windows.net/basenx5v23100003/5X5X1XPLcdFET-LPqyoRvlx-kmtJ6SxG2_4YCMcO-PqLT3kFiaoYyCf._V7vtN-1L52rHbXPNRZvwBFneThz7fm-IRJSMEDO-19201080dayvext_side1080.png
-        view_point: exterior_side
+        view_point: EXTERIOR_SIDE
       - order: 1
         type: REAL
         url: https://mspgwlivestorage.blob.core.windows.net/renders/cables/octavia_NX_cable_plugged_in_light_v1.png
-        view_point: exterior_side
+        view_point: EXTERIOR_SIDE
       view_type: PLUGGED_IN_LIGHT
     - layers:
       - order: 0
         type: REAL
         url: https://iprenders.blob.core.windows.net/basenx5v23100003/5X5X1XPLcdFET-LPqyoRvlx-kmtJ6SxG2_4YCMcO-PqLT3kFiaoYyCf._V7vtN-1L52rHbXPNRZvwBFneThz7fm-IRJSMEDO-19201080dayvext_side1080.png
-        view_point: exterior_side
+        view_point: EXTERIOR_SIDE
       - order: 1
         type: REAL
         url: https://mspgwlivestorage.blob.core.windows.net/renders/cables/octavia_NX_cable_plugged_in_dark_v1.png
-        view_point: exterior_side
+        view_point: EXTERIOR_SIDE
       view_type: PLUGGED_IN_DARK
     device_platform: MBB_ODP
     timestamp: null
@@ -175,15 +175,15 @@ reports:
     - order: 0
       type: REAL
       url: https://iprenders.blob.core.windows.net/basenx5v23100003/5X5X1XPLcdFET-LPqyoRvlx-kmtJ6SxG2_4YCMcO-PqLT3kFiaoYyCf._V7vtN-1L52rHbXPNRZvwBFneThz7fm-IRJSMEDO-19201080dayvext_side1080.png
-      view_point: exterior_side
+      view_point: EXTERIOR_SIDE
     - order: 1
       type: REAL
       url: https://ip-modcwp.azureedge.net/modcwpnx5v23100003/5X5X1XPLcdFET-LPqyoRvlx-kmtJ6SxG2_4YCMcO-PqLT3kFiaoYyCf._V7vtN-1L52rHbXPNRZvwBFneThz7fm-IRJSMEDO-1920658dayvext_side1080.png?v=638543765110000000
-      view_point: garage_l
+      view_point: GARAGE_L
     - order: 2
       type: REAL
       url: https://ip-modcwp.azureedge.net/modcwpnx5v23100003/5X5X1XPLcdFET-LPqyoRvlx-kmtJ6SxG2_4YCMcO-PqLT3kFiaoYyCf._V7vtN-1L52rHbXPNRZvwBFneThz7fm-IRJSMEDO-700390dayvext_front1080.png?v=638237113300000000
-      view_point: main
+      view_point: MAIN
     service_partner: null
     software_version: null
     specification:
@@ -193,6 +193,8 @@ reports:
         capacity_in_liters: 1.0
         power: 81
         type: TSI
+      gearbox:
+        type: M6F
       manufacturing_date: '2022-12-15'
       max_charging_power: null
       model: Octavia

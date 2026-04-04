@@ -140,65 +140,65 @@ reports:
         statuses: []
       - id: AIR_CONDITIONING
         statuses: []
-      errors: null 
+      errors: null
     composite_renders:
     - layers:
       - order: 0
         type: REAL
         url: https://iprenders.blob.core.windows.net/base3v5s22200325/0F0FhQZNI-XAcEaOJ-.y82w69-Ks2ylRqFezXOw8SbH-hKznrNVYRk7.f4Zux81-mB6OF9_rdRuWU24JHaLwtlz-BETJCHRPNM-19201080dayvext_front1080.png
-        view_point: exterior_front
+        view_point: EXTERIOR_FRONT
       view_type: UNMODIFIED_EXTERIOR_FRONT
     - layers:
       - order: 0
         type: REAL
         url: https://iprenders.blob.core.windows.net/base3v5s22200325/0F0FhQZNI-XAcEaOJ-.y82w69-Ks2ylRqFezXOw8SbH-hKznrNVYRk7.f4Zux81-mB6OF9_rdRuWU24JHaLwtlz-BETJCHRPNM-19201080dayvext_side1080.png
-        view_point: exterior_side
+        view_point: EXTERIOR_SIDE
       view_type: UNMODIFIED_EXTERIOR_SIDE
     - layers:
       - order: 0
         type: REAL
         url: https://iprenders.blob.core.windows.net/base3v5s22200325/0F0FhQZNI-XAcEaOJ-.y82w69-Ks2ylRqFezXOw8SbH-hKznrNVYRk7.f4Zux81-mB6OF9_rdRuWU24JHaLwtlz-BETJCHRPNM-19201080dayvext_side1080.png
-        view_point: exterior_side
+        view_point: EXTERIOR_SIDE
       view_type: HOME
     - layers:
       - order: 0
         type: REAL
         url: https://iprenders.blob.core.windows.net/base3v5s22200325/0F0FhQZNI-XAcEaOJ-.y82w69-Ks2ylRqFezXOw8SbH-hKznrNVYRk7.f4Zux81-mB6OF9_rdRuWU24JHaLwtlz-BETJCHRPNM-19201080dayvext_front1080.png
-        view_point: exterior_front
+        view_point: EXTERIOR_FRONT
       - order: 1
         type: REAL
         url: https://mspgwlivestorage.blob.core.windows.net/renders/cables/superb_3V_cable_charging_light_v1.png
-        view_point: exterior_front
+        view_point: EXTERIOR_FRONT
       view_type: CHARGING_LIGHT
     - layers:
       - order: 0
         type: REAL
         url: https://iprenders.blob.core.windows.net/base3v5s22200325/0F0FhQZNI-XAcEaOJ-.y82w69-Ks2ylRqFezXOw8SbH-hKznrNVYRk7.f4Zux81-mB6OF9_rdRuWU24JHaLwtlz-BETJCHRPNM-19201080dayvext_front1080.png
-        view_point: exterior_front
+        view_point: EXTERIOR_FRONT
       - order: 1
         type: REAL
         url: https://mspgwlivestorage.blob.core.windows.net/renders/cables/superb_3V_cable_charging_dark_v1.png
-        view_point: exterior_front
+        view_point: EXTERIOR_FRONT
       view_type: CHARGING_DARK
     - layers:
       - order: 0
         type: REAL
         url: https://iprenders.blob.core.windows.net/base3v5s22200325/0F0FhQZNI-XAcEaOJ-.y82w69-Ks2ylRqFezXOw8SbH-hKznrNVYRk7.f4Zux81-mB6OF9_rdRuWU24JHaLwtlz-BETJCHRPNM-19201080dayvext_front1080.png
-        view_point: exterior_front
+        view_point: EXTERIOR_FRONT
       - order: 1
         type: REAL
         url: https://mspgwlivestorage.blob.core.windows.net/renders/cables/superb_3V_cable_plugged_in_light_v1.png
-        view_point: exterior_front
+        view_point: EXTERIOR_FRONT
       view_type: PLUGGED_IN_LIGHT
     - layers:
       - order: 0
         type: REAL
         url: https://iprenders.blob.core.windows.net/base3v5s22200325/0F0FhQZNI-XAcEaOJ-.y82w69-Ks2ylRqFezXOw8SbH-hKznrNVYRk7.f4Zux81-mB6OF9_rdRuWU24JHaLwtlz-BETJCHRPNM-19201080dayvext_front1080.png
-        view_point: exterior_front
+        view_point: EXTERIOR_FRONT
       - order: 1
         type: REAL
         url: https://mspgwlivestorage.blob.core.windows.net/renders/cables/superb_3V_cable_plugged_in_dark_v1.png
-        view_point: exterior_front
+        view_point: EXTERIOR_FRONT
       view_type: PLUGGED_IN_DARK
     device_platform: MBB_ODP
     errors: null
@@ -208,19 +208,19 @@ reports:
     - order: 0
       type: REAL
       url: https://iprenders.blob.core.windows.net/base3v5s22200325/0F0FhQZNI-XAcEaOJ-.y82w69-Ks2ylRqFezXOw8SbH-hKznrNVYRk7.f4Zux81-mB6OF9_rdRuWU24JHaLwtlz-BETJCHRPNM-19201080dayvext_front1080.png
-      view_point: exterior_front
+      view_point: EXTERIOR_FRONT
     - order: 1
       type: REAL
       url: https://iprenders.blob.core.windows.net/base3v5s22200325/0F0FhQZNI-XAcEaOJ-.y82w69-Ks2ylRqFezXOw8SbH-hKznrNVYRk7.f4Zux81-mB6OF9_rdRuWU24JHaLwtlz-BETJCHRPNM-19201080dayvext_side1080.png
-      view_point: exterior_side
+      view_point: EXTERIOR_SIDE
     - order: 2
       type: REAL
       url: https://ip-modcwp.azureedge.net/modcwp3v5s22200325/0F0FhQZNI-XAcEaOJ-.y82w69-Ks2ylRqFezXOw8SbH-hKznrNVYRk7.f4Zux81-mB6OF9_rdRuWU24JHaLwtlz-BETJCHRPNM-1920658dayvext_side1080.png?v=638525262480000000
-      view_point: garage_l
+      view_point: GARAGE_L
     - order: 3
       type: REAL
       url: https://ip-modcwp.azureedge.net/modcwp3v5s22200325/0F0FhQZNI-XAcEYOJ-.y82x69-It3ykPqFdzXOw8SaG-hKznpNVXRk6.f4Zux81-mE6OF9_rdRuVU24JHLwtlZz-BETJCHRPOM-700390dayvext_front1080.png?v=637914070380000000
-      view_point: main
+      view_point: MAIN
     service_partner:
       id: DEU11111
     software_version: null
@@ -232,6 +232,8 @@ reports:
         capacity_in_liters: 1.4
         power: 160
         type: TSI iV
+      gearbox:
+        type: A6F
       manufacturing_date: '2022-04-29'
       max_charging_power: null
       model: Superb

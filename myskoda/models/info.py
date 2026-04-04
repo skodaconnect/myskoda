@@ -9,7 +9,7 @@ from mashumaro import field_options
 from mashumaro.mixins.orjson import DataClassORJSONMixin
 from mashumaro.mixins.yaml import DataClassYAMLMixin
 
-from .common import BaseResponse
+from .common import BaseResponse, CaseInsensitiveStrEnum
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -243,6 +243,7 @@ class Specification(DataClassORJSONMixin):
     model_year: str = field(metadata=field_options(alias="modelYear"))
     system_code: str = field(metadata=field_options(alias="systemCode"))
     system_model_id: str = field(metadata=field_options(alias="systemModelId"))
+    gearbox: Gearbox | None = field(default=None)
     battery: Battery | None = field(default=None)
     max_charging_power: int | None = field(
         default=None, metadata=field_options(alias="maxChargingPowerInKW")
@@ -266,11 +267,26 @@ class ServicePartner(DataClassORJSONMixin):
 class ViewType(StrEnum):
     UNMODIFIED_EXTERIOR_SIDE = "UNMODIFIED_EXTERIOR_SIDE"
     UNMODIFIED_EXTERIOR_FRONT = "UNMODIFIED_EXTERIOR_FRONT"
+    UNMODIFIED_INTERIOR_SIDE = "UNMODIFIED_INTERIOR_SIDE"
+    UNMODIFIED_EXTERIOR_REAR = "UNMODIFIED_EXTERIOR_REAR"
+    UNMODIFIED_INTERIOR_FRONT = "UNMODIFIED_INTERIOR_FRONT"
+    UNMODIFIED_INTERIOR_BOOT = "UNMODIFIED_INTERIOR_BOOT"
     HOME = "HOME"
     CHARGING_LIGHT = "CHARGING_LIGHT"
     CHARGING_DARK = "CHARGING_DARK"
     PLUGGED_IN_DARK = "PLUGGED_IN_DARK"
     PLUGGED_IN_LIGHT = "PLUGGED_IN_LIGHT"
+
+
+class ViewPoint(CaseInsensitiveStrEnum):
+    EXTERIOR_FRONT = "EXTERIOR_FRONT"
+    EXTERIOR_REAR = "EXTERIOR_REAR"
+    EXTERIOR_SIDE = "EXTERIOR_SIDE"
+    GARAGE_L = "GARAGE_L"
+    INTERIOR_BOOT = "INTERIOR_BOOT"
+    INTERIOR_FRONT = "INTERIOR_FRONT"
+    INTERIOR_SIDE = "INTERIOR_SIDE"
+    MAIN = "MAIN"
 
 
 class RenderType(StrEnum):
@@ -282,7 +298,7 @@ class Render(DataClassORJSONMixin):
     url: str
     type: RenderType
     order: int
-    view_point: str = field(metadata=field_options(alias="viewPoint"))
+    view_point: ViewPoint = field(metadata=field_options(alias="viewPoint"))
 
 
 @dataclass
@@ -292,7 +308,16 @@ class CompositeRender(DataClassORJSONMixin):
 
 
 @dataclass
-class Info(BaseResponse):
+class InfoBase(BaseResponse):
+    device_platform: str = field(metadata=field_options(alias="devicePlatform"))
+    renders: list[Render]
+    composite_renders: list[CompositeRender] = field(
+        metadata=field_options(alias="compositeRenders")
+    )
+
+
+@dataclass
+class Info(InfoBase):
     """Basic vehicle information."""
 
     state: VehicleState
@@ -300,12 +325,7 @@ class Info(BaseResponse):
     vin: str
     name: str
     capabilities: Capabilities
-    renders: list[Render]
-    device_platform: str = field(metadata=field_options(alias="devicePlatform"))
     workshop_mode_enabled: bool = field(metadata=field_options(alias="workshopModeEnabled"))
-    composite_renders: list[CompositeRender] = field(
-        metadata=field_options(alias="compositeRenders")
-    )
     service_partner: ServicePartner | None = field(
         default=None, metadata=field_options(alias="servicePartner")
     )

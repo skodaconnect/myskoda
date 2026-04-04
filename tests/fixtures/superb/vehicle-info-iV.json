@@ -1,0 +1,35 @@
+{
+    "devicePlatform": "MBB_ODP",
+    "vehicleSpecification": {
+        "title": "Škoda Superb Combi",
+        "manufacturingDate": "2025-11-21",
+        "model": "Superb",
+        "modelYear": "2026",
+        "body": "Combi",
+        "trimLevel": "Edition 130",
+        "systemCode": "UNKNOWN",
+        "systemModelId": "NZ5DDD",
+        "engine": {
+            "type": "TSI MHEV",
+            "powerInKW": 110,
+            "capacityInLiters": 1.5
+        },
+        "gearbox": {
+            "type": "A7F"
+        }
+    },
+    "renders": [],
+    "compositeRenders": [
+        {
+            "layers": [
+                {
+                    "url": "https://iprenders.blob.core.windows.net/side1080.png",
+                    "viewPoint": "EXTERIOR_SIDE",
+                    "type": "REAL",
+                    "order": 0
+                }
+            ],
+            "viewType": "UNMODIFIED_EXTERIOR_SIDE"
+        }
+    ]
+}
