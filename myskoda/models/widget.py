@@ -10,31 +10,42 @@ from .position import ParkingCoordinates
 
 
 @dataclass
-class WidgetVehicle(DataClassORJSONMixin):
+class ChargingStatus(DataClassORJSONMixin):
+    state_of_charge_in_percent: int = field(metadata=field_options(alias="stateOfChargeInPercent"))
+    remaining_time_to_fully_charged_in_minutes: int = field(
+        metadata=field_options(alias="remainingTimeToFullyChargedInMinutes")
+    )
+
+
+@dataclass
+class Vehicle(DataClassORJSONMixin):
     name: str
     license_plate: str = field(metadata=field_options(alias="licensePlate"))
     render_url: str = field(metadata=field_options(alias="renderUrl"))
 
 
 @dataclass
-class WidgetVehicleStatus(DataClassORJSONMixin):
+class VehicleStatus(DataClassORJSONMixin):
     doors_locked: str = field(metadata=field_options(alias="doorsLocked"))
     driving_range_in_km: int = field(metadata=field_options(alias="drivingRangeInKm"))
 
 
 @dataclass
-class ParkingMaps(DataClassORJSONMixin):
+class Maps(DataClassORJSONMixin):
     light_map_url: str = field(metadata=field_options(alias="lightMapUrl"))
 
 
 @dataclass
-class WidgetParkingPosition(ParkingCoordinates):
+class ParkingPosition(ParkingCoordinates):
     state: str
-    maps: ParkingMaps
+    maps: Maps
 
 
 @dataclass
 class WidgetResponse(BaseResponse):
-    vehicle: WidgetVehicle
-    vehicle_status: WidgetVehicleStatus = field(metadata=field_options(alias="vehicleStatus"))
-    parking_position: WidgetParkingPosition = field(metadata=field_options(alias="parkingPosition"))
+    vehicle: Vehicle
+    vehicle_status: VehicleStatus = field(metadata=field_options(alias="vehicleStatus"))
+    parking_position: ParkingPosition = field(metadata=field_options(alias="parkingPosition"))
+    charging_status: ChargingStatus | None = field(
+        default=None, metadata=field_options(alias="chargingStatus")
+    )

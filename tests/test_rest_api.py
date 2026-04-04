@@ -802,3 +802,12 @@ async def test_widgets(widgets: list[str], myskoda: MySkoda, responses: aiorespo
             get_widgets_result.parking_position.formatted_address
             == widgets_json["parkingPosition"]["formattedAddress"]
         )
+        assert get_widgets_result.charging_status is not None
+        assert (
+            get_widgets_result.charging_status.remaining_time_to_fully_charged_in_minutes
+            == widgets_json["chargingStatus"]["remainingTimeToFullyChargedInMinutes"]
+        )
+        assert (
+            get_widgets_result.charging_status.state_of_charge_in_percent
+            == widgets_json["chargingStatus"]["stateOfChargeInPercent"]
+        )
