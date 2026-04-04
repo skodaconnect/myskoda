@@ -8,6 +8,10 @@
         "doorsLocked": "CLOSED",
         "drivingRangeInKm": 820
     },
+    "chargingStatus": {
+        "stateOfChargeInPercent": 35,
+        "remainingTimeToFullyChargedInMinutes": 0
+    },
     "parkingPosition": {
         "state": "PARKED",
         "maps": {
