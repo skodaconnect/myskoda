@@ -31,6 +31,9 @@ from myskoda.anonymize import (
     anonymize_url,
     anonymize_user,
     anonymize_vehicle_connection_status,
+    anonymize_vehicle_equipment,
+    anonymize_vehicle_info,
+    anonymize_vehicle_renders,
 )
 
 from .auth.authorization import Authorization
@@ -361,9 +364,23 @@ class RestApi:
         raw = self.process_json(
             data=await self._make_get_request(url),
             anonymize=anonymize,
-            anonymization_fn=anonymize_health,
+            anonymization_fn=anonymize_vehicle_info,
         )
         result = self._deserialize(raw, VehicleInfo.from_json)
+        url = anonymize_url(url) if anonymize else url
+        return GetEndpointResult(url=url, raw=raw, result=result)
+
+    async def get_software_update_status(
+        self, vin: str, anonymize: bool = False
+    ) -> GetEndpointResult[SoftwareUpdateStatus]:
+        """Retrieve software update status."""
+        url = f"/v1/vehicle-information/{vin}/software-version/update-status"
+        raw = self.process_json(
+            data=await self._make_get_request(url),
+            anonymize=anonymize,
+            anonymization_fn=anonymize_software_update_status,
+        )
+        result = self._deserialize(raw, SoftwareUpdateStatus.from_json)
         url = anonymize_url(url) if anonymize else url
         return GetEndpointResult(url=url, raw=raw, result=result)
 
@@ -375,7 +392,7 @@ class RestApi:
         raw = self.process_json(
             data=await self._make_get_request(url),
             anonymize=anonymize,
-            anonymization_fn=anonymize_health,
+            anonymization_fn=anonymize_vehicle_renders,
         )
         result = self._deserialize(raw, VehicleRenders.from_json)
         url = anonymize_url(url) if anonymize else url
@@ -389,7 +406,7 @@ class RestApi:
         raw = self.process_json(
             data=await self._make_get_request(url),
             anonymize=anonymize,
-            anonymization_fn=anonymize_health,
+            anonymization_fn=anonymize_vehicle_equipment,
         )
         result = self._deserialize(raw, VehicleEquipment.from_json)
         url = anonymize_url(url) if anonymize else url
@@ -469,20 +486,6 @@ class RestApi:
             anonymization_fn=anonymize_vehicle_connection_status,
         )
         result = self._deserialize(raw, VehicleConnectionStatus.from_json)
-        url = anonymize_url(url) if anonymize else url
-        return GetEndpointResult(url=url, raw=raw, result=result)
-
-    async def get_software_update_status(
-        self, vin: str, anonymize: bool = False
-    ) -> GetEndpointResult[SoftwareUpdateStatus]:
-        """Retrieve software update status."""
-        url = f"/v1/vehicle-information/{vin}/software-version/update-status"
-        raw = self.process_json(
-            data=await self._make_get_request(url),
-            anonymize=anonymize,
-            anonymization_fn=anonymize_software_update_status,
-        )
-        result = self._deserialize(raw, SoftwareUpdateStatus.from_json)
         url = anonymize_url(url) if anonymize else url
         return GetEndpointResult(url=url, raw=raw, result=result)
 

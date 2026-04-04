@@ -407,6 +407,12 @@ class MySkoda:
         """Retrieve health information for the specified vehicle."""
         return (await self.rest_api.get_vehicle_info(vin, anonymize=anonymize)).result
 
+    async def get_software_update_status(
+        self, vin: Vin, anonymize: bool = False
+    ) -> SoftwareUpdateStatus:
+        """Retrieve software update status for the specified vehicle."""
+        return (await self.rest_api.get_software_update_status(vin, anonymize=anonymize)).result
+
     async def get_vehicle_renders(self, vin: Vin, anonymize: bool = False) -> VehicleRenders:
         """Retrieve vehicle renders for the specified vehicle."""
         return (await self.rest_api.get_vehicle_renders(vin, anonymize=anonymize)).result
@@ -420,7 +426,8 @@ class MySkoda:
         vehicle_info = await self.get_vehicle_info(vin, anonymize=anonymize)
         equipment = await self.get_vehicle_equipment(vin, anonymize=anonymize)
         renders = await self.get_vehicle_renders(vin, anonymize=anonymize)
-        return VehicleFullInfo(info=vehicle_info, equipment=equipment, renders=renders)
+        soft_status = await self.get_software_update_status(vin, anonymize=anonymize)
+        return VehicleFullInfo(info=vehicle_info, equipment=equipment, renders=renders, software_update_status=soft_status)
 
     async def get_departure_timers(self, vin: Vin, anonymize: bool = False) -> DepartureInfo:
         """Retrieve departure timers for the specified vehicle."""
@@ -435,12 +442,6 @@ class MySkoda:
     ) -> VehicleConnectionStatus:
         """Retrieve vehicle connection status for the specified vehicle."""
         return (await self.rest_api.get_vehicle_connection_status(vin, anonymize=anonymize)).result
-
-    async def get_software_update_status(
-        self, vin: Vin, anonymize: bool = False
-    ) -> SoftwareUpdateStatus:
-        """Retrieve software update status for the specified vehicle."""
-        return (await self.rest_api.get_software_update_status(vin, anonymize=anonymize)).result
 
     async def start_charging(self, vin: Vin) -> None:
         """Start charging the car."""

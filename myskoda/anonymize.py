@@ -245,6 +245,42 @@ def anonymize_vehicle_connection_status(data: dict) -> dict:
     return data
 
 
+def anonymize_vehicle_info(data: dict) -> dict:
+    """Anonymize select parts if the input from the vehicle_info dict.
+
+    Args:
+        data: input dictionary
+
+    Returns:
+        dict
+    """
+    return data
+
+
+def anonymize_vehicle_renders(data: dict) -> dict:
+    """Anonymize select parts if the input from the vehicle_renders dict.
+
+    Args:
+        data: input dictionary
+
+    Returns:
+        dict
+    """
+    return data
+
+
+def anonymize_vehicle_equipment(data: dict) -> dict:
+    """Anonymize select parts if the input from the vehicle_equipment dict.
+
+    Args:
+        data: input dictionary
+
+    Returns:
+        dict
+    """
+    return data
+
+
 def anonymize_software_update_status(data: dict) -> dict:
     """Anonymize select parts if the input from the software_update_status dict.
 

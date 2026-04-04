@@ -5,26 +5,21 @@ from dataclasses import dataclass, field
 from mashumaro import field_options
 from mashumaro.mixins.orjson import DataClassORJSONMixin
 
+from myskoda.models.software_status import SoftwareUpdateStatus
+
 from .common import BaseResponse
-from .info import CompositeRender, Render, Specification
+from .info import CompositeRender, Info, InfoBase, Render, Specification
 
 
 @dataclass
-class VehicleInfo(DataClassORJSONMixin):
-    device_platform: str = field(metadata=field_options(alias="devicePlatform"))
-    renders: list[Render] = field(metadata=field_options(alias="renders"))
-    vehicle_specification: Specification = field(
-        metadata=field_options(alias="vehicleSpecification")
-    )
-    composite_renderers: list[CompositeRender] = field(
-        metadata=field_options(alias="compositeRenders")
-    )
+class VehicleInfo(InfoBase):
+    vehicle_specification: Specification = field(metadata=field_options(alias="vehicleSpecification"))
 
 
 @dataclass
 class VehicleRenders(BaseResponse):
-    renders: list[Render] = field(metadata=field_options(alias="renders"))
-    composite_renderers: list[CompositeRender] = field(
+    renders: list[Render]
+    composite_renders: list[CompositeRender] = field(
         metadata=field_options(alias="compositeRenders")
     )
 
@@ -43,7 +38,8 @@ class VehicleEquipment(BaseResponse):
 
 
 @dataclass
-class VehicleFullInfo(DataClassORJSONMixin):
-    info: VehicleInfo = field(metadata=field_options(alias="info"))
-    equipment: VehicleEquipment = field(metadata=field_options(alias="equipment"))
-    renders: VehicleRenders = field(metadata=field_options(alias="renders"))
+class VehicleFullInfo(BaseResponse):
+    equipment: VehicleEquipment
+    info: VehicleInfo
+    renders: VehicleRenders
+    software_update_status: SoftwareUpdateStatus

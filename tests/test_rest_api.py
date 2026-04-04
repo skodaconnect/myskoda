@@ -640,13 +640,13 @@ async def test_vehicle_info(
         assert gearbox is not None
         assert gearbox.type == gearbox_json["type"]
 
-        composite_renderers = get_vehicle_info_result.composite_renderers
-        composite_renderers_json = vehicle_information_json["compositeRenders"]
-        assert len(composite_renderers) == len(composite_renderers_json)
-        for i in range(len(composite_renderers)):
-            assert composite_renderers[i].view_type == composite_renderers_json[i]["viewType"]
-            layers = composite_renderers[i].layers
-            layers_json = composite_renderers_json[i]["layers"]
+        composite_renders = get_vehicle_info_result.composite_renders
+        composite_renders_json = vehicle_information_json["compositeRenders"]
+        assert len(composite_renders) == len(composite_renders_json)
+        for i in range(len(composite_renders)):
+            assert composite_renders[i].view_type == composite_renders_json[i]["viewType"]
+            layers = composite_renders[i].layers
+            layers_json = composite_renders_json[i]["layers"]
             assert len(layers) == len(layers_json)
             for j in range(len(layers)):
                 assert layers[j].order == layers_json[j]["order"]
@@ -723,7 +723,7 @@ async def test_vehicle_renders(
         )
         get_vehicle_renders_result = (
             await myskoda.get_vehicle_renders(target_vin)
-        ).composite_renderers
+        ).composite_renders
         get_vehicle_renders_result_json = vehicle_renders_json["compositeRenders"]
 
         # Add assertions for vehicle renders result

@@ -243,7 +243,7 @@ class Specification(DataClassORJSONMixin):
     model_year: str = field(metadata=field_options(alias="modelYear"))
     system_code: str = field(metadata=field_options(alias="systemCode"))
     system_model_id: str = field(metadata=field_options(alias="systemModelId"))
-    gearbox: Gearbox | None = field(default=None, metadata=field_options(alias="gearbox"))
+    gearbox: Gearbox | None = field(default=None)
     battery: Battery | None = field(default=None)
     max_charging_power: int | None = field(
         default=None, metadata=field_options(alias="maxChargingPowerInKW")
@@ -312,7 +312,16 @@ class CompositeRender(DataClassORJSONMixin):
 
 
 @dataclass
-class Info(BaseResponse):
+class InfoBase(BaseResponse):
+    device_platform: str = field(metadata=field_options(alias="devicePlatform"))
+    renders: list[Render]
+    composite_renders: list[CompositeRender] = field(
+        metadata=field_options(alias="compositeRenders")
+    )
+
+
+@dataclass
+class Info(InfoBase):
     """Basic vehicle information."""
 
     state: VehicleState
@@ -320,12 +329,7 @@ class Info(BaseResponse):
     vin: str
     name: str
     capabilities: Capabilities
-    renders: list[Render]
-    device_platform: str = field(metadata=field_options(alias="devicePlatform"))
     workshop_mode_enabled: bool = field(metadata=field_options(alias="workshopModeEnabled"))
-    composite_renders: list[CompositeRender] = field(
-        metadata=field_options(alias="compositeRenders")
-    )
     service_partner: ServicePartner | None = field(
         default=None, metadata=field_options(alias="servicePartner")
     )
