@@ -73,6 +73,7 @@ from myskoda.cli.requests import (
     vehicle_info,
     vehicle_renders,
     verify_spin,
+    widget,
 )
 from myskoda.cli.utils import Format, print_json, print_yaml
 
@@ -226,6 +227,7 @@ cli.add_command(vehicle_info)
 cli.add_command(vehicle_renders)
 cli.add_command(vehicle_equipment)
 cli.add_command(vehicle_full_info)
+cli.add_command(widget)
 
 if __name__ == "__main__":
     cli()
