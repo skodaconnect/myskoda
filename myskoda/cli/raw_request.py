@@ -5,8 +5,9 @@ import sys
 from typing import TYPE_CHECKING
 
 import asyncclick as click
-from aiohttp.client_exceptions import ClientResponseError
 from asyncclick.core import Context
+
+from myskoda.cli.utils import handle_request
 
 if TYPE_CHECKING:
     from myskoda import MySkoda
@@ -56,16 +57,13 @@ async def raw_request(ctx: Context, path: str, vin: str | None, method: str | No
 
     method = ("POST" if body is not None else "GET") if method is None else method.upper()
 
-    try:
+    async def _do_request() -> dict | None:
         text = await myskoda.rest_api.raw_request(url=path, method=method, json=body)
-    except ClientResponseError as e:
-        ctx.obj["print"]({"error": e.status, "message": e.message, "url": str(e.request_info.url)})
-        return
+        if not text:
+            return {"status": "ok"}
+        return json.loads(text)
 
-    if text:
-        try:
-            ctx.obj["print"](json.loads(text))
-        except json.JSONDecodeError:
-            print(text)
-    else:
-        ctx.obj["print"]({"status": "ok"})
+    try:
+        await handle_request(ctx, _do_request)
+    except json.JSONDecodeError as e:
+        ctx.obj["print"]({"error": "JSONDecodeError", "message": str(e)})
