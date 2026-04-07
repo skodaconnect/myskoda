@@ -118,63 +118,63 @@ reports:
         statuses: []
       - id: MISUSE_PROTECTION
         statuses: []
-      errors: null 
+      errors: null
     composite_renders:
     - layers:
       - order: 0
         type: REAL
         url: https://iprenders.blob.core.windows.net/basenx5v24100002/0F0FsCB4ymLp--eS2zxs5-zi74eBlxRKtULEhI9-3vBKh1zFsnWaPjSNxp.C7lY-_tQl1brc8mEVeXFx40LRgM-BMDIUKSGOQ-19201080dayvext_side1080.png
-        view_point: exterior_side
+        view_point: EXTERIOR_SIDE
       view_type: UNMODIFIED_EXTERIOR_SIDE
     - layers:
       - order: 0
         type: REAL
         url: https://mspgwlivestorage.blob.core.windows.net/renders/decorations/octavia_NX_christmas_tree_v1.png
-        view_point: exterior_side
+        view_point: EXTERIOR_SIDE
       - order: 1
         type: REAL
         url: https://iprenders.blob.core.windows.net/basenx5v24100002/0F0FsCB4ymLp--eS2zxs5-zi74eBlxRKtULEhI9-3vBKh1zFsnWaPjSNxp.C7lY-_tQl1brc8mEVeXFx40LRgM-BMDIUKSGOQ-19201080dayvext_side1080.png
-        view_point: exterior_side
+        view_point: EXTERIOR_SIDE
       view_type: HOME
     - layers:
       - order: 0
         type: REAL
         url: https://iprenders.blob.core.windows.net/basenx5v24100002/0F0FsCB4ymLp--eS2zxs5-zi74eBlxRKtULEhI9-3vBKh1zFsnWaPjSNxp.C7lY-_tQl1brc8mEVeXFx40LRgM-BMDIUKSGOQ-19201080dayvext_side1080.png
-        view_point: exterior_side
+        view_point: EXTERIOR_SIDE
       - order: 1
         type: REAL
         url: https://mspgwlivestorage.blob.core.windows.net/renders/cables/octavia_NX_from_2023_cable_charging_light_v1.png
-        view_point: exterior_side
+        view_point: EXTERIOR_SIDE
       view_type: CHARGING_LIGHT
     - layers:
       - order: 0
         type: REAL
         url: https://iprenders.blob.core.windows.net/basenx5v24100002/0F0FsCB4ymLp--eS2zxs5-zi74eBlxRKtULEhI9-3vBKh1zFsnWaPjSNxp.C7lY-_tQl1brc8mEVeXFx40LRgM-BMDIUKSGOQ-19201080dayvext_side1080.png
-        view_point: exterior_side
+        view_point: EXTERIOR_SIDE
       - order: 1
         type: REAL
         url: https://mspgwlivestorage.blob.core.windows.net/renders/cables/octavia_NX_from_2023_cable_charging_dark_v1.png
-        view_point: exterior_side
+        view_point: EXTERIOR_SIDE
       view_type: CHARGING_DARK
     - layers:
       - order: 0
         type: REAL
         url: https://iprenders.blob.core.windows.net/basenx5v24100002/0F0FsCB4ymLp--eS2zxs5-zi74eBlxRKtULEhI9-3vBKh1zFsnWaPjSNxp.C7lY-_tQl1brc8mEVeXFx40LRgM-BMDIUKSGOQ-19201080dayvext_side1080.png
-        view_point: exterior_side
+        view_point: EXTERIOR_SIDE
       - order: 1
         type: REAL
         url: https://mspgwlivestorage.blob.core.windows.net/renders/cables/octavia_NX_from_2023_cable_plugged_in_light_v1.png
-        view_point: exterior_side
+        view_point: EXTERIOR_SIDE
       view_type: PLUGGED_IN_LIGHT
     - layers:
       - order: 0
         type: REAL
         url: https://iprenders.blob.core.windows.net/basenx5v24100002/0F0FsCB4ymLp--eS2zxs5-zi74eBlxRKtULEhI9-3vBKh1zFsnWaPjSNxp.C7lY-_tQl1brc8mEVeXFx40LRgM-BMDIUKSGOQ-19201080dayvext_side1080.png
-        view_point: exterior_side
+        view_point: EXTERIOR_SIDE
       - order: 1
         type: REAL
         url: https://mspgwlivestorage.blob.core.windows.net/renders/cables/octavia_NX_from_2023_cable_plugged_in_dark_v1.png
-        view_point: exterior_side
+        view_point: EXTERIOR_SIDE
       view_type: PLUGGED_IN_DARK
     device_platform: MBB_ODP
     errors: null
@@ -192,6 +192,8 @@ reports:
         capacity_in_liters: 1.0
         power: 81
         type: TSI
+      gearbox:
+        type: M6F
       manufacturing_date: '2024-02-16'
       max_charging_power: null
       model: Octavia

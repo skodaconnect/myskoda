@@ -178,53 +178,53 @@ reports:
       - order: 0
         type: REAL
         url: https://iprenders.blob.core.windows.net/basepylv25100027/5X5X.vr9nahRyeHgm4B306k-tLFoPZ4eqYJwhjz8NVlIcDU3.-ohL_sSacDYUfiJ6B3-FBPRINDK-19201080dayvext_side1080.png
-        view_point: exterior_side
+        view_point: EXTERIOR_SIDE
       view_type: UNMODIFIED_EXTERIOR_SIDE
     - layers:
       - order: 0
         type: REAL
         url: https://iprenders.blob.core.windows.net/basepylv25100027/5X5X.vr9nahRyeHgm4B306k-tLFoPZ4eqYJwhjz8NVlIcDU3.-ohL_sSacDYUfiJ6B3-FBPRINDK-19201080dayvext_side1080.png
-        view_point: exterior_side
+        view_point: EXTERIOR_SIDE
       view_type: HOME
     - layers:
       - order: 0
         type: REAL
         url: https://iprenders.blob.core.windows.net/basepylv25100027/5X5X.vr9nahRyeHgm4B306k-tLFoPZ4eqYJwhjz8NVlIcDU3.-ohL_sSacDYUfiJ6B3-FBPRINDK-19201080dayvext_side1080.png
-        view_point: exterior_side
+        view_point: EXTERIOR_SIDE
       - order: 1
         type: REAL
         url: https://mspgwlivestorage.blob.core.windows.net/renders/cables/elroq_PY_cable_charging_light_v1.png
-        view_point: exterior_side
+        view_point: EXTERIOR_SIDE
       view_type: CHARGING_LIGHT
     - layers:
       - order: 0
         type: REAL
         url: https://iprenders.blob.core.windows.net/basepylv25100027/5X5X.vr9nahRyeHgm4B306k-tLFoPZ4eqYJwhjz8NVlIcDU3.-ohL_sSacDYUfiJ6B3-FBPRINDK-19201080dayvext_side1080.png
-        view_point: exterior_side
+        view_point: EXTERIOR_SIDE
       - order: 1
         type: REAL
         url: https://mspgwlivestorage.blob.core.windows.net/renders/cables/elroq_PY_cable_charging_dark_v1.png
-        view_point: exterior_side
+        view_point: EXTERIOR_SIDE
       view_type: CHARGING_DARK
     - layers:
       - order: 0
         type: REAL
         url: https://iprenders.blob.core.windows.net/basepylv25100027/5X5X.vr9nahRyeHgm4B306k-tLFoPZ4eqYJwhjz8NVlIcDU3.-ohL_sSacDYUfiJ6B3-FBPRINDK-19201080dayvext_side1080.png
-        view_point: exterior_side
+        view_point: EXTERIOR_SIDE
       - order: 1
         type: REAL
         url: https://mspgwlivestorage.blob.core.windows.net/renders/cables/elroq_PY_cable_plugged_in_light_v1.png
-        view_point: exterior_side
+        view_point: EXTERIOR_SIDE
       view_type: PLUGGED_IN_LIGHT
     - layers:
       - order: 0
         type: REAL
         url: https://iprenders.blob.core.windows.net/basepylv25100027/5X5X.vr9nahRyeHgm4B306k-tLFoPZ4eqYJwhjz8NVlIcDU3.-ohL_sSacDYUfiJ6B3-FBPRINDK-19201080dayvext_side1080.png
-        view_point: exterior_side
+        view_point: EXTERIOR_SIDE
       - order: 1
         type: REAL
         url: https://mspgwlivestorage.blob.core.windows.net/renders/cables/elroq_PY_cable_plugged_in_dark_v1.png
-        view_point: exterior_side
+        view_point: EXTERIOR_SIDE
       view_type: PLUGGED_IN_DARK
     device_platform: WCAR
     errors: null
@@ -242,6 +242,8 @@ reports:
         capacity_in_liters: null
         power: 210
         type: iV
+      gearbox:
+        type: E1H
       manufacturing_date: '2025-06-03'
       max_charging_power: 125
       model: Elroq

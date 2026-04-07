@@ -86,6 +86,42 @@ async def health(ctx: Context, vin: str, anonymize: bool) -> None:
 @click.argument("vin")
 @click.option("anonymize", "--anonymize", help="Strip all personal data.", is_flag=True)
 @click.pass_context
+async def vehicle_info(ctx: Context, vin: str, anonymize: bool) -> None:
+    """Print the vehicle's information."""
+    await handle_request(ctx, ctx.obj["myskoda"].get_vehicle_info, vin, anonymize)
+
+
+@click.command()
+@click.argument("vin")
+@click.option("anonymize", "--anonymize", help="Strip all personal data.", is_flag=True)
+@click.pass_context
+async def vehicle_renders(ctx: Context, vin: str, anonymize: bool) -> None:
+    """Print the vehicle's renders."""
+    await handle_request(ctx, ctx.obj["myskoda"].get_vehicle_renders, vin, anonymize)
+
+
+@click.command()
+@click.argument("vin")
+@click.option("anonymize", "--anonymize", help="Strip all personal data.", is_flag=True)
+@click.pass_context
+async def vehicle_equipment(ctx: Context, vin: str, anonymize: bool) -> None:
+    """Print the vehicle's equipment information."""
+    await handle_request(ctx, ctx.obj["myskoda"].get_vehicle_equipment, vin, anonymize)
+
+
+@click.command()
+@click.argument("vin")
+@click.option("anonymize", "--anonymize", help="Strip all personal data.", is_flag=True)
+@click.pass_context
+async def vehicle_full_info(ctx: Context, vin: str, anonymize: bool) -> None:
+    """Print all available information about the vehicle."""
+    await handle_request(ctx, ctx.obj["myskoda"].get_vehicle_full_info, vin, anonymize)
+
+
+@click.command()
+@click.argument("vin")
+@click.option("anonymize", "--anonymize", help="Strip all personal data.", is_flag=True)
+@click.pass_context
 async def charging(ctx: Context, vin: str, anonymize: bool) -> None:
     """Print the vehicle's current charging state."""
     await handle_request(ctx, ctx.obj["myskoda"].get_charging, vin, anonymize)

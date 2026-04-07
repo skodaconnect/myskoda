@@ -161,53 +161,53 @@ reports:
       - order: 0
         type: REAL
         url: https://iprenders.blob.core.windows.net/base5azv26100010/5X5Xs9JjdkzfIhp62Da47n-BFjtVWm_SIwacN5dl1oPzhHRx8C6-aVG1wx9HPSO4T7XLBtz5r-B-19201080dayvext_side1080.png
-        view_point: exterior_side
+        view_point: EXTERIOR_SIDE
       view_type: UNMODIFIED_EXTERIOR_SIDE
     - layers:
       - order: 0
         type: REAL
         url: https://iprenders.blob.core.windows.net/base5azv26100010/5X5Xs9JjdkzfIhp62Da47n-BFjtVWm_SIwacN5dl1oPzhHRx8C6-aVG1wx9HPSO4T7XLBtz5r-B-19201080dayvext_side1080.png
-        view_point: exterior_side
+        view_point: EXTERIOR_SIDE
       view_type: HOME
     - layers:
       - order: 0
         type: REAL
         url: https://iprenders.blob.core.windows.net/base5azv26100010/5X5Xs9JjdkzfIhp62Da47n-BFjtVWm_SIwacN5dl1oPzhHRx8C6-aVG1wx9HPSO4T7XLBtz5r-B-19201080dayvext_side1080.png
-        view_point: exterior_side
+        view_point: EXTERIOR_SIDE
       - order: 1
         type: REAL
         url: https://mspgwlivestorage.blob.core.windows.net/renders/cables/enyaq_5A_cable_charging_light_v1.png
-        view_point: exterior_side
+        view_point: EXTERIOR_SIDE
       view_type: CHARGING_LIGHT
     - layers:
       - order: 0
         type: REAL
         url: https://iprenders.blob.core.windows.net/base5azv26100010/5X5Xs9JjdkzfIhp62Da47n-BFjtVWm_SIwacN5dl1oPzhHRx8C6-aVG1wx9HPSO4T7XLBtz5r-B-19201080dayvext_side1080.png
-        view_point: exterior_side
+        view_point: EXTERIOR_SIDE
       - order: 1
         type: REAL
         url: https://mspgwlivestorage.blob.core.windows.net/renders/cables/enyaq_5A_cable_charging_dark_v1.png
-        view_point: exterior_side
+        view_point: EXTERIOR_SIDE
       view_type: CHARGING_DARK
     - layers:
       - order: 0
         type: REAL
         url: https://iprenders.blob.core.windows.net/base5azv26100010/5X5Xs9JjdkzfIhp62Da47n-BFjtVWm_SIwacN5dl1oPzhHRx8C6-aVG1wx9HPSO4T7XLBtz5r-B-19201080dayvext_side1080.png
-        view_point: exterior_side
+        view_point: EXTERIOR_SIDE
       - order: 1
         type: REAL
         url: https://mspgwlivestorage.blob.core.windows.net/renders/cables/enyaq_5A_cable_plugged_in_light_v1.png
-        view_point: exterior_side
+        view_point: EXTERIOR_SIDE
       view_type: PLUGGED_IN_LIGHT
     - layers:
       - order: 0
         type: REAL
         url: https://iprenders.blob.core.windows.net/base5azv26100010/5X5Xs9JjdkzfIhp62Da47n-BFjtVWm_SIwacN5dl1oPzhHRx8C6-aVG1wx9HPSO4T7XLBtz5r-B-19201080dayvext_side1080.png
-        view_point: exterior_side
+        view_point: EXTERIOR_SIDE
       - order: 1
         type: REAL
         url: https://mspgwlivestorage.blob.core.windows.net/renders/cables/enyaq_5A_cable_plugged_in_dark_v1.png
-        view_point: exterior_side
+        view_point: EXTERIOR_SIDE
       view_type: PLUGGED_IN_DARK
     device_platform: WCAR
     errors: null
@@ -224,6 +224,8 @@ reports:
         capacity_in_liters: null
         power: 210
         type: iV
+      gearbox:
+        type: E1H
       manufacturing_date: '2025-03-31'
       max_charging_power: 125
       model: Enyaq

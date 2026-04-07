@@ -2,7 +2,7 @@
 
 import json
 import re
-from datetime import UTC, datetime
+from datetime import UTC, date, datetime
 from pathlib import Path
 from unittest.mock import patch
 
@@ -586,3 +586,158 @@ def assert_driving_score_result(
     assert driving_score_result.average_consumption == driving_score_json["averageConsumption"]
     assert driving_score_result.main_bonus == driving_score_json["mainBonus"]
     assert driving_score_result.mastered == driving_score_json["mastered"]
+
+
+@pytest.fixture(name="vehicle_information")
+def load_vehicle_information() -> list[str]:
+    """Load vehicle information fixture."""
+    vehicle_information = []
+    for path in [
+        "superb/vehicle-info-iV.json",
+    ]:
+        with FIXTURES_DIR.joinpath(path).open() as file:
+            vehicle_information.append(file.read())
+    return vehicle_information
+
+
+@pytest.mark.asyncio
+async def test_vehicle_info(
+    vehicle_information: list[str], myskoda: MySkoda, responses: aioresponses
+) -> None:
+    """Example unit test for RestAPI.vehicle_info(). Needs more work."""
+    for vehicle_information_input in vehicle_information:
+        vehicle_information_json = json.loads(vehicle_information_input)
+
+        target_vin = "TMBJM0CKV1N12345"
+        responses.get(
+            url=f"https://mysmob.api.connect.skoda-auto.cz/api/v1/vehicle-information/{target_vin}",
+            body=vehicle_information_input,
+        )
+        get_vehicle_info_result = await myskoda.get_vehicle_info(target_vin)
+
+        # Add assertions for vehicle info result
+        assert get_vehicle_info_result.device_platform == vehicle_information_json["devicePlatform"]
+        assert get_vehicle_info_result.renders == vehicle_information_json["renders"]
+        vehicle_specification = get_vehicle_info_result.vehicle_specification
+        vehicle_specification_json = vehicle_information_json["vehicleSpecification"]
+        assert vehicle_specification.title == vehicle_specification_json["title"]
+        assert vehicle_specification.manufacturing_date == date.fromisoformat(
+            vehicle_specification_json["manufacturingDate"]
+        )
+        assert vehicle_specification.model == vehicle_specification_json["model"]
+        assert vehicle_specification.model_year == vehicle_specification_json["modelYear"]
+        assert vehicle_specification.body == vehicle_specification_json["body"]
+        assert vehicle_specification.trim_level == vehicle_specification_json["trimLevel"]
+        assert vehicle_specification.system_code == vehicle_specification_json["systemCode"]
+        assert vehicle_specification.system_model_id == vehicle_specification_json["systemModelId"]
+        engine = vehicle_specification.engine
+        engine_json = vehicle_specification_json["engine"]
+        assert engine.capacity_in_liters == engine_json["capacityInLiters"]
+        assert engine.type == engine_json["type"]
+        assert engine.power == engine_json["powerInKW"]
+        gearbox = vehicle_specification.gearbox
+        gearbox_json = vehicle_specification_json["gearbox"]
+        assert gearbox is not None
+        assert gearbox.type == gearbox_json["type"]
+
+        composite_renders = get_vehicle_info_result.composite_renders
+        composite_renders_json = vehicle_information_json["compositeRenders"]
+        assert len(composite_renders) == len(composite_renders_json)
+        for i in range(len(composite_renders)):
+            assert composite_renders[i].view_type == composite_renders_json[i]["viewType"]
+            layers = composite_renders[i].layers
+            layers_json = composite_renders_json[i]["layers"]
+            assert len(layers) == len(layers_json)
+            for j in range(len(layers)):
+                assert layers[j].order == layers_json[j]["order"]
+                assert layers[j].type == layers_json[j]["type"]
+                assert layers[j].url == layers_json[j]["url"]
+                assert layers[j].view_point == layers_json[j]["viewPoint"]
+
+
+@pytest.fixture(name="vehicle_equipment")
+def load_vehicle_equipment() -> list[str]:
+    """Load vehicle equipment fixture."""
+    vehicle_equipment = []
+    for path in [
+        "superb/vehicle-equipment-iV.json",
+    ]:
+        with FIXTURES_DIR.joinpath(path).open() as file:
+            vehicle_equipment.append(file.read())
+    return vehicle_equipment
+
+
+@pytest.mark.asyncio
+async def test_vehicle_equipment(
+    vehicle_equipment: list[str], myskoda: MySkoda, responses: aioresponses
+) -> None:
+    """Example unit test for RestAPI.vehicle_info(). Needs more work."""
+    for vehicle_equipment_input in vehicle_equipment:
+        vehicle_equipment_json = json.loads(vehicle_equipment_input)
+
+        target_vin = "TMBJM0CKV1N12345"
+        responses.get(
+            url=f"https://mysmob.api.connect.skoda-auto.cz/api/v1/vehicle-information/{target_vin}/equipment",
+            body=vehicle_equipment_input,
+        )
+        get_vehicle_equipment_result = (await myskoda.get_vehicle_equipment(target_vin)).equipment
+        get_vehicle_equipment_result_json = vehicle_equipment_json["equipment"]
+
+        # Add assertions for vehicle equipment result
+
+        assert len(get_vehicle_equipment_result) == len(get_vehicle_equipment_result_json)
+        for i in range(len(get_vehicle_equipment_result)):
+            equipment = get_vehicle_equipment_result[i]
+            equipment_json = get_vehicle_equipment_result_json[i]
+
+            assert equipment.name == equipment_json["name"]
+            assert equipment.description == equipment_json["description"]
+            assert equipment.video_url == equipment_json["videoUrl"]
+            assert equipment.video_thumbnail_url == equipment_json["videoThumbnailUrl"]
+
+
+@pytest.fixture(name="vehicle_renders")
+def load_vehicle_renders() -> list[str]:
+    """Load vehicle renders fixture."""
+    vehicle_renders = []
+    for path in [
+        "superb/vehicle-renders-iV.json",
+    ]:
+        with FIXTURES_DIR.joinpath(path).open() as file:
+            vehicle_renders.append(file.read())
+    return vehicle_renders
+
+
+@pytest.mark.asyncio
+async def test_vehicle_renders(
+    vehicle_renders: list[str], myskoda: MySkoda, responses: aioresponses
+) -> None:
+    """Example unit test for RestAPI.vehicle_info(). Needs more work."""
+    for vehicle_renders_input in vehicle_renders:
+        vehicle_renders_json = json.loads(vehicle_renders_input)
+
+        target_vin = "TMBJM0CKV1N12345"
+        responses.get(
+            url=f"https://mysmob.api.connect.skoda-auto.cz/api/v1/vehicle-information/{target_vin}/renders",
+            body=vehicle_renders_input,
+        )
+        get_vehicle_renders_result = (
+            await myskoda.get_vehicle_renders(target_vin)
+        ).composite_renders
+        get_vehicle_renders_result_json = vehicle_renders_json["compositeRenders"]
+
+        # Add assertions for vehicle renders result
+
+        assert len(get_vehicle_renders_result) == len(get_vehicle_renders_result_json)
+        for i in range(len(get_vehicle_renders_result)):
+            render = get_vehicle_renders_result[i]
+            render_json = get_vehicle_renders_result_json[i]
+
+            assert render.view_type == render_json["viewType"]
+            for j in range(len(render.layers)):
+                layer = render.layers[j]
+                layer_json = render_json["layers"][j]
+                assert layer.order == layer_json["order"]
+                assert layer.type == layer_json["type"]
+                assert layer.url == layer_json["url"]
+                assert layer.view_point == layer_json["viewPoint"]

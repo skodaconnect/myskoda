@@ -69,6 +69,10 @@ from myskoda.cli.requests import (
     status,
     trip_statistics,
     user,
+    vehicle_equipment,
+    vehicle_full_info,
+    vehicle_info,
+    vehicle_renders,
     verify_spin,
 )
 from myskoda.cli.utils import Format, print_json, print_yaml
@@ -209,7 +213,10 @@ cli.add_command(set_aux_timer)
 cli.add_command(software_update_status)
 cli.add_command(driving_score)
 cli.add_command(raw_request)
-
+cli.add_command(vehicle_info)
+cli.add_command(vehicle_renders)
+cli.add_command(vehicle_equipment)
+cli.add_command(vehicle_full_info)
 
 if __name__ == "__main__":
     cli()

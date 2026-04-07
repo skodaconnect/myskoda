@@ -142,19 +142,19 @@ reports:
         statuses: []
       - id: CARE_AND_INSURANCE
         statuses: []
-      errors: null 
+      errors: null
     composite_renders:
     - layers:
       - order: 0
         type: REAL
         url: https://iprenders.blob.core.windows.net/basenu7s22101006/1Z1ZIGDwsrUM.OTA05pn-iDT309O7EZYP.R-d2tCpjl16fGw.-7WHSqwtgZUJbzkDrl3EfM6n-3YLBzymAPiZdt2n7.qU59gSv-C-19201080dayvext_side1080.png
-        view_point: exterior_side
+        view_point: EXTERIOR_SIDE
       view_type: UNMODIFIED_EXTERIOR_SIDE
     - layers:
       - order: 0
         type: REAL
         url: https://iprenders.blob.core.windows.net/basenu7s22101006/1Z1ZIGDwsrUM.OTA05pn-iDT309O7EZYP.R-d2tCpjl16fGw.-7WHSqwtgZUJbzkDrl3EfM6n-3YLBzymAPiZdt2n7.qU59gSv-C-19201080dayvext_side1080.png
-        view_point: exterior_side
+        view_point: EXTERIOR_SIDE
       view_type: HOME
     device_platform: MBB_ODP
     errors: null
@@ -164,15 +164,15 @@ reports:
     - order: 0
       type: REAL
       url: https://iprenders.blob.core.windows.net/basenu7s22101006/1Z1ZIGDwsrUM.OTA05pn-iDT309O7EZYP.R-d2tCpjl16fGw.-7WHSqwtgZUJbzkDrl3EfM6n-3YLBzymAPiZdt2n7.qU59gSv-C-19201080dayvext_side1080.png
-      view_point: exterior_side
+      view_point: EXTERIOR_SIDE
     - order: 1
       type: REAL
       url: https://ip-modcwp.azureedge.net/modcwpnu7s22101006/1Z1ZIGDwsrUM.OTA05pn-iDT309O7EZYP.R-d2tCpjl16fGw.-7WHSqwtgZUJbzkDrl3EfM6n-3YLBzymAPiZdt2n7.qU59gSv-C-1920658dayvext_side1080.png?v=638636648050000000
-      view_point: garage_l
+      view_point: GARAGE_L
     - order: 2
       type: REAL
       url: https://ip-modcwp.azureedge.net/modcwpnu7s22101006/1Z1ZGDwsrUM.OTA05Jpn-iBU319O7EZYP.R-d2qCpjl16fGv.-8WHSqwugZUJbziDrm2Ef6Ln-3YMBzymAQiZds2o7.pT59gSv-B-700390dayvext_front1080.png?v=637923107440000000
-      view_point: main
+      view_point: MAIN
     service_partner: null
     software_version: null
     timestamp: null
@@ -183,6 +183,8 @@ reports:
         capacity_in_liters: 1.5
         power: 110
         type: TSI
+      gearbox:
+        type: A7F
       manufacturing_date: '2021-07-15'
       max_charging_power: null
       model: Karoq

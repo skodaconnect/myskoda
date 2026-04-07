@@ -120,59 +120,59 @@ reports:
         statuses: []
       - id: CARE_AND_INSURANCE
         statuses: []
-      errors: null 
+      errors: null
     composite_renders:
     - layers:
       - order: 0
         type: REAL
         url: https://skodavinimagecache.blob.core.windows.net/cachenx3s22100915/F6F6OQZgqUCtGXw8n-LtG6370rl-9wl0Yu.ngTrV-RYsS8WN1Kejm2qtCbH6c.-7W_5j3lOZIGCtdAL1aTqzvhoF-FHDB-19201080dayvext_side1080.png
-        view_point: exterior_side
+        view_point: EXTERIOR_SIDE
       view_type: UNMODIFIED_EXTERIOR_SIDE
     - layers:
       - order: 0
         type: REAL
         url: https://skodavinimagecache.blob.core.windows.net/cachenx3s22100915/F6F6OQZgqUCtGXw8n-LtG6370rl-9wl0Yu.ngTrV-RYsS8WN1Kejm2qtCbH6c.-7W_5j3lOZIGCtdAL1aTqzvhoF-FHDB-19201080dayvext_side1080.png
-        view_point: exterior_side
+        view_point: EXTERIOR_SIDE
       view_type: HOME
     - layers:
       - order: 0
         type: REAL
         url: https://skodavinimagecache.blob.core.windows.net/cachenx3s22100915/F6F6OQZgqUCtGXw8n-LtG6370rl-9wl0Yu.ngTrV-RYsS8WN1Kejm2qtCbH6c.-7W_5j3lOZIGCtdAL1aTqzvhoF-FHDB-19201080dayvext_side1080.png
-        view_point: exterior_side
+        view_point: EXTERIOR_SIDE
       - order: 1
         type: REAL
         url: https://mspgwlivestorage.blob.core.windows.net/renders/cables/octavia_NX_cable_charging_light_v1.png
-        view_point: exterior_side
+        view_point: EXTERIOR_SIDE
       view_type: CHARGING_LIGHT
     - layers:
       - order: 0
         type: REAL
         url: https://skodavinimagecache.blob.core.windows.net/cachenx3s22100915/F6F6OQZgqUCtGXw8n-LtG6370rl-9wl0Yu.ngTrV-RYsS8WN1Kejm2qtCbH6c.-7W_5j3lOZIGCtdAL1aTqzvhoF-FHDB-19201080dayvext_side1080.png
-        view_point: exterior_side
+        view_point: EXTERIOR_SIDE
       - order: 1
         type: REAL
         url: https://mspgwlivestorage.blob.core.windows.net/renders/cables/octavia_NX_cable_charging_dark_v1.png
-        view_point: exterior_side
+        view_point: EXTERIOR_SIDE
       view_type: CHARGING_DARK
     - layers:
       - order: 0
         type: REAL
         url: https://skodavinimagecache.blob.core.windows.net/cachenx3s22100915/F6F6OQZgqUCtGXw8n-LtG6370rl-9wl0Yu.ngTrV-RYsS8WN1Kejm2qtCbH6c.-7W_5j3lOZIGCtdAL1aTqzvhoF-FHDB-19201080dayvext_side1080.png
-        view_point: exterior_side
+        view_point: EXTERIOR_SIDE
       - order: 1
         type: REAL
         url: https://mspgwlivestorage.blob.core.windows.net/renders/cables/octavia_NX_cable_plugged_in_light_v1.png
-        view_point: exterior_side
+        view_point: EXTERIOR_SIDE
       view_type: PLUGGED_IN_LIGHT
     - layers:
       - order: 0
         type: REAL
         url: https://skodavinimagecache.blob.core.windows.net/cachenx3s22100915/F6F6OQZgqUCtGXw8n-LtG6370rl-9wl0Yu.ngTrV-RYsS8WN1Kejm2qtCbH6c.-7W_5j3lOZIGCtdAL1aTqzvhoF-FHDB-19201080dayvext_side1080.png
-        view_point: exterior_side
+        view_point: EXTERIOR_SIDE
       - order: 1
         type: REAL
         url: https://mspgwlivestorage.blob.core.windows.net/renders/cables/octavia_NX_cable_plugged_in_dark_v1.png
-        view_point: exterior_side
+        view_point: EXTERIOR_SIDE
       view_type: PLUGGED_IN_DARK
     device_platform: MBB_ODP
     timestamp: null
@@ -183,15 +183,15 @@ reports:
     - order: 0
       type: REAL
       url: https://skodavinimagecache.blob.core.windows.net/cachenx3s22100915/F6F6OQZgqUCtGXw8n-LtG6370rl-9wl0Yu.ngTrV-RYsS8WN1Kejm2qtCbH6c.-7W_5j3lOZIGCtdAL1aTqzvhoF-FHDB-19201080dayvext_side1080.png
-      view_point: exterior_side
+      view_point: EXTERIOR_SIDE
     - order: 1
       type: REAL
       url: https://ip-modcwp.azureedge.net/modcwpnx3s22100915/F6F6OQZgqUCtGXw8n-LtG6370rl-9wl0Yu.ngTrV-RYsS8WN1Kejm2qtCbH6c.-7W_5j3lOZIGCtdAL1aTqzvhoF-FHDB-1920658dayvext_side1080.png?v=638419763400000000
-      view_point: garage_l
+      view_point: GARAGE_L
     - order: 2
       type: REAL
       url: https://ip-modcwp.azureedge.net/modcwpnx3s22100915/F6F6OQZgqUCtGXw8n-LtG6370rl-9wl0Yu.ngTrV-RYsS8WN1Kejm2qtCbH6c.-7W_5j3lOZIGCtdAL1aTqzvhoF-FHDB-700390dayvext_front1080.png?v=637954568050000000
-      view_point: main
+      view_point: MAIN
     service_partner:
       id: DEU11111
     software_version: null
@@ -202,6 +202,8 @@ reports:
         capacity_in_liters: 2.0
         power: 180
         type: TFSI
+      gearbox:
+        type: A7F
       manufacturing_date: '2021-11-08'
       max_charging_power: null
       model: Octavia
@@ -449,9 +451,9 @@ reports:
     "OTHERS", "text": "Other"}], "addOns": {}, "warnings": []}]}}'
   result:
     timestamp: null
-    customer_service: 
+    customer_service:
       active_bookings: []
-      booking_history: 
+      booking_history:
         - accepted_date: '2024-01-29T06:32:07+00:00'
           appointment_date: null
           booking_id: xxxxxx-5fee-434f-848d-6da7459d6a49-1706379989252
@@ -462,7 +464,7 @@ reports:
           creation_date: '2024-01-27T18:26:28.722000+00:00'
           mileage_in_km: 36863
           resolution: REJECTED
-          service_partner: 
+          service_partner:
             address:
                city: 'Example City'
                country: null
