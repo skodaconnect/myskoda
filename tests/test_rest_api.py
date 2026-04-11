@@ -7,6 +7,7 @@ from pathlib import Path
 from unittest.mock import patch
 
 import pytest
+from aiohttp import ClientResponseError
 from aioresponses import aioresponses
 
 from myskoda.models.common import OpenState
@@ -15,6 +16,7 @@ from myskoda.models.driving_score import DrivingScoreResult
 from myskoda.models.status import DoorWindowState
 from myskoda.models.trip_statistics import VehicleType
 from myskoda.myskoda import MySkoda
+from myskoda.rest_api import RestApi
 from myskoda.utils import to_iso8601
 
 FIXTURES_DIR = Path(__file__).parent.joinpath("fixtures")
@@ -741,6 +743,53 @@ async def test_vehicle_renders(
                 assert layer.type == layer_json["type"]
                 assert layer.url == layer_json["url"]
                 assert layer.view_point == layer_json["viewPoint"]
+
+
+BASE_URL = "https://mysmob.api.connect.skoda-auto.cz/api"
+HTTP_NOT_FOUND = 404
+
+
+@pytest.mark.asyncio
+async def test_raw_request_get(api: RestApi, responses: aioresponses) -> None:
+    """raw_request GET returns the response body as a string."""
+    body = '{"key": "value"}'
+    responses.get(url=f"{BASE_URL}/v1/some/path", body=body)
+
+    result = await api.raw_request(url="/v1/some/path", method="GET")
+
+    assert result == body
+
+
+@pytest.mark.asyncio
+async def test_raw_request_post_with_body(api: RestApi, responses: aioresponses) -> None:
+    """raw_request POST sends JSON body and returns the response body."""
+    response_body = '{"status": "ok"}'
+    responses.post(url=f"{BASE_URL}/v1/some/path", body=response_body)
+
+    result = await api.raw_request(url="/v1/some/path", method="POST", json={"chargingCurrent": 20})
+
+    assert result == response_body
+
+
+@pytest.mark.asyncio
+async def test_raw_request_empty_response(api: RestApi, responses: aioresponses) -> None:
+    """raw_request returns an empty string when the response body is empty."""
+    responses.post(url=f"{BASE_URL}/v1/some/path", body="")
+
+    result = await api.raw_request(url="/v1/some/path", method="POST")
+
+    assert result == ""
+
+
+@pytest.mark.asyncio
+async def test_raw_request_http_error(api: RestApi, responses: aioresponses) -> None:
+    """raw_request raises ClientResponseError on HTTP error responses."""
+    responses.get(url=f"{BASE_URL}/v1/some/path", status=HTTP_NOT_FOUND)
+
+    with pytest.raises(ClientResponseError) as exc_info:
+        await api.raw_request(url="/v1/some/path", method="GET")
+
+    assert exc_info.value.status == HTTP_NOT_FOUND
 
 
 @pytest.fixture(name="widgets")

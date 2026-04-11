@@ -775,7 +775,7 @@ async def test_set_departure_timer(
 
         # Extract and assert the captured request body
         assert mock_request.called
-        request_args, request_kwargs = mock_request.call_args
+        _, request_kwargs = mock_request.call_args
         body = request_kwargs.get("data") or request_kwargs.get("json")
         assert body is not None
         # check only the timer as deviceDateTime can't be verified
