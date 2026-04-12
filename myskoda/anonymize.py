@@ -306,11 +306,14 @@ def anonymize_widget(data: dict) -> dict:
     data["vehicle"]["name"] = VEHICLE_NAME
     data["vehicle"]["licensePlate"] = LICENSE_PLATE
     data["vehicle"]["renderUrl"] = anonymize_url(data["vehicle"]["renderUrl"])
-    data["parkingPosition"]["maps"]["lightMapUrl"] = anonymize_url_location(
-        data["parkingPosition"]["maps"]["lightMapUrl"]
-    )
-    data["parkingPosition"]["gpsCoordinates"] = LOCATION
-    data["parkingPosition"]["formattedAddress"] = FORMATTED_ADDRESS
+    if "maps" in data.get("parkingPosition", {}):
+        data["parkingPosition"]["maps"]["lightMapUrl"] = anonymize_url_location(
+            data["parkingPosition"]["maps"]["lightMapUrl"]
+        )
+    if "gpsCoordinates" in data.get("parkingPosition", {}):
+        data["parkingPosition"]["gpsCoordinates"] = LOCATION
+    if "formattedAddress" in data.get("parkingPosition", {}):
+        data["parkingPosition"]["formattedAddress"] = FORMATTED_ADDRESS
     return data
 
 

@@ -1,0 +1,13 @@
+{
+    "vehicle": {
+        "name": "Superb",
+        "licensePlate": "WE1LA18",
+        "renderUrl": "https://mspgwlivestorage.blob.core.windows.net/widget-renders/TMBW2112222222222.png?etag=0xAAAAAAAAAAAAAAA"
+    }, 
+    "vehicleStatus": {
+        "drivingRangeInKm": 260
+    },
+    "parkingPosition": {
+        "state": "IN_MOTION"
+    }
+}
