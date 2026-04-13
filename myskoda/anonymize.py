@@ -1,6 +1,7 @@
 """Methods for anonymizing data from the API."""
 
 import re
+from functools import reduce
 
 ACCESS_TOKEN = "eyJ0eXAiOiI0ODEyODgzZi05Y2FiLTQwMWMtYTI5OC0wZmEyMTA5Y2ViY2EiLCJhbGciOiJSUzI1NiJ9"  # noqa: S105
 USER_ID = "b8bc126c-ee36-402b-8723-2c1c3dff8dec"
@@ -307,7 +308,7 @@ def anonymize_widget(data: dict) -> dict:
     data["vehicle"]["licensePlate"] = LICENSE_PLATE
     data["vehicle"]["renderUrl"] = anonymize_url(data["vehicle"]["renderUrl"])
     if "maps" in data.get("parkingPosition", {}):
-        data["parkingPosition"]["maps"]["lightMapUrl"] = anonymize_url_location(
+        data["parkingPosition"]["maps"]["lightMapUrl"] = anonymize_url(
             data["parkingPosition"]["maps"]["lightMapUrl"]
         )
     if "gpsCoordinates" in data.get("parkingPosition", {}):
@@ -389,6 +390,12 @@ def anonymize_driving_score(data: dict) -> dict:
     return data
 
 
+URL_REPLACEMENTS = [
+    (LOCATION_REGEX, f"latitude={LOCATION['latitude']}&longitude={LOCATION['longitude']}"),
+    (VIN_REGEX, VIN),
+]
+
+
 def anonymize_url(url: str) -> str:
     """Anonymize a VIN found in a URL.
 
@@ -398,18 +405,4 @@ def anonymize_url(url: str) -> str:
     Returns:
         str: URL string with any VIN anonymized
     """
-    return VIN_REGEX.sub(VIN, url)
-
-
-def anonymize_url_location(url: str) -> str:
-    """Anonymize a VIN found in a URL.
-
-    Args:
-        url: input URL string
-
-    Returns:
-        str: URL string with any VIN anonymized
-    """
-    return LOCATION_REGEX.sub(
-        f"latitude={LOCATION['latitude']}&longitude={LOCATION['longitude']}", url
-    )
+    return reduce(lambda s, args: args[0].sub(args[1], s), URL_REPLACEMENTS, url)
