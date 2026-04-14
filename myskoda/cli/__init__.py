@@ -26,6 +26,7 @@ from myskoda.cli.operations import (
     set_auto_unlock_plug,
     set_aux_timer,
     set_charge_limit,
+    set_preferred_charging,
     set_departure_timer,
     set_minimum_charge_limit,
     set_reduced_current_limit,
@@ -219,6 +220,8 @@ cli.add_command(vehicle_renders)
 cli.add_command(vehicle_equipment)
 cli.add_command(vehicle_full_info)
 cli.add_command(widget)
+cli.add_command(set_preferred_charging)
+
 
 if __name__ == "__main__":
     cli()
