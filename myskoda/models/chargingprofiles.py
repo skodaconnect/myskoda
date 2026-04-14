@@ -2,9 +2,14 @@
 
 from dataclasses import dataclass, field
 from datetime import datetime, time
+from typing import Any
 
 from mashumaro import field_options
 from mashumaro.mixins.orjson import DataClassORJSONMixin
+from mashumaro.config import (
+    TO_DICT_ADD_BY_ALIAS_FLAG,
+    BaseConfig,
+)
 
 from .air_conditioning import TimerMode
 from .charging import MaxChargeCurrent, PlugUnlockMode
@@ -20,6 +25,24 @@ class ChargingTimes(DataClassORJSONMixin):
     start_time: time = field(metadata=field_options(alias="startTime"))
     end_time: time = field(metadata=field_options(alias="endTime"))
 
+    class Config(BaseConfig):
+        """Configuration for serialization and deserialization.."""
+
+        code_generation_options = [  # noqa: RUF012
+            TO_DICT_ADD_BY_ALIAS_FLAG
+        ]
+
+    def __post_serialize__(self, d: dict[Any, Any]) -> dict[Any, Any]:
+        """Post-process the data before serialization."""
+        if self.start_time:
+            if "startTime" in d: # only execute postprocessing if serialization was valled with byAlias to ensure the key is not added otherwise
+                d["startTime"] = self.start_time.strftime("%H:%M")  # Format to hh:mm
+        
+        if self.end_time:
+            if "endTime" in d: # only execute postprocessing if serialization was valled with byAlias to ensure the key is not added otherwise
+                d["endTime"] = self.end_time.strftime("%H:%M")  # Format to hh:mm
+        return d
+
 
 @dataclass
 class MinBatterySOC(DataClassORJSONMixin):
@@ -28,6 +51,13 @@ class MinBatterySOC(DataClassORJSONMixin):
     minimum_battery_state_of_charge_in_percent: int = field(
         metadata=field_options(alias="minimumBatteryStateOfChargeInPercent")
     )
+
+    class Config(BaseConfig):
+        """Configuration for serialization and deserialization.."""
+
+        code_generation_options = [  # noqa: RUF012
+            TO_DICT_ADD_BY_ALIAS_FLAG
+        ]
 
 
 @dataclass
@@ -47,6 +77,13 @@ class ProfileSettings(DataClassORJSONMixin):
         metadata=field_options(alias="autoUnlockPlugWhenCharged")
     )
 
+    class Config(BaseConfig):
+        """Configuration for serialization and deserialization.."""
+
+        code_generation_options = [  # noqa: RUF012
+            TO_DICT_ADD_BY_ALIAS_FLAG
+        ]
+
 
 @dataclass
 class ChargingTimers(DataClassORJSONMixin):
@@ -57,6 +94,19 @@ class ChargingTimers(DataClassORJSONMixin):
     time: time
     type: TimerMode
     recurring_on: list[Weekday] = field(metadata=field_options(alias="recurringOn"))
+
+    class Config(BaseConfig):
+        """Configuration for serialization and deserialization.."""
+
+        code_generation_options = [  # noqa: RUF012
+            TO_DICT_ADD_BY_ALIAS_FLAG
+        ]
+        
+    def __post_serialize__(self, d: dict[Any, Any]) -> dict[Any, Any]:
+        """Post-process the data before serialization."""
+        if self.time:
+            d["time"] = self.time.strftime("%H:%M")  # Format to hh:mm
+        return d
 
 
 @dataclass
@@ -72,6 +122,13 @@ class ChargingProfile(DataClassORJSONMixin):
     timers: list[ChargingTimers]
     location: Coordinates | None = field(default=None)
 
+    class Config(BaseConfig):
+        """Configuration for serialization and deserialization.."""
+
+        code_generation_options = [  # noqa: RUF012
+            TO_DICT_ADD_BY_ALIAS_FLAG
+        ]
+
 
 @dataclass
 class CurrentProfile(DataClassORJSONMixin):
@@ -85,6 +142,13 @@ class CurrentProfile(DataClassORJSONMixin):
     next_charging_time: time | None = field(
         default=None, metadata=field_options(alias="nextChargingTime")
     )
+
+    class Config(BaseConfig):
+        """Configuration for serialization and deserialization.."""
+
+        code_generation_options = [  # noqa: RUF012
+            TO_DICT_ADD_BY_ALIAS_FLAG
+        ]
 
 
 @dataclass
@@ -100,3 +164,10 @@ class ChargingProfiles(BaseResponse):
     car_captured_timestamp: datetime | None = field(
         default=None, metadata=field_options(alias="carCapturedTimestamp")
     )
+
+    class Config(BaseConfig):
+        """Configuration for serialization and deserialization.."""
+
+        code_generation_options = [  # noqa: RUF012
+            TO_DICT_ADD_BY_ALIAS_FLAG
+        ]
