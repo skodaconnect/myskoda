@@ -21,6 +21,14 @@ from myskoda.anonymize import (
     anonymize_garage,
     anonymize_health,
     anonymize_info,
+    anonymize_loyalty_program_badge,
+    anonymize_loyalty_program_badges,
+    anonymize_loyalty_program_challenges,
+    anonymize_loyalty_program_details,
+    anonymize_loyalty_program_member,
+    anonymize_loyalty_program_rewards,
+    anonymize_loyalty_program_salesforce_contacts,
+    anonymize_loyalty_program_transactions,
     anonymize_maintenance,
     anonymize_parking_position,
     anonymize_positions,
@@ -58,6 +66,17 @@ from .models.driving_score import DrivingScore
 from .models.garage import Garage
 from .models.health import Health
 from .models.info import Info
+from .models.loyalty_program import (
+    BadgeResponse,
+    BadgesResponse,
+    ChallengesResponse,
+    GamesResponse,
+    LoyaltyProgramDetailsResponse,
+    LoyaltyProgramMember,
+    RewardResponse,
+    SalesforceContactResponse,
+    TransactionsResponse,
+)
 from .models.maintenance import Maintenance, MaintenanceReport
 from .models.position import ParkingPositionV3, Position, Positions, PositionType
 from .models.software_status import SoftwareUpdateStatus
@@ -429,6 +448,132 @@ class RestApi:
             anonymization_fn=anonymize_widget,
         )
         result = self._deserialize(raw, WidgetResponse.from_json)
+        url = anonymize_url(url) if anonymize else url
+        return GetEndpointResult(url=url, raw=raw, result=result)
+
+    async def get_loyalty_program_details(
+        self, anonymize: bool = False
+    ) -> GetEndpointResult[LoyaltyProgramDetailsResponse]:
+        """Retrieve loyalty program details for the specified user."""
+        url = "/v2/loyalty-program/details"
+        raw = self.process_json(
+            data=await self._make_get_request(url),
+            anonymize=anonymize,
+            anonymization_fn=anonymize_loyalty_program_details,
+        )
+        result = self._deserialize(raw, LoyaltyProgramDetailsResponse.from_json)
+        url = anonymize_url(url) if anonymize else url
+        return GetEndpointResult(url=url, raw=raw, result=result)
+
+    async def get_loyalty_program_member(
+        self, user_id: str, anonymize: bool = False
+    ) -> GetEndpointResult[LoyaltyProgramMember]:
+        """Retrieve loyalty program member information for the specified user."""
+        url = f"/v2/loyalty-program/members/{user_id}"
+        raw = self.process_json(
+            data=await self._make_get_request(url),
+            anonymize=anonymize,
+            anonymization_fn=anonymize_loyalty_program_member,
+        )
+        result = self._deserialize(raw, LoyaltyProgramMember.from_json)
+        url = anonymize_url(url) if anonymize else url
+        return GetEndpointResult(url=url, raw=raw, result=result)
+
+    async def get_loyalty_program_badges(
+        self, user_id: str, anonymize: bool = False
+    ) -> GetEndpointResult[BadgesResponse]:
+        """Retrieve loyalty program badges information for the specified user."""
+        url = f"/v2/loyalty-program/members/{user_id}/badges"
+        raw = self.process_json(
+            data=await self._make_get_request(url),
+            anonymize=anonymize,
+            anonymization_fn=anonymize_loyalty_program_badges,
+        )
+        result = self._deserialize(raw, BadgesResponse.from_json)
+        url = anonymize_url(url) if anonymize else url
+        return GetEndpointResult(url=url, raw=raw, result=result)
+
+    async def get_loyalty_program_badge(
+        self, user_id: str, badge_id: str, anonymize: bool = False
+    ) -> GetEndpointResult[BadgeResponse]:
+        """Retrieve loyalty program member badge information for the specified badge."""
+        url = f"/v2/loyalty-program/members/{user_id}/badges/{badge_id}"
+        raw = self.process_json(
+            data=await self._make_get_request(url),
+            anonymize=anonymize,
+            anonymization_fn=anonymize_loyalty_program_badge,
+        )
+        result = self._deserialize(raw, BadgeResponse.from_json)
+        url = anonymize_url(url) if anonymize else url
+        return GetEndpointResult(url=url, raw=raw, result=result)
+
+    async def get_loyalty_program_challenges(
+        self, user_id: str, anonymize: bool = False
+    ) -> GetEndpointResult[ChallengesResponse]:
+        """Retrieve loyalty program challenges information for the specified user."""
+        url = f"/v2/loyalty-program/members/{user_id}/challenges"
+        raw = self.process_json(
+            data=await self._make_get_request(url),
+            anonymize=anonymize,
+            anonymization_fn=anonymize_loyalty_program_challenges,
+        )
+        result = self._deserialize(raw, ChallengesResponse.from_json)
+        url = anonymize_url(url) if anonymize else url
+        return GetEndpointResult(url=url, raw=raw, result=result)
+
+    async def get_loyalty_program_games(
+        self, user_id: str, anonymize: bool = False
+    ) -> GetEndpointResult[GamesResponse]:
+        """Retrieve loyalty program games information for the specified user."""
+        url = f"/v2/loyalty-program/members/{user_id}/games"
+        raw = self.process_json(
+            data=await self._make_get_request(url),
+            anonymize=anonymize,
+            anonymization_fn=anonymize_loyalty_program_challenges,
+        )
+        result = self._deserialize(raw, GamesResponse.from_json)
+        url = anonymize_url(url) if anonymize else url
+        return GetEndpointResult(url=url, raw=raw, result=result)
+
+    async def get_loyalty_program_rewards(
+        self, user_id: str, anonymize: bool = False
+    ) -> GetEndpointResult[RewardResponse]:
+        """Retrieve loyalty program rewards information for the specified user."""
+        url = f"/v2/loyalty-program/members/{user_id}/rewards"
+        raw = self.process_json(
+            data=await self._make_get_request(url),
+            anonymize=anonymize,
+            anonymization_fn=anonymize_loyalty_program_rewards,
+        )
+        result = self._deserialize(raw, RewardResponse.from_json)
+        url = anonymize_url(url) if anonymize else url
+        return GetEndpointResult(url=url, raw=raw, result=result)
+
+    async def get_loyalty_program_transactions(
+        self, user_id: str, anonymize: bool = False
+    ) -> GetEndpointResult[TransactionsResponse]:
+        """Retrieve loyalty program transactions information for the specified user."""
+        url = f"/v2/loyalty-program/members/{user_id}/transactions"
+        raw = self.process_json(
+            data=await self._make_get_request(url),
+            anonymize=anonymize,
+            anonymization_fn=anonymize_loyalty_program_transactions,
+        )
+        result = self._deserialize(raw, TransactionsResponse.from_json)
+        url = anonymize_url(url) if anonymize else url
+        return GetEndpointResult(url=url, raw=raw, result=result)
+
+    async def get_loyalty_program_salesforce_contacts(
+        self, user_id: str, anonymize: bool = False
+    ) -> GetEndpointResult[SalesforceContactResponse]:
+        """Retrieve Salesforce contact information for the specified user."""
+        url = f"/v2/loyalty-program/salesforce-contacts/{user_id}"
+        raw = self.process_json(
+            data=await self._make_get_request(url),
+            anonymize=anonymize,
+            anonymization_fn=anonymize_loyalty_program_salesforce_contacts,
+        )
+        result = self._deserialize(raw, SalesforceContactResponse.from_json)
         url = anonymize_url(url) if anonymize else url
         return GetEndpointResult(url=url, raw=raw, result=result)
 
