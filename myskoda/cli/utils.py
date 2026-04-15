@@ -6,9 +6,11 @@ from dataclasses import dataclass
 from datetime import UTC, datetime
 from enum import StrEnum
 from functools import update_wrapper
+import sys
 from typing import TYPE_CHECKING, Any
 
 import asyncclick as click
+from pygments.lexer import Lexer
 import yaml
 from aiohttp.client_exceptions import ClientResponseError
 from asyncclick.core import Context
@@ -57,14 +59,18 @@ class Format(StrEnum):
     YAML = "yaml"
 
 
+def highlight_for_console(text: str, lexer: Lexer) -> str:
+    if sys.stdout.isatty():
+        return highlight(text, lexer, TerminalFormatter())
+    return text
+
+
 def print_json(data: dict) -> None:
-    print(
-        highlight(json.dumps(data, indent=4, ensure_ascii=False), JsonLexer(), TerminalFormatter())
-    )
+    print(highlight_for_console(json.dumps(data, indent=4, ensure_ascii=False), JsonLexer()))
 
 
 def print_yaml(data: dict) -> None:
-    print(highlight(yaml.dump(data, allow_unicode=True), YamlLexer(), TerminalFormatter()))
+    print(highlight_for_console(yaml.dump(data, allow_unicode=True), YamlLexer()))
 
 
 def iso8601_datetime(
