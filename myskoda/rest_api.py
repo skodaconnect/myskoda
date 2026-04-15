@@ -34,6 +34,7 @@ from myskoda.anonymize import (
     anonymize_vehicle_equipment,
     anonymize_vehicle_info,
     anonymize_vehicle_renders,
+    anonymize_widget,
 )
 
 from .auth.authorization import Authorization
@@ -66,6 +67,7 @@ from .models.trip_statistics import SingleTrips, TripStatistics
 from .models.user import User
 from .models.vehicle_connection_status import VehicleConnectionStatus
 from .models.vehicle_info import VehicleEquipment, VehicleInfo, VehicleRenders
+from .models.widget import WidgetResponse
 from .utils import to_iso8601
 
 _LOGGER = logging.getLogger(__name__)
@@ -413,6 +415,20 @@ class RestApi:
             anonymization_fn=anonymize_vehicle_equipment,
         )
         result = self._deserialize(raw, VehicleEquipment.from_json)
+        url = anonymize_url(url) if anonymize else url
+        return GetEndpointResult(url=url, raw=raw, result=result)
+
+    async def get_widget(
+        self, vin: str, anonymize: bool = False
+    ) -> GetEndpointResult[WidgetResponse]:
+        """Retrieve widget information for the specified vehicle."""
+        url = f"/v2/widgets/vehicle-status/{vin}"
+        raw = self.process_json(
+            data=await self._make_get_request(url),
+            anonymize=anonymize,
+            anonymization_fn=anonymize_widget,
+        )
+        result = self._deserialize(raw, WidgetResponse.from_json)
         url = anonymize_url(url) if anonymize else url
         return GetEndpointResult(url=url, raw=raw, result=result)
 

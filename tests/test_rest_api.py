@@ -10,11 +10,17 @@ import pytest
 from aiohttp import ClientResponseError
 from aioresponses import aioresponses
 
+from myskoda.anonymize import FORMATTED_ADDRESS, LICENSE_PLATE, LOCATION, VEHICLE_NAME
 from myskoda.models.common import OpenState
 from myskoda.models.departure import DepartureInfo
 from myskoda.models.driving_score import DrivingScoreResult
 from myskoda.models.status import DoorWindowState
 from myskoda.models.trip_statistics import VehicleType
+from myskoda.models.widget import (
+    ParkingPositionInMotion,
+    ParkingPositionParked,
+    ParkingPositionState,
+)
 from myskoda.myskoda import MySkoda
 from myskoda.rest_api import RestApi
 from myskoda.utils import to_iso8601
@@ -790,3 +796,104 @@ async def test_raw_request_http_error(api: RestApi, responses: aioresponses) -> 
         await api.raw_request(url="/v1/some/path", method="GET")
 
     assert exc_info.value.status == HTTP_NOT_FOUND
+
+
+@pytest.fixture(name="widgets")
+def load_widgets() -> list[tuple[ParkingPositionState, bool, str]]:
+    """Load vehicle widgets fixture."""
+    widgets = []
+    for path in [
+        (ParkingPositionState.PARKED, False, "other/widget-parked.json"),
+        (ParkingPositionState.IN_MOTION, False, "other/widget-inmotion.json"),
+        (ParkingPositionState.PARKED, True, "other/widget-parked.json"),
+        (ParkingPositionState.IN_MOTION, True, "other/widget-inmotion.json"),
+    ]:
+        with FIXTURES_DIR.joinpath(path[2]).open() as file:
+            widgets.append((path[0], path[1], file.read()))
+    return widgets
+
+
+@pytest.mark.asyncio
+async def test_widgets(
+    widgets: list[tuple[ParkingPositionState, bool, str]], myskoda: MySkoda, responses: aioresponses
+) -> None:
+    """Example unit test for RestAPI.widgets(). Needs more work."""
+    for widgets_input in widgets:
+        widgets_json = json.loads(widgets_input[2])
+        parking_position_state = widgets_input[0]
+        anonymized = widgets_input[1]
+
+        target_vin = "TMBJM0CKV1N12345"
+        responses.get(
+            url=f"https://mysmob.api.connect.skoda-auto.cz/api/v2/widgets/vehicle-status/{target_vin}",
+            body=widgets_input[2],
+        )
+        get_widgets_result = await myskoda.get_widget(target_vin, anonymize=anonymized)
+
+        # Add assertions for widget result
+
+        assert get_widgets_result is not None
+        assert get_widgets_result.vehicle is not None
+        if anonymized:
+            assert get_widgets_result.vehicle.license_plate == LICENSE_PLATE
+            assert get_widgets_result.vehicle.name == VEHICLE_NAME
+            assert "W211" not in get_widgets_result.vehicle.render_url
+        else:
+            assert get_widgets_result.vehicle.name == widgets_json["vehicle"]["name"]
+            assert (
+                get_widgets_result.vehicle.license_plate == widgets_json["vehicle"]["licensePlate"]
+            )
+            assert get_widgets_result.vehicle.render_url == widgets_json["vehicle"]["renderUrl"]
+
+        assert get_widgets_result.vehicle_status is not None
+        if parking_position_state == ParkingPositionState.PARKED:
+            assert (
+                get_widgets_result.vehicle_status.doors_locked
+                == widgets_json["vehicleStatus"]["doorsLocked"]
+            )
+        else:
+            assert get_widgets_result.vehicle_status.doors_locked is None
+
+        assert (
+            get_widgets_result.vehicle_status.driving_range_in_km
+            == widgets_json["vehicleStatus"]["drivingRangeInKm"]
+        )
+        assert get_widgets_result.parking_position is not None
+        assert get_widgets_result.parking_position.state == widgets_json["parkingPosition"]["state"]
+        if parking_position_state == ParkingPositionState.PARKED:
+            assert isinstance(get_widgets_result.parking_position, ParkingPositionParked)
+            parking_position: ParkingPositionParked = get_widgets_result.parking_position
+            if anonymized:
+                assert "50.123456" not in parking_position.maps.light_map_url
+                assert "20.123456" not in parking_position.maps.light_map_url
+                assert parking_position.gps_coordinates.latitude == LOCATION["latitude"]
+                assert parking_position.gps_coordinates.longitude == LOCATION["longitude"]
+                assert parking_position.formatted_address == FORMATTED_ADDRESS
+            else:
+                assert (
+                    parking_position.maps.light_map_url
+                    == widgets_json["parkingPosition"]["maps"]["lightMapUrl"]
+                )
+                assert (
+                    get_widgets_result.parking_position.gps_coordinates.latitude
+                    == widgets_json["parkingPosition"]["gpsCoordinates"]["latitude"]
+                )
+                assert (
+                    get_widgets_result.parking_position.gps_coordinates.longitude
+                    == widgets_json["parkingPosition"]["gpsCoordinates"]["longitude"]
+                )
+                assert (
+                    get_widgets_result.parking_position.formatted_address
+                    == widgets_json["parkingPosition"]["formattedAddress"]
+                )
+            assert get_widgets_result.charging_status is not None
+            assert (
+                get_widgets_result.charging_status.remaining_time_to_fully_charged_in_minutes
+                == widgets_json["chargingStatus"]["remainingTimeToFullyChargedInMinutes"]
+            )
+            assert (
+                get_widgets_result.charging_status.state_of_charge_in_percent
+                == widgets_json["chargingStatus"]["stateOfChargeInPercent"]
+            )
+        else:
+            assert isinstance(get_widgets_result.parking_position, ParkingPositionInMotion)

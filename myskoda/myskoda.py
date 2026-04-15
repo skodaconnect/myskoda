@@ -95,6 +95,7 @@ from .models.trip_statistics import SingleTrips, TripStatistics
 from .models.user import User
 from .models.vehicle_connection_status import VehicleConnectionStatus
 from .models.vehicle_info import VehicleEquipment, VehicleFullInfo, VehicleInfo, VehicleRenders
+from .models.widget import WidgetResponse
 from .mqtt import MySkodaMqttClient
 from .rest_api import GetEndpointResult, RestApi
 from .utils import async_debounce
@@ -433,6 +434,10 @@ class MySkoda:
             renders=renders,
             software_update_status=soft_status,
         )
+
+    async def get_widget(self, vin: Vin, anonymize: bool = False) -> WidgetResponse:
+        """Retrieve widget information for the specified vehicle."""
+        return (await self.rest_api.get_widget(vin, anonymize=anonymize)).result
 
     async def get_departure_timers(self, vin: Vin, anonymize: bool = False) -> DepartureInfo:
         """Retrieve departure timers for the specified vehicle."""

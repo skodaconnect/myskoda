@@ -20,6 +20,7 @@ LOCATION = {
     "latitude": 53.470636,
     "longitude": 9.689872,
 }
+LOCATION_REGEX = re.compile(r"latitude=\d+\.\d+&longitude=\d+\.\d+")
 EMAIL = "user@example.com"
 PHONE = "+49 1234 567890"
 VEHICLE_NAME = "Example Car"
@@ -293,6 +294,29 @@ def anonymize_software_update_status(data: dict) -> dict:
     return data
 
 
+def anonymize_widget(data: dict) -> dict:
+    """Anonymize select parts if the input from the widget dict.
+
+    Args:
+        data: input dictionary
+
+    Returns:
+        dict
+    """
+    data["vehicle"]["name"] = VEHICLE_NAME
+    data["vehicle"]["licensePlate"] = LICENSE_PLATE
+    data["vehicle"]["renderUrl"] = anonymize_url(data["vehicle"]["renderUrl"])
+    if "maps" in data.get("parkingPosition", {}):
+        data["parkingPosition"]["maps"]["lightMapUrl"] = anonymize_url(
+            data["parkingPosition"]["maps"]["lightMapUrl"]
+        )
+    if "gpsCoordinates" in data.get("parkingPosition", {}):
+        data["parkingPosition"]["gpsCoordinates"] = LOCATION
+    if "formattedAddress" in data.get("parkingPosition", {}):
+        data["parkingPosition"]["formattedAddress"] = FORMATTED_ADDRESS
+    return data
+
+
 def anonymize_health(data: dict) -> dict:
     """Anonymize select parts if the input from the health dict.
 
@@ -366,7 +390,7 @@ def anonymize_driving_score(data: dict) -> dict:
 
 
 def anonymize_url(url: str) -> str:
-    """Anonymize a VIN found in a URL.
+    """Anonymize VIN and gps locations found in a URL.
 
     Args:
         url: input URL string
@@ -374,4 +398,12 @@ def anonymize_url(url: str) -> str:
     Returns:
         str: URL string with any VIN anonymized
     """
-    return VIN_REGEX.sub(VIN, url)
+    url_replacement = [
+        (LOCATION_REGEX, f"latitude={LOCATION['latitude']}&longitude={LOCATION['longitude']}"),
+        (VIN_REGEX, VIN),
+    ]
+
+    for pattern, replacement in url_replacement:
+        url = pattern.sub(replacement, url)
+
+    return url
