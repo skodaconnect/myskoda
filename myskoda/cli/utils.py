@@ -1,22 +1,22 @@
 """Utilities for the command line interface."""
 
 import json
+import sys
 from collections.abc import Awaitable, Callable
 from dataclasses import dataclass
 from datetime import UTC, datetime
 from enum import StrEnum
 from functools import update_wrapper
-import sys
 from typing import TYPE_CHECKING, Any
 
 import asyncclick as click
-from pygments.lexer import Lexer
 import yaml
 from aiohttp.client_exceptions import ClientResponseError
 from asyncclick.core import Context
 from dateutil.parser import isoparse
 from pygments import highlight
 from pygments.formatters import TerminalFormatter
+from pygments.lexer import Lexer
 from pygments.lexers import JsonLexer, YamlLexer
 
 if TYPE_CHECKING:
