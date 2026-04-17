@@ -58,7 +58,9 @@ class Format(StrEnum):
 
 
 def print_json(data: dict) -> None:
-    print(highlight(json.dumps(data, indent=4), JsonLexer(), TerminalFormatter()))
+    print(
+        highlight(json.dumps(data, indent=4, ensure_ascii=False), JsonLexer(), TerminalFormatter())
+    )
 
 
 def print_yaml(data: dict) -> None:
