@@ -1,6 +1,7 @@
 """Utilities for the command line interface."""
 
 import json
+import sys
 from collections.abc import Awaitable, Callable
 from dataclasses import dataclass
 from datetime import UTC, datetime
@@ -15,6 +16,7 @@ from asyncclick.core import Context
 from dateutil.parser import isoparse
 from pygments import highlight
 from pygments.formatters import TerminalFormatter
+from pygments.lexer import Lexer
 from pygments.lexers import JsonLexer, YamlLexer
 
 if TYPE_CHECKING:
@@ -57,14 +59,18 @@ class Format(StrEnum):
     YAML = "yaml"
 
 
+def highlight_for_console(text: str, lexer: Lexer) -> str:
+    if sys.stdout.isatty():
+        return highlight(text, lexer, TerminalFormatter())
+    return text
+
+
 def print_json(data: dict) -> None:
-    print(
-        highlight(json.dumps(data, indent=4, ensure_ascii=False), JsonLexer(), TerminalFormatter())
-    )
+    print(highlight_for_console(json.dumps(data, indent=4, ensure_ascii=False), JsonLexer()))
 
 
 def print_yaml(data: dict) -> None:
-    print(highlight(yaml.dump(data, allow_unicode=True), YamlLexer(), TerminalFormatter()))
+    print(highlight_for_console(yaml.dump(data, allow_unicode=True), YamlLexer()))
 
 
 def iso8601_datetime(
