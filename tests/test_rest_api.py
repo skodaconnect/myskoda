@@ -500,6 +500,7 @@ def load_software_updates() -> list[str]:
     software_updates = []
     for path in [
         "enyaq/software-version.json",
+        "enyaq/software-version-no-update.json",
     ]:
         with FIXTURES_DIR.joinpath(path).open() as file:
             software_updates.append(file.read())
@@ -522,10 +523,11 @@ async def test_software_updates(
         get_software_version_result = await myskoda.get_software_update_status(target_vin)
 
         assert get_software_version_result.status == software_updates_json["status"]
-        assert (
-            get_software_version_result.release_notes_url
-            == software_updates_json["releaseNotesUrl"]
-        )
+        if "releaseNotesUrl" in software_updates_json:
+            assert (
+                get_software_version_result.release_notes_url
+                == software_updates_json["releaseNotesUrl"]
+            )
         assert (
             get_software_version_result.current_software_version
             == software_updates_json["currentSoftwareVersion"]
