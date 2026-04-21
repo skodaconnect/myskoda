@@ -25,7 +25,7 @@ import uuid
 from collections import defaultdict
 from collections.abc import Callable, Coroutine
 from datetime import UTC, datetime, timedelta
-from pathlib import Path
+from os import PathLike
 from ssl import SSLContext
 from traceback import format_exc
 from types import SimpleNamespace
@@ -50,7 +50,6 @@ from .const import (
     CACHE_USER_ENDPOINT_IN_HOURS,
     CACHE_VEHICLE_HEALTH_IN_HOURS,
     CLIENT_ID,
-    DEFAULT_FCM_CREDENTIALS_FILE,
     MQTT_OPERATION_TIMEOUT,
     OPERATION_REFRESH_DELAY_SECONDS,
     REDIRECT_URI,
@@ -168,17 +167,14 @@ class MySkoda:
         session: ClientSession,
         ssl_context: SSLContext | None = None,
         mqtt_enabled: bool = True,
-        fcm_credentials_file: str | Path | None = None,
+        fcm_credentials_file: str | PathLike[str] | None = None,
     ) -> None:
         self._callbacks = defaultdict(list)
         self._vehicles = {}
         self.session = session
         self.authorization = MySkodaAuthorization(session)
         self.rest_api = RestApi(self.session, self.authorization)
-        self.firebase = FirebaseClient(
-            self.session,
-            credentials_file=fcm_credentials_file or DEFAULT_FCM_CREDENTIALS_FILE,
-        )
+        self.firebase = FirebaseClient(self.session, credentials_file=fcm_credentials_file)
         self.ssl_context = ssl_context
         self._mqtt_enabled = mqtt_enabled
         self._fcm_token: str | None = None

@@ -142,7 +142,9 @@ async def cli(  # noqa: PLR0913
         raise click.UsageError(auth_usage_str)
 
     session = ClientSession(trace_configs=trace_configs)
-    myskoda = MySkoda(session, mqtt_enabled=False)
+    myskoda = MySkoda(
+        session=session, mqtt_enabled=False, fcm_credentials_file=".fcm_credentials.json"
+    )
     if refresh_token:
         await myskoda.connect_with_refresh_token(refresh_token)
     elif username and password:

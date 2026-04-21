@@ -45,7 +45,7 @@ head -n 9 docs/api_endpoints.md && tail -n +10 docs/api_endpoints.md | sort --fi
 | sonar98 | POST   | api/v1/maps/route-url                                                      |       |         |
 | sonar98 | PUT    | api/v1/maps/{vin}/route                                                    |       |         |
 | sonar98 | GET    | api/v1/notifications                                                       |       | <pre lang="json"> {"notifications":[{"title":"De MyŠkoda app is vernieuwd!","body":"Ontdek de verbeteringen en nieuwe functionaliteiten voor je Enyaq. Download de app nu!","sendDate":"2023-05-10T13:20:35.218Z","category":"ADHOC","vin":"MYVIN","links":[]},{"title":"De MyŠkoda app is vernieuwd!","body":"Ontdek de verbeteringen en nieuwe functionaliteiten voor je Enyaq. Download de app nu!","sendDate":"2023-05-09T07:31:03.545Z","category":"ADHOC","vin":"MYVIN","links":[]}]}</pre> |
-| sonar98 | PUT    | api/v1/notifications-subscriptions/{id}                                    |       |         |
+| sonar98 | PUT    | api/v1/notifications-subscriptions/{id}                                    | ✅     |         |
 | sonar98 | GET    | api/v1/notifications-subscriptions/{id}/settings                           |       |         |
 | sonar98 | POST   | api/v1/notifications-subscriptions/{id}/settings                           |       |         |
 | sonar98 | GET    | api/v1/ordered-vehicle-information/{commissionId}/equipment                |       |         |

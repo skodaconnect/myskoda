@@ -1,5 +1,6 @@
 """Unit tests for Firebase helpers."""
 
+import asyncio
 import json
 from collections.abc import Callable
 from pathlib import Path
@@ -45,6 +46,7 @@ async def test_get_fcm_token_loads_and_persists_credentials(
     async with ClientSession() as session:
         firebase = FirebaseClient(session, credentials_file=credentials_file)
         token = await firebase.get_fcm_token()
+        await asyncio.gather(*firebase._pending_tasks)  # noqa: SLF001
 
     assert token == "fcm-token"  # noqa: S105
     assert captured["credentials"] == {"token": "old"}
