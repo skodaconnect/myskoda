@@ -3,12 +3,18 @@ from collections.abc import Callable
 from datetime import datetime
 from hashlib import sha256
 from pathlib import Path
+from typing import Any
 
 import pytest
 from aioresponses import aioresponses
 from yarl import URL
 
 from myskoda.anonymize import VEHICLE_NAME, VIN
+from myskoda.models.loyalty_program import (
+    DailyCheckInChallenge,
+    InProgressChallenge,
+    ReferralChallenge,
+)
 from myskoda.myskoda import MySkoda
 
 FIXTURES_DIR = Path(__file__).parent.joinpath("fixtures")
@@ -467,6 +473,58 @@ async def test_load_members_with_user_id_anonymize(
     )
 
 
+def assert_daily_check_in_challenge(
+    result: DailyCheckInChallenge | None, expected_json: dict[str, Any]
+) -> None:
+    assert result is not None
+    assert result.challenge_length == expected_json["challengeLength"]
+    assert result.streak_length == expected_json["streakLength"]
+
+
+def assert_referral_challenge(
+    result: ReferralChallenge | None, expected_json: dict[str, Any]
+) -> None:
+    assert result is not None
+    assert result.name == expected_json["name"]
+    assert result.description == expected_json["description"]
+    assert result.detailed_description == expected_json["detailedDescription"]
+    assert result.points == expected_json["points"]
+    assert result.image_url == URL(expected_json["imageUrl"])
+    assert result.total_activities == expected_json["totalActivities"]
+    assert result.completed_activities == expected_json["completedActivities"]
+
+
+def assert_in_progress_challenge(
+    challenge: InProgressChallenge, challenge_json: dict[str, Any], anonymized: bool
+) -> None:
+    assert challenge.type == challenge_json["type"]
+    assert challenge.status == challenge_json["status"]
+    assert challenge.enrollment_required == challenge_json["enrollmentRequired"]
+    assert challenge.name == challenge_json["name"]
+    assert challenge.description == challenge_json["description"]
+    assert challenge.detailed_description == challenge_json["detailedDescription"]
+    assert challenge.points == challenge_json["points"]
+    assert challenge.highlighted == challenge_json["highlighted"]
+    assert challenge.image_url == URL(challenge_json["imageUrl"])
+    assert challenge.ends_at == datetime.fromisoformat(challenge_json["endsAt"])
+    assert challenge.total_activities == challenge_json["totalActivities"]
+    assert challenge.completed_activities == challenge_json["completedActivities"]
+    if anonymized:
+        assert challenge.id == sha256(challenge_json["id"].encode()).hexdigest()
+        assert challenge.vin == VIN
+        assert challenge.vehicle_name == VEHICLE_NAME
+    else:
+        assert challenge.id == challenge_json["id"]
+        assert challenge.vin == challenge_json["vin"]
+        assert challenge.vehicle_name == challenge_json["vehicleName"]
+    assert challenge.show_eligibility_hint == challenge_json["showEligibilityHint"]
+    assert challenge.progress_type == challenge_json["progressType"]
+    assert challenge.max_failed_attempts == challenge_json["maxFailedAttempts"]
+    assert challenge.attempts_remaining == challenge_json["attemptsRemaining"]
+    assert challenge.days_to_complete == challenge_json["daysToComplete"]
+    assert challenge.days_completed == challenge_json["daysCompleted"]
+
+
 async def load_loyalty_program_members_test(
     members: list[str],
     myskoda: MySkoda,
@@ -507,96 +565,19 @@ async def load_loyalty_program_members_test(
         assert get_members_result.active_rewards == members_json["activeRewards"]
         assert get_members_result.consent_required == members_json["consentRequired"]
 
-        daily_check_in_challenge = get_members_result.daily_check_in_challenge
-        daily_check_in_challenge_json = members_json["dailyCheckInChallenge"]
-        assert daily_check_in_challenge is not None
-        assert (
-            daily_check_in_challenge.challenge_length
-            == daily_check_in_challenge_json["challengeLength"]
+        assert_daily_check_in_challenge(
+            get_members_result.daily_check_in_challenge, members_json["dailyCheckInChallenge"]
         )
-        assert (
-            daily_check_in_challenge.streak_length == daily_check_in_challenge_json["streakLength"]
-        )
-
-        referral_challenge = get_members_result.referral_challenge
-        referral_challenge_json = members_json["referralChallenge"]
-        assert referral_challenge is not None
-        assert referral_challenge.name == referral_challenge_json["name"]
-        assert referral_challenge.description == referral_challenge_json["description"]
-        assert (
-            referral_challenge.detailed_description
-            == referral_challenge_json["detailedDescription"]
-        )
-        assert referral_challenge.points == referral_challenge_json["points"]
-        assert referral_challenge.image_url == URL(referral_challenge_json["imageUrl"])
-        assert referral_challenge.total_activities == referral_challenge_json["totalActivities"]
-        assert (
-            referral_challenge.completed_activities
-            == referral_challenge_json["completedActivities"]
+        assert_referral_challenge(
+            get_members_result.referral_challenge, members_json["referralChallenge"]
         )
 
         assert get_members_result.in_progress_challenges is not None
         for i in range(len(get_members_result.in_progress_challenges)):
             in_progress_challenge = get_members_result.in_progress_challenges[i]
             in_progress_challenge_json = members_json["inProgressChallenges"][i]
-            assert in_progress_challenge.type == in_progress_challenge_json["type"]
-            assert in_progress_challenge.status == in_progress_challenge_json["status"]
-            assert (
-                in_progress_challenge.enrollment_required
-                == in_progress_challenge_json["enrollmentRequired"]
-            )
-            assert in_progress_challenge.name == in_progress_challenge_json["name"]
-            assert in_progress_challenge.description == in_progress_challenge_json["description"]
-            assert (
-                in_progress_challenge.detailed_description
-                == in_progress_challenge_json["detailedDescription"]
-            )
-            assert in_progress_challenge.points == in_progress_challenge_json["points"]
-            assert in_progress_challenge.highlighted == in_progress_challenge_json["highlighted"]
-            assert in_progress_challenge.image_url == URL(in_progress_challenge_json["imageUrl"])
-            assert in_progress_challenge.ends_at == datetime.fromisoformat(
-                in_progress_challenge_json["endsAt"]
-            )
-            assert (
-                in_progress_challenge.total_activities
-                == in_progress_challenge_json["totalActivities"]
-            )
-            assert (
-                in_progress_challenge.completed_activities
-                == in_progress_challenge_json["completedActivities"]
-            )
-            if anonymized:
-                assert (
-                    in_progress_challenge.id
-                    == sha256(in_progress_challenge_json["id"].encode()).hexdigest()
-                )
-                assert in_progress_challenge.vin == VIN
-                assert in_progress_challenge.vehicle_name == VEHICLE_NAME
-            else:
-                assert in_progress_challenge.id == in_progress_challenge_json["id"]
-                assert in_progress_challenge.vin == in_progress_challenge_json["vin"]
-                assert (
-                    in_progress_challenge.vehicle_name == in_progress_challenge_json["vehicleName"]
-                )
-            assert (
-                in_progress_challenge.show_eligibility_hint
-                == in_progress_challenge_json["showEligibilityHint"]
-            )
-            assert in_progress_challenge.progress_type == in_progress_challenge_json["progressType"]
-            assert (
-                in_progress_challenge.max_failed_attempts
-                == in_progress_challenge_json["maxFailedAttempts"]
-            )
-            assert (
-                in_progress_challenge.attempts_remaining
-                == in_progress_challenge_json["attemptsRemaining"]
-            )
-            assert (
-                in_progress_challenge.days_to_complete
-                == in_progress_challenge_json["daysToComplete"]
-            )
-            assert (
-                in_progress_challenge.days_completed == in_progress_challenge_json["daysCompleted"]
+            assert_in_progress_challenge(
+                in_progress_challenge, in_progress_challenge_json, anonymized
             )
 
 
