@@ -1,7 +1,8 @@
 """Methods for anonymizing data from the API."""
 
 import re
-from hashlib import sha256
+
+from myskoda.utils import sha256_hexdigest
 
 ACCESS_TOKEN = "eyJ0eXAiOiI0ODEyODgzZi05Y2FiLTQwMWMtYTI5OC0wZmEyMTA5Y2ViY2EiLCJhbGciOiJSUzI1NiJ9"  # noqa: S105
 USER_ID = "b8bc126c-ee36-402b-8723-2c1c3dff8dec"
@@ -47,18 +48,6 @@ SERVICE_PARTNER = {
 }
 FORMATTED_ADDRESS = "1600 Pennsylvania Ave NW, Washington, DC 20500, USA"
 PROFILE_NAME = "Example Profile"
-
-
-def sha256_hexdigest(source: str) -> str:
-    """Calculate sha256 checksum from input string.
-
-    Args:
-        source: input data to calculate checksum
-
-    Returns:
-        sha256 checksum of source string
-    """
-    return sha256(source.encode()).hexdigest()
 
 
 def anonymize_info(data: dict) -> dict:
@@ -432,6 +421,18 @@ def anonymize_loyalty_program_challenges(data: dict) -> dict:
             # Anonymize challenge ID as it may be linked to a specific user or vehicle
             sha256_hexdigest(challenge["id"])
         )
+    return data
+
+
+def anonymize_loyalty_program_games(data: dict) -> dict:
+    """Anonymize select parts if the input from the loyalty_program_games dict.
+
+    Args:
+        data: input dictionary
+
+    Returns:
+        dict
+    """
     return data
 
 

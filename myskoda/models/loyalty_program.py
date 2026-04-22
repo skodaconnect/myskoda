@@ -6,9 +6,20 @@ from enum import StrEnum
 from typing import Any
 
 from mashumaro import field_options
+from mashumaro.config import BaseConfig
 from mashumaro.mixins.orjson import DataClassORJSONMixin
+from yarl import URL
 
 from .common import BaseResponse
+
+
+class URLConfig(BaseConfig):
+    serialization_strategy = {  # noqa: RUF012
+        URL: {
+            "serialize": str,
+            "deserialize": URL,
+        }
+    }
 
 
 @dataclass
@@ -17,9 +28,12 @@ class BaseChallenge(DataClassORJSONMixin):
     description: str
     detailed_description: str = field(metadata=field_options(alias="detailedDescription"))
     points: int
-    image_url: str = field(metadata=field_options(alias="imageUrl"))
+    image_url: URL = field(metadata=field_options(alias="imageUrl"))
     total_activities: int = field(metadata=field_options(alias="totalActivities"))
     completed_activities: int = field(metadata=field_options(alias="completedActivities"))
+
+    class Config(URLConfig):
+        """Configuration for URL handling."""
 
 
 class ChallengeType(StrEnum):
@@ -121,7 +135,10 @@ class BadgeBase(DataClassORJSONMixin):
     id: str
     name: str
     description: str
-    image: str
+    image: URL
+
+    class Config(URLConfig):
+        """Configuration for URL handling."""
 
 
 @dataclass
@@ -151,17 +168,23 @@ class Progress(DataClassORJSONMixin):
     collected_at: datetime | None = field(default=None, metadata=field_options(alias="collectedAt"))
 
 
+class BadgeCategory(StrEnum):
+    REFERRAL = "Referral"
+    DRIVING = "Driving"
+    PROFILE = "Profile"
+
+
 @dataclass
 class BadgeResponse(BaseResponse, BadgeBase):
     disclaimer: str
-    category: str
+    category: BadgeCategory
     progress: Progress
     button: Button
 
 
 @dataclass
 class CategoryBadge(DataClassORJSONMixin):
-    name: str
+    name: BadgeCategory
     weight: float
     badges: list[Badge]
 
@@ -197,11 +220,14 @@ class Voucher(DataClassORJSONMixin):
     name: str
     description: str
     detailed_description: str = field(metadata=field_options(alias="detailedDescription"))
-    terms_and_conditions_url: str = field(metadata=field_options(alias="termsAndConditionsUrl"))
+    terms_and_conditions_url: URL = field(metadata=field_options(alias="termsAndConditionsUrl"))
     points_required: int = field(metadata=field_options(alias="pointsRequired"))
     value: float
     currency: str
-    image_urls: list[str] = field(metadata=field_options(alias="imageUrls"))
+    image_urls: list[URL] = field(metadata=field_options(alias="imageUrls"))
+
+    class Config(URLConfig):
+        """Configuration for URL handling."""
 
 
 @dataclass

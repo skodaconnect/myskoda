@@ -25,6 +25,7 @@ from myskoda.anonymize import (
     anonymize_loyalty_program_badges,
     anonymize_loyalty_program_challenges,
     anonymize_loyalty_program_details,
+    anonymize_loyalty_program_games,
     anonymize_loyalty_program_member,
     anonymize_loyalty_program_rewards,
     anonymize_loyalty_program_salesforce_contacts,
@@ -529,7 +530,7 @@ class RestApi:
         raw = self.process_json(
             data=await self._make_get_request(url),
             anonymize=anonymize,
-            anonymization_fn=anonymize_loyalty_program_challenges,
+            anonymization_fn=anonymize_loyalty_program_games,
         )
         result = self._deserialize(raw, GamesResponse.from_json)
         url = anonymize_url(url) if anonymize else url

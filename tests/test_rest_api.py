@@ -2,9 +2,7 @@
 
 import json
 import re
-from collections.abc import Callable
 from datetime import UTC, date, datetime
-from hashlib import sha256
 from pathlib import Path
 from unittest.mock import patch
 
@@ -12,7 +10,7 @@ import pytest
 from aiohttp import ClientResponseError
 from aioresponses import aioresponses
 
-from myskoda.anonymize import FORMATTED_ADDRESS, LICENSE_PLATE, LOCATION, VEHICLE_NAME, VIN
+from myskoda.anonymize import FORMATTED_ADDRESS, LICENSE_PLATE, LOCATION, VEHICLE_NAME
 from myskoda.models.common import OpenState
 from myskoda.models.departure import DepartureInfo
 from myskoda.models.driving_score import DrivingScoreResult
