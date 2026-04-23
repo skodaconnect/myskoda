@@ -10,4 +10,4 @@ coverage.xml
 .devcontainer?*
 .devcontainer/local/
 .envrc
-.fcm_credentials.json
+.tokens.json
