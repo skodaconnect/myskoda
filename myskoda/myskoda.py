@@ -606,8 +606,13 @@ class MySkoda:
         future = self._wait_for_operation(OperationName.SET_AIR_CONDITIONING_TIMERS)
         await self.rest_api.set_ac_timer(vin, timer)
         await future
-    
-    async def set_preferred_charging_times(self, vin: Vin, location: str, times: ChargingTimes) -> None:
+
+    async def set_preferred_charging_times(
+            self,
+            vin: Vin,
+            location: str,
+            times: ChargingTimes
+        ) -> None:
         """Update the proferred charging time of the vehicle at the location."""
         #Get current setup
         profiles = await self.get_charging_profiles(vin)
@@ -625,7 +630,8 @@ class MySkoda:
                             entry_replaced = True
                             break
 
-                    #update servers if and only if we actually did change something. Assumes valid entries (ie. id in range) send by the client code
+                    #update servers if and only if we actually did change something.
+                    # Assumes valid entries (ie. id in range) send by the client code
                     if (
                         entry_replaced
                     ):

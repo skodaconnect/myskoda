@@ -5,11 +5,11 @@ from datetime import datetime, time
 from typing import Any
 
 from mashumaro import field_options
-from mashumaro.mixins.orjson import DataClassORJSONMixin
 from mashumaro.config import (
     TO_DICT_ADD_BY_ALIAS_FLAG,
     BaseConfig,
 )
+from mashumaro.mixins.orjson import DataClassORJSONMixin
 
 from .air_conditioning import TimerMode
 from .charging import MaxChargeCurrent, PlugUnlockMode
@@ -34,12 +34,14 @@ class ChargingTimes(DataClassORJSONMixin):
 
     def __post_serialize__(self, d: dict[Any, Any]) -> dict[Any, Any]:
         """Post-process the data before serialization."""
-        if self.start_time:
-            if "startTime" in d: # only execute postprocessing if serialization was valled with byAlias to ensure the key is not added otherwise
+        # only execute if serialization was called with byAlias = true
+        #  to ensure the key is not added otherwise
+        if self.start_time and "startTime" in d:
                 d["startTime"] = self.start_time.strftime("%H:%M")  # Format to hh:mm
-        
-        if self.end_time:
-            if "endTime" in d: # only execute postprocessing if serialization was valled with byAlias to ensure the key is not added otherwise
+
+        # only execute if serialization was called with byAlias = true
+        #  to ensure the key is not added otherwise
+        if self.end_time and "endTime" in d:
                 d["endTime"] = self.end_time.strftime("%H:%M")  # Format to hh:mm
         return d
 
@@ -101,7 +103,7 @@ class ChargingTimers(DataClassORJSONMixin):
         code_generation_options = [  # noqa: RUF012
             TO_DICT_ADD_BY_ALIAS_FLAG
         ]
-        
+
     def __post_serialize__(self, d: dict[Any, Any]) -> dict[Any, Any]:
         """Post-process the data before serialization."""
         if self.time:

@@ -1,7 +1,7 @@
 """Basic unit tests for operations."""
 
-from datetime import datetime
 import json
+from datetime import datetime
 from unittest.mock import AsyncMock, patch
 
 import pytest
@@ -879,7 +879,13 @@ def load_set_preferred_charging() -> list[str]:
     return charging_profiles
 
 @pytest.mark.asyncio
-@pytest.mark.parametrize(("timer_id", "enabled", "start", "end"), [(1, True, "23:00", "00:15"), (2, False, "12:45", "14:53")])
+@pytest.mark.parametrize(
+    ("timer_id", "enabled", "start", "end"),
+    [
+        (1, True, "23:00", "00:15"),
+        (2, False, "12:45", "14:53")
+    ]
+)
 async def test_set_preferred_charging(  # noqa: PLR0913
     charging_profiles: list[str],
     myskoda: MySkoda,
@@ -900,7 +906,13 @@ async def test_set_preferred_charging(  # noqa: PLR0913
         )
         url = f"https://mysmob.api.connect.skoda-auto.cz/api/v1/charging/{target_vin}/profiles/1"
         responses.put(url=url)
-        future = myskoda.set_preferred_charging_times(target_vin, charging_profile_json["currentVehiclePositionProfile"]["name"], ChargingTimes(timer_id, enabled, datetime.strptime(start, "%H:%M").time(), datetime.strptime(end, "%H:%M").time()))
+
+        location = charging_profile_json["currentVehiclePositionProfile"]["name"]
+        start_time = datetime.strptime(start, "%H:%M").time() #noqa: DTZ007
+        end_time = datetime.strptime(end, "%H:%M").time() #noqa: DTZ007
+        charging_times = ChargingTimes(timer_id, enabled, start_time, end_time)
+
+        future = myskoda.set_preferred_charging_times(target_vin, location, charging_times)
 
         topic = f"{USER_ID}/{VIN}/operation-request/charging/update-charging-profiles"
         fake_mqtt_client_wrapper.set_messages(
@@ -918,4 +930,3 @@ async def test_set_preferred_charging(  # noqa: PLR0913
             headers={"authorization": f"Bearer {ACCESS_TOKEN}"},
             json = json_data
         )
-   

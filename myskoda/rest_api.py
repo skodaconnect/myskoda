@@ -821,9 +821,9 @@ class RestApi:
             url=f"/v2/air-conditioning/{vin}/auxiliary-heating/timers",
             json=json_data,
         )
-    
+
     async def set_charging_profile(self, vin: str, charging_profile: ChargingProfile) -> None:
-        """Update Charging Profile"""
+        """Update Charging Profile."""
         json_data = charging_profile.to_dict(by_alias=True)
         await self._make_put_request(
             url=f"/v1/charging/{vin}/profiles/{charging_profile.id}",
