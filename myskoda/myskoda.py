@@ -181,7 +181,7 @@ class MySkoda:
         """If MQTT was not enabled when initializing MySkoda, enable it manually and connect."""
         self._mqtt_enabled = True
         if not self.mqtt:
-            self.fcm_token = fcm_token or self.fcm_token or await self._get_and_register_fcm_token()
+            self.fcm_token = fcm_token or self.fcm_token or await self.get_and_register_fcm_token()
             self.mqtt = MySkodaMqttClient(
                 authorization=self.authorization,
                 fcm_token=self.fcm_token,
@@ -955,7 +955,12 @@ class MySkoda:
                 background_tasks.add(task)
                 task.add_done_callback(background_tasks.discard)
 
-    async def _get_and_register_fcm_token(self) -> str:
+    async def get_and_register_fcm_token(self) -> str:
+        """Get FCM Token from Google and register it with MySkoda.
+
+        Returns:
+            The new FCM Token.
+        """
         fcm_token = await self.firebase.get_fcm_token()
         await self.rest_api.register_fcm_token(fcm_token=fcm_token)
         return fcm_token

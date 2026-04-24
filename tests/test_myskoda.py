@@ -85,13 +85,13 @@ async def test_myskoda_enable_mqtt_uses_existing_mqtt_client(
         myskoda.mqtt = myskoda_mqtt_client
         myskoda.get_user = AsyncMock(return_value=type("User", (), {"id": "user-id"})())
         myskoda.list_vehicle_vins = AsyncMock(return_value=["vin"])
-        myskoda._get_and_register_fcm_token = AsyncMock()  # noqa: SLF001
+        myskoda.get_and_register_fcm_token = AsyncMock()
 
         await myskoda.enable_mqtt(fcm_token="fcm-token")  # noqa: S106
 
         assert myskoda.mqtt is myskoda_mqtt_client
         assert myskoda_mqtt_client.fcm_token == "test-fcm-token"  # noqa: S105
-        myskoda._get_and_register_fcm_token.assert_not_awaited()  # noqa: SLF001
+        myskoda.get_and_register_fcm_token.assert_not_awaited()
         assert myskoda.user is not None
         assert myskoda.user.id == "user-id"
         assert myskoda_mqtt_client.user_id == "user-id"
@@ -109,7 +109,7 @@ async def test_myskoda_enable_mqtt_creates_mqtt_client_with_cached_fcm_token(
         myskoda.authorization.get_access_token = AsyncMock(return_value="access-token")
         myskoda.get_user = AsyncMock(return_value=type("User", (), {"id": "user-id"})())
         myskoda.list_vehicle_vins = AsyncMock(return_value=["vin"])
-        myskoda._get_and_register_fcm_token = AsyncMock()  # noqa: SLF001
+        myskoda.get_and_register_fcm_token = AsyncMock()
 
         myskoda.mqtt = MySkodaMqttClient(
             authorization=myskoda.authorization,
@@ -119,7 +119,7 @@ async def test_myskoda_enable_mqtt_creates_mqtt_client_with_cached_fcm_token(
 
         await myskoda.enable_mqtt()
 
-        myskoda._get_and_register_fcm_token.assert_not_awaited()  # noqa: SLF001
+        myskoda.get_and_register_fcm_token.assert_not_awaited()
         assert myskoda.mqtt is not None
         assert myskoda.mqtt.fcm_token == "cached-token"  # noqa: S105
         assert myskoda.mqtt.user_id == "user-id"
