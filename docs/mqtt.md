@@ -10,9 +10,9 @@ Now requires MQTTv5!
   - `3.72.252.203`
   - `3.73.186.137`
 - **Port:**: 8883
-- **Username:**: Doesn't matter, but the app uses `2940a48-3881-43c2-be46-c4cf53e7fc7b`
-- **Password:**: Your standard JWT Authorization Token, same as used to login with the app.
-- **Properties**: Additional authentication propoerties (MQTTv5)
+- **Username:**: MySkoda API user_id UUID
+- **Password:**: MySkoda API JWT access_token
+- **Properties**: Additional authentication properties (MQTTv5)
   - `"auth_method": "totp_v1"`
   - `"auth_credentials", "TOTP"`
 
