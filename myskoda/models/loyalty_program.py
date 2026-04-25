@@ -49,6 +49,7 @@ class ChallengeStatus(StrEnum):
 
 class ProgressType(StrEnum):
     NEGATIVE = "NEGATIVE"
+    STANDARD = "STANDARD"
 
 
 @dataclass
