@@ -86,6 +86,7 @@ class FakeMqttClientWrapper(AbstractAsyncContextManager):
 
     def __init__(self, messages: list[aiomqtt.Message]) -> None:
         self._aiter = SimpleAsyncIterator(messages)
+        self.connect_properties_fcm_token: str | None = None
 
     async def __aexit__(
         self,
@@ -108,6 +109,9 @@ class FakeMqttClientWrapper(AbstractAsyncContextManager):
     def update_username_password(self, username: str, password: str) -> None:
         print(f"Fake updated username/password as {username}/{password}")
 
+    def set_connect_properties(self, fcm_token: str) -> None:
+        self.connect_properties_fcm_token = fcm_token
+
 
 @pytest.fixture
 async def fake_authorization() -> FakeAuthorization:
@@ -128,7 +132,9 @@ async def myskoda_mqtt_client(
 ) -> AsyncIterator[MySkodaMqttClient]:
     """Return a MySkodaMqttClient instance to use in tests."""
     mqtt_client = MySkodaMqttClient(
-        authorization=fake_authorization, mqtt_client=fake_mqtt_client_wrapper
+        authorization=fake_authorization,
+        fcm_token="test-fcm-token",  # noqa: S106
+        mqtt_client=fake_mqtt_client_wrapper,
     )
     yield mqtt_client
     await mqtt_client.disconnect()
@@ -177,6 +183,7 @@ async def myskoda(
         mock_default_routes(responses)
         myskoda = MySkoda(session, mqtt_enabled=False)
         myskoda.mqtt = myskoda_mqtt_client
+        myskoda._mqtt_enabled = True  # noqa: SLF001
         myskoda.authorization.get_access_token = AsyncMock(return_value=ACCESS_TOKEN)
         myskoda.authorization.authorize = AsyncMock()
         await myskoda.connect("user@example.com", "password")

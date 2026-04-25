@@ -38,7 +38,7 @@ from myskoda.anonymize import (
 )
 
 from .auth.authorization import Authorization
-from .const import BASE_URL_SKODA, REQUEST_TIMEOUT_IN_SECONDS
+from .const import BASE_URL_SKODA, MYSKODA_APP_VERSION, REQUEST_TIMEOUT_IN_SECONDS
 from .models.air_conditioning import (
     AirConditioning,
     AirConditioningAtUnlock,
@@ -847,3 +847,17 @@ class RestApi:
             if end:
                 url += f"&to={to_iso8601(end)}"
         return url
+
+    async def register_fcm_token(self, fcm_token: str) -> None:
+        """Register an FCM (Firebase Cloud Messaging) token with the notification backend.
+
+        This enables authentication with the MQTT Broker.
+        """
+        await self._make_put_request(
+            url=f"/v1/notifications-subscriptions/{fcm_token}",
+            json={
+                "devicePlatform": "ANDROID",
+                "appVersion": MYSKODA_APP_VERSION,
+                "language": "en",
+            },
+        )

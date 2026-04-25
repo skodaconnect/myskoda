@@ -899,3 +899,21 @@ async def test_widgets(
             )
         else:
             assert isinstance(get_widgets_result.parking_position, ParkingPositionInMotion)
+
+
+@pytest.mark.asyncio
+async def test_register_fcm_token_sends_expected_request(
+    api: RestApi, responses: aioresponses
+) -> None:
+    responses.put(
+        "https://mysmob.api.connect.skoda-auto.cz/api/v1/notifications-subscriptions/fcm-token"
+    )
+
+    await api.register_fcm_token(fcm_token="fcm-token")  # noqa: S106
+
+    [(request_call,)] = responses.requests.values()
+    assert request_call.kwargs["json"] == {
+        "devicePlatform": "ANDROID",
+        "appVersion": "8.11.0",
+        "language": "en",
+    }

@@ -28,6 +28,7 @@ from ssl import SSLContext
 from traceback import format_exc
 from types import SimpleNamespace
 from typing import Any
+from warnings import deprecated
 
 from aiohttp import ClientSession, TraceConfig, TraceRequestEndParams
 
@@ -52,6 +53,7 @@ from .const import (
     OPERATION_REFRESH_DELAY_SECONDS,
     REDIRECT_URI,
 )
+from .firebase import FirebaseClient
 from .models.air_conditioning import (
     AirConditioning,
     AirConditioningAtUnlock,
@@ -153,6 +155,7 @@ class MySkoda:
     rest_api: RestApi
     mqtt: MySkodaMqttClient | None = None
     authorization: MySkodaAuthorization
+    firebase: FirebaseClient
     ssl_context: SSLContext | None = None
     user: User | None = None
     _vehicles: dict[Vin, Vehicle]
@@ -169,40 +172,66 @@ class MySkoda:
         self.session = session
         self.authorization = MySkodaAuthorization(session)
         self.rest_api = RestApi(self.session, self.authorization)
+        self.firebase = FirebaseClient(self.session)
+        self.fcm_token: str | None = None
         self.ssl_context = ssl_context
-        if mqtt_enabled:
-            self.mqtt = self._create_mqtt_client()
+        self._mqtt_enabled = mqtt_enabled
 
-    async def enable_mqtt(self) -> None:
+    async def enable_mqtt(self, fcm_token: str | None = None) -> None:
         """If MQTT was not enabled when initializing MySkoda, enable it manually and connect."""
-        if self.mqtt is not None:
-            return
-        self.mqtt = self._create_mqtt_client()
+        self._mqtt_enabled = True
+        if not self.mqtt:
+            self.fcm_token = fcm_token or self.fcm_token or await self.get_and_register_fcm_token()
+            self.mqtt = MySkodaMqttClient(
+                authorization=self.authorization,
+                fcm_token=self.fcm_token,
+                ssl_context=self.ssl_context,
+            )
+
+        self.mqtt.subscribe(self._on_mqtt_event)
         self.user = await self.get_user()
         vehicles = await self.list_vehicle_vins()
         await self.mqtt.connect(self.user.id, vehicles)
 
-    async def connect(self, email: str, password: str) -> None:
-        """Authenticate on the rest api and connect to the MQTT broker."""
-        await self.authorization.authorize(email, password)
-        _LOGGER.debug("IDK Authorization was successful.")
+    async def connect(
+        self,
+        email: str | None = None,
+        password: str | None = None,
+        refresh_token: str | None = None,
+        fcm_token: str | None = None,
+    ) -> None:
+        """Authenticate on the rest api and connect to the MQTT broker.
 
-        if self.mqtt:
-            user = await self.get_user()
-            vehicles = await self.list_vehicle_vins()
-            await self.mqtt.connect(user.id, vehicles)
+        Note:
+            Must provide either 'email' and 'password' or 'refresh_token'.
+
+        Params:
+            email: MySkoda account email address (username).
+            password: MySkoda account password.
+            refresh_token: MySkoda API refresh token JWT.
+            fcm_token: Firebase Cloud Messaging token, used for MQTT authentication.
+        """
+        if not any([refresh_token, (email and password)]):
+            msg = "'connect() requires refresh_token' or 'email' and 'password' arguments"
+            raise TypeError(msg)
+
+        if refresh_token:
+            await self.authorization.authorize_refresh_token(refresh_token)
+            _LOGGER.debug("IDK Authorization via refresh token was successful.")
+
+        if email and password:
+            await self.authorization.authorize(email, password)
+            _LOGGER.debug("IDK Authorization was successful.")
+
+        self.fcm_token = fcm_token or self.fcm_token
+        if self._mqtt_enabled:
+            await self.enable_mqtt()
         _LOGGER.info("MySkoda connection ready.")
 
+    @deprecated("Deprecated. Use `MySkoda.connect()` instead.", category=RuntimeWarning)
     async def connect_with_refresh_token(self, refresh_token: str) -> None:
         """Authenticate using an existing OpenID refresh token and connect MQTT."""
-        await self.authorization.authorize_refresh_token(refresh_token)
-        _LOGGER.debug("IDK Authorization via refresh token was successful.")
-
-        if self.mqtt:
-            user = await self.get_user()
-            vehicles = await self.list_vehicle_vins()
-            await self.mqtt.connect(user.id, vehicles)
-        _LOGGER.info("MySkoda connection ready.")
+        await self.connect(refresh_token=refresh_token)
 
     async def disconnect(self) -> None:
         """Disconnect from the MQTT broker."""
@@ -926,10 +955,15 @@ class MySkoda:
                 background_tasks.add(task)
                 task.add_done_callback(background_tasks.discard)
 
-    def _create_mqtt_client(self) -> MySkodaMqttClient:
-        mqtt = MySkodaMqttClient(authorization=self.authorization, ssl_context=self.ssl_context)
-        mqtt.subscribe(self._on_mqtt_event)
-        return mqtt
+    async def get_and_register_fcm_token(self) -> str:
+        """Get FCM Token from Google and register it with MySkoda.
+
+        Returns:
+            The new FCM Token.
+        """
+        fcm_token = await self.firebase.get_fcm_token()
+        await self.rest_api.register_fcm_token(fcm_token=fcm_token)
+        return fcm_token
 
     async def _on_mqtt_event(self, event: BaseEvent) -> None:
         """Handle MQTT events.

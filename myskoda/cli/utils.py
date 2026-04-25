@@ -9,6 +9,7 @@ from enum import StrEnum
 from functools import update_wrapper
 from typing import TYPE_CHECKING, Any
 
+import aiofiles
 import asyncclick as click
 import yaml
 from aiohttp.client_exceptions import ClientResponseError
@@ -21,6 +22,9 @@ from pygments.lexers import JsonLexer, YamlLexer
 
 if TYPE_CHECKING:
     from myskoda import MySkoda
+
+# TODO(@dvx76): put in ~/.config/myskoda or Windows equivalent. Respect $XDG_CONFIG
+TOKENS_FILE = ".tokens.json"
 
 
 async def handle_request(
@@ -99,6 +103,20 @@ def simple_date(
     except (ValueError, TypeError) as e:
         err_str = f"{param.name} must be a valid YYYY-MM-DD date"
         raise click.BadParameter(err_str) from e
+
+
+async def load_tokens() -> dict[str, str]:
+    try:
+        async with aiofiles.open(TOKENS_FILE, encoding="utf-8") as file_handle:
+            contents = await file_handle.read()
+    except FileNotFoundError:
+        return {}
+    return json.loads(contents)
+
+
+async def save_tokens(tokens: dict[str, str]) -> None:
+    async with aiofiles.open(TOKENS_FILE, "w", encoding="utf-8") as file_handle:
+        await file_handle.write(json.dumps(tokens))
 
 
 @dataclass

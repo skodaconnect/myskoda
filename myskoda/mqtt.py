@@ -4,9 +4,13 @@ Inspired by https://github.com/YoSmart-Inc/yolink-api/tree/main
 """
 
 import asyncio
+import hashlib
+import hmac
 import logging
 import re
 import ssl
+import struct
+import time
 import uuid
 from collections.abc import AsyncIterator, Callable, Coroutine
 from random import uniform
@@ -14,6 +18,8 @@ from types import TracebackType
 from typing import Any, Protocol, Self, cast
 
 import aiomqtt
+from paho.mqtt.packettypes import PacketTypes
+from paho.mqtt.properties import Properties
 
 from .auth.authorization import Authorization
 from .const import (
@@ -91,6 +97,8 @@ class AbstractMqttClientWrapper(Protocol):
 
     def update_username_password(self, username: str, password: str) -> None: ...  # noqa: D102
 
+    def set_connect_properties(self, fcm_token: str) -> None: ...  # noqa: D102
+
 
 class AioMqttClientWrapper(aiomqtt.Client):
     def update_username_password(self, username: str, password: str) -> None:
@@ -104,6 +112,36 @@ class AioMqttClientWrapper(aiomqtt.Client):
         """
         self._client.username_pw_set(username=username, password=password)
 
+    def set_connect_properties(self, fcm_token: str) -> None:
+        """Set MQTTv5 CONNECT properties based on an FCM Token.update_username_password.
+
+        Similar to update_username_password, this must be set dynamically right before attempting
+        to connect.
+
+        Args:
+            fcm_token: A valid Firebase Cloud Messaging Token.
+        """
+        self._properties = Properties(PacketTypes.CONNECT)
+        self._properties.UserProperty = [
+            ("auth_method", "totp_v1"),
+            ("auth_credentials", self._generate_totp(fcm_token)),
+        ]
+
+    @staticmethod
+    def _generate_totp(fcm_token: str) -> str:
+        """Generate a Time-Based One-Time Password (TOTP) based on an FCM Token."""
+        key = hashlib.sha256(fcm_token.encode("utf-8")).digest()
+        time_step = struct.pack(">Q", int(time.time()) // 30)
+        mac = hmac.new(key, time_step, hashlib.sha256).digest()
+        offset = mac[-1] & 0x0F
+        code = (
+            ((mac[offset] & 0x7F) << 24)
+            | ((mac[offset + 1] & 0xFF) << 16)
+            | ((mac[offset + 2] & 0xFF) << 8)
+            | (mac[offset + 3] & 0xFF)
+        )
+        return str(code % (10**6)).zfill(6)
+
 
 class MySkodaMqttClient:
     user_id: str | None
@@ -114,10 +152,12 @@ class MySkodaMqttClient:
     def __init__(
         self,
         authorization: Authorization,
+        fcm_token: str,
         mqtt_client: AbstractMqttClientWrapper | None = None,
         ssl_context: ssl.SSLContext | None = None,
     ) -> None:
         self.authorization = authorization
+        self.fcm_token = fcm_token
         self.vehicle_vins = []
         self.mqtt_client = mqtt_client
         if self.mqtt_client is None:
@@ -126,11 +166,11 @@ class MySkodaMqttClient:
             self.mqtt_client = AioMqttClientWrapper(
                 hostname=MQTT_BROKER_HOST,
                 port=MQTT_BROKER_PORT,
-                identifier=str(uuid.uuid4()) + "#" + str(uuid.uuid4()),
+                identifier=f"{uuid.uuid4()}#{uuid.uuid4()}",
                 logger=_LOGGER,
                 tls_context=ssl_context or _SSL_CONTEXT,
                 keepalive=MQTT_KEEPALIVE,
-                clean_session=True,
+                protocol=aiomqtt.ProtocolVersion.V5,
             )
         self._callbacks = []
         self._operation_listeners = []
@@ -186,6 +226,7 @@ class MySkodaMqttClient:
                 self.mqtt_client.update_username_password(
                     username=self.user_id or "android-app", password=password
                 )
+                self.mqtt_client.set_connect_properties(fcm_token=self.fcm_token)
                 async with self.mqtt_client as client:
                     _LOGGER.info("Connected to MQTT")
                     _LOGGER.debug("using MQTT client %s", client)
