@@ -670,8 +670,16 @@ async def load_loyalty_program_rewards_test(
             assert voucher.detailed_description == voucher_json["detailedDescription"]
             assert voucher.terms_and_conditions_url == URL(voucher_json["termsAndConditionsUrl"])
             assert voucher.points_required == voucher_json["pointsRequired"]
-            assert voucher.value == voucher_json["value"]
-            assert voucher.currency == voucher_json["currency"]
+
+            if "value" in voucher_json:
+                assert voucher.value == voucher_json["value"]
+            else:
+                assert voucher.value is None
+
+            if "currency" in voucher_json:
+                assert voucher.currency == voucher_json["currency"]
+            else:
+                assert voucher.currency is None
 
             image_urls = voucher.image_urls
             image_urls_json = voucher_json["imageUrls"]

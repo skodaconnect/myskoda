@@ -6,14 +6,12 @@
     "availableVouchers": [
         {
             "id": "c7a3bd2ad99494c730a1d8d2f9f17003d2bbd46866133ee56be1dace896cba1f",
-            "category": "ACCESSORIES",
+            "category": "WEBSHOP",
             "name": "20 PLN for purchase in Škoda E-Shop",
             "description": "Unlock Savings with MyŠkoda Club! Redeem your points for a 20 PLN discount voucher, valid on any purchase of 40 PLN or more in the Škoda E-Shop. Use exclusive savings on your favourite products at Škoda E-Shop: https://eshop.skoda-auto.com/pl_PL/.",
             "detailedDescription": "**The voucher is valid for a minimum of 30 days.** Shop now and save!",
             "termsAndConditionsUrl": "https://eshop.skoda-auto.com/pl_PL/terms-and-conditions",
             "pointsRequired": 230,
-            "value": 20.0,
-            "currency": "PLN",
             "imageUrls": [
                 "https://image.communication.skoda-auto.com/lib/fe32117175640474761374/m/1/f34bca64-367e-4d11-b435-1d035646a0e5.png"
             ]

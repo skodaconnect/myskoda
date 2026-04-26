@@ -212,6 +212,7 @@ class ChallengesResponse(BaseResponse):
 
 class VoucherCategory(StrEnum):
     ACCESSORIES = "ACCESSORIES"
+    WEBSHOP = "WEBSHOP"
 
 
 @dataclass
@@ -223,9 +224,9 @@ class Voucher(DataClassORJSONMixin):
     detailed_description: str = field(metadata=field_options(alias="detailedDescription"))
     terms_and_conditions_url: URL = field(metadata=field_options(alias="termsAndConditionsUrl"))
     points_required: int = field(metadata=field_options(alias="pointsRequired"))
-    value: float
-    currency: str
     image_urls: list[URL] = field(metadata=field_options(alias="imageUrls"))
+    value: float | None = field(default=None)
+    currency: str | None = field(default=None)
 
     class Config(URLConfig):
         """Configuration for URL handling."""
