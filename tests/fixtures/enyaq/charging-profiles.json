@@ -3,6 +3,10 @@
     {
       "id": 1,
       "name": "testloc",
+      "location": {
+        "latitude": 53.470636,
+        "longitude": 9.689872
+      },
       "settings": {
         "maxChargingCurrent": "MAXIMUM",
         "minBatteryStateOfCharge": {

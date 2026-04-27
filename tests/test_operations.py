@@ -1,5 +1,7 @@
 """Basic unit tests for operations."""
 
+import json
+from datetime import datetime
 from unittest.mock import AsyncMock, patch
 
 import pytest
@@ -18,6 +20,7 @@ from myskoda.models.air_conditioning import (
 )
 from myskoda.models.auxiliary_heating import AuxiliaryConfig, AuxiliaryHeating, AuxiliaryStartMode
 from myskoda.models.charging import ChargeMode
+from myskoda.models.chargingprofiles import ChargingTimes
 from myskoda.models.departure import DepartureInfo
 from myskoda.myskoda import MySkoda
 
@@ -863,3 +866,67 @@ async def test_set_auxiliary_heating_timer(  # noqa: PLR0913
         headers={"authorization": f"Bearer {ACCESS_TOKEN}"},
         json=json_data,
     )
+
+@pytest.fixture(name="charging_profiles")
+def load_set_preferred_charging() -> list[str]:
+    """Load connection status fixture."""
+    charging_profiles = []
+    for path in [
+        "enyaq/charging-profiles.json",
+    ]:
+        with FIXTURES_DIR.joinpath(path).open() as file:
+            charging_profiles.append(file.read())
+    return charging_profiles
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize(
+    ("timer_id", "enabled", "start", "end"),
+    [
+        (1, True, "23:00", "00:15"),
+        (2, False, "12:45", "14:53")
+    ]
+)
+async def test_set_preferred_charging(  # noqa: PLR0913
+    charging_profiles: list[str],
+    myskoda: MySkoda,
+    responses: aioresponses,
+    fake_mqtt_client_wrapper: FakeMqttClientWrapper,
+    timer_id: int,
+    enabled: bool,
+    start: str,
+    end: str
+) ->None:
+    for charging_profile in charging_profiles:
+        charging_profile_json = json.loads(charging_profile)
+
+        target_vin = "TMBJM0CKV1N12345"
+        responses.get(
+            url=f"https://mysmob.api.connect.skoda-auto.cz/api/v1/charging/{target_vin}/profiles",
+            body=charging_profile,
+        )
+        url = f"https://mysmob.api.connect.skoda-auto.cz/api/v1/charging/{target_vin}/profiles/1"
+        responses.put(url=url)
+
+        location = charging_profile_json["currentVehiclePositionProfile"]["name"]
+        start_time = datetime.strptime(start, "%H:%M").time() #noqa: DTZ007
+        end_time = datetime.strptime(end, "%H:%M").time() #noqa: DTZ007
+        charging_times = ChargingTimes(timer_id, enabled, start_time, end_time)
+
+        future = myskoda.set_preferred_charging_times(target_vin, location, charging_times)
+
+        topic = f"{USER_ID}/{VIN}/operation-request/charging/update-charging-profiles"
+        fake_mqtt_client_wrapper.set_messages(
+            [create_aiomqtt_message(topic=topic, operation="update-charging-profiles")]
+        )
+        json_data = charging_profile_json["chargingProfiles"][0]
+        json_data["preferredChargingTimes"][timer_id - 1]["enabled"] = enabled
+        json_data["preferredChargingTimes"][timer_id - 1]["startTime"] = start
+        json_data["preferredChargingTimes"][timer_id - 1]["endTime"] = end
+
+        await future
+        responses.assert_called_with(
+            url=url,
+            method="PUT",
+            headers={"authorization": f"Bearer {ACCESS_TOKEN}"},
+            json = json_data
+        )

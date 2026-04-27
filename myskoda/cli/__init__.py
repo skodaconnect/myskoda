@@ -28,6 +28,7 @@ from myskoda.cli.operations import (
     set_charge_limit,
     set_departure_timer,
     set_minimum_charge_limit,
+    set_preferred_charging,
     set_reduced_current_limit,
     set_seats_heating,
     set_target_temperature,
@@ -222,6 +223,8 @@ cli.add_command(verify_spin)
 cli.add_command(wait_for_operation)
 cli.add_command(wakeup)
 cli.add_command(widget)
+cli.add_command(set_preferred_charging)
+
 
 if __name__ == "__main__":
     cli()

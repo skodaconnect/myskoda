@@ -1,16 +1,13 @@
 """Commands for the CLI for operations that can be performed."""
 
 import asyncio
+from datetime import datetime
 from typing import TYPE_CHECKING
 
 import asyncclick as click
 from asyncclick.core import Context
 
 from myskoda.cli.utils import mqtt_required
-
-if TYPE_CHECKING:
-    from myskoda import MySkoda
-
 from myskoda.models.air_conditioning import (
     AirConditioningAtUnlock,
     AirConditioningWithoutExternalPower,
@@ -20,6 +17,10 @@ from myskoda.models.air_conditioning import (
     WindowHeating,
 )
 from myskoda.models.auxiliary_heating import AuxiliaryConfig, AuxiliaryStartMode
+
+if TYPE_CHECKING:
+    from myskoda import MySkoda
+    from myskoda.models.chargingprofiles import ChargingProfiles
 
 
 @click.command()
@@ -508,3 +509,89 @@ async def set_aux_timer(  # noqa: PLR0913
                 print(f"No timer found with ID {timer_id}.")
         else:
             print("No AuxiliaryHeating found for the given VIN.")
+
+
+@click.command()
+@click.option("timeout", "--timeout", type=float, default=300)
+@click.argument("vin")
+@click.option("location", "--location", type=str, required=True)
+@click.option("charging_time_id", "--id", type=click.Choice(["1", "2", "3","4"]), required=True)
+@click.option("enabled", "--enabled", type=bool, required=False, default=None)
+@click.option("start", "--start", type=str, required=False, default=None)
+@click.option("end", "--end", type=str, required=False, default=None)
+@click.pass_context
+async def set_preferred_charging(  # noqa: PLR0913, C901
+    ctx: Context,
+    timeout: float,  # noqa: ASYNC109
+    vin: str,
+    location:str,
+    charging_time_id: str,
+    enabled: bool,
+    start: str,
+    end: str
+) -> None:
+    """Update preferred charging times"""
+    charging_times_id = int(charging_time_id)
+    myskoda: MySkoda = ctx.obj["myskoda"]
+
+    #As the command can be called with multiple optional parameters
+    #make sure that one item to update was actually provided before getting data from the servers
+    if enabled is None and start is None and end is None:
+        print("No information to update was provided")
+        return
+
+    async with asyncio.timeout(timeout):
+        #Get the complete charging profiles first
+        all_profiles: ChargingProfiles = await myskoda.get_charging_profiles(vin)
+
+        #Find the relevant charging time profile then update as necessary, and send it back.
+        #To allow the command to be called with only the necessary parameters we have to get the
+        #complete data from the servers here as well
+        if all_profiles is None:
+             print("No Charging profiles found for the given VIN")
+             return
+
+        selected_location = (
+            next((t for t in all_profiles.charging_profiles if t.name == location), None)
+            if all_profiles.charging_profiles
+            else None
+        )
+
+        if selected_location is None:
+            print(f"No charging location found with name {location}.")
+            return
+
+        selected_charging_times = (
+            next(
+                (t for t in selected_location.preferred_charging_times if t.id == charging_times_id)
+                , None)
+            if selected_location.preferred_charging_times
+            else None
+        )
+
+        if selected_charging_times is not None:
+            if enabled is not None:
+                selected_charging_times.enabled= enabled
+            if start is not None:
+                try:
+                    #it is assumed that the car will always use it's local time,
+                    #so timezone information is not relevant
+                    parsed_start = datetime.strptime(start, "%H:%M")  # noqa: DTZ007
+                    if parsed_start is not None:
+                        selected_charging_times.start_time = parsed_start.time()
+                except ValueError:
+                    print(f"Invalid start time {start}, expected HH:MM format.")
+            if end is not None:
+                try:
+                    #see above, assume the car only uses local time
+                    parsed_start = datetime.strptime(start, "%H:%M")  # noqa: DTZ007
+                    if parsed_start is not None:
+                        selected_charging_times.start_time = parsed_start.time()
+                except ValueError:
+                    print(f"Invalid end time {end}, expected HH:MM format.")
+
+            await myskoda.set_preferred_charging_times(
+                vin, location, selected_charging_times
+            )
+        else:
+            print(f"Charging times with ID {charging_times_id} not found.")
