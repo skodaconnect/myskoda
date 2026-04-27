@@ -963,6 +963,7 @@ class MySkoda:
         """
         fcm_token = await self.firebase.get_fcm_token()
         await self.rest_api.register_fcm_token(fcm_token=fcm_token)
+        self.fcm_token = fcm_token
         return fcm_token
 
     async def _on_mqtt_event(self, event: BaseEvent) -> None:
