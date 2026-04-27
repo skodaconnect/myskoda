@@ -25,6 +25,11 @@ print(f"__file__ = {__file__}")
 DEFAULT_USER_ID = "u12345"
 
 
+@pytest.fixture(autouse=True)
+def setup_before_each(myskoda: MySkoda) -> None:
+    myskoda.user = None
+
+
 def mock_user_response(user_id: str, responses: aioresponses) -> str:
     """Mock user response for loyalty program badge tests."""
     user = f"""
