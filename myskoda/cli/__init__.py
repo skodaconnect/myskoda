@@ -60,6 +60,15 @@ from myskoda.cli.requests import (
     health,
     info,
     list_vehicles,
+    loyalty_program_badge,
+    loyalty_program_badges,
+    loyalty_program_challenges,
+    loyalty_program_details,
+    loyalty_program_games,
+    loyalty_program_member,
+    loyalty_program_rewards,
+    loyalty_program_salesforce,
+    loyalty_program_transactions,
     maintenance,
     maintenance_report,
     parking_position,
@@ -222,6 +231,15 @@ cli.add_command(verify_spin)
 cli.add_command(wait_for_operation)
 cli.add_command(wakeup)
 cli.add_command(widget)
+cli.add_command(loyalty_program_details)
+cli.add_command(loyalty_program_member)
+cli.add_command(loyalty_program_badges)
+cli.add_command(loyalty_program_badge)
+cli.add_command(loyalty_program_challenges)
+cli.add_command(loyalty_program_games)
+cli.add_command(loyalty_program_rewards)
+cli.add_command(loyalty_program_transactions)
+cli.add_command(loyalty_program_salesforce)
 
 if __name__ == "__main__":
     cli()

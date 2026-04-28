@@ -4,6 +4,7 @@ import asyncio
 import functools
 from collections.abc import Awaitable, Callable
 from datetime import UTC, datetime
+from hashlib import sha256
 from typing import ParamSpec
 
 from .const import DEFAULT_DEBOUNCE_WAIT_SECONDS
@@ -71,3 +72,15 @@ def to_iso8601(dt: datetime) -> str:
         dt = dt.replace(tzinfo=UTC)
     dt_utc = dt.astimezone(UTC)
     return dt_utc.isoformat().replace("+00:00", "Z")
+
+
+def sha256_hexdigest(source: str) -> str:
+    """Calculate sha256 checksum from input string.
+
+    Args:
+        source: input data to calculate checksum
+
+    Returns:
+        sha256 checksum of source string
+    """
+    return sha256(source.encode()).hexdigest()

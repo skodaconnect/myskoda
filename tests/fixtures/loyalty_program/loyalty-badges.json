@@ -1,0 +1,121 @@
+{
+    "categoryBadges": [
+        {
+            "name": "Referral",
+            "weight": 3.0,
+            "badges": [
+                {
+                    "id": "8e64cc7a96c2c8ee14b722c3f0816d6e810e7640279788c770a5c9ec91a3a2cf",
+                    "name": "Škoda Ambassador",
+                    "description": "Invite 2 friends or family members to the Club Škoda",
+                    "image": "https://image.communication.skoda-auto.com/lib/fe32117175640474761374/m/1/2b891843-70df-462e-9826-866921b2e4c9.png",
+                    "collected": false,
+                    "weight": 0.0
+                }
+            ]
+        },
+        {
+            "name": "Driving",
+            "weight": 2.0,
+            "badges": [
+                {
+                    "id": "efffbbd1693ee33b595d3654ff1f85e6593ecfba768208599b209f22e824a59b",
+                    "name": "Top Ecodriver",
+                    "description": "Complete levels 1-4 of the Take it easy Challenge",
+                    "image": "https://image.communication.skoda-auto.com/lib/fe32117175640474761374/m/1/5d14854f-1c4c-4ac2-a8c2-a2114fe1b8fd.png",
+                    "collected": false,
+                    "weight": 0.0
+                },
+                {
+                    "id": "8982f1b107238804356fd23d2452e81e0cc06141bfe94b2083c25365a87d6ab3",
+                    "name": "Top Ecodriver Plug-in",
+                    "description": "Complete levels 1-4 of the Take it easy Challenge",
+                    "image": "https://image.communication.skoda-auto.com/lib/fe32117175640474761374/m/1/0431a29a-b2db-4a4c-843d-c5f36d1aa187.png",
+                    "collected": false,
+                    "weight": 0.0
+                },
+                {
+                    "id": "c00c22829b9dc5fdff7143782e0f83f7c6aecd3a044c9a413bbf30efe12ab272",
+                    "name": "Careful Driver",
+                    "description": "Complete levels 1-4 of the No need to rush Challenge",
+                    "image": "https://image.communication.skoda-auto.com/lib/fe32117175640474761374/m/1/8eef2442-5300-47bd-8a08-3e7ec3c62ab5.png",
+                    "collected": false,
+                    "weight": 0.0
+                },
+                {
+                    "id": "2744d94ca9c8bfeda34696382031d7186856c59b922eda3e38d32ae9cd60bcca",
+                    "name": "Short-distance Walker",
+                    "description": "Complete levels 1-3 of the Short-distance Walker Challenge",
+                    "image": "https://image.communication.skoda-auto.com/lib/fe32117175640474761374/m/1/b185f1ec-e77d-48d0-ba4e-6c3081fc9731.png",
+                    "collected": false,
+                    "weight": 0.0
+                },
+                {
+                    "id": "71329068188ab8e3b620953fd3eec4add0804617ea6260637f35f83d05f8a5cd",
+                    "name": "Avoid the morning traffic",
+                    "description": "Complete levels 1-3 of the Avoid driving during morning rush hours Challenge",
+                    "image": "https://image.communication.skoda-auto.com/lib/fe32117175640474761374/m/1/d2a76b31-0478-4041-9094-5f531a16952a.png",
+                    "collected": false,
+                    "weight": 0.0
+                },
+                {
+                    "id": "68be27ca9b006746a9bd77e1cb1d80c4948e284b4c2b1911784db9df91b6d66b",
+                    "name": "Avoid the afternoon traffic",
+                    "description": "Complete levels 1-3 of the Avoid driving during afternoon rush hours Challenge",
+                    "image": "https://image.communication.skoda-auto.com/lib/fe32117175640474761374/m/1/5a052c20-3f4e-411c-a36b-5eca3c073070.png",
+                    "collected": false,
+                    "weight": 0.0
+                },
+                {
+                    "id": "5f61b4c1c630822713282b9a77ac0cc9efe0cd0694c8bb8d827cd66cc9c35692",
+                    "name": "Car Free Day Supporter 2026",
+                    "description": "Take the Car Free Day Supporter Challenge (always held in September)",
+                    "image": "https://image.communication.skoda-auto.com/lib/fe32117175640474761374/m/1/3eea7331-6ce6-464f-a1e5-c40e58ddd0bb.png",
+                    "collected": false,
+                    "weight": 0.0
+                }
+            ]
+        },
+        {
+            "name": "Profile",
+            "weight": 1.0,
+            "badges": [
+                {
+                    "id": "923f666b002ade5a8fa6a25e8d6ddb10c778d94305e5da46e1d32c07cf29e48b",
+                    "name": "Twin Pack",
+                    "description": "Add a second Škoda to the garage in the MyŠkoda app",
+                    "image": "https://image.communication.skoda-auto.com/lib/fe32117175640474761374/m/1/2167d10e-e644-4188-be12-62003fdd09a2.png",
+                    "collected": false,
+                    "weight": 0.0
+                },
+                {
+                    "id": "59173d671f551fe9c33f86d52c4bd4aaabefec079d4a1b18d14b04439d34b161",
+                    "name": "Check-in Champion",
+                    "description": "Check in daily for 10 days in a row",
+                    "image": "https://image.communication.skoda-auto.com/lib/fe32117175640474761374/m/1/1ab576e2-d953-4a00-bc0b-afdbc580a05b.png",
+                    "collected": true,
+                    "weight": 0.0,
+                    "collectedAt": "2025-11-11T14:19:15Z"
+                },
+                {
+                    "id": "ee50c61147765dfc1b19163ee614a14f5bbfd82a672eef502c54071ead5790c9",
+                    "name": "Connect & explore",
+                    "description": "Add your Škoda to the garage in the MyŠkoda app",
+                    "image": "https://image.communication.skoda-auto.com/lib/fe32117175640474761374/m/1/049801ce-1b70-4666-955d-fdac33f8bf67.png",
+                    "collected": true,
+                    "weight": 0.0,
+                    "collectedAt": "2025-12-29T15:49:58Z"
+                },
+                {
+                    "id": "860a31e041ac8ed7cac2ca7a85e7794e535c6813891c12c0eab7ea144ecbeb12",
+                    "name": "Preferred Service Partner",
+                    "description": "Choose your preferred service partner in the MyŠkoda app",
+                    "image": "https://image.communication.skoda-auto.com/lib/fe32117175640474761374/m/1/25194a45-29f0-4531-97e1-db6e64afa4f3.png",
+                    "collected": true,
+                    "weight": 0.0,
+                    "collectedAt": "2025-12-29T15:49:58Z"
+                }
+            ]
+        }
+    ]
+}

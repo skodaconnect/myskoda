@@ -2,6 +2,8 @@
 
 import re
 
+from myskoda.utils import sha256_hexdigest
+
 ACCESS_TOKEN = "eyJ0eXAiOiI0ODEyODgzZi05Y2FiLTQwMWMtYTI5OC0wZmEyMTA5Y2ViY2EiLCJhbGciOiJSUzI1NiJ9"  # noqa: S105
 USER_ID = "b8bc126c-ee36-402b-8723-2c1c3dff8dec"
 VIN = "TMOCKAA0AA000000"
@@ -314,6 +316,154 @@ def anonymize_widget(data: dict) -> dict:
         data["parkingPosition"]["gpsCoordinates"] = LOCATION
     if "formattedAddress" in data.get("parkingPosition", {}):
         data["parkingPosition"]["formattedAddress"] = FORMATTED_ADDRESS
+    return data
+
+
+def anonymize_loyalty_program_details(data: dict) -> dict:
+    """Anonymize select parts if the input from the loyalty_program_details dict.
+
+    Args:
+        data: input dictionary
+
+    Returns:
+        dict
+    """
+    return data
+
+
+def anonymize_loyalty_program_member(data: dict) -> dict:
+    """Anonymize select parts if the input from the loyalty_program_member dict.
+
+    Args:
+        data: input dictionary
+
+    Returns:
+        dict
+    """
+    data["memberReferralCode"] = sha256_hexdigest(
+        data["memberReferralCode"]
+    )  # Anonymize referral code as it may be linked to a specific user
+    for in_progress_challenge in data.get("inProgressChallenges", []):
+        if "vin" in in_progress_challenge:
+            in_progress_challenge["vin"] = VIN
+        if "vehicleName" in in_progress_challenge:
+            in_progress_challenge["vehicleName"] = VEHICLE_NAME
+        in_progress_challenge["id"] = (
+            # Anonymize challenge ID as it may be linked to a specific user or vehicle
+            sha256_hexdigest(in_progress_challenge["id"])
+        )
+    return data
+
+
+def anonymize_loyalty_program_badges(data: dict) -> dict:
+    """Anonymize select parts if the input from the loyalty_program_badges dict.
+
+    Args:
+        data: input dictionary
+
+    Returns:
+        dict
+    """
+    for category_badge in data.get("categoryBadges", []):
+        for badge in category_badge.get("badges", []):
+            badge["id"] = sha256_hexdigest(
+                badge["id"]
+            )  # Anonymize badge ID as it may be linked to a specific user
+    return data
+
+
+def anonymize_loyalty_program_badge(data: dict) -> dict:
+    """Anonymize select parts if the input from the loyalty_program_badge dict.
+
+    Args:
+        data: input dictionary
+
+    Returns:
+        dict
+    """
+    data["id"] = sha256_hexdigest(
+        data["id"]
+    )  # Anonymize badge ID as it may be linked to a specific user
+    return data
+
+
+def anonymize_loyalty_program_rewards(data: dict) -> dict:
+    """Anonymize select parts if the input from the loyalty_program_rewards dict.
+
+    Args:
+        data: input dictionary
+
+    Returns:
+        dict
+    """
+    for available_voucher in data.get("availableVouchers", []):
+        available_voucher["id"] = sha256_hexdigest(
+            available_voucher["id"]
+        )  # Anonymize voucher ID as it may be linked to a specific user
+    return data
+
+
+def anonymize_loyalty_program_challenges(data: dict) -> dict:
+    """Anonymize select parts if the input from the loyalty_program_challenges dict.
+
+    Args:
+        data: input dictionary
+
+    Returns:
+        dict
+    """
+    for challenge in data.get("challenges", []):
+        if "vin" in challenge:
+            challenge["vin"] = VIN
+        if "vehicleName" in challenge:
+            challenge["vehicleName"] = VEHICLE_NAME
+        challenge["id"] = (
+            # Anonymize challenge ID as it may be linked to a specific user or vehicle
+            sha256_hexdigest(challenge["id"])
+        )
+    return data
+
+
+def anonymize_loyalty_program_games(data: dict) -> dict:
+    """Anonymize select parts if the input from the loyalty_program_games dict.
+
+    Args:
+        data: input dictionary
+
+    Returns:
+        dict
+    """
+    return data
+
+
+def anonymize_loyalty_program_transactions(data: dict) -> dict:
+    """Anonymize select parts if the input from the loyalty_program_transactions dict.
+
+    Args:
+        data: input dictionary
+
+    Returns:
+        dict
+    """
+    for transaction in data.get("transactions", []):
+        transaction["id"] = sha256_hexdigest(
+            transaction["id"]
+        )  # Anonymize transaction ID as it may be linked to a specific user
+    return data
+
+
+def anonymize_loyalty_program_salesforce_contacts(data: dict) -> dict:
+    """Anonymize select parts if the input from the loyalty_program_salesforce_contacts dict.
+
+    Args:
+        data: input dictionary
+
+    Returns:
+        dict
+    """
+    data["contactId"] = sha256_hexdigest(
+        data["contactId"]
+    )  # Anonymize contact ID as it may be linked to a specific user
     return data
 
 

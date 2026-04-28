@@ -1,0 +1,578 @@
+{
+    "transactions": [
+        {
+            "id": "e72cd8b50d89c1a0f6633185f30c8b193922d7779f0c7c74f437a028ba071976",
+            "type": "CREDIT",
+            "name": "Daily Checkin",
+            "pointsAmount": 1,
+            "timestamp": "2026-04-13T08:52:11+00:00"
+        },
+        {
+            "id": "690c3196a464590f937eac63d9cc5915dc7367570ff4f8cb8b9a6e516b1e71b9",
+            "type": "CREDIT",
+            "name": "7 in a row!",
+            "pointsAmount": 10,
+            "timestamp": "2026-04-12T05:11:26+00:00"
+        },
+        {
+            "id": "2f28e48d2e58a6a8aabb255117b4a9f1dbf961ad412733df8f98a7756ec81311",
+            "type": "CREDIT",
+            "name": "Daily Checkin",
+            "pointsAmount": 1,
+            "timestamp": "2026-04-12T05:11:26+00:00"
+        },
+        {
+            "id": "00563d9811e4ac2b5056dec5e6ed2ce92d2a4beb67da5317be65c27458ff9034",
+            "type": "CREDIT",
+            "name": "Daily Checkin",
+            "pointsAmount": 1,
+            "timestamp": "2026-04-11T21:55:21+00:00"
+        },
+        {
+            "id": "9a2365dc3946b7c0fd5015e50f83a7ffc21b7711d60e905cb19cd3580faef2df",
+            "type": "CREDIT",
+            "name": "Daily Checkin",
+            "pointsAmount": 1,
+            "timestamp": "2026-04-10T12:31:01+00:00"
+        },
+        {
+            "id": "4a5cf36af4f9de219b08607f61477c7a1f79ad76665ad558b965292aafc97058",
+            "type": "CREDIT",
+            "name": "Daily Checkin",
+            "pointsAmount": 1,
+            "timestamp": "2026-04-09T04:24:56+00:00"
+        },
+        {
+            "id": "0b8667747031478fa1c299b2fc24ff0c899b58dd17ed146653c0e7fba17556c4",
+            "type": "CREDIT",
+            "name": "Short-distance Walker: Level 2",
+            "pointsAmount": 30,
+            "timestamp": "2026-04-09T00:03:59+00:00"
+        },
+        {
+            "id": "6853d31c46094e49abce228a28eeb0bbc61699d7f2d102b1823a410b1c27e9af",
+            "type": "CREDIT",
+            "name": "Daily Checkin",
+            "pointsAmount": 1,
+            "timestamp": "2026-04-08T11:02:19+00:00"
+        },
+        {
+            "id": "ca978c231ac8cec7805369568516ba466e8b8ede3535135f6ba7674675ccf5a7",
+            "type": "CREDIT",
+            "name": "Daily Checkin",
+            "pointsAmount": 1,
+            "timestamp": "2026-04-07T04:00:02+00:00"
+        },
+        {
+            "id": "3f522158d38c915a2b9a5cf26b4deb5df956047dde71ef26807463ffd99bb40b",
+            "type": "CREDIT",
+            "name": "No need to rush: Level 2",
+            "pointsAmount": 20,
+            "timestamp": "2026-04-06T19:42:21+00:00"
+        },
+        {
+            "id": "fc76de273b90b908386286edd9791cc502154e7a6387974b9f9ef698b1969c57",
+            "type": "CREDIT",
+            "name": "Daily Checkin",
+            "pointsAmount": 1,
+            "timestamp": "2026-04-06T05:34:23+00:00"
+        },
+        {
+            "id": "7227166cc24bdac2469090bc7df641534f3b652bf8e7aa59036092fb35c665ae",
+            "type": "CREDIT",
+            "name": "Daily Checkin",
+            "pointsAmount": 1,
+            "timestamp": "2026-04-05T05:11:18+00:00"
+        },
+        {
+            "id": "d93ddabdb647d2d43061db8bdcd90e0bea619a7ac9b4bef28295a2a997647799",
+            "type": "CREDIT",
+            "name": "Avoid driving during morning rush hours: Level 1",
+            "pointsAmount": 20,
+            "timestamp": "2026-04-05T00:12:36+00:00"
+        },
+        {
+            "id": "d827336469051f890b599a333afc69dfb9b60d281d28f21b16f8516865135527",
+            "type": "CREDIT",
+            "name": "Daily Checkin",
+            "pointsAmount": 1,
+            "timestamp": "2026-04-04T05:51:30+00:00"
+        },
+        {
+            "id": "5dce7f0b1cae9eceb76a218774a6619850aaeb19aa1b191cea0c8905f19660d5",
+            "type": "CREDIT",
+            "name": "Daily Checkin",
+            "pointsAmount": 1,
+            "timestamp": "2026-04-03T05:47:50+00:00"
+        },
+        {
+            "id": "8b8e5063e205077879953ae03e5d913d6289a35af491d0aa2e17f90b214328f8",
+            "type": "CREDIT",
+            "name": "Daily Checkin",
+            "pointsAmount": 1,
+            "timestamp": "2026-04-02T04:47:47+00:00"
+        },
+        {
+            "id": "9569642a4b434ff102aee93c320c5b4af9550f8fe86a74c5379add13e5148799",
+            "type": "CREDIT",
+            "name": "No need to rush: Level 1",
+            "pointsAmount": 10,
+            "timestamp": "2026-04-01T18:43:33+00:00"
+        },
+        {
+            "id": "1a9652646e4b03a859fdc9cfeeb4693de4bec2ee0b1c64b44abfc6180c9d1cf4",
+            "type": "CREDIT",
+            "name": "Short-distance Walker: Level 1",
+            "pointsAmount": 20,
+            "timestamp": "2026-04-01T00:11:35+00:00"
+        },
+        {
+            "id": "8c2095bdd247c07af4832adca588c91654b5998cac66357aba30d5196bb3b69d",
+            "type": "CREDIT",
+            "name": "Daily Checkin",
+            "pointsAmount": 1,
+            "timestamp": "2026-03-31T22:09:47+00:00"
+        },
+        {
+            "id": "d22a97e4ffdbd8c283b6f71bb6bd906327640db3ed14fe86b100dad2dd269814",
+            "type": "CREDIT",
+            "name": "Daily Checkin",
+            "pointsAmount": 1,
+            "timestamp": "2026-03-30T05:42:58+00:00"
+        },
+        {
+            "id": "9c9e6f228057c2bc446989884422bb4b8378159d568253db6887433c069bd3ed",
+            "type": "CREDIT",
+            "name": "Daily Checkin",
+            "pointsAmount": 1,
+            "timestamp": "2026-03-21T23:40:13+00:00"
+        },
+        {
+            "id": "8cb82e08a54baaca8d9d6dca763954c1c5ff35e9d8c4c73b57154558ad2e7b00",
+            "type": "CREDIT",
+            "name": "Daily Checkin",
+            "pointsAmount": 1,
+            "timestamp": "2026-03-02T21:03:53+00:00"
+        },
+        {
+            "id": "5692cd7bd82213b6603aaf513eec56a185734558355264fa062a89ab3eec6908",
+            "type": "CREDIT",
+            "name": "Daily Checkin",
+            "pointsAmount": 1,
+            "timestamp": "2026-02-24T23:11:54+00:00"
+        },
+        {
+            "id": "0fe08377ad721fbc002044457dadabcce38e784f1f8f0e8db113a489d9d3a09a",
+            "type": "CREDIT",
+            "name": "Daily Checkin",
+            "pointsAmount": 1,
+            "timestamp": "2026-02-21T23:02:35+00:00"
+        },
+        {
+            "id": "47ccea19f6d0809c94e5c9012565b61dd3d1709687a6ca9e2589ad793e869c8b",
+            "type": "CREDIT",
+            "name": "Daily Checkin",
+            "pointsAmount": 1,
+            "timestamp": "2026-02-04T08:59:01+00:00"
+        },
+        {
+            "id": "d71fe5a3e024be92bd820af28865516d83aefc9c7a07a2bc953c8c5e8cfd4888",
+            "type": "CREDIT",
+            "name": "Daily Checkin",
+            "pointsAmount": 1,
+            "timestamp": "2026-01-24T16:57:52+00:00"
+        },
+        {
+            "id": "b6529a917037f9467a1d876abe0ea35d347566b7eacb1439e89ace335a6dbad8",
+            "type": "CREDIT",
+            "name": "Daily Checkin",
+            "pointsAmount": 1,
+            "timestamp": "2026-01-23T15:38:46+00:00"
+        },
+        {
+            "id": "03c8f5d1b7a81f7c5c3248878f02110498313fd1feb8d30926fd36639d464543",
+            "type": "CREDIT",
+            "name": "Daily Checkin",
+            "pointsAmount": 1,
+            "timestamp": "2026-01-21T22:49:12+00:00"
+        },
+        {
+            "id": "11f09e7aaedb90030ca4a3566b6ee1ff47a57df3614f0e748f5db4cfdc20a5f9",
+            "type": "CREDIT",
+            "name": "Daily Checkin",
+            "pointsAmount": 1,
+            "timestamp": "2026-01-12T23:01:16+00:00"
+        },
+        {
+            "id": "7afc90b3e18bcd89bda668d8c998d98c57f0fdd620eb6102a45b07d80096b889",
+            "type": "CREDIT",
+            "name": "Daily Checkin",
+            "pointsAmount": 1,
+            "timestamp": "2026-01-10T23:17:12+00:00"
+        },
+        {
+            "id": "ee44a75583706aabc2c762975f5c9a60a47e9a7837beff0ed9090e5ac9059192",
+            "type": "CREDIT",
+            "name": "Daily Checkin",
+            "pointsAmount": 1,
+            "timestamp": "2026-01-05T20:15:02+00:00"
+        },
+        {
+            "id": "056919c157c74249ec8f1f74ccd83ada979702cf422991ac0fd97a952ec7b046",
+            "type": "CREDIT",
+            "name": "Daily Checkin",
+            "pointsAmount": 1,
+            "timestamp": "2026-01-02T07:29:27+00:00"
+        },
+        {
+            "id": "84079ae6c985462b2a91473192bd9614aa2fb5a390fd1a5c84e2b25f9e9a0099",
+            "type": "CREDIT",
+            "name": "Daily Checkin",
+            "pointsAmount": 1,
+            "timestamp": "2026-01-01T19:57:04+00:00"
+        },
+        {
+            "id": "7a8a5035b900542a674e35202f219d64b2f0f0e68985229035ff617824c76538",
+            "type": "CREDIT",
+            "name": "Daily Checkin",
+            "pointsAmount": 1,
+            "timestamp": "2025-12-30T10:08:09+00:00"
+        },
+        {
+            "id": "cb0be3e8aa73c55e2711e74ea933660f7b71d2b5f7b94827f4857e349e7dbb59",
+            "type": "CREDIT",
+            "name": "Adding car to the garage",
+            "pointsAmount": 10,
+            "timestamp": "2025-12-29T15:49:57+00:00"
+        },
+        {
+            "id": "c7eab773f9409baf5bdc453517ded84d677788a42cf17b961c8f04efc3b265ab",
+            "type": "CREDIT",
+            "name": "Preferred dealer selection",
+            "pointsAmount": 10,
+            "timestamp": "2025-12-29T15:49:57+00:00"
+        },
+        {
+            "id": "ea2dd1c945b93bb1ca27a51bee2b574cca89572c757b2a5a7d0e0b9243048de1",
+            "type": "CREDIT",
+            "name": "Daily Checkin",
+            "pointsAmount": 1,
+            "timestamp": "2025-12-29T13:35:19+00:00"
+        },
+        {
+            "id": "84c627f6c7236aaf631d3896036fd5bed0eba33887e26c25462c5c3bcdef2c07",
+            "type": "CREDIT",
+            "name": "Daily Checkin",
+            "pointsAmount": 1,
+            "timestamp": "2025-12-28T11:30:06+00:00"
+        },
+        {
+            "id": "95d04031e70310368818bcfde17734a0c13c586b41ec844f35148a185aeda1c7",
+            "type": "CREDIT",
+            "name": "Daily Checkin",
+            "pointsAmount": 1,
+            "timestamp": "2025-12-24T07:13:32+00:00"
+        },
+        {
+            "id": "aca193d174509c8f4ed9fd5141c11f29dbd9ee7892611c9764c7cf2b2dbcd424",
+            "type": "CREDIT",
+            "name": "Daily Checkin",
+            "pointsAmount": 1,
+            "timestamp": "2025-12-23T22:33:59+00:00"
+        },
+        {
+            "id": "609bf27856f5bc40cb0ee05505a8eb800a9468da3af931113a34daa00dd8dbd9",
+            "type": "CREDIT",
+            "name": "Daily Checkin",
+            "pointsAmount": 1,
+            "timestamp": "2025-12-21T01:46:07+00:00"
+        },
+        {
+            "id": "3e0d420e7b57419b0530571071826e6cc90c1dc97393d730f4f83a777c76b292",
+            "type": "CREDIT",
+            "name": "Daily Checkin",
+            "pointsAmount": 1,
+            "timestamp": "2025-12-19T17:08:23+00:00"
+        },
+        {
+            "id": "97821727d8a212294ff430910244dbdff719f3419655cd8764148887dcbd063c",
+            "type": "CREDIT",
+            "name": "Daily Checkin",
+            "pointsAmount": 1,
+            "timestamp": "2025-12-17T07:23:50+00:00"
+        },
+        {
+            "id": "8a3ec656299dcbf456c72f923cdd3a0f1803272b2880534d34f318f83cd13da5",
+            "type": "CREDIT",
+            "name": "Daily Checkin",
+            "pointsAmount": 1,
+            "timestamp": "2025-12-14T22:55:35+00:00"
+        },
+        {
+            "id": "17a049e27c50a94380d8e0ad6acadff53c58dd26795c8feb500c867f7a166f84",
+            "type": "CREDIT",
+            "name": "Daily Checkin",
+            "pointsAmount": 1,
+            "timestamp": "2025-12-11T23:07:21+00:00"
+        },
+        {
+            "id": "40ee2b6f992f951753d987478d667af0970024261e5ac516eaf4830c825350e1",
+            "type": "CREDIT",
+            "name": "Daily Checkin",
+            "pointsAmount": 1,
+            "timestamp": "2025-12-09T23:35:32+00:00"
+        },
+        {
+            "id": "8019edb637aee596add6788974383fb3f284a30a7190830823d109e5ddca7243",
+            "type": "CREDIT",
+            "name": "Daily Checkin",
+            "pointsAmount": 1,
+            "timestamp": "2025-12-08T06:19:07+00:00"
+        },
+        {
+            "id": "0884e1838130b906999bff34b8a4dd682b962bf5f973adc27fb6ee7ec40c265f",
+            "type": "CREDIT",
+            "name": "Daily Checkin",
+            "pointsAmount": 1,
+            "timestamp": "2025-12-06T22:51:32+00:00"
+        },
+        {
+            "id": "e9c64b4b44b3d0c976527d2728095601a2910d75d85f5f3a44b5c2bbcc9e09ca",
+            "type": "CREDIT",
+            "name": "Daily Checkin",
+            "pointsAmount": 1,
+            "timestamp": "2025-12-05T22:59:13+00:00"
+        },
+        {
+            "id": "19642ea010289ac7484ffbfda058eff2420a6ab477d0ec44dea95c9f9b68ea67",
+            "type": "CREDIT",
+            "name": "Daily Checkin",
+            "pointsAmount": 1,
+            "timestamp": "2025-12-04T17:35:08+00:00"
+        },
+        {
+            "id": "4f589bb3b38ad8900e339d9dd81040991297deae33ac6d1bad8ab8bbffebcde7",
+            "type": "CREDIT",
+            "name": "Daily Checkin",
+            "pointsAmount": 1,
+            "timestamp": "2025-12-03T18:03:48+00:00"
+        },
+        {
+            "id": "01092296ca477d1b21fd6303380a67085656224e974bb12113290a55134f39c9",
+            "type": "CREDIT",
+            "name": "Daily Checkin",
+            "pointsAmount": 1,
+            "timestamp": "2025-12-02T21:21:24+00:00"
+        },
+        {
+            "id": "dabdb9788154f08cb70ce6084c2cbc8f8d0e02ac14c447afa498f183225ad5f1",
+            "type": "CREDIT",
+            "name": "Daily Checkin",
+            "pointsAmount": 1,
+            "timestamp": "2025-12-01T22:52:54+00:00"
+        },
+        {
+            "id": "6fdf5e3d175c835d1be1bd76a9ac7f0481824169509a5aa48b77b3398c584454",
+            "type": "CREDIT",
+            "name": "Daily Checkin",
+            "pointsAmount": 1,
+            "timestamp": "2025-11-30T19:18:11+00:00"
+        },
+        {
+            "id": "c660bab8c531baf78313b6116fc11d701c9b83c8387a655ea9bfa43f325107d9",
+            "type": "CREDIT",
+            "name": "Daily Checkin",
+            "pointsAmount": 1,
+            "timestamp": "2025-11-29T11:18:01+00:00"
+        },
+        {
+            "id": "f5565b7f4387b47ce864576944429a9f7d9c30614a202151107b2d6f9e322e3e",
+            "type": "CREDIT",
+            "name": "Daily Checkin",
+            "pointsAmount": 1,
+            "timestamp": "2025-11-28T21:12:11+00:00"
+        },
+        {
+            "id": "4ee262364a74f87c438201e20a2dd8bc8172497aaaa8a97ba621a29d861a4040",
+            "type": "CREDIT",
+            "name": "Daily Checkin",
+            "pointsAmount": 1,
+            "timestamp": "2025-11-27T07:38:47+00:00"
+        },
+        {
+            "id": "5234e83429221ae0aa8a5b90c66ba9d4d5833785f106608176b7345912e5713f",
+            "type": "CREDIT",
+            "name": "Daily Checkin",
+            "pointsAmount": 1,
+            "timestamp": "2025-11-26T18:49:29+00:00"
+        },
+        {
+            "id": "f995693e0d5818c565491a3efe6666992ce29bc7a8ae2d81300fc3160bcd86e1",
+            "type": "CREDIT",
+            "name": "Daily Checkin",
+            "pointsAmount": 1,
+            "timestamp": "2025-11-25T11:25:43+00:00"
+        },
+        {
+            "id": "799af648b96797d1e4c0d6afe28d753b3e764550b2b7f4cb8342a42f81bb8ff1",
+            "type": "CREDIT",
+            "name": "Daily Checkin",
+            "pointsAmount": 1,
+            "timestamp": "2025-11-24T12:39:48+00:00"
+        },
+        {
+            "id": "c02a832612197afee7367998b148b628e1f983b467c9a927f2cbd6aa1e221e35",
+            "type": "CREDIT",
+            "name": "Daily Checkin",
+            "pointsAmount": 1,
+            "timestamp": "2025-11-23T12:30:51+00:00"
+        },
+        {
+            "id": "1a056884124d5715139be551085c0b0ea04dca4bd9c737832976b6293ff6123a",
+            "type": "CREDIT",
+            "name": "Daily Checkin",
+            "pointsAmount": 1,
+            "timestamp": "2025-11-22T16:28:17+00:00"
+        },
+        {
+            "id": "648cbf8254cf22e63a355183c248ce24bef1adda1c906594a03f9d75dc0a361c",
+            "type": "CREDIT",
+            "name": "Daily Checkin",
+            "pointsAmount": 1,
+            "timestamp": "2025-11-21T21:54:21+00:00"
+        },
+        {
+            "id": "ef46686da72a69877f7e7d2323d85870638fd76c96d4a0fc9016142067d353ab",
+            "type": "CREDIT",
+            "name": "Daily Checkin",
+            "pointsAmount": 1,
+            "timestamp": "2025-11-20T22:57:27+00:00"
+        },
+        {
+            "id": "748edeb78f9bfe81aaff2f40156a381b31c08e1617841728e52e36c7a27f70e4",
+            "type": "CREDIT",
+            "name": "Daily Checkin",
+            "pointsAmount": 1,
+            "timestamp": "2025-11-19T16:01:22+00:00"
+        },
+        {
+            "id": "a6e803c4856627116a1a8465c3b3641235b4528ff712398caaa6769c17ea8521",
+            "type": "CREDIT",
+            "name": "Daily Checkin",
+            "pointsAmount": 1,
+            "timestamp": "2025-11-18T19:08:21+00:00"
+        },
+        {
+            "id": "b6ccb1b84936bd7ade502ab9480cbc3db4a5906444e2e3bc5a9044514bd3d838",
+            "type": "CREDIT",
+            "name": "Daily Checkin",
+            "pointsAmount": 1,
+            "timestamp": "2025-11-17T09:30:19+00:00"
+        },
+        {
+            "id": "f72e65234deec118649619f5849e3b2db528f6a07b0b683c1af6fa42aff4a8c4",
+            "type": "CREDIT",
+            "name": "Daily Checkin",
+            "pointsAmount": 1,
+            "timestamp": "2025-11-16T21:40:36+00:00"
+        },
+        {
+            "id": "861d3f9b29220f8fe4e80201d565b5b00b9698e202c6a789a019de1e101c0557",
+            "type": "CREDIT",
+            "name": "Daily Checkin",
+            "pointsAmount": 1,
+            "timestamp": "2025-11-15T11:01:09+00:00"
+        },
+        {
+            "id": "d28b5882711decc5e50c88605760c75c6e8cb5ecfd6d1afeea201418e3053fe0",
+            "type": "CREDIT",
+            "name": "Daily Checkin",
+            "pointsAmount": 1,
+            "timestamp": "2025-11-14T22:59:29+00:00"
+        },
+        {
+            "id": "436151eb07ffc721409380fe8523da6c442a17bb6b39f21fb59e5f4bf883f3b2",
+            "type": "CREDIT",
+            "name": "Daily Checkin",
+            "pointsAmount": 1,
+            "timestamp": "2025-11-13T20:37:07+00:00"
+        },
+        {
+            "id": "6a5ac4ecadb13b29e1654188d81c1094720cbbb376b0f91823dfd7b50cd240f5",
+            "type": "CREDIT",
+            "name": "Daily Checkin",
+            "pointsAmount": 1,
+            "timestamp": "2025-11-12T13:24:35+00:00"
+        },
+        {
+            "id": "34e793dce7916a3c5320c080c47bd4973a70dc47d1861c99266d330ea3ce45f9",
+            "type": "CREDIT",
+            "name": "Daily Checkin",
+            "pointsAmount": 1,
+            "timestamp": "2025-11-11T14:19:14+00:00"
+        },
+        {
+            "id": "f584204f1f07d2a6dcf70a7dba7aff8a00978b756505e4b9bff9c09067c6b916",
+            "type": "CREDIT",
+            "name": "Daily Checkin",
+            "pointsAmount": 1,
+            "timestamp": "2025-11-10T22:28:51+00:00"
+        },
+        {
+            "id": "4cfe522b581fa53cb44b01f6cb257c64d8dda25ce3e4c8b4eb883c45b44e1fff",
+            "type": "CREDIT",
+            "name": "Daily Checkin",
+            "pointsAmount": 1,
+            "timestamp": "2025-11-09T08:34:13+00:00"
+        },
+        {
+            "id": "b7408669b6fd69a5d6450c8ca69dc84629807a69457a6df3a4286c0a30390516",
+            "type": "CREDIT",
+            "name": "Daily Checkin",
+            "pointsAmount": 1,
+            "timestamp": "2025-11-08T06:00:58+00:00"
+        },
+        {
+            "id": "2390bf7acf3bbb5273f17e6e3831496dc80b2abf2bc6ae52101c40c7c94f7d00",
+            "type": "CREDIT",
+            "name": "Daily Checkin",
+            "pointsAmount": 1,
+            "timestamp": "2025-11-07T05:31:33+00:00"
+        },
+        {
+            "id": "4c0deee66d2cec0786ff27a3fac9e10e184444b0be2ec8a89065f8a35d0f15c1",
+            "type": "CREDIT",
+            "name": "Daily Checkin",
+            "pointsAmount": 1,
+            "timestamp": "2025-11-06T06:33:51+00:00"
+        },
+        {
+            "id": "a5f879be516b9fb607882bdc12f5de7d0035a7023889c96772634d929eba16d0",
+            "type": "CREDIT",
+            "name": "Daily Checkin",
+            "pointsAmount": 1,
+            "timestamp": "2025-11-05T22:17:09+00:00"
+        },
+        {
+            "id": "c409d189befc2480fb619b7339c34ee0357432ee45dfedd99878cadda8ef4208",
+            "type": "CREDIT",
+            "name": "Daily Checkin",
+            "pointsAmount": 1,
+            "timestamp": "2025-11-04T06:01:55+00:00"
+        },
+        {
+            "id": "3adb6bcac85b764b2e2bb88e10492457f5b54f867d2ff308c934908143b245fa",
+            "type": "CREDIT",
+            "name": "Daily Checkin",
+            "pointsAmount": 1,
+            "timestamp": "2025-11-03T09:42:06+00:00"
+        },
+        {
+            "id": "19ab9092ffce440a039bec09bcf809592ae463be8c1099f3475c3d45bd453e05",
+            "type": "CREDIT",
+            "name": "Daily Checkin",
+            "pointsAmount": 1,
+            "timestamp": "2025-11-02T21:39:02+00:00"
+        }
+    ]
+}

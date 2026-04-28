@@ -1,0 +1,66 @@
+{
+    "accountPointBalance": 81,
+    "dailyCheckInCollected": false,
+    "dailyCheckInChallenge": {
+        "challengeLength": 7,
+        "streakLength": 1
+    },
+    "challenges": [
+        {
+            "id": "c935aee7ee46b777b453e5d0d3a62e23704ba9f022b61a57e23d0d215e699ab0",
+            "type": "TELEMETRIC",
+            "status": "IN_PROGRESS",
+            "enrollmentRequired": true,
+            "name": "Short-distance Walker: Level 1",
+            "description": "Avoid journeys shorter than 3 km until the end of the day after you activate the challenge.",
+            "detailedDescription": "Don't take trips shorter than 3 km — you’ll help to reduce traffic levels.\n\nIf you didn’t manage to meet the target, the challenge will be reset (but you can restart it at any time).",
+            "points": 20,
+            "imageUrl": "https://image.communication.skoda-auto.com/lib/fe32117175640474761374/m/1/508d522b-b91c-42f7-ab41-7abaf1dcb54e.jpg",
+            "highlighted": false,
+            "displayImage": true,
+            "endsAt": "2026-03-31T21:59:59Z",
+            "totalActivities": 0,
+            "completedActivities": 0,
+            "vin": "TMBW2112222222222",
+            "vehicleName": "Superb",
+            "showEligibilityHint": false,
+            "progressType": "NEGATIVE",
+            "maxFailedAttempts": 1,
+            "attemptsRemaining": 1,
+            "daysToComplete": 2,
+            "daysCompleted": 1
+        },
+        {
+            "id": "94e17a18b7227fa4215bbd7c7fc3d501ae64edcaae747388b3e7774acfe01afd",
+            "type": "CAR_IN_GARAGE",
+            "status": "COMPLETED",
+            "enrollmentRequired": false,
+            "name": "Connect & explore",
+            "description": "Add your car to the garage in the app and manage your Škoda online.",
+            "detailedDescription": "By adding your car to the garage, you can explore more of the Škoda world, enjoy additional benefits, and complete driving-related challenges. Only primary users can take this challenge, and you need to activate it only once, via the VIN and Škoda ID.",
+            "points": 10,
+            "imageUrl": "https://image.communication.skoda-auto.com/lib/fe32117175640474761374/m/1/9c6887f5-e065-42ee-b364-388d47624347.jpg",
+            "highlighted": false,
+            "displayImage": true,
+            "completedAt": "2025-12-29T15:49:57Z",
+            "totalActivities": 1,
+            "completedActivities": 1
+        },
+        {
+            "id": "45b63f472d10b112275e739798748272d7ea85a05fc98ba0739b74ebf6456667",
+            "type": "PREFERRED_DEALER_SELECTION",
+            "status": "COMPLETED",
+            "enrollmentRequired": false,
+            "name": "Team up with a service partner",
+            "description": "Choose your service partner with MyŠkoda.",
+            "detailedDescription": "The service partner is a dedicated personal adviser offering assistance and expertise on any issue about your car. You can change your service partner at any time. And you can book a service quickly and easily with your MyŠkoda app.",
+            "points": 50,
+            "imageUrl": "https://image.communication.skoda-auto.com/lib/fe32117175640474761374/m/1/26f1f5f1-5c9d-46f0-a675-14adc8e8af42.png",
+            "highlighted": false,
+            "displayImage": true,
+            "completedAt": "2025-12-29T15:49:57Z",
+            "totalActivities": 1,
+            "completedActivities": 1
+        }
+    ]
+}

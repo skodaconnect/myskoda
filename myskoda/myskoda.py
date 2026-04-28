@@ -88,6 +88,17 @@ from .models.event import (
 )
 from .models.health import Health
 from .models.info import CapabilityId, Info
+from .models.loyalty_program import (
+    BadgeResponse,
+    BadgesResponse,
+    ChallengesResponse,
+    GamesResponse,
+    LoyaltyProgramDetailsResponse,
+    LoyaltyProgramMember,
+    RewardResponse,
+    SalesforceContactResponse,
+    TransactionsResponse,
+)
 from .models.maintenance import Maintenance, MaintenanceReport
 from .models.position import ParkingPositionV3, Positions
 from .models.software_status import SoftwareUpdateStatus
@@ -467,6 +478,104 @@ class MySkoda:
     async def get_widget(self, vin: Vin, anonymize: bool = False) -> WidgetResponse:
         """Retrieve widget information for the specified vehicle."""
         return (await self.rest_api.get_widget(vin, anonymize=anonymize)).result
+
+    async def get_loyalty_program_details(
+        self, anonymize: bool = False
+    ) -> LoyaltyProgramDetailsResponse:
+        """Retrieve loyalty program details for the specified user."""
+        return (await self.rest_api.get_loyalty_program_details(anonymize=anonymize)).result
+
+    async def get_loyalty_program_member(
+        self, user_id: str | None = None, anonymize: bool = False
+    ) -> LoyaltyProgramMember:
+        """Retrieve loyalty program member information for the specified user."""
+        if user_id is None:
+            if not self.user:
+                self.user = await self.get_user()
+            user_id = self.user.id
+        return (await self.rest_api.get_loyalty_program_member(user_id, anonymize=anonymize)).result
+
+    async def get_loyalty_program_badges(
+        self, user_id: str | None = None, anonymize: bool = False
+    ) -> BadgesResponse:
+        """Retrieve loyalty program badges for the specified user."""
+        if user_id is None:
+            if not self.user:
+                self.user = await self.get_user()
+            user_id = self.user.id
+        return (await self.rest_api.get_loyalty_program_badges(user_id, anonymize=anonymize)).result
+
+    async def get_loyalty_program_badge(
+        self, badge_id: str, user_id: str | None = None, anonymize: bool = False
+    ) -> BadgeResponse:
+        """Retrieve loyalty program badge for the specified user."""
+        if user_id is None:
+            if not self.user:
+                self.user = await self.get_user()
+            user_id = self.user.id
+        return (
+            await self.rest_api.get_loyalty_program_badge(user_id, badge_id, anonymize=anonymize)
+        ).result
+
+    async def get_loyalty_program_challenges(
+        self, user_id: str | None = None, anonymize: bool = False
+    ) -> ChallengesResponse:
+        """Retrieve loyalty program challenges for the specified user."""
+        if user_id is None:
+            if not self.user:
+                self.user = await self.get_user()
+            user_id = self.user.id
+        return (
+            await self.rest_api.get_loyalty_program_challenges(user_id, anonymize=anonymize)
+        ).result
+
+    async def get_loyalty_program_games(
+        self, user_id: str | None = None, anonymize: bool = False
+    ) -> GamesResponse:
+        """Retrieve loyalty program games for the specified user."""
+        if user_id is None:
+            if not self.user:
+                self.user = await self.get_user()
+            user_id = self.user.id
+        return (await self.rest_api.get_loyalty_program_games(user_id, anonymize=anonymize)).result
+
+    async def get_loyalty_program_rewards(
+        self, user_id: str | None = None, anonymize: bool = False
+    ) -> RewardResponse:
+        """Retrieve loyalty program rewards for the specified user."""
+        if user_id is None:
+            if not self.user:
+                self.user = await self.get_user()
+            user_id = self.user.id
+        return (
+            await self.rest_api.get_loyalty_program_rewards(user_id, anonymize=anonymize)
+        ).result
+
+    async def get_loyalty_program_transactions(
+        self, user_id: str | None = None, anonymize: bool = False
+    ) -> TransactionsResponse:
+        """Retrieve loyalty program transactions for the specified user."""
+        if user_id is None:
+            if not self.user:
+                self.user = await self.get_user()
+            user_id = self.user.id
+        return (
+            await self.rest_api.get_loyalty_program_transactions(user_id, anonymize=anonymize)
+        ).result
+
+    async def get_loyalty_program_salesforce_contacts(
+        self, user_id: str | None = None, anonymize: bool = False
+    ) -> SalesforceContactResponse:
+        """Retrieve loyalty program Salesforce contacts for the specified user."""
+        if user_id is None:
+            if not self.user:
+                self.user = await self.get_user()
+            user_id = self.user.id
+        return (
+            await self.rest_api.get_loyalty_program_salesforce_contacts(
+                user_id, anonymize=anonymize
+            )
+        ).result
 
     async def get_departure_timers(self, vin: Vin, anonymize: bool = False) -> DepartureInfo:
         """Retrieve departure timers for the specified vehicle."""

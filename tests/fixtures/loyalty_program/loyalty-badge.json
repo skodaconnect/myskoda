@@ -1,0 +1,18 @@
+{
+    "id": "8e64cc7a96c2c8ee14b722c3f0816d6e810e7640279788c770a5c9ec91a3a2cf",
+    "name": "Škoda Ambassador",
+    "description": "Invite 2 friends or family members to the Club Škoda",
+    "disclaimer": "Invite your friends and family to use the MyŠkoda app and join MyŠkoda Club. They too will be able to explore the Škoda world and enjoy special benefits.\nHow to invite a friend or family member:\n1. Ask them to download the MyŠkoda app.\n2. Send them your referral code from MyŠkoda Club.\n3. Ask them to go to the Profile section in the MyŠkoda app and join MyŠkoda Club by entering your referral code.\nOnce 2 friends or family members have joined MyŠkoda Club, you become a Škoda Ambassador!",
+    "category": "Referral",
+    "button": {
+        "title": "Invite friends",
+        "action": "INVITE_FRIENDS"
+    },
+    "image": "https://image.communication.skoda-auto.com/lib/fe32117175640474761374/m/1/2b891843-70df-462e-9826-866921b2e4c9.png",
+    "progress": {
+        "status": "COMPLETED",
+        "progressInPct": 100,
+        "collected": true,
+        "collectedAt": "2025-12-29T15:49:58+00:00"
+    }
+}
