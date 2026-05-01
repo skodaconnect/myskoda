@@ -213,7 +213,7 @@ head -n 9 docs/api_endpoints.md && tail -n +10 docs/api_endpoints.md | sort --fi
 | EnergyX | GET    | api/v2/vehicle-status/render                                               |       |         |
 | EnergyX | GET    | api/v2/vehicle-status/{vin}                                                | ✅     |         |
 | EnergyX | GET    | api/v2/vehicle-status/{vin}/driving-range                                  | ✅     |         |
-| lglerup | GET    | api/v2/vehicle-status/{vin}/driving-score                                  |       |         |
+| lglerup | GET    | api/v2/vehicle-status/{vin}/driving-score                                  | ✅     |         |
 | EnergyX | GET    | api/v2/widgets/vehicle-status/{vin}                                        | ✅     | <pre lang="json"> {"vehicle":{"name":"REDACTED","licensePlate":"REDACTED","renderUrl":"https://mspgwlivestorage.blob.core.windows.net/widget-renders/XXXX.png?etag=YYYY"},"vehicleStatus":{"doorsLocked":"CLOSED","drivingRangeInKm":121},"chargingStatus":{"stateOfChargeInPercent":35,"remainingTimeToFullyChargedInMinutes":0},"parkingPosition":{"state":"PARKED","maps":{"lightMapUrl":"https://mysmob.api.connect.skoda-auto.cz/api/v1/maps/image?latitude=xxxxx&longitude=yyyyx&width=533&height=400&zoom=17"},"gpsCoordinates":{"latitude":xxxx,"longitude":yyyy},"formattedAddress":"Street 1, Town"}}</pre> |
 | lglerup | GET    | api/v3/car-configurator/url                                                |       |         |
 | EnergyX | GET    | api/v3/maps/image                                                          |       |         |
