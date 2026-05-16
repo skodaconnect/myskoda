@@ -28,6 +28,7 @@ from myskoda.cli.operations import (
     set_charge_limit,
     set_departure_timer,
     set_minimum_charge_limit,
+    set_preferred_charging,
     set_reduced_current_limit,
     set_seats_heating,
     set_target_temperature,
@@ -240,6 +241,8 @@ cli.add_command(loyalty_program_games)
 cli.add_command(loyalty_program_rewards)
 cli.add_command(loyalty_program_transactions)
 cli.add_command(loyalty_program_salesforce)
+cli.add_command(set_preferred_charging)
+
 
 if __name__ == "__main__":
     cli()
