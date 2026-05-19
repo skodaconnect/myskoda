@@ -518,6 +518,7 @@ reports:
     overall_mileage_in_km: 57
     overall_travel_time_in_min: 95
     vehicle_type: FUEL
+    overall_cost: null
     timestamp: null
   success: true
   type: get

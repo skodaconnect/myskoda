@@ -799,6 +799,15 @@ reports:
       overall_average_travel_time_in_min: 31
       overall_mileage_in_km: 246
       overall_travel_time_in_min: 218
+      overall_cost:
+        total_cost: 12.83
+        total_cost_currency: CHF
+        cng_cost: null
+        electricity_cost:
+          cost: 12.83
+          cost_currency: CHF
+          price_per_unit: 0.3
+        fuel_cost: null
       timestamp: null
     error: null
   - type: get

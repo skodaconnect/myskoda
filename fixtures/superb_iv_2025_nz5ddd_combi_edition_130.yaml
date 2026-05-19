@@ -667,6 +667,15 @@ reports:
     overall_average_travel_time_in_min: 85
     overall_mileage_in_km: 264
     overall_travel_time_in_min: 341
+    overall_cost:
+      total_cost: 99.21
+      total_cost_currency: PLN
+      cng_cost: null
+      electricity_cost: null
+      fuel_cost:
+        cost: 99.21
+        cost_currency: PLN
+        price_per_unit: 5.67
     timestamp: '2026-01-01T21:23:46.919327+00:00'
     vehicle_type: FUEL
   success: true

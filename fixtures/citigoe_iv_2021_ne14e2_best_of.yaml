@@ -574,6 +574,7 @@ reports:
     overall_average_travel_time_in_min: 13
     overall_mileage_in_km: 26
     overall_travel_time_in_min: 25
+    overall_cost: null
     vehicle_type: ELECTRIC
     timestamp: null
   success: true

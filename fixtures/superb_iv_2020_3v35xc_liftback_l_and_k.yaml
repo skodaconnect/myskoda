@@ -713,6 +713,7 @@ reports:
     overall_average_travel_time_in_min: 24
     overall_mileage_in_km: 41
     overall_travel_time_in_min: 73
+    overall_cost: null
     timestamp: null
     vehicle_type: HYBRID
   success: true

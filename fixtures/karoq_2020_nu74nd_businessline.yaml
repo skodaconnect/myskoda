@@ -691,6 +691,7 @@ reports:
       overall_average_travel_time_in_min: 62
       overall_mileage_in_km: 241
       overall_travel_time_in_min: 310
+      overall_cost: null
     error:
   - type: get
     vehicle_id: 0

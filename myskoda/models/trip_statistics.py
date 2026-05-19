@@ -46,6 +46,26 @@ class StatisticsEntry(DataClassORJSONMixin):
 
 
 @dataclass
+class FuelCost(DataClassORJSONMixin):
+    cost: float | None = field(default=None, metadata=field_options(alias="cost"))
+    cost_currency: str | None = field(default=None, metadata=field_options(alias="costCurrency"))
+    price_per_unit: float | None = field(default=None, metadata=field_options(alias="pricePerUnit"))
+
+
+@dataclass
+class OverallCost(DataClassORJSONMixin):
+    total_cost: float | None = field(default=None, metadata=field_options(alias="totalCost"))
+    total_cost_currency: str | None = field(
+        default=None, metadata=field_options(alias="totalCostCurrency")
+    )
+    fuel_cost: FuelCost | None = field(default=None, metadata=field_options(alias="fuelCost"))
+    cng_cost: FuelCost | None = field(default=None, metadata=field_options(alias="cngCost"))
+    electricity_cost: FuelCost | None = field(
+        default=None, metadata=field_options(alias="electricityCost")
+    )
+
+
+@dataclass
 class TripStatistics(BaseResponse):
     vehicle_type: VehicleType = field(metadata=field_options(alias="vehicleType"))
     detailed_statistics: list[StatisticsEntry] = field(
@@ -75,22 +95,9 @@ class TripStatistics(BaseResponse):
     overall_travel_time_in_min: int | None = field(
         default=None, metadata=field_options(alias="overallTravelTimeInMin")
     )
-
-
-@dataclass
-class FuelCost(DataClassORJSONMixin):
-    cost: float | None = field(default=None, metadata=field_options(alias="cost"))
-    cost_currency: str | None = field(default=None, metadata=field_options(alias="costCurrency"))
-    price_per_unit: float | None = field(default=None, metadata=field_options(alias="pricePerUnit"))
-
-
-@dataclass
-class OverallCost(DataClassORJSONMixin):
-    total_cost: float | None = field(default=None, metadata=field_options(alias="totalCost"))
-    total_cost_currency: str | None = field(
-        default=None, metadata=field_options(alias="totalCostCurrency")
+    overall_cost: OverallCost | None = field(
+        default=None, metadata=field_options(alias="overallCost")
     )
-    fuel_cost: FuelCost | None = field(default=None, metadata=field_options(alias="fuelCost"))
 
 
 @dataclass
