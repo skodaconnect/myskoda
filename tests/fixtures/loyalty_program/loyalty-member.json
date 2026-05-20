@@ -1,0 +1,48 @@
+{
+    "pointBalance": 81,
+    "enrollmentCountryCode": "PL",
+    "memberReferralCode": "e943f7194e999e487767e4bd6d1dc5eda717ad224cf6782c07b27f5b05741341",
+    "dailyCheckInCollected": false,
+    "enrolledToLoyaltyBadges": true,
+    "dailyCheckInChallenge": {
+        "challengeLength": 7,
+        "streakLength": 1
+    },
+    "referralChallenge": {
+        "name": "Become an ambassador!",
+        "description": "Invite your friends and family to use the MyŠkoda App and to join the loyalty program so they can also enjoy the benefits.",
+        "detailedDescription": "Invite your friends and family to use the MyŠkoda App — share your unique referral code. How to invite a friend or family member:\n1. Ask them to download the app.\n2. Send them the code from MyŠkoda.\n3. Ask them to go to Profile in MyŠkoda App and join the loyalty program by entering the referral code.\n4. The maximum of points you can receive is 125 points (25 points/1 person), but you can invite as many people as you want.",
+        "points": 25,
+        "imageUrl": "https://image.communication.skoda-auto.com/lib/fe32117175640474761374/m/1/60c91f66-9441-4fb0-ac16-d6a072222356.png",
+        "totalActivities": 5,
+        "completedActivities": 0
+    },
+    "inProgressChallenges": [
+        {
+            "id": "aae1a2cb1edc1cfadb3e0ccbbe73970465a74fc96fd2f2fe958696083a91c3a9",
+            "type": "TELEMETRIC",
+            "status": "IN_PROGRESS",
+            "enrollmentRequired": true,
+            "name": "Short-distance Walker: Level 1",
+            "description": "Avoid journeys shorter than 3 km until the end of the day after you activate the challenge.",
+            "detailedDescription": "Don't take trips shorter than 3 km — you’ll help to reduce traffic levels.\n\nIf you didn’t manage to meet the target, the challenge will be reset (but you can restart it at any time).",
+            "points": 20,
+            "imageUrl": "https://image.communication.skoda-auto.com/lib/fe32117175640474761374/m/1/508d522b-b91c-42f7-ab41-7abaf1dcb54e.jpg",
+            "highlighted": false,
+            "displayImage": true,
+            "endsAt": "2026-03-31T21:59:59Z",
+            "totalActivities": 0,
+            "completedActivities": 0,
+            "vin": "TMBW2112222222222",
+            "vehicleName": "Superb",
+            "showEligibilityHint": false,
+            "progressType": "NEGATIVE",
+            "maxFailedAttempts": 1,
+            "attemptsRemaining": 1,
+            "daysToComplete": 2,
+            "daysCompleted": 1
+        }
+    ],
+    "activeRewards": [],
+    "consentRequired": false
+}

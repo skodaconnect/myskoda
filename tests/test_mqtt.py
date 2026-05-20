@@ -4,7 +4,7 @@ import asyncio
 import json
 from datetime import UTC, datetime, timedelta
 from pathlib import Path
-from unittest.mock import ANY
+from unittest.mock import ANY, patch
 
 import aiomqtt
 import pytest
@@ -56,6 +56,20 @@ async def connected_mqtt_client(myskoda_mqtt_client: MySkodaMqttClient) -> MySko
     """Return a connected MySkodaMqttClient instance to use in tests."""
     await myskoda_mqtt_client.connect(user_id="1234", vehicle_vins=["TMOCKAA0AA000000"])
     return myskoda_mqtt_client
+
+
+def test_set_connect_properties_uses_constructor_fcm_token() -> None:
+    fake_mqtt_client = FakeMqttClientWrapper(messages=[])
+    mqtt_client = MySkodaMqttClient(
+        authorization=ANY,
+        fcm_token="fcm-token",  # noqa: S106
+        mqtt_client=fake_mqtt_client,
+    )
+
+    with patch("time.time", return_value=60):
+        fake_mqtt_client.set_connect_properties(mqtt_client.fcm_token)
+
+    assert fake_mqtt_client.connect_properties_fcm_token == "fcm-token"  # noqa: S105
 
 
 @pytest.mark.asyncio

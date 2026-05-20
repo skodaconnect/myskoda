@@ -128,6 +128,133 @@ async def widget(ctx: Context, vin: str, anonymize: bool) -> None:
 
 
 @click.command()
+@click.option("anonymize", "--anonymize", help="Strip all personal data.", is_flag=True)
+@click.pass_context
+async def loyalty_program_details(ctx: Context, anonymize: bool) -> None:
+    """Print loyalty program details for the current user."""
+    await handle_request(ctx, ctx.obj["myskoda"].get_loyalty_program_details, anonymize)
+
+
+@click.command()
+@click.option("anonymize", "--anonymize", help="Strip all personal data.", is_flag=True)
+@click.option(
+    "user_id",
+    "--user-id",
+    default=None,
+    help="Optional user ID to override the default ID for login account.",
+)
+@click.pass_context
+async def loyalty_program_member(ctx: Context, user_id: str, anonymize: bool) -> None:
+    """Print loyalty program member information for the current user."""
+    await handle_request(ctx, ctx.obj["myskoda"].get_loyalty_program_member, user_id, anonymize)
+
+
+@click.command()
+@click.option("anonymize", "--anonymize", help="Strip all personal data.", is_flag=True)
+@click.option(
+    "user_id",
+    "--user-id",
+    default=None,
+    help="Optional user ID to override the default ID for login account.",
+)
+@click.pass_context
+async def loyalty_program_badges(ctx: Context, anonymize: bool, user_id: str) -> None:
+    """Print loyalty program badges for the current user."""
+    await handle_request(ctx, ctx.obj["myskoda"].get_loyalty_program_badges, user_id, anonymize)
+
+
+@click.command()
+@click.argument("badge_id")
+@click.option("anonymize", "--anonymize", help="Strip all personal data.", is_flag=True)
+@click.option(
+    "user_id",
+    "--user-id",
+    default=None,
+    help="Optional user ID to override the default ID for login account.",
+)
+@click.pass_context
+async def loyalty_program_badge(ctx: Context, badge_id: str, user_id: str, anonymize: bool) -> None:
+    """Print loyalty program badge for the current user."""
+    await handle_request(
+        ctx, ctx.obj["myskoda"].get_loyalty_program_badge, badge_id, user_id, anonymize
+    )
+
+
+@click.command()
+@click.option("anonymize", "--anonymize", help="Strip all personal data.", is_flag=True)
+@click.option(
+    "user_id",
+    "--user-id",
+    default=None,
+    help="Optional user ID to override the default ID for login account.",
+)
+@click.pass_context
+async def loyalty_program_challenges(ctx: Context, user_id: str, anonymize: bool) -> None:
+    """Print loyalty program challenges for the current user."""
+    await handle_request(ctx, ctx.obj["myskoda"].get_loyalty_program_challenges, user_id, anonymize)
+
+
+@click.command()
+@click.option("anonymize", "--anonymize", help="Strip all personal data.", is_flag=True)
+@click.option(
+    "user_id",
+    "--user-id",
+    default=None,
+    help="Optional user ID to override the default ID for login account.",
+)
+@click.pass_context
+async def loyalty_program_games(ctx: Context, user_id: str, anonymize: bool) -> None:
+    """Print loyalty program games for the current user."""
+    await handle_request(ctx, ctx.obj["myskoda"].get_loyalty_program_games, user_id, anonymize)
+
+
+@click.command()
+@click.option("anonymize", "--anonymize", help="Strip all personal data.", is_flag=True)
+@click.option(
+    "user_id",
+    "--user-id",
+    default=None,
+    help="Optional user ID to override the default ID for login account.",
+)
+@click.pass_context
+async def loyalty_program_rewards(ctx: Context, user_id: str, anonymize: bool) -> None:
+    """Print loyalty program rewards for the current user."""
+    await handle_request(ctx, ctx.obj["myskoda"].get_loyalty_program_rewards, user_id, anonymize)
+
+
+@click.command()
+@click.option("anonymize", "--anonymize", help="Strip all personal data.", is_flag=True)
+@click.option(
+    "user_id",
+    "--user-id",
+    default=None,
+    help="Optional user ID to override the default ID for login account.",
+)
+@click.pass_context
+async def loyalty_program_transactions(ctx: Context, user_id: str, anonymize: bool) -> None:
+    """Print loyalty program transactions for the current user."""
+    await handle_request(
+        ctx, ctx.obj["myskoda"].get_loyalty_program_transactions, user_id, anonymize
+    )
+
+
+@click.command()
+@click.option("anonymize", "--anonymize", help="Strip all personal data.", is_flag=True)
+@click.option(
+    "user_id",
+    "--user-id",
+    default=None,
+    help="Optional user ID to override the default ID for login account.",
+)
+@click.pass_context
+async def loyalty_program_salesforce(ctx: Context, user_id: str, anonymize: bool) -> None:
+    """Print loyalty program salesforce contacts for the current user."""
+    await handle_request(
+        ctx, ctx.obj["myskoda"].get_loyalty_program_salesforce_contacts, user_id, anonymize
+    )
+
+
+@click.command()
 @click.argument("vin")
 @click.option("anonymize", "--anonymize", help="Strip all personal data.", is_flag=True)
 @click.pass_context

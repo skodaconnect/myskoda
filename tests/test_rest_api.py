@@ -500,6 +500,7 @@ def load_software_updates() -> list[str]:
     software_updates = []
     for path in [
         "enyaq/software-version.json",
+        "enyaq/software-version-no-update.json",
     ]:
         with FIXTURES_DIR.joinpath(path).open() as file:
             software_updates.append(file.read())
@@ -522,10 +523,11 @@ async def test_software_updates(
         get_software_version_result = await myskoda.get_software_update_status(target_vin)
 
         assert get_software_version_result.status == software_updates_json["status"]
-        assert (
-            get_software_version_result.release_notes_url
-            == software_updates_json["releaseNotesUrl"]
-        )
+        if "releaseNotesUrl" in software_updates_json:
+            assert (
+                get_software_version_result.release_notes_url
+                == software_updates_json["releaseNotesUrl"]
+            )
         assert (
             get_software_version_result.current_software_version
             == software_updates_json["currentSoftwareVersion"]
@@ -897,3 +899,21 @@ async def test_widgets(
             )
         else:
             assert isinstance(get_widgets_result.parking_position, ParkingPositionInMotion)
+
+
+@pytest.mark.asyncio
+async def test_register_fcm_token_sends_expected_request(
+    api: RestApi, responses: aioresponses
+) -> None:
+    responses.put(
+        "https://mysmob.api.connect.skoda-auto.cz/api/v1/notifications-subscriptions/fcm-token"
+    )
+
+    await api.register_fcm_token(fcm_token="fcm-token")  # noqa: S106
+
+    [(request_call,)] = responses.requests.values()
+    assert request_call.kwargs["json"] == {
+        "devicePlatform": "ANDROID",
+        "appVersion": "8.11.0",
+        "language": "en",
+    }

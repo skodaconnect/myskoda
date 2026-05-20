@@ -4,14 +4,19 @@ This is a specification for the MQTT protocol that the server uses to communicat
 
 ## Connection
 
-**Host:**
+Now requires MQTTv5!
 
-- `3.72.252.203`
-- `3.73.186.137`
+- **Host:** mqtt.messagehub.de
+  - `3.72.252.203`
+  - `3.73.186.137`
+- **Port:**: 8883
+- **Username:**: MySkoda API user_id UUID
+- **Password:**: MySkoda API JWT access_token
+- **Properties**: Additional authentication properties (MQTTv5)
+  - `"auth_method": "totp_v1"`
+  - `"auth_credentials", "TOTP"`
 
-**Port:** 8883
-**Username:** Doesn't matter, but the app uses `2940a48-3881-43c2-be46-c4cf53e7fc7b`
-**Password:** Your standard JWT Authorization Token, same as used to login with the app.
+`TOTP` is a 6-number Time-based One-Time Password generated from the FCM (Firebase Cloud Messaging) token. That token must be retrieved from FCM (using the MySkoda access_token) and then registered with the MySkoda API with `PUT api/v1/notifications-subscriptions/<FCM_TOKEN>`.
 
 ## Message structure
 

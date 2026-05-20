@@ -1,6 +1,7 @@
 """Utilities for the command line interface."""
 
 import json
+import sys
 from collections.abc import Awaitable, Callable
 from dataclasses import dataclass
 from datetime import UTC, datetime
@@ -8,6 +9,7 @@ from enum import StrEnum
 from functools import update_wrapper
 from typing import TYPE_CHECKING, Any
 
+import aiofiles
 import asyncclick as click
 import yaml
 from aiohttp.client_exceptions import ClientResponseError
@@ -15,10 +17,14 @@ from asyncclick.core import Context
 from dateutil.parser import isoparse
 from pygments import highlight
 from pygments.formatters import TerminalFormatter
+from pygments.lexer import Lexer
 from pygments.lexers import JsonLexer, YamlLexer
 
 if TYPE_CHECKING:
     from myskoda import MySkoda
+
+# TODO(@dvx76): put in ~/.config/myskoda or Windows equivalent. Respect $XDG_CONFIG
+TOKENS_FILE = ".tokens.json"
 
 
 async def handle_request(
@@ -57,14 +63,18 @@ class Format(StrEnum):
     YAML = "yaml"
 
 
+def highlight_for_console(text: str, lexer: Lexer) -> str:
+    if sys.stdout.isatty():
+        return highlight(text, lexer, TerminalFormatter())
+    return text
+
+
 def print_json(data: dict) -> None:
-    print(
-        highlight(json.dumps(data, indent=4, ensure_ascii=False), JsonLexer(), TerminalFormatter())
-    )
+    print(highlight_for_console(json.dumps(data, indent=4, ensure_ascii=False), JsonLexer()))
 
 
 def print_yaml(data: dict) -> None:
-    print(highlight(yaml.dump(data, allow_unicode=True), YamlLexer(), TerminalFormatter()))
+    print(highlight_for_console(yaml.dump(data, allow_unicode=True), YamlLexer()))
 
 
 def iso8601_datetime(
@@ -93,6 +103,20 @@ def simple_date(
     except (ValueError, TypeError) as e:
         err_str = f"{param.name} must be a valid YYYY-MM-DD date"
         raise click.BadParameter(err_str) from e
+
+
+async def load_tokens() -> dict[str, str]:
+    try:
+        async with aiofiles.open(TOKENS_FILE, encoding="utf-8") as file_handle:
+            contents = await file_handle.read()
+    except FileNotFoundError:
+        return {}
+    return json.loads(contents)
+
+
+async def save_tokens(tokens: dict[str, str]) -> None:
+    async with aiofiles.open(TOKENS_FILE, "w", encoding="utf-8") as file_handle:
+        await file_handle.write(json.dumps(tokens))
 
 
 @dataclass
