@@ -398,15 +398,11 @@ async def test_charging_statistics(
     assert len(result.month_sections) == len(data["monthSections"])
 
     all_entries = [e for s in result.month_sections for e in s.entries]
-    assert len(all_entries) == 3
+    assert len(all_entries) == sum(len(s["entries"]) for s in data["monthSections"])
 
     first = all_entries[0].details
     assert str(first.session_id) == "a1b2c3d4-e5f6-7890-abcd-ef1234567890"
-    assert first.charging_start_time is not None
-    assert first.charging_start_time.year == 2026
-    assert first.charging_start_time.month == 5
-    assert first.charging_start_time.day == 15
-    assert first.charging_start_time.tzinfo is None  # user-local, no tz
+    assert first.charging_start_time == datetime(2026, 5, 15, 8, 30)  # noqa: DTZ001
     assert result.csv_file == data["csvFile"]
 
 
