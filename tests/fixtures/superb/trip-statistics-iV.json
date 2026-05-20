@@ -7,6 +7,15 @@
     "overallAverageElectricConsumption": 16.44,
     "overallAverageSpeedInKmph": 37,
     "vehicleType": "HYBRID",
+    "overallCost": {
+        "fuelCost": {
+            "cost": 282.69,
+            "costCurrency": "PLN",
+            "pricePerUnit": 7.19
+        },
+        "totalCost": 282.69,
+        "totalCostCurrency": "PLN"
+    },
     "detailedStatistics": [
         {
             "date": "2024-09-30",

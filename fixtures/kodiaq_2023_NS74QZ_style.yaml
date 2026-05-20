@@ -614,5 +614,6 @@ reports:
       overall_average_travel_time_in_min: 81
       overall_mileage_in_km: 26
       overall_travel_time_in_min: 81
+      overall_cost: null
       timestamp: null
     error:

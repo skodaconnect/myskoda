@@ -751,6 +751,15 @@ reports:
       overall_average_travel_time_in_min: 17
       overall_mileage_in_km: 44
       overall_travel_time_in_min: 50
+      overall_cost:
+        total_cost: 3.83
+        total_cost_currency: EUR
+        cng_cost:
+          cost: 3.83
+          cost_currency: EUR
+          price_per_unit: 2.2
+        electricity_cost: null  
+        fuel_cost: null
       timestamp: null
       vehicle_type: GAS
     success: true

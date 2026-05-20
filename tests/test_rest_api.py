@@ -293,6 +293,20 @@ async def test_trip_statistics(
             == trip_statistics_json["overallAverageTravelTimeInMin"]
         )
         assert get_status_result.vehicle_type == VehicleType.HYBRID
+        cost = get_status_result.overall_cost
+        cost_json = trip_statistics_json["overallCost"]
+
+        assert cost is not None
+        assert cost.total_cost == cost_json["totalCost"]
+        assert cost.total_cost_currency == cost_json["totalCostCurrency"]
+
+        fuel_cost = cost.fuel_cost
+        fuel_cost_json = cost_json["fuelCost"]
+
+        assert fuel_cost is not None
+        assert fuel_cost.cost == fuel_cost_json["cost"]
+        assert fuel_cost.cost_currency == fuel_cost_json["costCurrency"]
+        assert fuel_cost.price_per_unit == fuel_cost_json["pricePerUnit"]
 
 
 @pytest.fixture(name="vehicle_connection_statuses")
