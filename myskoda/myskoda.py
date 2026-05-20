@@ -68,7 +68,7 @@ from .models.auxiliary_heating import (
     AuxiliaryHeatingTimer,
 )
 from .models.charging import ChargeMode, Charging
-from .models.charging_history import ChargingHistory, ChargingSession
+from .models.charging_history import ChargingHistory, ChargingSession, ChargingStatistics
 from .models.chargingprofiles import ChargingProfiles
 from .models.common import Vin
 from .models.departure import DepartureInfo, DepartureTimer
@@ -386,6 +386,15 @@ class MySkoda:
             cursor = charging_history.result.next_cursor
 
         return total_sessions
+
+    async def get_charging_statistics(
+        self,
+        vin: Vin,
+        start: datetime,
+        end: datetime,
+    ) -> ChargingStatistics:
+        """Retrieve charging session statistics from the cariad endpoint."""
+        return (await self.rest_api.get_charging_statistics(vin, start, end)).result
 
     async def get_status(self, vin: Vin, anonymize: bool = False) -> Status:
         """Retrieve the current status for the specified vehicle."""
