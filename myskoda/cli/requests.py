@@ -7,6 +7,7 @@ import asyncclick as click
 from asyncclick.core import Context
 
 from myskoda.cli.utils import MethodArgument, handle_request, iso8601_datetime, simple_date
+from myskoda.rest_api import OffsetType
 
 if TYPE_CHECKING:
     from myskoda.myskoda import MySkoda
@@ -365,10 +366,29 @@ async def user(ctx: Context, anonymize: bool) -> None:
 @click.command()
 @click.argument("vin")
 @click.option("anonymize", "--anonymize", help="Strip all personal data.", is_flag=True)
+@click.option(
+    "--offset",
+    "offset",
+    help="Which period to fetch. 0 = most recent, 1 = one period back, 2 = two periods back, etc.",
+    type=click.IntRange(min=0),
+    default=0,
+)
+@click.option(
+    "--offset-type",
+    "offset_type",
+    help="Type of period — week or month",
+    type=click.Choice([e.value for e in OffsetType]),
+    default=OffsetType.WEEK.value,
+)
 @click.pass_context
-async def trip_statistics(ctx: Context, vin: str, anonymize: bool) -> None:
+async def trip_statistics(
+    ctx: Context, vin: str, offset: int, offset_type: OffsetType, anonymize: bool
+) -> None:
     """Print the last trip statics."""
-    await handle_request(ctx, ctx.obj["myskoda"].get_trip_statistics, vin, anonymize)
+    print(offset)
+    await handle_request(
+        ctx, ctx.obj["myskoda"].get_trip_statistics, vin, offset, offset_type, anonymize
+    )
 
 
 @click.command()
