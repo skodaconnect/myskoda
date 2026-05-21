@@ -875,9 +875,17 @@ class MySkoda:
             self._notify_callbacks(vin)
 
     @async_debounce(immediate=True)
-    async def refresh_trip_statistics(self, vin: Vin, notify: bool = True) -> None:
+    async def refresh_trip_statistics(
+        self,
+        vin: Vin,
+        offset: int = 0,
+        offset_type: OffsetType = OffsetType.WEEK,
+        notify: bool = True,
+    ) -> None:
         """Refresh trip_statistics data for the provided Vin."""
-        self._vehicles[vin].trip_statistics = await self.get_trip_statistics(vin)
+        self._vehicles[vin].trip_statistics = await self.get_trip_statistics(
+            vin, offset=offset, offset_type=offset_type
+        )
         if notify:
             self._notify_callbacks(vin)
 
