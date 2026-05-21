@@ -22,7 +22,7 @@ from myskoda.models.widget import (
     ParkingPositionState,
 )
 from myskoda.myskoda import MySkoda
-from myskoda.rest_api import RestApi
+from myskoda.rest_api import OffsetType, RestApi
 from myskoda.utils import to_iso8601
 
 FIXTURES_DIR = Path(__file__).parent.joinpath("fixtures")
@@ -261,32 +261,36 @@ async def test_charging_profiles(
 
 
 @pytest.fixture(name="trip_statistics")
-def load_trip_statistics() -> list[str]:
+def load_trip_statistics() -> list[tuple[OffsetType, int, str]]:
     """Load trip statistics fixture."""
     trip_statistics = []
-    for path in [
-        "superb/trip-statistics-iV.json",
+    for entry in [
+        (OffsetType.WEEK, 0, "superb/trip-statistics-iV.json"),
+        (OffsetType.WEEK, 1, "superb/trip-statistics-iV-week-1.json"),
+        (OffsetType.MONTH, 2, "superb/trip-statistics-iV-month-2.json"),
     ]:
-        with FIXTURES_DIR.joinpath(path).open() as file:
-            trip_statistics.append(file.read())
+        with FIXTURES_DIR.joinpath(entry[2]).open() as file:
+            trip_statistics.append((entry[0], entry[1], file.read()))
     return trip_statistics
 
 
 @pytest.mark.asyncio
 async def test_trip_statistics(
-    trip_statistics: list[str], myskoda: MySkoda, responses: aioresponses
+    trip_statistics: list[tuple[OffsetType, int, str]], myskoda: MySkoda, responses: aioresponses
 ) -> None:
     """Example unit test for RestAPI.trip_statistics(). Needs more work."""
     for trip_statistics_input in trip_statistics:
-        trip_statistics_json = json.loads(trip_statistics_input)
+        trip_statistics_json = json.loads(trip_statistics_input[2])
 
         target_vin = "TMBJM0CKV1N12345"
         responses.get(
             url=f"https://mysmob.api.connect.skoda-auto.cz/api/v1/trip-statistics/{target_vin}"
-            "?offsetType=week&offset=0&timezone=Europe%2FBerlin",
-            body=trip_statistics_input,
+            f"?offsetType={trip_statistics_input[0]}&offset={trip_statistics_input[1]}&timezone=Europe%2FBerlin",
+            body=trip_statistics_input[2],
         )
-        get_status_result = await myskoda.get_trip_statistics(target_vin)
+        get_status_result = await myskoda.get_trip_statistics(
+            target_vin, offset_type=trip_statistics_input[0], offset=trip_statistics_input[1]
+        )
 
         assert (
             get_status_result.overall_average_travel_time_in_min
