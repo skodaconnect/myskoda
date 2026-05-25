@@ -329,6 +329,28 @@ async def all_charging_sessions(ctx: Context, vin: str) -> None:
 
 @click.command()
 @click.argument("vin")
+@click.option(
+    "--start",
+    "start",
+    help="ISO8601 compatible start date (required)",
+    callback=iso8601_datetime,
+    required=True,
+)
+@click.option(
+    "--end",
+    "end",
+    help="ISO8601 compatible end date (required)",
+    callback=iso8601_datetime,
+    required=True,
+)
+@click.pass_context
+async def charging_statistics(ctx: Context, vin: str, start: datetime, end: datetime) -> None:
+    """Print charging session statistics from the cariad endpoint."""
+    await handle_request(ctx, ctx.obj["myskoda"].get_charging_statistics, vin, start, end)
+
+
+@click.command()
+@click.argument("vin")
 @click.option("anonymize", "--anonymize", help="Strip all personal data.", is_flag=True)
 @click.pass_context
 async def maintenance(ctx: Context, vin: str, anonymize: bool) -> None:

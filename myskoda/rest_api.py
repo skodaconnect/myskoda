@@ -47,7 +47,12 @@ from myskoda.anonymize import (
 )
 
 from .auth.authorization import Authorization
-from .const import BASE_URL_SKODA, MYSKODA_APP_VERSION, REQUEST_TIMEOUT_IN_SECONDS
+from .const import (
+    BASE_URL_CHARGING,
+    BASE_URL_SKODA,
+    MYSKODA_APP_VERSION,
+    REQUEST_TIMEOUT_IN_SECONDS,
+)
 from .models.air_conditioning import (
     AirConditioning,
     AirConditioningAtUnlock,
@@ -58,7 +63,12 @@ from .models.air_conditioning import (
 )
 from .models.auxiliary_heating import AuxiliaryConfig, AuxiliaryHeating, AuxiliaryHeatingTimer
 from .models.charging import ChargeMode, Charging
-from .models.charging_history import ChargingHistory
+from .models.charging_history import (
+    ChargingHistory,
+    ChargingStatistics,
+    ChargingStatisticsFilterOption,
+    ChargingStatisticsRequest,
+)
 from .models.chargingprofiles import ChargingProfiles
 from .models.common import Vin
 from .models.departure import DepartureInfo, DepartureTimer
@@ -155,6 +165,27 @@ class RestApi:
     async def _make_put_request(self, url: str, json: dict | None = None) -> str:
         return await self._make_request(url=url, method="PUT", json=json)
 
+    async def _make_charging_post_request(self, path: str, json: dict | None = None) -> str:
+        """POST to the cariad charging service. Path is appended to BASE_URL_CHARGING."""
+        url = f"{BASE_URL_CHARGING}/{path.lstrip('/')}"
+        try:
+            async with asyncio.timeout(REQUEST_TIMEOUT_IN_SECONDS):
+                async with self.session.request(
+                    method="POST",
+                    url=url,
+                    headers=await self._headers(),
+                    json=json,
+                ) as response:
+                    await response.text()
+                    response.raise_for_status()
+                    return await response.text()
+        except TimeoutError:  # pragma: no cover
+            _LOGGER.exception("Timeout while sending POST request to %s", url)
+            raise
+        except ClientResponseError as err:  # pragma: no cover
+            _LOGGER.exception("Invalid status for POST request to %s: %d", url, err.status)
+            raise
+
     async def verify_spin(self, spin: str, anonymize: bool = False) -> GetEndpointResult[Spin]:
         """Verify SPIN."""
         url = "/v1/spin/verify"
@@ -224,6 +255,33 @@ class RestApi:
             anonymization_fn=anonymize_info,
         )
         result = self._deserialize(raw, ChargingHistory.from_json)
+        return GetEndpointResult(url=url, raw=raw, result=result)
+
+    async def get_charging_statistics(
+        self,
+        vin: str,
+        start: datetime,
+        end: datetime,
+    ) -> GetEndpointResult[ChargingStatistics]:
+        """Retrieve charging session statistics for the specified vehicle via the cariad endpoint.
+
+        Replaces the legacy GET /v1/charging/{vin}/history endpoint which stopped returning
+        new sessions after a certain date.
+        """
+        url = f"{BASE_URL_CHARGING}/charging_statistics"
+        request = ChargingStatisticsRequest(
+            started_after=start.date(),
+            started_before=end.date(),
+            selected_filter_options=[ChargingStatisticsFilterOption(filter_type="VEHICLE", id=vin)],
+        )
+        raw = self.process_json(
+            data=await self._make_charging_post_request(
+                "charging_statistics", json=request.to_dict()
+            ),
+            anonymize=False,
+            anonymization_fn=anonymize_info,
+        )
+        result = self._deserialize(raw, ChargingStatistics.from_json)
         return GetEndpointResult(url=url, raw=raw, result=result)
 
     async def get_status(self, vin: str, anonymize: bool = False) -> GetEndpointResult[Status]:
