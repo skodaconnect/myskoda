@@ -440,9 +440,9 @@ class MySkoda:
     async def get_trip_statistics(
         self,
         vin: Vin,
+        anonymize: bool = False,
         offset: int = 0,
         offset_type: OffsetType = OffsetType.WEEK,
-        anonymize: bool = False,
     ) -> TripStatistics:
         """Retrieve statistics about past trips.
 
@@ -887,9 +887,9 @@ class MySkoda:
     async def refresh_trip_statistics(
         self,
         vin: Vin,
+        notify: bool = True,
         offset: int = 0,
         offset_type: OffsetType = OffsetType.WEEK,
-        notify: bool = True,
     ) -> None:
         """Refresh trip_statistics data for the provided Vin."""
         self._vehicles[vin].trip_statistics = await self.get_trip_statistics(

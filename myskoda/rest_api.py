@@ -374,9 +374,9 @@ class RestApi:
     async def get_trip_statistics(
         self,
         vin: str,
+        anonymize: bool = False,
         offset: int = 0,
         offset_type: OffsetType = OffsetType.WEEK,
-        anonymize: bool = False,
     ) -> GetEndpointResult[TripStatistics]:
         """Retrieve statistics about past trips.
 

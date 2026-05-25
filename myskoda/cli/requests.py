@@ -407,9 +407,8 @@ async def trip_statistics(
     ctx: Context, vin: str, offset: int, offset_type: OffsetType, anonymize: bool
 ) -> None:
     """Print the last trip statics."""
-    print(offset)
     await handle_request(
-        ctx, ctx.obj["myskoda"].get_trip_statistics, vin, offset, offset_type, anonymize
+        ctx, ctx.obj["myskoda"].get_trip_statistics, vin, anonymize, offset, offset_type
     )
 
 
