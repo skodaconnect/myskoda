@@ -111,7 +111,7 @@ from .models.vehicle_connection_status import VehicleConnectionStatus
 from .models.vehicle_info import VehicleEquipment, VehicleFullInfo, VehicleInfo, VehicleRenders
 from .models.widget import WidgetResponse
 from .mqtt import MySkodaMqttClient
-from .rest_api import GetEndpointResult, RestApi
+from .rest_api import GetEndpointResult, OffsetType, RestApi
 from .utils import async_debounce
 from .vehicle import Vehicle
 
@@ -438,9 +438,27 @@ class MySkoda:
             )
         ).result
 
-    async def get_trip_statistics(self, vin: Vin, anonymize: bool = False) -> TripStatistics:
-        """Retrieve statistics about past trips."""
-        return (await self.rest_api.get_trip_statistics(vin, anonymize=anonymize)).result
+    async def get_trip_statistics(
+        self,
+        vin: Vin,
+        anonymize: bool = False,
+        offset: int = 0,
+        offset_type: OffsetType = OffsetType.WEEK,
+    ) -> TripStatistics:
+        """Retrieve statistics about past trips.
+
+        Args:
+            vin: vehicle VIN
+            offset_type: Type of period — WEEK or MONTH.
+            offset: Which period to fetch. 0 = most recent, 1 = one period back,
+                2 = two periods back, etc.
+            anonymize: set to true if personal information should be removed from result
+        """
+        return (
+            await self.rest_api.get_trip_statistics(
+                vin, offset=offset, offset_type=offset_type, anonymize=anonymize
+            )
+        ).result
 
     async def get_maintenance(self, vin: Vin, anonymize: bool = False) -> Maintenance:
         """Retrieve maintenance report, settings and history."""
@@ -867,9 +885,17 @@ class MySkoda:
             self._notify_callbacks(vin)
 
     @async_debounce(immediate=True)
-    async def refresh_trip_statistics(self, vin: Vin, notify: bool = True) -> None:
+    async def refresh_trip_statistics(
+        self,
+        vin: Vin,
+        notify: bool = True,
+        offset: int = 0,
+        offset_type: OffsetType = OffsetType.WEEK,
+    ) -> None:
         """Refresh trip_statistics data for the provided Vin."""
-        self._vehicles[vin].trip_statistics = await self.get_trip_statistics(vin)
+        self._vehicles[vin].trip_statistics = await self.get_trip_statistics(
+            vin, offset=offset, offset_type=offset_type
+        )
         if notify:
             self._notify_callbacks(vin)
 

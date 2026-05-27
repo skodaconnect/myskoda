@@ -6,7 +6,8 @@ import logging
 from collections.abc import Callable
 from dataclasses import dataclass
 from datetime import UTC, datetime
-from urllib.parse import quote
+from enum import StrEnum
+from urllib.parse import quote, urlencode
 
 from aiohttp import ClientResponseError, ClientSession
 
@@ -108,6 +109,11 @@ class GetEndpointResult[T]:
     url: str
     raw: str
     result: T
+
+
+class OffsetType(StrEnum):
+    WEEK = "week"
+    MONTH = "month"
 
 
 class RestApi:
@@ -366,10 +372,28 @@ class RestApi:
         return GetEndpointResult(url=url, raw=raw, result=result)
 
     async def get_trip_statistics(
-        self, vin: str, anonymize: bool = False
+        self,
+        vin: str,
+        anonymize: bool = False,
+        offset: int = 0,
+        offset_type: OffsetType = OffsetType.WEEK,
     ) -> GetEndpointResult[TripStatistics]:
-        """Retrieve statistics about past trips."""
-        url = f"/v1/trip-statistics/{vin}?offsetType=week&offset=0&timezone=Europe%2FBerlin"
+        """Retrieve statistics about past trips.
+
+        Args:
+            vin: vehicle VIN
+            offset_type: Type of period — WEEK or MONTH.
+            offset: Which period to fetch. 0 = most recent, 1 = one period back,
+                2 = two periods back, etc.
+            anonymize: set to true if personal information should be removed from result
+        """
+        endpoint_url = f"/v1/trip-statistics/{vin}"
+        params = {
+            "offsetType": offset_type,
+            "offset": offset,
+            "timezone": "Europe/Berlin",
+        }
+        url = f"{endpoint_url}?{urlencode(params)}"
         raw = self.process_json(
             data=await self._make_get_request(url),
             anonymize=anonymize,
