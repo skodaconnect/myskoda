@@ -46,6 +46,7 @@ from .__version__ import __version__ as version
 from .auth.authorization import Authorization
 from .const import (
     BASE_URL_SKODA,
+    CACHE_CLOCK_SKEW_TOLERANCE_IN_HOURS,
     CACHE_USER_ENDPOINT_IN_HOURS,
     CACHE_VEHICLE_HEALTH_IN_HOURS,
     CLIENT_ID,
@@ -1213,13 +1214,21 @@ class MySkoda:
         event: ServiceEventChangeSoc,
     ) -> None:
         """Update charging with the event_data when the event is newer."""
-        if charging.car_captured_timestamp and event.timestamp <= charging.car_captured_timestamp:
-            _LOGGER.debug(
-                "Ignoring stale charging MQTT event: event timestamp %s, charging snapshot %s",
-                event.timestamp,
-                charging.car_captured_timestamp,
-            )
-            return
+        if charging.car_captured_timestamp:
+            threshold = datetime.now(UTC) + timedelta(hours=CACHE_CLOCK_SKEW_TOLERANCE_IN_HOURS)
+            if charging.car_captured_timestamp > threshold:
+                _LOGGER.warning(
+                    "Timestamp %s is more than %sh ahead; possible vehicle clock issue.",
+                    charging.car_captured_timestamp,
+                    CACHE_CLOCK_SKEW_TOLERANCE_IN_HOURS,
+                )
+            elif event.timestamp <= charging.car_captured_timestamp:
+                _LOGGER.debug(
+                    "Ignoring stale charging MQTT event: event timestamp %s, charging snapshot %s",
+                    event.timestamp,
+                    charging.car_captured_timestamp,
+                )
+                return
 
         if not (charging_status := charging.status):
             return
@@ -1241,7 +1250,14 @@ class MySkoda:
         event: ServiceEventChangeSoc,
     ) -> None:
         """Update driving_range with the event_data when the event is newer."""
-        if event.timestamp <= driving_range.car_captured_timestamp:
+        threshold = datetime.now(UTC) + timedelta(hours=CACHE_CLOCK_SKEW_TOLERANCE_IN_HOURS)
+        if driving_range.car_captured_timestamp > threshold:
+            _LOGGER.warning(
+                "Timestamp %s is more than %sh ahead; possible vehicle clock issue.",
+                driving_range.car_captured_timestamp,
+                CACHE_CLOCK_SKEW_TOLERANCE_IN_HOURS,
+            )
+        elif event.timestamp <= driving_range.car_captured_timestamp:
             _LOGGER.debug(
                 "Ignoring stale driving-range MQTT event: "
                 "event timestamp %s, driving-range snapshot %s",
