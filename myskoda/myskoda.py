@@ -141,7 +141,10 @@ async def trace_response(
     params: TraceRequestEndParams,
 ) -> None:
     """Log response details. Used in aiohttp.TraceConfig."""
-    resp_text = await params.response.text()
+    try:
+        resp_text = await params.response.text()
+    except UnicodeDecodeError:
+        resp_text = "<non-UTF-8 response body>"
     _LOGGER.debug(
         "Trace: %s %s - response: %s (%s bytes) %s",
         params.method,

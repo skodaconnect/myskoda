@@ -967,6 +967,6 @@ async def test_register_fcm_token_sends_expected_request(
     [(request_call,)] = responses.requests.values()
     assert request_call.kwargs["json"] == {
         "devicePlatform": "ANDROID",
-        "appVersion": "8.11.0",
+        "appVersion": "8.12.0",
         "language": "en",
     }
