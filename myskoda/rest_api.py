@@ -67,8 +67,6 @@ from .models.charging import ChargeMode, Charging
 from .models.charging_history import (
     ChargingHistory,
     ChargingStatistics,
-    ChargingStatisticsFilterOption,
-    ChargingStatisticsRequest,
 )
 from .models.chargingprofiles import ChargingProfile, ChargingProfiles
 from .models.common import Vin
@@ -139,6 +137,24 @@ class RestApi:
         anonymized = anonymization_fn(parsed)
         return json.dumps(anonymized)
 
+    async def _charging_headers(self) -> dict[str, str]:
+        token = await self.authorization.get_access_token()
+        return {
+            "Authorization": f"Bearer {token}",
+            "Content-Type": "application/json",
+            "Accept-Language": "de-DE",
+            "X-Brand": "skoda",
+            "X-Platform": "android",
+            "X-Device-Timezone": "Europe/Berlin",
+            "X-Sdk-Version": "4.14.2",
+            "X-Use-BffError-V2": "true",
+            "X-Device-Manufacturer": "Google",
+            "X-Device-Name": "Pixel",
+            "X-Device-OS-Name": "Android",
+            "X-Device-OS-Version": "35",
+            "X-Api-Version": "1",
+        }
+
     async def _make_request(self, url: str, method: str, json: dict | None = None) -> str:
         try:
             async with asyncio.timeout(REQUEST_TIMEOUT_IN_SECONDS):
@@ -179,12 +195,12 @@ class RestApi:
                 async with self.session.request(
                     method="POST",
                     url=url,
-                    headers=await self._headers(),
+                    headers=await self._charging_headers(),
                     json=json,
                 ) as response:
-                    await response.text()
+                    body = await response.text()
                     response.raise_for_status()
-                    return await response.text()
+                    return body
         except TimeoutError:  # pragma: no cover
             _LOGGER.exception("Timeout while sending POST request to %s", url)
             raise
@@ -275,14 +291,23 @@ class RestApi:
         new sessions after a certain date.
         """
         url = f"{BASE_URL_CHARGING}/charging_statistics"
-        request = ChargingStatisticsRequest(
-            started_after=start.date(),
-            started_before=end.date(),
-            selected_filter_options=[ChargingStatisticsFilterOption(filter_type="VEHICLE", id=vin)],
-        )
+        json_data = {
+            "startedAfter": start.date().isoformat(),
+            "startedBefore": end.date().isoformat(),
+            "selectedFilterOptions": [
+                {
+                    "filterType": "VEHICLE",
+                    "vin": vin,
+                }
+            ],
+            "fetchFilterOptions": True,
+            "capabilities": [],
+            "isActiveSessionsEnabled": None,
+            "isExportEnabled": None,
+        }
         raw = self.process_json(
             data=await self._make_charging_post_request(
-                "charging_statistics", json=request.to_dict()
+                "charging_statistics", json=json_data
             ),
             anonymize=False,
             anonymization_fn=anonymize_info,
