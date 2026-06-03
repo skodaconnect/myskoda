@@ -1,5 +1,6 @@
 """Models for charging history API responses."""
 
+import base64
 from dataclasses import dataclass, field
 from datetime import date, datetime
 from enum import StrEnum
@@ -12,10 +13,20 @@ from .common import BaseResponse
 
 
 def _parse_local_datetime(value: str | None) -> datetime | None:
-    """Parse a user-local formatted datetime string (dd.MM.yy HH:mm) as a naive datetime."""
-    if value is None:
+    """Parse a user-local formatted datetime string."""
+    if value is None or value == "--":
         return None
-    return datetime.strptime(value, "%d.%m.%y %H:%M")  # noqa: DTZ007
+
+    for fmt in (
+        "%d.%m.%y, %H:%M",
+        "%d.%m.%y %H:%M",
+    ):
+        try:
+            return datetime.strptime(value, fmt)  # noqa: DTZ007
+        except ValueError:
+            pass
+
+    raise ValueError(f"Unknown datetime format: {value}")
 
 
 class ChargingCurrentType(StrEnum):
@@ -51,7 +62,8 @@ class ChargingHistory(BaseResponse):
 @dataclass
 class ChargingStatisticsFilterOption(DataClassORJSONMixin):
     filter_type: str = field(metadata=field_options(alias="filterType"))
-    id: str
+    vin: str | None = None
+    id: str | None = None
 
 
 @dataclass
@@ -65,13 +77,12 @@ class ChargingStatisticsRequest(DataClassORJSONMixin):
     fetch_filter_options: bool = field(
         default=True, metadata=field_options(alias="fetchFilterOptions")
     )
-    is_active_sessions_enabled: bool = field(
-        default=True, metadata=field_options(alias="isActiveSessionsEnabled")
+    is_active_sessions_enabled: bool | None = field(
+        default=None, metadata=field_options(alias="isActiveSessionsEnabled")
     )
-    is_export_enabled: bool = field(default=True, metadata=field_options(alias="isExportEnabled"))
-
-
-# Response models for the new POST /charging_statistics endpoint
+    is_export_enabled: bool | None = field(
+        default=None, metadata=field_options(alias="isExportEnabled")
+    )
 
 
 @dataclass
@@ -80,11 +91,15 @@ class ChargingStatisticsSessionDetails(DataClassORJSONMixin):
     charging_power_type: ChargingCurrentType = field(
         metadata=field_options(alias="chargingPowerType")
     )
-    is_active_session: bool = field(metadata=field_options(alias="isActiveSession"))
+    is_active_session: bool | None = field(
+        default=None, metadata=field_options(alias="isActiveSession")
+    )
+    is_curve_available: bool | None = field(
+        default=None, metadata=field_options(alias="isCurveAvailable")
+    )
     formatted_total_energy: str | None = field(
         default=None, metadata=field_options(alias="formattedTotalEnergy")
     )
-    # Timestamps are in user-local time (no UTC offset); stored as naive datetimes.
     charging_start_time: datetime | None = field(
         default=None,
         metadata=field_options(
@@ -112,6 +127,14 @@ class ChargingStatisticsSessionDetails(DataClassORJSONMixin):
 @dataclass
 class ChargingStatisticsEntry(DataClassORJSONMixin):
     details: ChargingStatisticsSessionDetails
+    id: str | None = None
+    title: str | None = None
+    primary_value: str | None = field(
+        default=None, metadata=field_options(alias="primaryValue")
+    )
+    secondary_value: str | None = field(
+        default=None, metadata=field_options(alias="secondaryValue")
+    )
 
 
 @dataclass
@@ -121,8 +144,46 @@ class ChargingStatisticsSection(DataClassORJSONMixin):
 
 
 @dataclass
+class ChargingStatisticsApplicableFilterOption(DataClassORJSONMixin):
+    filter_type: str | None = field(
+        default=None, metadata=field_options(alias="filterType")
+    )
+    id: str | None = None
+    vin: str | None = None
+    title: str | None = None
+
+
+@dataclass
 class ChargingStatistics(DataClassORJSONMixin):
+    applicable_filter_options: list[ChargingStatisticsApplicableFilterOption] = field(
+        default_factory=list, metadata=field_options(alias="applicableFilterOptions")
+    )
     month_sections: list[ChargingStatisticsSection] = field(
         default_factory=list, metadata=field_options(alias="monthSections")
     )
+    missing_elli_consent: bool | None = field(
+        default=None, metadata=field_options(alias="missingElliConsent")
+    )
     csv_file: str | None = field(default=None, metadata=field_options(alias="csvFile"))
+    
+    @property
+    def csv_bytes(self) -> bytes | None:
+        if not self.csv_file:
+            return None
+
+        try:
+            return base64.b64decode(self.csv_file)
+        except Exception:
+            return None
+
+    @property
+    def csv_text(self) -> str | None:
+        data = self.csv_bytes
+
+        if data is None:
+            return None
+
+        try:
+            return data.decode("utf-8-sig")
+        except UnicodeDecodeError:
+            return data.decode("utf-8", errors="replace")

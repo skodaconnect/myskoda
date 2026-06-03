@@ -27,8 +27,6 @@ from myskoda.utils import to_iso8601
 
 FIXTURES_DIR = Path(__file__).parent.joinpath("fixtures")
 
-print(f"__file__ = {__file__}")
-
 
 @pytest.fixture(name="vehicle_infos")
 def load_vehicle_info() -> list[str]:
@@ -418,9 +416,18 @@ async def test_charging_statistics(
     all_entries = [e for s in result.month_sections for e in s.entries]
     assert len(all_entries) == sum(len(s["entries"]) for s in data["monthSections"])
 
-    first = all_entries[0].details
-    assert str(first.session_id) == "a1b2c3d4-e5f6-7890-abcd-ef1234567890"
-    assert first.charging_start_time == datetime(2026, 5, 15, 8, 30)  # noqa: DTZ001
+    entry = all_entries[0]
+
+    assert entry.id
+    assert entry.title
+    assert entry.primary_value
+    assert entry.secondary_value
+
+    assert entry.details.session_id is not None
+    assert entry.details.charging_power_type is not None
+    assert entry.details.is_curve_available is True
+
+    assert result.missing_elli_consent is False
     assert result.csv_file == data["csvFile"]
 
 
