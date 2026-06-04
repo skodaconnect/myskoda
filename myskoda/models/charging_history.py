@@ -7,6 +7,12 @@ from enum import StrEnum
 from uuid import UUID
 
 from mashumaro import field_options
+from mashumaro.config import (
+    TO_DICT_ADD_BY_ALIAS_FLAG,
+    TO_DICT_ADD_OMIT_NONE_FLAG,
+    BaseConfig,
+    CodeGenerationOption,
+)
 from mashumaro.mixins.orjson import DataClassORJSONMixin
 
 from .common import BaseResponse, Vin
@@ -69,6 +75,14 @@ class ChargingStatisticsFilterOption(DataClassORJSONMixin):
     vin: Vin | None = None
     id: Vin | None = None
 
+    class Config(BaseConfig):
+        """Configuration for serialization and deserialization."""
+
+        code_generation_options: list[CodeGenerationOption] = [  # noqa: RUF012
+            TO_DICT_ADD_BY_ALIAS_FLAG,
+            TO_DICT_ADD_OMIT_NONE_FLAG,
+        ]
+
 
 @dataclass
 class ChargingStatisticsRequest(DataClassORJSONMixin):
@@ -87,6 +101,14 @@ class ChargingStatisticsRequest(DataClassORJSONMixin):
     is_export_enabled: bool | None = field(
         default=None, metadata=field_options(alias="isExportEnabled")
     )
+
+    class Config(BaseConfig):
+        """Configuration for serialization and deserialization."""
+
+        code_generation_options: list[CodeGenerationOption] = [  # noqa: RUF012
+            TO_DICT_ADD_BY_ALIAS_FLAG,
+            TO_DICT_ADD_OMIT_NONE_FLAG,
+        ]
 
 
 @dataclass

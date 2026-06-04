@@ -142,7 +142,7 @@ class RestApi:
     async def _charging_headers(self) -> dict[str, str]:
         token = await self.authorization.get_access_token()
         return {
-            "Accept-Language": "de-DE",
+            "Accept-Language": "en-US",
             "Authorization": f"Bearer {token}",
             "X-Brand": "skoda",
             "X-Device-Timezone": "Europe/Berlin",
@@ -297,21 +297,7 @@ class RestApi:
             ],
         )
 
-        json_data = {
-            "startedAfter": request.started_after.isoformat(),
-            "startedBefore": request.started_before.isoformat(),
-            "selectedFilterOptions": [
-                {
-                    "filterType": option.filter_type,
-                    "vin": option.vin,
-                }
-                for option in request.selected_filter_options
-            ],
-            "capabilities": request.capabilities,
-            "fetchFilterOptions": request.fetch_filter_options,
-            "isActiveSessionsEnabled": request.is_active_sessions_enabled,
-            "isExportEnabled": request.is_export_enabled,
-        }
+        json_data = request.to_dict(by_alias=True, omit_none=True)
 
         raw = self.process_json(
             data=await self._make_charging_post_request("charging_statistics", json=json_data),
