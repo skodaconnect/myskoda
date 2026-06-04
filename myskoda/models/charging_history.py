@@ -9,24 +9,28 @@ from uuid import UUID
 from mashumaro import field_options
 from mashumaro.mixins.orjson import DataClassORJSONMixin
 
-from .common import BaseResponse
+from .common import BaseResponse, Vin
+
+EMPTY_LOCAL_DATETIME_PLACEHOLDER = "--"
 
 
 def _parse_local_datetime(value: str | None) -> datetime | None:
     """Parse a user-local formatted datetime string."""
-    if value is None or value == "--":
+    if value is None or value == EMPTY_LOCAL_DATETIME_PLACEHOLDER:
         return None
 
     for fmt in (
         "%d.%m.%y, %H:%M",
         "%d.%m.%y %H:%M",
+        "%d/%m/%Y, %H:%M",
     ):
         try:
             return datetime.strptime(value, fmt)  # noqa: DTZ007
         except ValueError:
             pass
 
-    raise ValueError(f"Unknown datetime format: {value}")
+    msg = f"Unknown datetime format: {value}"
+    raise ValueError(msg)
 
 
 class ChargingCurrentType(StrEnum):
@@ -62,8 +66,8 @@ class ChargingHistory(BaseResponse):
 @dataclass
 class ChargingStatisticsFilterOption(DataClassORJSONMixin):
     filter_type: str = field(metadata=field_options(alias="filterType"))
-    vin: str | None = None
-    id: str | None = None
+    vin: Vin | None = None
+    id: Vin | None = None
 
 
 @dataclass
@@ -129,9 +133,7 @@ class ChargingStatisticsEntry(DataClassORJSONMixin):
     details: ChargingStatisticsSessionDetails
     id: str | None = None
     title: str | None = None
-    primary_value: str | None = field(
-        default=None, metadata=field_options(alias="primaryValue")
-    )
+    primary_value: str | None = field(default=None, metadata=field_options(alias="primaryValue"))
     secondary_value: str | None = field(
         default=None, metadata=field_options(alias="secondaryValue")
     )
@@ -145,11 +147,9 @@ class ChargingStatisticsSection(DataClassORJSONMixin):
 
 @dataclass
 class ChargingStatisticsApplicableFilterOption(DataClassORJSONMixin):
-    filter_type: str | None = field(
-        default=None, metadata=field_options(alias="filterType")
-    )
+    filter_type: str | None = field(default=None, metadata=field_options(alias="filterType"))
     id: str | None = None
-    vin: str | None = None
+    vin: Vin | None = None
     title: str | None = None
 
 
@@ -165,19 +165,21 @@ class ChargingStatistics(DataClassORJSONMixin):
         default=None, metadata=field_options(alias="missingElliConsent")
     )
     csv_file: str | None = field(default=None, metadata=field_options(alias="csvFile"))
-    
+
     @property
     def csv_bytes(self) -> bytes | None:
+        """Return the decoded CSV file as bytes."""
         if not self.csv_file:
             return None
 
         try:
             return base64.b64decode(self.csv_file)
-        except Exception:
+        except ValueError:
             return None
 
     @property
     def csv_text(self) -> str | None:
+        """Return the decoded CSV file as text."""
         data = self.csv_bytes
 
         if data is None:
