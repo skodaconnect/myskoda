@@ -145,7 +145,7 @@ class RestApi:
             "Accept-Language": "en-US",
             "Authorization": f"Bearer {token}",
             "X-Brand": "skoda",
-            "X-Device-Timezone": "Europe/Berlin",
+            "X-Device-Timezone": "GMT",
             "X-Api-Version": "1",
         }
 
