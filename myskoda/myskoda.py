@@ -1242,9 +1242,40 @@ class MySkoda:
         self._notify_callbacks(event.vin)
 
     async def _process_climatisation_event(self, event: ServiceEventClimatisationCompleted) -> None:
-        """Refresh AC state from REST after climatisation-completed."""
+        """Refresh AC state from REST, then overlay event state if newer."""
         _LOGGER.debug("Processing climatisation-completed event: %s", event)
-        await self.refresh_air_conditioning(event.vin)
+        await self.refresh_air_conditioning(event.vin, notify=False)
+
+        state = self._vehicles[event.vin]
+        if ac := state.air_conditioning:
+            self._process_climatisation_event_update_air_conditioning(ac, event)
+
+        self._notify_callbacks(event.vin)
+
+    @staticmethod
+    def _process_climatisation_event_update_air_conditioning(
+        ac: AirConditioning,
+        event: ServiceEventClimatisationCompleted,
+    ) -> None:
+        """Update air_conditioning with the event data when the event is newer."""
+        if ac.car_captured_timestamp:
+            threshold = datetime.now(UTC) + timedelta(hours=CACHE_CLOCK_SKEW_TOLERANCE_IN_HOURS)
+            if ac.car_captured_timestamp > threshold:
+                _LOGGER.warning(
+                    "Timestamp %s is more than %sh ahead; possible vehicle clock issue.",
+                    ac.car_captured_timestamp,
+                    CACHE_CLOCK_SKEW_TOLERANCE_IN_HOURS,
+                )
+            elif event.timestamp <= ac.car_captured_timestamp:
+                _LOGGER.debug(
+                    "Ignoring stale climatisation MQTT event: event timestamp %s, AC snapshot %s",
+                    event.timestamp,
+                    ac.car_captured_timestamp,
+                )
+                return
+
+        if event.data.state:
+            ac.state = event.data.state
 
     @staticmethod
     def _process_charging_event_update_charging(
