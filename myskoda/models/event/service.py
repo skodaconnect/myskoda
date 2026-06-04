@@ -25,6 +25,7 @@ from enum import StrEnum
 from mashumaro import field_options
 from mashumaro.types import Discriminator
 
+from myskoda.models.air_conditioning import AirConditioningState
 from myskoda.models.charging import ChargeMode, ChargingState
 
 from .base import BaseEvent, BaseEventData, EventType
@@ -127,13 +128,30 @@ class ServiceEventChangeSocData(ServiceEventData):
     )
 
 
+@dataclass(frozen=True)
+class ServiceEventClimatisationData(ServiceEventData):
+    """Data inside a climatisation-completed service event."""
+
+    state: AirConditioningState | None = None
+    time_to_finish: int | None = field(
+        default=None,
+        metadata=field_options(alias="timeToFinish", deserialize=_deserialize_time_to_finish),
+    )
+
+
 class ServiceEventAirConditioning(ServiceEvent):
     """Group events under topic 'service-event/air-conditioning'."""
 
 
 @dataclass(frozen=True)
 class ServiceEventClimatisationCompleted(ServiceEventAirConditioning):
+    data: ServiceEventClimatisationData
     name = ServiceEventName.CLIMATISATION_COMPLETED
+
+
+@dataclass(frozen=True)
+class ServiceEventChangeChargeModeData(ServiceEventChangeSocData):
+    """Data inside a change-charge-mode service event."""
 
 
 class ServiceEventCharging(ServiceEvent):
@@ -142,6 +160,7 @@ class ServiceEventCharging(ServiceEvent):
 
 @dataclass(frozen=True)
 class ServiceEventChangeChargeMode(ServiceEventCharging):
+    data: ServiceEventChangeChargeModeData
     name = ServiceEventName.CHANGE_CHARGE_MODE
 
 
