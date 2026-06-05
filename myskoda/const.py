@@ -25,7 +25,6 @@ FIREBASE_SENDER_ID = "678067506455"
 MYSKODA_APP_VERSION = "8.12.0"
 MYSKODA_APP_VERSION_CODE = "260430001"
 
-
 MQTT_OPERATION_TIMEOUT = 10 * 60  #  10 minutes
 MQTT_OPERATION_TOPICS = [
     "air-conditioning/set-air-conditioning-at-unlock",
@@ -72,10 +71,18 @@ MQTT_ACCOUNT_EVENT_TOPICS = [
 ]
 MQTT_KEEPALIVE = 60
 MQTT_RECONNECT_DELAY = 5
-MQTT_MAX_RECONNECT_DELAY = 600
+MQTT_MAX_RECONNECT_DELAY = 120
 MQTT_FAST_RETRY = 10
-MAX_RETRIES = 5
+# Maximum time (seconds) MySkodaMqttClient.connect() will block waiting for the
+# initial subscription before raising.
+MQTT_CONNECT_TIMEOUT = 600
+# Minimum time (seconds) that must elapse between two FCM token refreshes
+# triggered by MQTT auth failures. The MySkoda broker can take a while to start
+# accepting a newly registered token, so we throttle to avoid spamming new
+# registrations during that window.
+MQTT_MIN_FCM_REFRESH_INTERVAL = 120
 
+MAX_RETRIES = 5
 
 CACHE_USER_ENDPOINT_IN_HOURS = 6
 CACHE_VEHICLE_HEALTH_IN_HOURS = 6
