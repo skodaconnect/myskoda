@@ -107,7 +107,7 @@ async def test_connect_timeout_raises_and_cancels_listener(fake_authorization: o
         mqtt_client=wrapper,
     )
 
-    with pytest.raises(aiomqtt.MqttError):
+    with pytest.raises(TimeoutError):
         await client.connect(user_id="1234", vehicle_vins=["VIN"], connect_timeout=0.05)
 
     assert enter_started.is_set()
