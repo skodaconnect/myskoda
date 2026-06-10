@@ -748,7 +748,7 @@ class MySkoda:
     async def set_preferred_charging_times(
         self, vin: Vin, charging_profile_id: int, times: ChargingTimes
     ) -> None:
-        """Update the proferred charging time of the vehicle at the location."""
+        """Update the preferred charging time of the vehicle at the location."""
         # Get current setup
         profiles = await self.get_charging_profiles(vin)
         entry_replaced: bool = False
