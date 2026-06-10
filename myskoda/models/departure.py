@@ -1,7 +1,6 @@
 """Models for responses of api/v1/vehicle-automatization/{vin}/departure/ endpoint."""
 
 from dataclasses import dataclass, field
-from datetime import datetime
 from datetime import time as datetime_time
 from typing import Any
 
@@ -92,9 +91,6 @@ class DepartureSettings(DataClassORJSONMixin):
 class DepartureInfo(BaseResponse):
     """Information related to Departure."""
 
-    car_captured_timestamp: datetime | None = field(
-        default=None, metadata=field_options(alias="carCapturedTimestamp")
-    )
     first_occurring_timer_id: int | None = field(
         default=None, metadata=field_options(alias="firstOccurringTimerId")
     )

@@ -1248,11 +1248,13 @@ class MySkoda:
             charging_status.state = event.data.state
 
     @staticmethod
-    def _process_charging_event_update_driving_range(
+    def _process_charging_event_update_driving_range(  # noqa: C901
         driving_range: DrivingRange,
         event: ServiceEventChangeSoc,
     ) -> None:
         """Update driving_range with the event_data when the event is newer."""
+        if not driving_range.car_captured_timestamp:
+            return
         threshold = datetime.now(UTC) + timedelta(hours=CACHE_CLOCK_SKEW_TOLERANCE_IN_HOURS)
         if driving_range.car_captured_timestamp > threshold:
             _LOGGER.warning(

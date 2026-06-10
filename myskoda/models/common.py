@@ -119,3 +119,6 @@ class BaseResponse(DataClassORJSONMixin):
     """
 
     timestamp: datetime = field(default_factory=lambda: datetime.now(UTC), kw_only=True)
+    car_captured_timestamp: datetime | None = field(
+        default=None, kw_only=True, metadata=field_options(alias="carCapturedTimestamp")
+    )
