@@ -8,7 +8,7 @@ from contextlib import AbstractAsyncContextManager
 from pathlib import Path
 from socket import socket
 from types import TracebackType
-from typing import Any
+from typing import Any, Self
 from unittest.mock import AsyncMock
 
 import aiomqtt
@@ -82,11 +82,28 @@ class FakeMqttClientWrapper(AbstractAsyncContextManager):
 
     Can be initiatlized with a list of aiomqtt.Message's which will be available immediatally.
     Additional messages can be injected later using set_messages().
+
+    Pass `enter_exceptions` (a list of exceptions or None entries) to script failures from
+    `__aenter__`. Each call pops the next entry: a non-None exception is raised, None means
+    "enter normally". Useful for simulating reconnect-loop behavior in MySkodaMqttClient.
     """
 
-    def __init__(self, messages: list[aiomqtt.Message]) -> None:
+    def __init__(
+        self,
+        messages: list[aiomqtt.Message],
+        enter_exceptions: list[BaseException | None] | None = None,
+    ) -> None:
         self._aiter = SimpleAsyncIterator(messages)
         self.connect_properties_fcm_token: str | None = None
+        self._enter_exceptions: list[BaseException | None] = list(enter_exceptions or [])
+        self.set_connect_properties_calls: list[str] = []
+
+    async def __aenter__(self) -> Self:
+        if self._enter_exceptions:
+            exc = self._enter_exceptions.pop(0)
+            if exc is not None:
+                raise exc
+        return self
 
     async def __aexit__(
         self,
@@ -111,6 +128,7 @@ class FakeMqttClientWrapper(AbstractAsyncContextManager):
 
     def set_connect_properties(self, fcm_token: str) -> None:
         self.connect_properties_fcm_token = fcm_token
+        self.set_connect_properties_calls.append(fcm_token)
 
 
 @pytest.fixture
@@ -128,12 +146,13 @@ def fake_mqtt_client_wrapper() -> FakeMqttClientWrapper:
 
 @pytest.fixture
 async def myskoda_mqtt_client(
-    fake_authorization: FakeAuthorization, fake_mqtt_client_wrapper: FakeMqttClientWrapper
+    fake_authorization: FakeAuthorization,
+    fake_mqtt_client_wrapper: FakeMqttClientWrapper,
 ) -> AsyncIterator[MySkodaMqttClient]:
     """Return a MySkodaMqttClient instance to use in tests."""
     mqtt_client = MySkodaMqttClient(
         authorization=fake_authorization,
-        fcm_token="test-fcm-token",  # noqa: S106
+        refresh_fcm_token=AsyncMock(return_value="test-fcm-token"),
         mqtt_client=fake_mqtt_client_wrapper,
     )
     yield mqtt_client

@@ -141,7 +141,10 @@ async def trace_response(
     params: TraceRequestEndParams,
 ) -> None:
     """Log response details. Used in aiohttp.TraceConfig."""
-    resp_text = await params.response.text()
+    try:
+        resp_text = await params.response.text()
+    except UnicodeDecodeError:
+        resp_text = "<non-UTF-8 response body>"
     _LOGGER.debug(
         "Trace: %s %s - response: %s (%s bytes) %s",
         params.method,
@@ -190,20 +193,31 @@ class MySkoda:
         self._mqtt_enabled = mqtt_enabled
 
     async def enable_mqtt(self, fcm_token: str | None = None) -> None:
-        """If MQTT was not enabled when initializing MySkoda, enable it manually and connect."""
+        """If MQTT was not enabled when initializing MySkoda, enable it manually and connect.
+
+        Raises:
+            aiomqtt.MqttError: if the initial MQTT subscription does not complete within
+                MQTT_CONNECT_TIMEOUT seconds. The background reconnect loop is torn down
+                and `self.mqtt` is reset to None so callers can safely retry.
+        """
         self._mqtt_enabled = True
         if not self.mqtt:
-            self.fcm_token = fcm_token or self.fcm_token or await self.get_and_register_fcm_token()
+            self.fcm_token = fcm_token or self.fcm_token
             self.mqtt = MySkodaMqttClient(
                 authorization=self.authorization,
-                fcm_token=self.fcm_token,
+                refresh_fcm_token=self._get_fcm_token,
                 ssl_context=self.ssl_context,
             )
 
         self.mqtt.subscribe(self._on_mqtt_event)
         self.user = await self.get_user()
         vehicles = await self.list_vehicle_vins()
-        await self.mqtt.connect(self.user.id, vehicles)
+        try:
+            await self.mqtt.connect(self.user.id, vehicles)
+        except Exception:
+            # Ensure callers see a clean "not connected" state on failure so they can retry.
+            self.mqtt = None
+            raise
 
     async def connect(
         self,
@@ -1103,12 +1117,15 @@ class MySkoda:
                 background_tasks.add(task)
                 task.add_done_callback(background_tasks.discard)
 
-    async def get_and_register_fcm_token(self) -> str:
+    async def _get_fcm_token(self, force_refresh: bool = False) -> str:
         """Get FCM Token from Google and register it with MySkoda.
 
         Returns:
             The new FCM Token.
         """
+        if self.fcm_token and not force_refresh:
+            return self.fcm_token
+
         fcm_token = await self.firebase.get_fcm_token()
         await self.rest_api.register_fcm_token(fcm_token=fcm_token)
         self.fcm_token = fcm_token
