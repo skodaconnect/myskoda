@@ -97,4 +97,3 @@ class ChargingProfiles(BaseResponse):
     current_vehicle_position_profile: CurrentProfile | None = field(
         default=None, metadata=field_options(alias="currentVehiclePositionProfile")
     )
-
