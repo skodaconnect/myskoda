@@ -304,6 +304,7 @@ class RestApi:
             anonymize=False,
             anonymization_fn=anonymize_info,
         )
+
         result = self._deserialize(raw, ChargingStatistics.from_json)
         return GetEndpointResult(url=url, raw=raw, result=result)
 

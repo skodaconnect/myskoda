@@ -2,7 +2,7 @@
 
 import base64
 from dataclasses import dataclass, field
-from datetime import date, datetime
+from datetime import UTC, date, datetime
 from enum import StrEnum
 from uuid import UUID
 
@@ -21,22 +21,20 @@ EMPTY_LOCAL_DATETIME_PLACEHOLDER = "--"
 
 
 def _parse_local_datetime(value: str | None) -> datetime | None:
-    """Parse a user-local formatted datetime string."""
+    """Parse charging statistics datetime values as UTC."""
     if value is None or value == EMPTY_LOCAL_DATETIME_PLACEHOLDER:
         return None
 
     for fmt in (
-        "%d.%m.%y, %H:%M",
-        "%d.%m.%y %H:%M",
         "%d/%m/%Y, %H:%M",
+        "%Y-%m-%dT%H:%M:%S",
     ):
         try:
-            return datetime.strptime(value, fmt)  # noqa: DTZ007
+            return datetime.strptime(value, fmt).replace(tzinfo=UTC)
         except ValueError:
-            pass
+            continue
 
-    msg = f"Unknown datetime format: {value}"
-    raise ValueError(msg)
+    return datetime.fromisoformat(value).astimezone(UTC)
 
 
 class ChargingCurrentType(StrEnum):
@@ -73,7 +71,6 @@ class ChargingHistory(BaseResponse):
 class ChargingStatisticsFilterOption(DataClassORJSONMixin):
     filter_type: str = field(metadata=field_options(alias="filterType"))
     vin: Vin | None = None
-    id: Vin | None = None
 
     class Config(BaseConfig):
         """Configuration for serialization and deserialization."""
@@ -171,8 +168,7 @@ class ChargingStatisticsSection(DataClassORJSONMixin):
 class ChargingStatisticsApplicableFilterOption(DataClassORJSONMixin):
     filter_type: str | None = field(default=None, metadata=field_options(alias="filterType"))
     id: str | None = None
-    vin: Vin | None = None
-    title: str | None = None
+    label: str | None = None
 
 
 @dataclass
