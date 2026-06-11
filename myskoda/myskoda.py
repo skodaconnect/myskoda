@@ -859,29 +859,31 @@ class MySkoda:
     @async_debounce(immediate=True)
     async def refresh_charging(self, vin: Vin, notify: bool = True) -> None:
         """Refresh charging data for the provided Vin."""
-        self._vehicles[vin].charging = await self.get_charging(vin)
-        if notify:
+        if self._vehicles[vin].update_charging(await self.get_charging(vin)) and notify:
             self._notify_callbacks(vin)
 
     @async_debounce(immediate=True)
     async def refresh_status(self, vin: Vin, notify: bool = True) -> None:
         """Refresh status data for the provided Vin."""
-        self._vehicles[vin].status = await self.get_status(vin)
-        if notify:
+        if self._vehicles[vin].update_status(await self.get_status(vin)) and notify:
             self._notify_callbacks(vin)
 
     @async_debounce(immediate=True)
     async def refresh_air_conditioning(self, vin: Vin, notify: bool = True) -> None:
         """Refresh air_conditioning data for the provided Vin."""
-        self._vehicles[vin].air_conditioning = await self.get_air_conditioning(vin)
-        if notify:
+        if (
+            self._vehicles[vin].update_air_conditioning(await self.get_air_conditioning(vin))
+            and notify
+        ):
             self._notify_callbacks(vin)
 
     @async_debounce(immediate=True)
     async def refresh_auxiliary_heating(self, vin: Vin, notify: bool = True) -> None:
         """Refresh auxiliary_heating data for the provided Vin."""
-        self._vehicles[vin].auxiliary_heating = await self.get_auxiliary_heating(vin)
-        if notify:
+        if (
+            self._vehicles[vin].update_auxiliary_heating(await self.get_auxiliary_heating(vin))
+            and notify
+        ):
             self._notify_callbacks(vin)
 
     @async_debounce(immediate=True)
@@ -894,8 +896,7 @@ class MySkoda:
     @async_debounce(immediate=True)
     async def refresh_driving_range(self, vin: Vin, notify: bool = True) -> None:
         """Refresh driving_range data for the provided Vin."""
-        self._vehicles[vin].driving_range = await self.get_driving_range(vin)
-        if notify:
+        if self._vehicles[vin].update_driving_range(await self.get_driving_range(vin)) and notify:
             self._notify_callbacks(vin)
 
     @async_debounce(immediate=True)
@@ -944,8 +945,10 @@ class MySkoda:
     @async_debounce(immediate=True)
     async def refresh_departure_info(self, vin: Vin, notify: bool = True) -> None:
         """Refresh departure_info data for the provided Vin."""
-        self._vehicles[vin].departure_info = await self.get_departure_timers(vin)
-        if notify:
+        if (
+            self._vehicles[vin].update_departure_info(await self.get_departure_timers(vin))
+            and notify
+        ):
             self._notify_callbacks(vin)
 
     async def generate_fixture_report(
@@ -1262,11 +1265,13 @@ class MySkoda:
             charging_status.state = event.data.state
 
     @staticmethod
-    def _process_charging_event_update_driving_range(
+    def _process_charging_event_update_driving_range(  # noqa: C901
         driving_range: DrivingRange,
         event: ServiceEventChangeSoc,
     ) -> None:
         """Update driving_range with the event_data when the event is newer."""
+        if not driving_range.car_captured_timestamp:
+            return
         threshold = datetime.now(UTC) + timedelta(hours=CACHE_CLOCK_SKEW_TOLERANCE_IN_HOURS)
         if driving_range.car_captured_timestamp > threshold:
             _LOGGER.warning(

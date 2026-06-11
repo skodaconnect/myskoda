@@ -1,7 +1,6 @@
 """Models for responses of api/v2/vehicle-status/{vin}/driving-range endpoint."""
 
 from dataclasses import dataclass, field
-from datetime import datetime
 from enum import StrEnum
 
 from mashumaro import field_options
@@ -35,7 +34,6 @@ class EngineRange(DataClassORJSONMixin):
 
 @dataclass
 class DrivingRange(BaseResponse):
-    car_captured_timestamp: datetime = field(metadata=field_options(alias="carCapturedTimestamp"))
     car_type: EngineType = field(metadata=field_options(alias="carType"))
     primary_engine_range: EngineRange = field(metadata=field_options(alias="primaryEngineRange"))
     secondary_engine_range: EngineRange | None = field(
