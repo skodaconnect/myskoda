@@ -422,9 +422,13 @@ async def test_charging_statistics(
     assert entry.title
     assert entry.primary_value
     assert entry.secondary_value
+    assert entry.details.charging_start_time == datetime(2026, 6, 10, 5, 14, tzinfo=UTC)
+    assert entry.details.charging_end_time == datetime(2026, 6, 10, 13, 31, tzinfo=UTC)
 
-    assert entry.details.session_id is not None
-    assert entry.details.charging_power_type is not None
+    fixture_entry = data["monthSections"][0]["entries"][0]
+
+    assert str(entry.details.session_id) == fixture_entry["details"]["sessionId"]
+    assert entry.details.charging_power_type.value == fixture_entry["details"]["chargingPowerType"]
     assert entry.details.is_curve_available is True
 
     assert result.missing_elli_consent is False

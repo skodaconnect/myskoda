@@ -2,8 +2,8 @@
     "applicableFilterOptions": [
         {
             "filterType": "VEHICLE",
-            "id": "TMBNH9NYXTF345678",
-            "title": "Skoda Elroq"
+            "id": "TMBTEST000000001",
+            "label": "TMBTEST000000001"
         }
     ],
     "monthSections": [
@@ -11,42 +11,37 @@
             "title": "June 2026",
             "entries": [
                 {
-                    "id": "entry-june-1",
-                    "title": "Di. 02.06.26, 06:57",
-                    "primaryValue": "~ 16 kWh",
-                    "secondaryValue": "8h 33min",
+                    "id": "ruqGssoVwARYaaNHPawhrhAPMOKzzbO-YDHBL6ObgKo",
+                    "title": "Wed 10/06/2026, 05:14",
+                    "primaryValue": "~ 17 kWh",
+                    "secondaryValue": "8h 16min",
                     "details": {
-                        "sessionId": "706996b0-4d0f-4be9-8f4c-b2378ef74cf2",
+                        "sessionId": "a354fad4-d52d-44a6-badd-76ac76c9926a",
                         "chargingPowerType": "AC",
-                        "formattedTotalEnergy": "~ 16 kWh",
-                        "formattedChargingStartTime": "02.06.26, 06:57",
-                        "formattedChargingEndTime": "02.06.26, 15:30",
-                        "formattedTotalChargingTime": "8h 33min",
-                        "formattedActiveChargingTime": "1h 27min",
-                        "formattedStartSoc": "60%",
+                        "formattedTotalEnergy": "~ 17 kWh",
+                        "formattedChargingStartTime": "10/06/2026, 05:14",
+                        "formattedChargingEndTime": "10/06/2026, 13:31",
+                        "formattedTotalChargingTime": "8h 16min",
+                        "formattedActiveChargingTime": "1h 48min",
+                        "formattedStartSoc": "56%",
                         "formattedEndSoc": "80%",
                         "isActiveSession": false,
                         "isCurveAvailable": true
                     }
-                }
-            ]
-        },
-        {
-            "title": "May 2026",
-            "entries": [
+                },
                 {
-                    "id": "entry-may-1",
-                    "title": "Fr. 29.05.26, 06:57",
+                    "id": "owGdHzSxhxwfPerQIAaDCawlrZwYmktzZ3ndGa3j8h8",
+                    "title": "Fri 29/05/2026, 04:57",
                     "primaryValue": "~ 22 kWh",
                     "secondaryValue": "5h 44min",
                     "details": {
-                        "sessionId": "e3d6b8a4-e2f7-409d-a972-f1a9457e0b0f",
+                        "sessionId": "e3d6b8a4-a2f7-409d-a972-f1a9457a0b0f",
                         "chargingPowerType": "AC",
                         "formattedTotalEnergy": "~ 22 kWh",
-                        "formattedChargingStartTime": "29.05.26, 06:57",
-                        "formattedChargingEndTime": "29.05.26, 12:42",
+                        "formattedChargingStartTime": "29/05/2026, 04:57",
+                        "formattedChargingEndTime": "29/05/2026, 10:42",
                         "formattedTotalChargingTime": "5h 44min",
-                        "formattedActiveChargingTime": "2h 02min",
+                        "formattedActiveChargingTime": "2h 2min",
                         "formattedStartSoc": "72%",
                         "formattedEndSoc": "100%",
                         "isActiveSession": false,
@@ -57,5 +52,5 @@
         }
     ],
     "missingElliConsent": false,
-    "csvFile": "IlNlc3Npb24gSUQiLCJCZWdvbm5lbiBhbSINCg=="
+    "csvFile": "VGVzdA=="
 }
