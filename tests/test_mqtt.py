@@ -4,10 +4,13 @@ import asyncio
 import json
 from datetime import UTC, datetime, timedelta
 from pathlib import Path
-from unittest.mock import ANY, patch
+from typing import Self
+from unittest.mock import ANY, AsyncMock, patch
 
 import aiomqtt
 import pytest
+from paho.mqtt.packettypes import PacketTypes
+from paho.mqtt.reasoncodes import ReasonCode
 
 from myskoda.anonymize import USER_ID, VIN
 from myskoda.models.charging import (
@@ -43,7 +46,7 @@ from myskoda.models.event import (
     VehicleEventWarningBatterylevel,
 )
 from myskoda.models.vehicle_ignition_status import IgnitionStatus
-from myskoda.mqtt import MySkodaMqttClient
+from myskoda.mqtt import MySkodaMqttClient, _is_auth_failure
 from myskoda.myskoda import MySkoda
 
 from .conftest import FakeMqttClientWrapper
@@ -58,18 +61,172 @@ async def connected_mqtt_client(myskoda_mqtt_client: MySkodaMqttClient) -> MySko
     return myskoda_mqtt_client
 
 
-def test_set_connect_properties_uses_constructor_fcm_token() -> None:
-    fake_mqtt_client = FakeMqttClientWrapper(messages=[])
-    mqtt_client = MySkodaMqttClient(
-        authorization=ANY,
-        fcm_token="fcm-token",  # noqa: S106
-        mqtt_client=fake_mqtt_client,
+@pytest.mark.parametrize(
+    ("rc", "expected"),
+    [
+        (5, True),  # v3.1.1 not authorised
+        (4, True),  # v3.1.1 bad username/password
+        (0x87, True),  # v5 not authorized as raw int
+        (
+            ReasonCode(packetType=PacketTypes.CONNACK, identifier=0x87),
+            True,
+        ),  # v5 not authorized as ReasonCode
+        (
+            ReasonCode(packetType=PacketTypes.CONNACK, identifier=0x86),
+            True,
+        ),  # v5 bad credentials
+        (3, False),  # v3.1.1 server unavailable
+        (None, False),
+    ],
+)
+def test_is_auth_failure(rc: int | ReasonCode | None, expected: bool) -> None:
+    exc = aiomqtt.MqttCodeError(rc, "boom")
+    assert _is_auth_failure(exc) is expected
+
+
+def test_is_auth_failure_non_code_error() -> None:
+    assert _is_auth_failure(aiomqtt.MqttError("transport boom")) is False
+
+
+@pytest.mark.asyncio
+async def test_connect_timeout_raises_and_cancels_listener(fake_authorization: object) -> None:
+    """If the broker never accepts CONNECT, connect() must raise within the timeout."""
+    # Wrapper hangs forever on __aenter__ — we never reach subscribe -> never set _subscribed.
+    enter_started = asyncio.Event()
+
+    class HangingWrapper(FakeMqttClientWrapper):
+        async def __aenter__(self) -> Self:
+            enter_started.set()
+            await asyncio.Event().wait()  # block forever
+            return self  # pragma: no cover
+
+    wrapper = HangingWrapper(messages=[])
+    client = MySkodaMqttClient(
+        authorization=fake_authorization,  # type: ignore[arg-type]
+        refresh_fcm_token=AsyncMock(return_value="test-fcm-token"),
+        mqtt_client=wrapper,
     )
 
-    with patch("time.time", return_value=60):
-        fake_mqtt_client.set_connect_properties(mqtt_client.fcm_token)
+    with pytest.raises(TimeoutError):
+        await client.connect(user_id="1234", vehicle_vins=["VIN"], connect_timeout=0.05)
 
-    assert fake_mqtt_client.connect_properties_fcm_token == "fcm-token"  # noqa: S105
+    assert enter_started.is_set()
+    # Listener task must be torn down so the next connect() attempt starts cleanly.
+    assert client._listener_task is None  # noqa: SLF001
+
+
+@pytest.mark.asyncio
+async def test_auth_failure_triggers_fcm_refresh(fake_authorization: object) -> None:
+    """An MQTT auth failure must call refresh_fcm_token and use the new token next attempt."""
+    auth_error = aiomqtt.MqttCodeError(
+        ReasonCode(packetType=PacketTypes.CONNACK, identifier=0x87), "not authorized"
+    )
+    wrapper = FakeMqttClientWrapper(messages=[], enter_exceptions=[auth_error, None])
+
+    expected_refresh_calls = 2
+    refresh = AsyncMock(side_effect=["old-fcm-token", "new-fcm-token"])
+    client = MySkodaMqttClient(
+        authorization=fake_authorization,  # type: ignore[arg-type]
+        refresh_fcm_token=refresh,
+        mqtt_client=wrapper,
+    )
+
+    # Reduce backoff so the test doesn't sleep 5s between the failed and successful attempts.
+    with patch("myskoda.mqtt.MQTT_RECONNECT_DELAY", 0):
+        client._reconnect_delay = 0  # noqa: SLF001
+        await client.connect(user_id="1234", vehicle_vins=["VIN"], connect_timeout=2)
+
+    assert refresh.await_count == expected_refresh_calls
+    assert client._fcm_token == "new-fcm-token"  # noqa: S105, SLF001
+    # set_connect_properties is invoked once per (re)connect attempt with the current token.
+    assert wrapper.set_connect_properties_calls == ["old-fcm-token", "new-fcm-token"]
+    await client.disconnect()
+
+
+@pytest.mark.asyncio
+async def test_repeated_auth_failures_are_throttled(
+    fake_authorization: object,
+) -> None:
+    """Two auth failures inside MQTT_MIN_FCM_REFRESH_INTERVAL must only refresh once."""
+    auth_error = aiomqtt.MqttCodeError(
+        ReasonCode(packetType=PacketTypes.CONNACK, identifier=0x87), "not authorized"
+    )
+    # Two auth failures in a row, then a successful connect.
+    wrapper = FakeMqttClientWrapper(messages=[], enter_exceptions=[auth_error, auth_error, None])
+
+    expected_refresh_calls = 2
+    refresh = AsyncMock(side_effect=["old-fcm-token", "new-fcm-token"])
+    client = MySkodaMqttClient(
+        authorization=fake_authorization,  # type: ignore[arg-type]
+        refresh_fcm_token=refresh,
+        mqtt_client=wrapper,
+    )
+
+    # Force throttle window large so the second failure is suppressed regardless of timing.
+    with (
+        patch("myskoda.mqtt.MQTT_RECONNECT_DELAY", 0),
+        patch("myskoda.mqtt.MQTT_MIN_FCM_REFRESH_INTERVAL", 3600),
+    ):
+        client._reconnect_delay = 0  # noqa: SLF001
+        await client.connect(user_id="1234", vehicle_vins=["VIN"], connect_timeout=2)
+
+    assert refresh.await_count == expected_refresh_calls
+    assert client._fcm_token == "new-fcm-token"  # noqa: S105, SLF001
+    await client.disconnect()
+
+
+@pytest.mark.asyncio
+async def test_auth_failure_refreshes_again_after_throttle_window(
+    fake_authorization: object,
+) -> None:
+    """Once the throttle window elapses, a new auth failure must trigger another refresh."""
+    auth_error = aiomqtt.MqttCodeError(
+        ReasonCode(packetType=PacketTypes.CONNACK, identifier=0x87), "not authorized"
+    )
+    wrapper = FakeMqttClientWrapper(messages=[], enter_exceptions=[auth_error, auth_error, None])
+
+    expected_refresh_calls = 3
+    refresh = AsyncMock(side_effect=["old-fcm-token", "fcm-token-1", "fcm-token-2"])
+    client = MySkodaMqttClient(
+        authorization=fake_authorization,  # type: ignore[arg-type]
+        refresh_fcm_token=refresh,
+        mqtt_client=wrapper,
+    )
+
+    with (
+        patch("myskoda.mqtt.MQTT_RECONNECT_DELAY", 0),
+        patch("myskoda.mqtt.MQTT_MIN_FCM_REFRESH_INTERVAL", 0),
+    ):
+        client._reconnect_delay = 0  # noqa: SLF001
+        await client.connect(user_id="1234", vehicle_vins=["VIN"], connect_timeout=2)
+
+    assert refresh.await_count == expected_refresh_calls
+    assert client._fcm_token == "fcm-token-2"  # noqa: S105, SLF001
+    await client.disconnect()
+
+
+@pytest.mark.asyncio
+async def test_non_auth_failure_does_not_refresh_fcm(
+    fake_authorization: object,
+) -> None:
+    """Transport errors must NOT trigger an FCM refresh."""
+    transport_error = aiomqtt.MqttError("connection refused")
+    wrapper = FakeMqttClientWrapper(messages=[], enter_exceptions=[transport_error, None])
+
+    refresh = AsyncMock(side_effect=["old-fcm-token", "should-not-be-used"])
+    client = MySkodaMqttClient(
+        authorization=fake_authorization,  # type: ignore[arg-type]
+        refresh_fcm_token=refresh,
+        mqtt_client=wrapper,
+    )
+
+    with patch("myskoda.mqtt.MQTT_RECONNECT_DELAY", 0):
+        client._reconnect_delay = 0  # noqa: SLF001
+        await client.connect(user_id="1234", vehicle_vins=["VIN"], connect_timeout=2)
+
+    refresh.assert_awaited_once()
+    assert client._fcm_token == "old-fcm-token"  # noqa: S105,  SLF001
+    await client.disconnect()
 
 
 @pytest.mark.asyncio
