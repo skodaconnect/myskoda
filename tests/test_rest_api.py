@@ -435,6 +435,31 @@ async def test_charging_statistics(
     assert result.csv_file == data["csvFile"]
 
 
+@pytest.mark.asyncio
+async def test_charging_statistics_na_session_id(
+    charging_statistics_fixture: str,
+    myskoda: MySkoda,
+    responses: aioresponses,
+) -> None:
+    target_vin = "TMBJM0CKV1N12345"
+    start = datetime(2026, 4, 1, tzinfo=UTC)
+    end = datetime(2026, 5, 18, tzinfo=UTC)
+
+    data = json.loads(charging_statistics_fixture)
+    data["monthSections"][0]["entries"][0]["details"]["sessionId"] = "N/A"
+
+    responses.post(
+        url="https://prod.emea.mobile.charging.cariad.digital/charging_statistics",
+        body=json.dumps(data),
+    )
+
+    result = await myskoda.get_charging_statistics(target_vin, start, end)
+
+    entry = result.month_sections[0].entries[0]
+
+    assert entry.details.session_id is None
+
+
 @pytest.fixture(name="spin_statuses")
 def load_spin_status() -> list[str]:
     """Load spin-status fixture."""

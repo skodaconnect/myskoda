@@ -17,11 +17,20 @@ from mashumaro.mixins.orjson import DataClassORJSONMixin
 
 from .common import BaseResponse, Vin
 
+NA_PLACEHOLDER = "N/A"
 EMPTY_LOCAL_DATETIME_PLACEHOLDER = "--"
 
 
+def _parse_session_id(value: str | None) -> UUID | None:
+    """Parse charging statistics session IDs."""
+    if value is None or value in (EMPTY_LOCAL_DATETIME_PLACEHOLDER, NA_PLACEHOLDER):
+        return None
+
+    return UUID(value)
+
+
 def _parse_local_datetime(value: str | None) -> datetime | None:
-    """Parse charging statistics datetime values as UTC."""
+    """Parse charging statistics datetime values."""
     if value is None or value == EMPTY_LOCAL_DATETIME_PLACEHOLDER:
         return None
 
@@ -110,9 +119,12 @@ class ChargingStatisticsRequest(DataClassORJSONMixin):
 
 @dataclass
 class ChargingStatisticsSessionDetails(DataClassORJSONMixin):
-    session_id: UUID = field(metadata=field_options(alias="sessionId"))
     charging_power_type: ChargingCurrentType = field(
         metadata=field_options(alias="chargingPowerType")
+    )
+    session_id: UUID | None = field(
+        default=None,
+        metadata=field_options(alias="sessionId", deserialize=_parse_session_id),
     )
     is_active_session: bool | None = field(
         default=None, metadata=field_options(alias="isActiveSession")
