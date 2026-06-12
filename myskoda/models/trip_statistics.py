@@ -140,6 +140,10 @@ class Trip(DataClassORJSONMixin):
     id: str | None = field(default=None, metadata=field_options(alias="id"))
     start_time: str | None = field(default=None, metadata=field_options(alias="startTime"))
     end_time: str | None = field(default=None, metadata=field_options(alias="endTime"))
+
+    start_time_utc: datetime | None = None
+    end_time_utc: datetime | None = None
+
     start_mileage_in_km: int | None = field(
         default=None, metadata=field_options(alias="startMileageInKm")
     )
@@ -183,29 +187,24 @@ class Trip(DataClassORJSONMixin):
         default=None, metadata=field_options(alias="waypoints")
     )
 
-    @property
-    def start_time_utc(self) -> datetime | None:
-        """Return the trip start datetime in UTC, based on the first waypoint."""
+    def populate_utc_times(self) -> None:
+        """Populate UTC trip timestamps from waypoint timestamps."""
         if not self.waypoints:
-            return None
+            return
 
-        for waypoint in self.waypoints:
-            if waypoint.departure_time:
-                return waypoint.departure_time
+        self.start_time_utc = next(
+            (waypoint.departure_time for waypoint in self.waypoints if waypoint.departure_time),
+            None,
+        )
 
-        return None
-
-    @property
-    def end_time_utc(self) -> datetime | None:
-        """Return the trip end datetime in UTC, based on the last waypoint."""
-        if not self.waypoints:
-            return None
-
-        for waypoint in reversed(self.waypoints):
-            if waypoint.arrival_time:
-                return waypoint.arrival_time
-
-        return None
+        self.end_time_utc = next(
+            (
+                waypoint.arrival_time
+                for waypoint in reversed(self.waypoints)
+                if waypoint.arrival_time
+            ),
+            None,
+        )
 
 
 @dataclass
@@ -232,3 +231,12 @@ class SingleTrips(BaseResponse):
     short_trip_threshold_in_mi: int | None = field(
         default=None, metadata=field_options(alias="shortTripThresholdInMi")
     )
+
+    def populate_utc_times(self) -> None:
+        """Populate UTC trip timestamps for all trips."""
+        for daily_trip in self.daily_trips:
+            if not daily_trip.trips:
+                continue
+
+            for trip in daily_trip.trips:
+                trip.populate_utc_times()

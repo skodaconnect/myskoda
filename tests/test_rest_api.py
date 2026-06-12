@@ -560,6 +560,7 @@ def test_single_trip_utc_helpers(
     """Test UTC helper properties for trip statistics."""
 
     result = SingleTrips.from_json(single_trip_timezones)
+    result.populate_utc_times()
 
     daily_trip = result.daily_trips[0]
     assert daily_trip.trips is not None
