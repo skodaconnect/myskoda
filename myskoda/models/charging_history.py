@@ -1,9 +1,11 @@
 """Models for charging history API responses."""
 
 import base64
+import csv
 from dataclasses import dataclass, field
 from datetime import UTC, date, datetime
 from enum import StrEnum
+from io import StringIO
 from uuid import UUID
 
 from mashumaro import field_options
@@ -29,19 +31,10 @@ def _parse_session_id(value: str | None) -> UUID | None:
     return UUID(value)
 
 
-def _parse_local_datetime(value: str | None) -> datetime | None:
-    """Parse charging statistics datetime values."""
-    if value is None or value == EMPTY_LOCAL_DATETIME_PLACEHOLDER:
+def _parse_utc_datetime(value: str | None) -> datetime | None:
+    """Parse an ISO-8601 UTC datetime value."""
+    if not value:
         return None
-
-    for fmt in (
-        "%d/%m/%Y, %H:%M",
-        "%Y-%m-%dT%H:%M:%S",
-    ):
-        try:
-            return datetime.strptime(value, fmt).replace(tzinfo=UTC)
-        except ValueError:
-            continue
 
     return datetime.fromisoformat(value).astimezone(UTC)
 
@@ -135,16 +128,16 @@ class ChargingStatisticsSessionDetails(DataClassORJSONMixin):
     formatted_total_energy: str | None = field(
         default=None, metadata=field_options(alias="formattedTotalEnergy")
     )
-    charging_start_time: datetime | None = field(
+    formatted_charging_start_time: str | None = field(
         default=None,
-        metadata=field_options(
-            alias="formattedChargingStartTime", deserialize=_parse_local_datetime
-        ),
+        metadata=field_options(alias="formattedChargingStartTime"),
     )
-    charging_end_time: datetime | None = field(
+    formatted_charging_end_time: str | None = field(
         default=None,
-        metadata=field_options(alias="formattedChargingEndTime", deserialize=_parse_local_datetime),
+        metadata=field_options(alias="formattedChargingEndTime"),
     )
+    charging_start_time: datetime | None = None
+    charging_end_time: datetime | None = None
     formatted_total_charging_time: str | None = field(
         default=None, metadata=field_options(alias="formattedTotalChargingTime")
     )
@@ -184,6 +177,13 @@ class ChargingStatisticsApplicableFilterOption(DataClassORJSONMixin):
 
 
 @dataclass
+class ChargingStatisticsCsvSession:
+    session_id: UUID
+    started_on: datetime
+    ended_on: datetime
+
+
+@dataclass
 class ChargingStatistics(DataClassORJSONMixin):
     applicable_filter_options: list[ChargingStatisticsApplicableFilterOption] = field(
         default_factory=list, metadata=field_options(alias="applicableFilterOptions")
@@ -219,3 +219,34 @@ class ChargingStatistics(DataClassORJSONMixin):
             return data.decode("utf-8-sig")
         except UnicodeDecodeError:
             return data.decode("utf-8", errors="replace")
+
+    @property
+    def csv_sessions(self) -> dict[UUID, ChargingStatisticsCsvSession]:
+        """Return charging sessions parsed from CSV."""
+        csv_text = self.csv_text
+
+        if not csv_text:
+            return {}
+
+        reader = csv.DictReader(StringIO(csv_text))
+        result: dict[UUID, ChargingStatisticsCsvSession] = {}
+
+        for row in reader:
+            session_id = _parse_session_id(row.get("Session ID"))
+
+            if session_id is None:
+                continue
+
+            started_on = _parse_utc_datetime(row.get("Started on"))
+            ended_on = _parse_utc_datetime(row.get("Ended on"))
+
+            if started_on is None or ended_on is None:
+                continue
+
+            result[session_id] = ChargingStatisticsCsvSession(
+                session_id=session_id,
+                started_on=started_on,
+                ended_on=ended_on,
+            )
+
+        return result

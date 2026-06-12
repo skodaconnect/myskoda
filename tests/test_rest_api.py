@@ -422,8 +422,8 @@ async def test_charging_statistics(
     assert entry.title
     assert entry.primary_value
     assert entry.secondary_value
-    assert entry.details.charging_start_time == datetime(2026, 6, 10, 5, 14, tzinfo=UTC)
-    assert entry.details.charging_end_time == datetime(2026, 6, 10, 13, 31, tzinfo=UTC)
+    assert entry.details.charging_start_time == datetime(2026, 6, 10, 5, 14, 55, tzinfo=UTC)
+    assert entry.details.charging_end_time == datetime(2026, 6, 10, 13, 31, 51, tzinfo=UTC)
 
     fixture_entry = data["monthSections"][0]["entries"][0]
 

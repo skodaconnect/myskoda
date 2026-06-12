@@ -306,6 +306,24 @@ class RestApi:
         )
 
         result = self._deserialize(raw, ChargingStatistics.from_json)
+
+        csv_sessions = result.csv_sessions
+
+        for section in result.month_sections:
+            for entry in section.entries:
+                session_id = entry.details.session_id
+
+                if session_id is None:
+                    continue
+
+                csv_session = csv_sessions.get(session_id)
+
+                if csv_session is None:
+                    continue
+
+                entry.details.charging_start_time = csv_session.started_on
+                entry.details.charging_end_time = csv_session.ended_on
+
         return GetEndpointResult(url=url, raw=raw, result=result)
 
     async def get_status(self, vin: str, anonymize: bool = False) -> GetEndpointResult[Status]:
