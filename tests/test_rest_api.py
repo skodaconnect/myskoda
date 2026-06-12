@@ -15,7 +15,7 @@ from myskoda.models.common import OpenState
 from myskoda.models.departure import DepartureInfo
 from myskoda.models.driving_score import DrivingScoreResult
 from myskoda.models.status import DoorWindowState
-from myskoda.models.trip_statistics import VehicleType
+from myskoda.models.trip_statistics import SingleTrips, VehicleType
 from myskoda.models.widget import (
     ParkingPositionInMotion,
     ParkingPositionParked,
@@ -545,6 +545,60 @@ async def test_single_trips(
         assert day2.trips[0].end_time == single_trips_json["dailyTrips"][1]["trips"][0]["endTime"]
 
         assert get_single_trip_result.vehicle_type == VehicleType.FUEL
+
+
+@pytest.fixture(name="single_trip_timezones")
+def load_single_trip_timezones() -> str:
+    """Load single trip timezone fixture."""
+    with FIXTURES_DIR.joinpath("other/single-trip-statistics-timezones.json").open() as file:
+        return file.read()
+
+
+def test_single_trip_utc_helpers(
+    single_trip_timezones: str,
+) -> None:
+    """Test UTC helper properties for trip statistics."""
+
+    result = SingleTrips.from_json(single_trip_timezones)
+
+    daily_trip = result.daily_trips[0]
+    assert daily_trip.trips is not None
+
+    trip = daily_trip.trips[1]
+
+    assert trip.start_time == "06:15"
+    assert trip.end_time == "06:57"
+
+    assert trip.start_time_utc is not None
+    assert trip.end_time_utc is not None
+
+    assert trip.start_time_utc.isoformat() == ("2026-06-09T04:15:09.438000+00:00")
+    assert trip.end_time_utc.isoformat() == ("2026-06-09T04:57:00.352000+00:00")
+
+
+EXPECTED_WAYPOINT_COUNT = 3
+EXPECTED_LATITUDE = 52.2
+EXPECTED_LONGITUDE = 13.2
+
+
+def test_single_trip_waypoints_are_parsed(
+    single_trip_timezones: str,
+) -> None:
+    """Test waypoint parsing."""
+
+    result = SingleTrips.from_json(single_trip_timezones)
+
+    daily_trip = result.daily_trips[0]
+    assert daily_trip.trips is not None
+
+    trip = daily_trip.trips[1]
+
+    assert trip.waypoints is not None
+    assert len(trip.waypoints) == EXPECTED_WAYPOINT_COUNT
+
+    assert trip.waypoints[0].coordinates is not None
+    assert trip.waypoints[0].coordinates.latitude == EXPECTED_LATITUDE
+    assert trip.waypoints[0].coordinates.longitude == EXPECTED_LONGITUDE
 
 
 @pytest.fixture(name="software_updates")
