@@ -88,9 +88,6 @@ class AuxiliaryHeating(BaseResponse):
     target_temperature: TargetTemperature | None = field(
         default=None, metadata=field_options(alias="targetTemperature")
     )
-    car_captured_timestamp: datetime | None = field(
-        default=None, metadata=field_options(alias="carCapturedTimestamp")
-    )
     estimated_date_time_to_reach_target_temperature: datetime | None = field(
         default=None, metadata=field_options(alias="estimatedDateTimeToReachTargetTemperature")
     )

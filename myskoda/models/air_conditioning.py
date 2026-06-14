@@ -165,9 +165,6 @@ class AirConditioning(BaseResponse):
     window_heating_state: WindowHeatingState | None = field(
         default=None, metadata=field_options(alias="windowHeatingState")
     )
-    car_captured_timestamp: datetime | None = field(
-        default=None, metadata=field_options(alias="carCapturedTimestamp")
-    )
     air_conditioning_at_unlock: bool | None = field(
         default=None, metadata=field_options(alias="airConditioningAtUnlock")
     )
