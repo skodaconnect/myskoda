@@ -149,18 +149,13 @@ class ServiceEventClimatisationCompleted(ServiceEventAirConditioning):
     name = ServiceEventName.CLIMATISATION_COMPLETED
 
 
-@dataclass(frozen=True)
-class ServiceEventChangeChargeModeData(ServiceEventChangeSocData):
-    """Data inside a change-charge-mode service event."""
-
-
 class ServiceEventCharging(ServiceEvent):
     """Group events under topic 'service-event/charging'."""
 
 
 @dataclass(frozen=True)
 class ServiceEventChangeChargeMode(ServiceEventCharging):
-    data: ServiceEventChangeChargeModeData
+    data: ServiceEventChangeSocData
     name = ServiceEventName.CHANGE_CHARGE_MODE
 
 

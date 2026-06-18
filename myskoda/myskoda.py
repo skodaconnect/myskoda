@@ -1150,10 +1150,8 @@ class MySkoda:
 
     async def _on_service_event(self, event: ServiceEvent) -> None:
         """Dispatch a service event to the appropriate handler."""
-        if isinstance(event, ServiceEventChangeSoc):
+        if isinstance(event, (ServiceEventChangeSoc, ServiceEventChangeChargeMode)):
             await self._process_charging_event(event)
-        elif isinstance(event, ServiceEventChangeChargeMode):
-            await self._process_change_charge_mode_event(event)
         elif isinstance(event, ServiceEventCharging):
             await self.refresh_charging(event.vin)
         elif isinstance(event, ServiceEventAccess):
@@ -1214,7 +1212,9 @@ class MySkoda:
         elif event.operation == OperationName.UPDATE_DEPARTURE_TIMERS:
             await self.refresh_departure_info(event.vin)
 
-    async def _process_charging_event(self, event: ServiceEventChangeSoc) -> None:
+    async def _process_charging_event(
+        self, event: ServiceEventChangeSoc | ServiceEventChangeChargeMode
+    ) -> None:
         """Update self._vehicles with data from the event.
 
         Start by fully refreshing Vehicle.charging and Vehicle.driving_range as the endpoints
@@ -1227,37 +1227,10 @@ class MySkoda:
 
         vehicle = self._vehicles[event.vin]
         if charging := vehicle.charging:
-            self._process_charging_event_update_charging(
-                charging,
-                event,
-            )
+            self._process_charging_event_update_charging(charging, event)
 
         if driving_range := vehicle.driving_range:
-            self._process_charging_event_update_driving_range(
-                driving_range,
-                event,
-            )
-
-        self._notify_callbacks(event.vin)
-
-    async def _process_change_charge_mode_event(self, event: ServiceEventChangeChargeMode) -> None:
-        """Handle change-charge-mode: REST refresh followed by event data overlay if newer."""
-        _LOGGER.debug("Processing change-charge-mode event: %s", event)
-        await self.refresh_charging(event.vin, notify=False)
-        await self.refresh_driving_range(event.vin, notify=False)
-
-        state = self._vehicles[event.vin]
-        if charging := state.charging:
-            self._process_charging_event_update_charging(
-                charging,
-                event,
-            )
-
-        if driving_range := state.driving_range:
-            self._process_charging_event_update_driving_range(
-                driving_range,
-                event,
-            )
+            self._process_charging_event_update_driving_range(driving_range, event)
 
         self._notify_callbacks(event.vin)
 
