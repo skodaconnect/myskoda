@@ -14,6 +14,16 @@ from myskoda.myskoda import MySkoda
 FIXTURES_DIR = Path(__file__).parent.parent / "fixtures"
 
 
+def _strip_injected_fields(d: dict) -> None:
+    """Recursively remove BaseResponse fields that are injected at runtime or absent in fixtures."""
+    d.pop("timestamp", None)
+    if d.get("car_captured_timestamp") is None:
+        d.pop("car_captured_timestamp", None)
+    for v in d.values():
+        if isinstance(v, dict):
+            _strip_injected_fields(v)
+
+
 @pytest.mark.asyncio
 async def test_report_get(
     report: FixtureReportGet, responses: aioresponses, myskoda: MySkoda
@@ -28,15 +38,9 @@ async def test_report_get(
     result = await myskoda.get_endpoint(VIN, report.endpoint, anonymize=True)
     result = result.result.to_dict()
 
-    # Remove timestamp
-    result["timestamp"] = None
+    _strip_injected_fields(result)
     if (res := report.result) is not None:
-        if "timestamp" in res:
-            res["timestamp"] = None
-        mr = res.get("maintenance_report")
-        if mr:
-            mr["timestamp"] = None
-            result["maintenance_report"]["timestamp"] = None
+        _strip_injected_fields(res)
 
     assert result == report.result
 
