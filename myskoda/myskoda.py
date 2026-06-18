@@ -1269,6 +1269,10 @@ class MySkoda:
 
         if event.data.state:
             ac.state = event.data.state
+        if event.data.time_to_finish:
+            ac.estimated_date_time_to_reach_target_temperature = datetime.now(UTC) + timedelta(
+                minutes=event.data.time_to_finish
+            )
 
     @staticmethod
     def _process_charging_event_update_charging(
