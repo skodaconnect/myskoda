@@ -5,12 +5,14 @@ import re
 from datetime import UTC, date, datetime
 from pathlib import Path
 from unittest.mock import patch
+from uuid import UUID
 
 import pytest
 from aiohttp import ClientResponseError
 from aioresponses import aioresponses
 
 from myskoda.anonymize import FORMATTED_ADDRESS, LICENSE_PLATE, LOCATION, VEHICLE_NAME
+from myskoda.models.charging_history import ChargingStatistics
 from myskoda.models.common import OpenState
 from myskoda.models.departure import DepartureInfo
 from myskoda.models.driving_score import DrivingScoreResult
@@ -458,6 +460,55 @@ async def test_charging_statistics_na_session_id(
     entry = result.month_sections[0].entries[0]
 
     assert entry.details.session_id is None
+
+
+def test_charging_statistics_csv_bytes(
+    charging_statistics_fixture: str,
+) -> None:
+    """Test charging statistics CSV bytes decoding."""
+
+    result = ChargingStatistics.from_json(charging_statistics_fixture)
+
+    assert result.csv_bytes is not None
+    assert b"Session ID" in result.csv_bytes
+
+
+def test_charging_statistics_csv_text(
+    charging_statistics_fixture: str,
+) -> None:
+    """Test charging statistics CSV text decoding."""
+
+    result = ChargingStatistics.from_json(charging_statistics_fixture)
+
+    assert result.csv_text is not None
+    assert "Session ID" in result.csv_text
+
+
+def test_charging_statistics_csv_sessions(
+    charging_statistics_fixture: str,
+) -> None:
+    """Test charging statistics CSV session parsing."""
+
+    result = ChargingStatistics.from_json(charging_statistics_fixture)
+
+    sessions = result.csv_sessions
+
+    expected_session_ids = {
+        UUID("a354fad4-d52d-44a6-badd-76ac76c9926a"),
+        UUID("e3d6b8a4-a2f7-409d-a972-f1a9457a0b0f"),
+    }
+
+    assert set(sessions.keys()) == expected_session_ids
+
+    session = sessions[UUID("a354fad4-d52d-44a6-badd-76ac76c9926a")]
+
+    assert session.started_on == datetime(2026, 6, 10, 5, 14, 55, tzinfo=UTC)
+    assert session.ended_on == datetime(2026, 6, 10, 13, 31, 51, tzinfo=UTC)
+
+    session = sessions[UUID("e3d6b8a4-a2f7-409d-a972-f1a9457a0b0f")]
+
+    assert session.started_on == datetime(2026, 5, 29, 4, 57, 35, tzinfo=UTC)
+    assert session.ended_on == datetime(2026, 5, 29, 10, 42, 5, tzinfo=UTC)
 
 
 @pytest.fixture(name="spin_statuses")
