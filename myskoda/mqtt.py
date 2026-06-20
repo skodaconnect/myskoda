@@ -12,7 +12,7 @@ import ssl
 import struct
 import time
 import uuid
-from collections.abc import AsyncIterator, Callable, Coroutine
+from collections.abc import AsyncIterator, Awaitable, Callable, Coroutine
 from random import uniform
 from types import TracebackType
 from typing import Any, Protocol, Self, cast
@@ -20,15 +20,18 @@ from typing import Any, Protocol, Self, cast
 import aiomqtt
 from paho.mqtt.packettypes import PacketTypes
 from paho.mqtt.properties import Properties
+from paho.mqtt.reasoncodes import ReasonCode
 
 from .auth.authorization import Authorization
 from .const import (
     MQTT_ACCOUNT_EVENT_TOPICS,
     MQTT_BROKER_HOST,
     MQTT_BROKER_PORT,
+    MQTT_CONNECT_TIMEOUT,
     MQTT_FAST_RETRY,
     MQTT_KEEPALIVE,
     MQTT_MAX_RECONNECT_DELAY,
+    MQTT_MIN_FCM_REFRESH_INTERVAL,
     MQTT_OPERATION_TOPICS,
     MQTT_RECONNECT_DELAY,
     MQTT_SERVICE_EVENT_TOPICS,
@@ -38,6 +41,30 @@ from .models.event import BaseEvent, OperationEvent, OperationName, OperationSta
 
 _LOGGER = logging.getLogger(__name__)
 TOPIC_RE = re.compile("^(.*?)/(.*?)/(.*?)/(.*?)$")
+
+# MQTT CONNACK reason codes that indicate the FCM-derived TOTP credential was
+# rejected. Mixing v3.1.1 return codes and MQTTv5 reason codes is intentional;
+# the underlying paho client may surface either depending on protocol level.
+_AUTH_FAILURE_REASON_CODES: frozenset[int] = frozenset(
+    {
+        4,  # v3.1.1: Bad username or password
+        5,  # v3.1.1: Not authorised
+        0x86,  # v5: Bad User Name or Password
+        0x87,  # v5: Not authorized
+        0x8C,  # v5: Bad authentication method
+    }
+)
+
+
+def _is_auth_failure(exc: BaseException) -> bool:
+    """Return True if exc is an MQTT error caused by credential rejection."""
+    if not isinstance(exc, aiomqtt.MqttCodeError):
+        return False
+    if isinstance(exc.rc, ReasonCode):
+        return exc.rc.value in _AUTH_FAILURE_REASON_CODES
+    if isinstance(exc.rc, int):
+        return exc.rc in _AUTH_FAILURE_REASON_CODES
+    return False
 
 
 def _create_ssl_context() -> ssl.SSLContext:
@@ -143,7 +170,24 @@ class AioMqttClientWrapper(aiomqtt.Client):
         return str(code % (10**6)).zfill(6)
 
 
+class GetFcmToken(Protocol):
+    def __call__(self, force_refresh: bool = False) -> Awaitable[str]: ...  # noqa: D102
+
+
 class MySkodaMqttClient:
+    """A custom MQTT Client for MySkoda.
+
+    Connects to the MQTT broker and allows MySkoda to receive callbacks on MQTT events.
+
+    Args:
+        authorization: An authenticated `Authorization` instance with a `get_access_token`
+                       method returning a current access token.
+        refresh_fcm_token: An async function returning a current and registered FCM token.
+        mqtt_client: A custom `aiomqtt.Client` subclass instance with additional methods to
+                     update connection credentials and properties.
+        ssl_context: An `ssl.SSLContext`
+    """
+
     user_id: str | None
     vehicle_vins: list[str]
     _callbacks: list[Callable[[BaseEvent], Coroutine[Any, Any, None]]]
@@ -152,12 +196,11 @@ class MySkodaMqttClient:
     def __init__(
         self,
         authorization: Authorization,
-        fcm_token: str,
+        refresh_fcm_token: GetFcmToken,
         mqtt_client: AbstractMqttClientWrapper | None = None,
         ssl_context: ssl.SSLContext | None = None,
     ) -> None:
         self.authorization = authorization
-        self.fcm_token = fcm_token
         self.vehicle_vins = []
         self.mqtt_client = mqtt_client
         if self.mqtt_client is None:
@@ -178,14 +221,35 @@ class MySkodaMqttClient:
         self._running = False
         self._subscribed = asyncio.Event()
         self._reconnect_delay = MQTT_RECONNECT_DELAY
+        self._fcm_token = None
+        self._refresh_fcm_token = refresh_fcm_token
+        # Monotonic timestamp of the last successful FCM refresh; used to throttle.
+        self._last_fcm_refresh_at: float | None = None
 
-    async def connect(self, user_id: str, vehicle_vins: list[str]) -> None:
-        """Connect to the MQTT broker and listen for messages for the given user_id and VINs."""
+    async def connect(
+        self,
+        user_id: str,
+        vehicle_vins: list[str],
+        connect_timeout: float = MQTT_CONNECT_TIMEOUT,
+    ) -> None:
+        """Connect to the MQTT broker and listen for messages for the given user_id and VINs.
+
+        Blocks until the initial subscription succeeds or `connect_timeout` seconds elapse.
+        On timeout the background reconnect loop is cancelled and a `TimeoutError` is raised
+        so the caller can decide what to do.
+        """
         _LOGGER.info("Connecting to MQTT with %s/%s", user_id, vehicle_vins)
         self.user_id = user_id
         self.vehicle_vins = vehicle_vins
         self._listener_task = asyncio.create_task(self._connect_and_listen())
-        await self._subscribed.wait()
+        try:
+            async with asyncio.timeout(connect_timeout):
+                await self._subscribed.wait()
+        except TimeoutError as exc:
+            msg = f"MQTT connect did not complete within {connect_timeout}s"
+            _LOGGER.warning(msg)
+            await self.disconnect()
+            raise TimeoutError(msg) from exc
 
     async def disconnect(self) -> None:
         """Cancel listener task and set self_running to False, causing the listen loop to end."""
@@ -214,11 +278,13 @@ class MySkodaMqttClient:
         Reconnect loop based on https://github.com/empicano/aiomqtt/blob/main/docs/reconnection.md.
 
         Re-fetch and update the authorization token on every try.
+        Re-fetch FCM token every MQTT_MIN_FCM_REFRESH_INTERVAL.
         """
         _LOGGER.debug("Starting _connect_and_listen")
         self._running = True
         retry_count = 0  # Track the number of retries
         self._reconnect_delay = MQTT_RECONNECT_DELAY  # Initial delay for backoff
+        self._fcm_token = await self._refresh_fcm_token()
         while self._running:
             try:
                 assert self.mqtt_client is not None
@@ -226,7 +292,7 @@ class MySkodaMqttClient:
                 self.mqtt_client.update_username_password(
                     username=self.user_id or "android-app", password=password
                 )
-                self.mqtt_client.set_connect_properties(fcm_token=self.fcm_token)
+                self.mqtt_client.set_connect_properties(fcm_token=self._fcm_token)
                 async with self.mqtt_client as client:
                     _LOGGER.info("Connected to MQTT")
                     _LOGGER.debug("using MQTT client %s", client)
@@ -249,18 +315,48 @@ class MySkodaMqttClient:
                         self._on_message(message)
             except aiomqtt.MqttError as exc:
                 retry_count += 1
-                _LOGGER.info(
-                    "Connection lost (%s); reconnecting in %ss", exc, self._reconnect_delay
-                )
+                _LOGGER.info("Connection failed (%s); retrying in %ss", exc, self._reconnect_delay)
                 await asyncio.sleep(self._reconnect_delay)
-                if (
-                    retry_count > MQTT_FAST_RETRY
-                    and self._reconnect_delay < MQTT_MAX_RECONNECT_DELAY
-                ):  # first x retries are not exponential
-                    self._reconnect_delay *= 2
-                    self._reconnect_delay += uniform(0, 1)  # noqa: S311
-                    self._reconnect_delay = min(self._reconnect_delay, MQTT_MAX_RECONNECT_DELAY)
-                    _LOGGER.debug("Increased reconnect backoff to %s", self._reconnect_delay)
+                self._increase_reconnect_backoff(retry_count)
+                if _is_auth_failure(exc):
+                    await self._refresh_fcm_token_after_auth_failure()
+
+    def _increase_reconnect_backoff(self, retry_count: int) -> None:
+        """Exponentially grow `self._reconnect_delay` after the fast-retry window."""
+        if retry_count <= MQTT_FAST_RETRY or self._reconnect_delay >= MQTT_MAX_RECONNECT_DELAY:
+            return
+        self._reconnect_delay *= 2
+        self._reconnect_delay += uniform(0, 1)  # noqa: S311
+        self._reconnect_delay = min(self._reconnect_delay, MQTT_MAX_RECONNECT_DELAY)
+        _LOGGER.debug("Increased reconnect backoff to %s", self._reconnect_delay)
+
+    async def _refresh_fcm_token_after_auth_failure(self) -> None:
+        """Refresh the FCM token after an MQTT auth failure.
+
+        Throttled to at most one refresh per `MQTT_MIN_FCM_REFRESH_INTERVAL` seconds: the
+        MySkoda broker may take a while to start accepting a newly registered token, so
+        repeated auth failures within that window must not trigger fresh registrations.
+        """
+        loop_time = asyncio.get_event_loop().time
+        now = loop_time()
+        if self._last_fcm_refresh_at is not None:
+            elapsed = now - self._last_fcm_refresh_at
+            if elapsed < MQTT_MIN_FCM_REFRESH_INTERVAL:
+                _LOGGER.debug(
+                    "Skipping FCM refresh: only %.1fs since last refresh (min %ss)",
+                    elapsed,
+                    MQTT_MIN_FCM_REFRESH_INTERVAL,
+                )
+                return
+        try:
+            new_token = await self._refresh_fcm_token(force_refresh=True)
+        except Exception as refresh_exc:  # noqa: BLE001
+            _LOGGER.warning("Failed to refresh FCM token after MQTT auth failure: %s", refresh_exc)
+            return
+
+        self._last_fcm_refresh_at = loop_time()
+        _LOGGER.info("Refreshed FCM token after MQTT auth failure")
+        self._fcm_token = new_token
 
     def _on_message(self, msg: aiomqtt.Message) -> None:
         """Deserialize received MQTT message and emit Event to subscribed callbacks."""

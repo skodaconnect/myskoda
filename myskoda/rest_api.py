@@ -6,7 +6,8 @@ import logging
 from collections.abc import Callable
 from dataclasses import dataclass
 from datetime import UTC, datetime
-from urllib.parse import quote
+from enum import StrEnum
+from urllib.parse import quote, urlencode
 
 from aiohttp import ClientResponseError, ClientSession
 
@@ -47,7 +48,12 @@ from myskoda.anonymize import (
 )
 
 from .auth.authorization import Authorization
-from .const import BASE_URL_SKODA, MYSKODA_APP_VERSION, REQUEST_TIMEOUT_IN_SECONDS
+from .const import (
+    BASE_URL_CHARGING,
+    BASE_URL_SKODA,
+    MYSKODA_APP_VERSION,
+    REQUEST_TIMEOUT_IN_SECONDS,
+)
 from .models.air_conditioning import (
     AirConditioning,
     AirConditioningAtUnlock,
@@ -58,7 +64,12 @@ from .models.air_conditioning import (
 )
 from .models.auxiliary_heating import AuxiliaryConfig, AuxiliaryHeating, AuxiliaryHeatingTimer
 from .models.charging import ChargeMode, Charging
-from .models.charging_history import ChargingHistory
+from .models.charging_history import (
+    ChargingHistory,
+    ChargingStatistics,
+    ChargingStatisticsFilterOption,
+    ChargingStatisticsRequest,
+)
 from .models.chargingprofiles import ChargingProfile, ChargingProfiles
 from .models.common import Vin
 from .models.departure import DepartureInfo, DepartureTimer
@@ -98,6 +109,11 @@ class GetEndpointResult[T]:
     url: str
     raw: str
     result: T
+
+
+class OffsetType(StrEnum):
+    WEEK = "week"
+    MONTH = "month"
 
 
 class RestApi:
@@ -154,6 +170,27 @@ class RestApi:
 
     async def _make_put_request(self, url: str, json: dict | None = None) -> str:
         return await self._make_request(url=url, method="PUT", json=json)
+
+    async def _make_charging_post_request(self, path: str, json: dict | None = None) -> str:
+        """POST to the cariad charging service. Path is appended to BASE_URL_CHARGING."""
+        url = f"{BASE_URL_CHARGING}/{path.lstrip('/')}"
+        try:
+            async with asyncio.timeout(REQUEST_TIMEOUT_IN_SECONDS):
+                async with self.session.request(
+                    method="POST",
+                    url=url,
+                    headers=await self._headers(),
+                    json=json,
+                ) as response:
+                    await response.text()
+                    response.raise_for_status()
+                    return await response.text()
+        except TimeoutError:  # pragma: no cover
+            _LOGGER.exception("Timeout while sending POST request to %s", url)
+            raise
+        except ClientResponseError as err:  # pragma: no cover
+            _LOGGER.exception("Invalid status for POST request to %s: %d", url, err.status)
+            raise
 
     async def verify_spin(self, spin: str, anonymize: bool = False) -> GetEndpointResult[Spin]:
         """Verify SPIN."""
@@ -224,6 +261,33 @@ class RestApi:
             anonymization_fn=anonymize_info,
         )
         result = self._deserialize(raw, ChargingHistory.from_json)
+        return GetEndpointResult(url=url, raw=raw, result=result)
+
+    async def get_charging_statistics(
+        self,
+        vin: str,
+        start: datetime,
+        end: datetime,
+    ) -> GetEndpointResult[ChargingStatistics]:
+        """Retrieve charging session statistics for the specified vehicle via the cariad endpoint.
+
+        Replaces the legacy GET /v1/charging/{vin}/history endpoint which stopped returning
+        new sessions after a certain date.
+        """
+        url = f"{BASE_URL_CHARGING}/charging_statistics"
+        request = ChargingStatisticsRequest(
+            started_after=start.date(),
+            started_before=end.date(),
+            selected_filter_options=[ChargingStatisticsFilterOption(filter_type="VEHICLE", id=vin)],
+        )
+        raw = self.process_json(
+            data=await self._make_charging_post_request(
+                "charging_statistics", json=request.to_dict()
+            ),
+            anonymize=False,
+            anonymization_fn=anonymize_info,
+        )
+        result = self._deserialize(raw, ChargingStatistics.from_json)
         return GetEndpointResult(url=url, raw=raw, result=result)
 
     async def get_status(self, vin: str, anonymize: bool = False) -> GetEndpointResult[Status]:
@@ -308,10 +372,28 @@ class RestApi:
         return GetEndpointResult(url=url, raw=raw, result=result)
 
     async def get_trip_statistics(
-        self, vin: str, anonymize: bool = False
+        self,
+        vin: str,
+        anonymize: bool = False,
+        offset: int = 0,
+        offset_type: OffsetType = OffsetType.WEEK,
     ) -> GetEndpointResult[TripStatistics]:
-        """Retrieve statistics about past trips."""
-        url = f"/v1/trip-statistics/{vin}?offsetType=week&offset=0&timezone=Europe%2FBerlin"
+        """Retrieve statistics about past trips.
+
+        Args:
+            vin: vehicle VIN
+            offset_type: Type of period — WEEK or MONTH.
+            offset: Which period to fetch. 0 = most recent, 1 = one period back,
+                2 = two periods back, etc.
+            anonymize: set to true if personal information should be removed from result
+        """
+        endpoint_url = f"/v1/trip-statistics/{vin}"
+        params = {
+            "offsetType": offset_type,
+            "offset": offset,
+            "timezone": "Europe/Berlin",
+        }
+        url = f"{endpoint_url}?{urlencode(params)}"
         raw = self.process_json(
             data=await self._make_get_request(url),
             anonymize=anonymize,

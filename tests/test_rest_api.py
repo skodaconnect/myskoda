@@ -22,7 +22,7 @@ from myskoda.models.widget import (
     ParkingPositionState,
 )
 from myskoda.myskoda import MySkoda
-from myskoda.rest_api import RestApi
+from myskoda.rest_api import OffsetType, RestApi
 from myskoda.utils import to_iso8601
 
 FIXTURES_DIR = Path(__file__).parent.joinpath("fixtures")
@@ -261,32 +261,36 @@ async def test_charging_profiles(
 
 
 @pytest.fixture(name="trip_statistics")
-def load_trip_statistics() -> list[str]:
+def load_trip_statistics() -> list[tuple[OffsetType, int, str]]:
     """Load trip statistics fixture."""
     trip_statistics = []
-    for path in [
-        "superb/trip-statistics-iV.json",
+    for entry in [
+        (OffsetType.WEEK, 0, "superb/trip-statistics-iV.json"),
+        (OffsetType.WEEK, 1, "superb/trip-statistics-iV-week-1.json"),
+        (OffsetType.MONTH, 2, "superb/trip-statistics-iV-month-2.json"),
     ]:
-        with FIXTURES_DIR.joinpath(path).open() as file:
-            trip_statistics.append(file.read())
+        with FIXTURES_DIR.joinpath(entry[2]).open() as file:
+            trip_statistics.append((entry[0], entry[1], file.read()))
     return trip_statistics
 
 
 @pytest.mark.asyncio
 async def test_trip_statistics(
-    trip_statistics: list[str], myskoda: MySkoda, responses: aioresponses
+    trip_statistics: list[tuple[OffsetType, int, str]], myskoda: MySkoda, responses: aioresponses
 ) -> None:
     """Example unit test for RestAPI.trip_statistics(). Needs more work."""
     for trip_statistics_input in trip_statistics:
-        trip_statistics_json = json.loads(trip_statistics_input)
+        trip_statistics_json = json.loads(trip_statistics_input[2])
 
         target_vin = "TMBJM0CKV1N12345"
         responses.get(
             url=f"https://mysmob.api.connect.skoda-auto.cz/api/v1/trip-statistics/{target_vin}"
-            "?offsetType=week&offset=0&timezone=Europe%2FBerlin",
-            body=trip_statistics_input,
+            f"?offsetType={trip_statistics_input[0]}&offset={trip_statistics_input[1]}&timezone=Europe%2FBerlin",
+            body=trip_statistics_input[2],
         )
-        get_status_result = await myskoda.get_trip_statistics(target_vin)
+        get_status_result = await myskoda.get_trip_statistics(
+            target_vin, offset_type=trip_statistics_input[0], offset=trip_statistics_input[1]
+        )
 
         assert (
             get_status_result.overall_average_travel_time_in_min
@@ -383,6 +387,41 @@ async def test_charging_history(
             < request_limit + 1
         )
         assert len(get_charging_history.periods) > 0
+
+
+@pytest.fixture(name="charging_statistics_fixture")
+def load_charging_statistics() -> str:
+    """Load charging statistics fixture."""
+    with FIXTURES_DIR.joinpath("other/charging-statistics.json").open() as file:
+        return file.read()
+
+
+@pytest.mark.asyncio
+async def test_charging_statistics(
+    charging_statistics_fixture: str, myskoda: MySkoda, responses: aioresponses
+) -> None:
+    """Unit test for MySkoda.get_charging_statistics()."""
+    target_vin = "TMBJM0CKV1N12345"
+    start = datetime(2026, 4, 1, tzinfo=UTC)
+    end = datetime(2026, 5, 18, tzinfo=UTC)
+
+    responses.post(
+        url="https://prod.emea.mobile.charging.cariad.digital/charging_statistics",
+        body=charging_statistics_fixture,
+    )
+
+    result = await myskoda.get_charging_statistics(target_vin, start, end)
+
+    data = json.loads(charging_statistics_fixture)
+    assert len(result.month_sections) == len(data["monthSections"])
+
+    all_entries = [e for s in result.month_sections for e in s.entries]
+    assert len(all_entries) == sum(len(s["entries"]) for s in data["monthSections"])
+
+    first = all_entries[0].details
+    assert str(first.session_id) == "a1b2c3d4-e5f6-7890-abcd-ef1234567890"
+    assert first.charging_start_time == datetime(2026, 5, 15, 8, 30)  # noqa: DTZ001
+    assert result.csv_file == data["csvFile"]
 
 
 @pytest.fixture(name="spin_statuses")
@@ -928,6 +967,6 @@ async def test_register_fcm_token_sends_expected_request(
     [(request_call,)] = responses.requests.values()
     assert request_call.kwargs["json"] == {
         "devicePlatform": "ANDROID",
-        "appVersion": "8.11.0",
+        "appVersion": "8.12.0",
         "language": "en",
     }

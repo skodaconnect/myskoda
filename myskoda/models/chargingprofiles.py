@@ -1,7 +1,7 @@
 """Models for responses of api/v1/charging/vin/profiles endpoint."""
 
 from dataclasses import dataclass, field
-from datetime import datetime, time
+from datetime import time
 from typing import Any
 
 from mashumaro import field_options
@@ -158,7 +158,4 @@ class ChargingProfiles(BaseResponse):
     )
     current_vehicle_position_profile: CurrentProfile | None = field(
         default=None, metadata=field_options(alias="currentVehiclePositionProfile")
-    )
-    car_captured_timestamp: datetime | None = field(
-        default=None, metadata=field_options(alias="carCapturedTimestamp")
     )
