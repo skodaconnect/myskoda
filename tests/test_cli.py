@@ -26,8 +26,8 @@ async def test_cli_set_preferred_charging_invalid_timer_id() -> None:
         ["--location", "test", "--id", "5", TARGET_VIN],
         obj={"myskoda": mock},
     )
+    mock.get_charging_profiles.assert_not_awaited()
     assert result.exit_code != 0
-    mock.assert_not_awaited()
 
 
 @pytest.mark.asyncio
@@ -40,8 +40,8 @@ async def test_cli_set_preferred_charging_no_parameters() -> None:
         ["--location", "test", "--id", "4", TARGET_VIN],
         obj={"myskoda": mock},
     )
+    mock.get_charging_profiles.assert_not_awaited()  # no server access for invalid operation
     assert result.exit_code != 0
-    mock.assert_not_awaited()  # no server access for invalid operation
 
 
 @pytest.mark.asyncio
@@ -54,8 +54,8 @@ async def test_cli_set_preferred_charging_incorrect_time() -> None:
         ["--location", "test", "--id", "4", "--start", "33:12", TARGET_VIN],
         obj={"myskoda": mock},
     )
+    mock.get_charging_profiles.assert_not_awaited()  # no server access for invalid operation
     assert result.exit_code != 0
-    mock.assert_not_awaited()  # no server access for invalid operation
 
 
 @pytest.fixture(name="charging_profiles")
