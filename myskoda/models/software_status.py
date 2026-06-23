@@ -10,6 +10,7 @@ from .common import BaseResponse, CaseInsensitiveStrEnum
 class SoftwareStatus(CaseInsensitiveStrEnum):
     NO_UPDATE_AVAILABLE = "NO_UPDATE_AVAILABLE"
     UPDATE_SUCCESSFUL = "UPDATE_SUCCESSFUL"
+    UPDATE_PRECONDITION_FAILED = "UPDATE_PRECONDITION_FAILED"
 
 
 @dataclass

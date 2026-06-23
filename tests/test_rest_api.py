@@ -554,6 +554,7 @@ def load_software_updates() -> list[str]:
     for path in [
         "enyaq/software-version.json",
         "enyaq/software-version-no-update.json",
+        "enyaq/software-version-precondition-failed.json",
     ]:
         with FIXTURES_DIR.joinpath(path).open() as file:
             software_updates.append(file.read())
