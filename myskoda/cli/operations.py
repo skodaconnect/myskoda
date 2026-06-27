@@ -1,16 +1,13 @@
 """Commands for the CLI for operations that can be performed."""
 
 import asyncio
-from typing import TYPE_CHECKING
+from datetime import datetime, time
+from typing import TYPE_CHECKING, Any
 
 import asyncclick as click
-from asyncclick.core import Context
+from asyncclick.core import Context, Parameter
 
 from myskoda.cli.utils import mqtt_required
-
-if TYPE_CHECKING:
-    from myskoda import MySkoda
-
 from myskoda.models.air_conditioning import (
     AirConditioningAtUnlock,
     AirConditioningWithoutExternalPower,
@@ -20,6 +17,10 @@ from myskoda.models.air_conditioning import (
     WindowHeating,
 )
 from myskoda.models.auxiliary_heating import AuxiliaryConfig, AuxiliaryStartMode
+
+if TYPE_CHECKING:
+    from myskoda import MySkoda
+    from myskoda.models.chargingprofiles import ChargingProfiles
 
 
 @click.command()
@@ -406,7 +407,7 @@ async def set_auto_unlock_plug(
 @click.command()
 @click.option("timeout", "--timeout", type=float, default=300)
 @click.argument("vin")
-@click.option("timer", "--timer", type=click.Choice(["1", "2", "3"]), required=True)
+@click.option("timer", "--timer", type=click.IntRange(1, 3), required=True)
 @click.option("enabled", "--enabled", type=bool, required=True)
 @click.pass_context
 @mqtt_required
@@ -414,18 +415,17 @@ async def set_departure_timer(
     ctx: Context,
     timeout: float,  # noqa: ASYNC109
     vin: str,
-    timer: str,
+    timer: int,
     enabled: bool,
 ) -> None:
     """Enable or disable selected departure timer."""
-    timer_id = int(timer)
     myskoda: MySkoda = ctx.obj["myskoda"]
     async with asyncio.timeout(timeout):
         # Get all timers from vehicle first
         departure_info = await myskoda.get_departure_timers(vin)
         if departure_info is not None:
             selected_timer = (
-                next((t for t in departure_info.timers if t.id == timer_id), None)
+                next((t for t in departure_info.timers if t.id == timer), None)
                 if departure_info.timers
                 else None
             )
@@ -433,7 +433,7 @@ async def set_departure_timer(
                 selected_timer.enabled = enabled
                 await myskoda.set_departure_timer(vin, selected_timer)
             else:
-                print(f"No timer found with ID {timer_id}.")
+                print(f"No timer found with ID {timer}.")
         else:
             print("No DepartureInfo found for the given VIN.")
 
@@ -441,7 +441,7 @@ async def set_departure_timer(
 @click.command()
 @click.option("timeout", "--timeout", type=float, default=300)
 @click.argument("vin")
-@click.option("timer", "--timer", type=click.Choice(["1", "2", "3"]), required=True)
+@click.option("timer", "--timer", type=click.IntRange(1, 3), required=True)
 @click.option("enabled", "--enabled", type=bool, required=True)
 @click.pass_context
 @mqtt_required
@@ -449,18 +449,17 @@ async def set_ac_timer(
     ctx: Context,
     timeout: float,  # noqa: ASYNC109
     vin: str,
-    timer: str,
+    timer: int,
     enabled: bool,
 ) -> None:
     """Enable or disable selected air-conditioning timer."""
-    timer_id = int(timer)
     myskoda: MySkoda = ctx.obj["myskoda"]
     async with asyncio.timeout(timeout):
         # Get all timers from vehicle first
         air_conditioning = await myskoda.get_air_conditioning(vin)
         if air_conditioning is not None:
             selected_timer = (
-                next((t for t in air_conditioning.timers if t.id == timer_id), None)
+                next((t for t in air_conditioning.timers if t.id == timer), None)
                 if air_conditioning.timers
                 else None
             )
@@ -468,7 +467,7 @@ async def set_ac_timer(
                 selected_timer.enabled = enabled
                 await myskoda.set_ac_timer(vin, selected_timer)
             else:
-                print(f"No timer found with ID {timer_id}.")
+                print(f"No timer found with ID {timer}.")
         else:
             print("No AirConditioning found for the given VIN.")
 
@@ -476,7 +475,7 @@ async def set_ac_timer(
 @click.command()
 @click.option("timeout", "--timeout", type=float, default=300)
 @click.argument("vin")
-@click.option("timer", "--timer", type=click.Choice(["1", "2", "3"]), required=True)
+@click.option("timer", "--timer", type=click.IntRange(1, 3), required=True)
 @click.option("enabled", "--enabled", type=bool, required=True)
 @click.option("spin", "--spin", type=str, required=True)
 @click.pass_context
@@ -485,19 +484,18 @@ async def set_aux_timer(  # noqa: PLR0913
     ctx: Context,
     timeout: float,  # noqa: ASYNC109
     vin: str,
-    timer: str,
+    timer: int,
     enabled: bool,
     spin: str,
 ) -> None:
     """Enable or disable selected auxiliary-heating timer."""
-    timer_id = int(timer)
     myskoda: MySkoda = ctx.obj["myskoda"]
     async with asyncio.timeout(timeout):
         # Get all timers from vehicle first
         auxiliary_heating = await myskoda.get_auxiliary_heating(vin)
         if auxiliary_heating is not None:
             selected_timer = (
-                next((t for t in auxiliary_heating.timers if t.id == timer_id), None)
+                next((t for t in auxiliary_heating.timers if t.id == timer), None)
                 if auxiliary_heating.timers
                 else None
             )
@@ -505,6 +503,100 @@ async def set_aux_timer(  # noqa: PLR0913
                 selected_timer.enabled = enabled
                 await myskoda.set_auxiliary_heating_timer(vin, selected_timer, spin)
             else:
-                print(f"No timer found with ID {timer_id}.")
+                print(f"No timer found with ID {timer}.")
         else:
             print("No AuxiliaryHeating found for the given VIN.")
+
+
+class TimeType(click.ParamType):
+    name = "HH:MM"
+
+    def convert(self, value: Any, param: Parameter | None, ctx: Context | None) -> time:  # noqa: ANN401
+        if isinstance(value, time):
+            return value
+        try:
+            return datetime.strptime(value, "%H:%M").time()  # noqa: DTZ007
+        except ValueError:
+            self.fail(f"{value!r} is not a valid time in HH:MM format", param, ctx)
+
+
+TIME = TimeType()
+
+
+@click.command()
+@click.option("timeout", "--timeout", type=float, default=300)
+@click.argument("vin")
+@click.option("location", "--location", type=str, required=True)
+@click.option("charging_time_id", "--id", type=click.IntRange(1, 4), required=True)
+@click.option("enabled", "--enabled", type=bool, required=False, default=None)
+@click.option("start", "--start", type=TIME, required=False, default=None)
+@click.option("end", "--end", type=TIME, required=False, default=None)
+@click.pass_context
+async def set_preferred_charging(  # noqa: PLR0913
+    ctx: Context,
+    timeout: float,  # noqa: ASYNC109
+    vin: str,
+    location: str,
+    charging_time_id: int,
+    enabled: bool | None,
+    start: time | None,
+    end: time | None,
+) -> None:
+    """Update preferred charging times"""
+    myskoda: MySkoda = ctx.obj["myskoda"]
+
+    # As the command can be called with multiple optional parameters
+    # make sure that one item to update was actually provided before getting data from the servers
+    if enabled is None and start is None and end is None:
+        missing_charging_time_parameter = "No information to update was provided"
+        raise click.UsageError(missing_charging_time_parameter)
+
+    async with asyncio.timeout(timeout):
+        # Find the relevant charging time in the profile identified by its name
+        # then update as necessary, and send the complete profile back to the servers.
+        # To allow the command to be called with only the necessary parameters we have to get the
+        # complete data from the servers here as well
+        all_profiles: ChargingProfiles = await myskoda.get_charging_profiles(vin)
+
+        if all_profiles is None:
+            print("No Charging profiles found for the given VIN")
+            return
+
+        selected_location = (
+            next((t for t in all_profiles.charging_profiles if t.name == location), None)
+            if all_profiles.charging_profiles
+            else None
+        )
+
+        if selected_location is None:
+            print(f"No charging location found with name {location}.")
+            return
+
+        selected_charging_times = (
+            next(
+                (t for t in selected_location.preferred_charging_times if t.id == charging_time_id),
+                None,
+            )
+            if selected_location.preferred_charging_times
+            else None
+        )
+
+        if selected_charging_times is not None:
+            if enabled is not None:
+                selected_charging_times.enabled = enabled
+            if start is not None:
+                # The server data does not provide timezone information, which is
+                # also not editable in the app or the car itself.
+                # Therefore do not handle timezones her, but expect and enforce a format similar
+                # to what is editable in the app or in the car.
+                selected_charging_times.start_time = start
+
+            if end is not None:
+                # see above, assume the car only uses local time
+                selected_charging_times.end_time = end
+
+            await myskoda.set_preferred_charging_times(
+                vin, selected_location.id, selected_charging_times
+            )
+        else:
+            print(f"Charging times with ID {charging_time_id} not found.")
