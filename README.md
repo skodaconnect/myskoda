@@ -134,9 +134,9 @@ myskoda \
     --password password \
     gen-fixtures \
         --name my_cars \
-        --description "My cars in no specific state."
+        --description "My cars in no specific state." \
         --vehicle all \
-        get all
+        get ALL
 ```
 
 It is also possible to just contribute a single vehicle:
@@ -148,9 +148,9 @@ myskoda \
     --password password \
     gen-fixtures \
         --name my_favorite_car \
-        --description "My favorite car in no specific state."
+        --description "My favorite car in no specific state." \
         --vehicle TMOCKAA0AA000000 \
-        get all
+        get ALL
 ```
 
 Or even narrow down to an inidividual endpoint for an individual vehicle:
@@ -162,9 +162,9 @@ myskoda \
     --password password \
     gen-fixtures \
         --name my_favorite_car_info \
-        --description "Info for my favorite car in no specific state."
+        --description "Info for my favorite car in no specific state." \
         --vehicle TMOCKAA0AA000000 \
-        get info
+        get INFO
 ```
 
 This will call all the selected get-routes and load all data from your vehicles (no actions will be performed).
