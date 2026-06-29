@@ -70,7 +70,7 @@ from .models.charging_history import (
     ChargingStatisticsFilterOption,
     ChargingStatisticsRequest,
 )
-from .models.chargingprofiles import ChargingProfiles
+from .models.chargingprofiles import ChargingProfile, ChargingProfiles
 from .models.common import Vin
 from .models.departure import DepartureInfo, DepartureTimer
 from .models.driving_range import DrivingRange
@@ -422,7 +422,6 @@ class RestApi:
             anonymization_fn=anonymize_single_trip_statistics,
         )
         result = self._deserialize(raw, SingleTrips.from_json)
-        result.populate_utc_times()
 
         url = anonymize_url(url) if anonymize else url
         return GetEndpointResult(url=url, raw=raw, result=result)
@@ -1050,6 +1049,13 @@ class RestApi:
         await self._make_post_request(
             url=f"/v2/air-conditioning/{vin}/auxiliary-heating/timers",
             json=json_data,
+        )
+
+    async def set_charging_profile(self, vin: str, charging_profile: ChargingProfile) -> None:
+        """Update Charging Profile."""
+        json_data = charging_profile.to_dict(by_alias=True)
+        await self._make_put_request(
+            url=f"/v1/charging/{vin}/profiles/{charging_profile.id}", json=json_data
         )
 
     def _deserialize[T](self, text: str, deserialize: Callable[[str], T]) -> T:  # pragma: no cover

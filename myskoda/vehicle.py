@@ -3,6 +3,7 @@
 from .models.air_conditioning import AirConditioning
 from .models.auxiliary_heating import AuxiliaryHeating
 from .models.charging import Charging
+from .models.common import BaseResponse
 from .models.departure import DepartureInfo
 from .models.driving_range import DrivingRange
 from .models.health import Health
@@ -13,6 +14,11 @@ from .models.software_status import SoftwareUpdateStatus
 from .models.status import Status
 from .models.trip_statistics import SingleTrips, TripStatistics
 from .models.vehicle_connection_status import VehicleConnectionStatus
+
+
+def _ts_changed(existing: BaseResponse | None, new: BaseResponse) -> bool:
+    """Return True when car_captured_timestamp has changed or was absent."""
+    return existing is None or existing.car_captured_timestamp != new.car_captured_timestamp
 
 
 class Vehicle:
@@ -37,6 +43,48 @@ class Vehicle:
     def __init__(self, info: Info, maintenance: Maintenance) -> None:  # pragma: no cover
         self.info = info
         self.maintenance = maintenance
+
+    def update_charging(self, new: Charging) -> bool:
+        """Update charging if car_captured_timestamp changed; return True if updated."""
+        if not _ts_changed(self.charging, new):
+            return False
+        self.charging = new
+        return True
+
+    def update_status(self, new: Status) -> bool:
+        """Update status if car_captured_timestamp changed; return True if updated."""
+        if not _ts_changed(self.status, new):
+            return False
+        self.status = new
+        return True
+
+    def update_air_conditioning(self, new: AirConditioning) -> bool:
+        """Update air_conditioning if car_captured_timestamp changed; return True if updated."""
+        if not _ts_changed(self.air_conditioning, new):
+            return False
+        self.air_conditioning = new
+        return True
+
+    def update_auxiliary_heating(self, new: AuxiliaryHeating) -> bool:
+        """Update auxiliary_heating if car_captured_timestamp changed; return True if updated."""
+        if not _ts_changed(self.auxiliary_heating, new):
+            return False
+        self.auxiliary_heating = new
+        return True
+
+    def update_driving_range(self, new: DrivingRange) -> bool:
+        """Update driving_range if car_captured_timestamp changed; return True if updated."""
+        if not _ts_changed(self.driving_range, new):
+            return False
+        self.driving_range = new
+        return True
+
+    def update_departure_info(self, new: DepartureInfo) -> bool:
+        """Update departure_info if car_captured_timestamp changed; return True if updated."""
+        if not _ts_changed(self.departure_info, new):
+            return False
+        self.departure_info = new
+        return True
 
     def has_capability(self, cap: CapabilityId) -> bool:
         """Check for a capability.

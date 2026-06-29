@@ -1,4 +1,4 @@
-"""Models for responses of api/v1/trip-statistics/{vin}/single-trips."""
+"""Models for trip statistics API responses."""
 
 from dataclasses import dataclass, field
 from datetime import date, datetime
@@ -141,9 +141,10 @@ class Trip(DataClassORJSONMixin):
     start_time: str | None = field(default=None, metadata=field_options(alias="startTime"))
     end_time: str | None = field(default=None, metadata=field_options(alias="endTime"))
 
-    start_time_utc: datetime | None = None
-    end_time_utc: datetime | None = None
-
+    start_time_utc: datetime | None = field(
+        default=None, metadata=field_options(alias="startTimeUTC")
+    )
+    end_time_utc: datetime | None = field(default=None, metadata=field_options(alias="endTimeUTC"))
     start_mileage_in_km: int | None = field(
         default=None, metadata=field_options(alias="startMileageInKm")
     )
@@ -206,6 +207,10 @@ class Trip(DataClassORJSONMixin):
             None,
         )
 
+    def __post_init__(self) -> None:
+        """Populate derived UTC timestamps after model creation."""
+        self.populate_utc_times()
+
 
 @dataclass
 class DailyTrip(DataClassORJSONMixin):
@@ -231,12 +236,3 @@ class SingleTrips(BaseResponse):
     short_trip_threshold_in_mi: int | None = field(
         default=None, metadata=field_options(alias="shortTripThresholdInMi")
     )
-
-    def populate_utc_times(self) -> None:
-        """Populate UTC trip timestamps for all trips."""
-        for daily_trip in self.daily_trips:
-            if not daily_trip.trips:
-                continue
-
-            for trip in daily_trip.trips:
-                trip.populate_utc_times()

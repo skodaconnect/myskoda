@@ -1,7 +1,6 @@
 """Models for responses of v1/vehicle-information/{vin}/software-version/update-status endpoint."""
 
 from dataclasses import dataclass, field
-from datetime import datetime
 
 from mashumaro import field_options
 
@@ -11,15 +10,13 @@ from .common import BaseResponse, CaseInsensitiveStrEnum
 class SoftwareStatus(CaseInsensitiveStrEnum):
     NO_UPDATE_AVAILABLE = "NO_UPDATE_AVAILABLE"
     UPDATE_SUCCESSFUL = "UPDATE_SUCCESSFUL"
+    UPDATE_PRECONDITION_FAILED = "UPDATE_PRECONDITION_FAILED"
 
 
 @dataclass
 class SoftwareUpdateStatus(BaseResponse):
     status: SoftwareStatus
     current_software_version: str = field(metadata=field_options(alias="currentSoftwareVersion"))
-    car_captured_timestamp: datetime | None = field(
-        default=None, metadata=field_options(alias="carCapturedTimestamp")
-    )
     release_notes_url: str | None = field(
         default=None, metadata=field_options(alias="releaseNotesUrl")
     )

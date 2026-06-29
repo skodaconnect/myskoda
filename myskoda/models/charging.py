@@ -1,7 +1,6 @@
 """Models for responses of api/v1/charging endpoint."""
 
 from dataclasses import dataclass, field
-from datetime import datetime
 from enum import StrEnum
 
 from mashumaro import field_options
@@ -123,8 +122,5 @@ class Charging(BaseResponse):
     settings: Settings
     is_vehicle_in_saved_location: bool = field(
         metadata=field_options(alias="isVehicleInSavedLocation")
-    )
-    car_captured_timestamp: datetime | None = field(
-        default=None, metadata=field_options(alias="carCapturedTimestamp")
     )
     status: ChargingStatus | None = field(default=None)

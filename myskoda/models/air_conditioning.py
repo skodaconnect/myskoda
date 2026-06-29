@@ -13,7 +13,15 @@ from mashumaro.config import (
 )
 from mashumaro.mixins.orjson import DataClassORJSONMixin
 
-from .common import BaseResponse, ChargerLockedState, ConnectionState, OnOffState, Side, Weekday
+from .common import (
+    BaseResponse,
+    CaseInsensitiveStrEnum,
+    ChargerLockedState,
+    ConnectionState,
+    OnOffState,
+    Side,
+    Weekday,
+)
 
 
 class TemperatureUnit(StrEnum):
@@ -25,7 +33,7 @@ class TimerMode(StrEnum):
     RECURRING = "RECURRING"
 
 
-class AirConditioningState(StrEnum):
+class AirConditioningState(CaseInsensitiveStrEnum):
     COOLING = "COOLING"
     HEATING = "HEATING"
     HEATING_AUXILIARY = "HEATING_AUXILIARY"
@@ -156,9 +164,6 @@ class AirConditioning(BaseResponse):
     )
     window_heating_state: WindowHeatingState | None = field(
         default=None, metadata=field_options(alias="windowHeatingState")
-    )
-    car_captured_timestamp: datetime | None = field(
-        default=None, metadata=field_options(alias="carCapturedTimestamp")
     )
     air_conditioning_at_unlock: bool | None = field(
         default=None, metadata=field_options(alias="airConditioningAtUnlock")

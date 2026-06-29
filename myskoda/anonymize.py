@@ -47,6 +47,7 @@ SERVICE_PARTNER = {
     "location": LOCATION,
 }
 FORMATTED_ADDRESS = "1600 Pennsylvania Ave NW, Washington, DC 20500, USA"
+LOCATION_NAME = "Example Location"
 PROFILE_NAME = "Example Profile"
 
 
@@ -212,6 +213,30 @@ def anonymize_driving_range(data: dict) -> dict:
     return data
 
 
+def anonymize_waypoint(waypoint: dict) -> dict:
+    """Anonymize location details in a waypoint."""
+    if "coordinates" in waypoint:
+        waypoint["coordinates"] = LOCATION
+    if "formattedAddress" in waypoint:
+        waypoint["formattedAddress"] = FORMATTED_ADDRESS
+    if "locationName" in waypoint:
+        waypoint["locationName"] = LOCATION_NAME
+    if "address" in waypoint:
+        waypoint["address"] = ADDRESS
+    return waypoint
+
+
+def anonymize_trip(trip: dict) -> dict:
+    """Anonymize location details in a trip."""
+    if "startLocationName" in trip:
+        trip["startLocationName"] = LOCATION_NAME
+    if "endLocationName" in trip:
+        trip["endLocationName"] = LOCATION_NAME
+    if "waypoints" in trip:
+        trip["waypoints"] = [anonymize_waypoint(waypoint) for waypoint in trip["waypoints"]]
+    return trip
+
+
 def anonymize_trip_statistics(data: dict) -> dict:
     """Anonymize select parts if the input from the trip_statistics dict.
 
@@ -221,6 +246,9 @@ def anonymize_trip_statistics(data: dict) -> dict:
     Returns:
         dict
     """
+    for statistics in data.get("detailedStatistics", []):
+        for trip in statistics.get("trips", []):
+            anonymize_trip(trip)
     return data
 
 
@@ -233,6 +261,9 @@ def anonymize_single_trip_statistics(data: dict) -> dict:
     Returns:
         dict
     """
+    for daily_trip in data.get("dailyTrips", []):
+        for trip in daily_trip.get("trips", []):
+            anonymize_trip(trip)
     return data
 
 

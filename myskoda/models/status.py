@@ -2,7 +2,6 @@
 
 import logging
 from dataclasses import dataclass, field
-from datetime import datetime
 from enum import IntEnum
 from urllib.parse import parse_qs, urlparse
 
@@ -74,9 +73,6 @@ class Status(BaseResponse):
     detail: Detail
     overall: Overall
     renders: Renders
-    car_captured_timestamp: datetime | None = field(
-        default=None, metadata=field_options(alias="carCapturedTimestamp")
-    )
 
     def _extract_window_door_state_list_from_url(self) -> list[int]:
         """Extract window/door states from renders url.
