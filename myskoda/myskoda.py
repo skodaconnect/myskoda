@@ -80,10 +80,13 @@ from .models.event import (
     OperationEvent,
     OperationName,
     OperationStatus,
+    ServiceEvent,
     ServiceEventAccess,
     ServiceEventAirConditioning,
+    ServiceEventChangeChargeMode,
     ServiceEventChangeSoc,
     ServiceEventCharging,
+    ServiceEventClimatisationCompleted,
     ServiceEventDeparture,
     ServiceEventOdometer,
 )
@@ -1168,12 +1171,19 @@ class MySkoda:
 
         if isinstance(event, OperationEvent):
             await self._process_operation_event(event)
-        elif isinstance(event, ServiceEventChangeSoc):
+        elif isinstance(event, ServiceEvent):
+            await self._on_service_event(event)
+
+    async def _on_service_event(self, event: ServiceEvent) -> None:
+        """Dispatch a service event to the appropriate handler."""
+        if isinstance(event, (ServiceEventChangeSoc, ServiceEventChangeChargeMode)):
             await self._process_charging_event(event)
         elif isinstance(event, ServiceEventCharging):
             await self.refresh_charging(event.vin)
         elif isinstance(event, ServiceEventAccess):
             await self.refresh_vehicle(event.vin)
+        elif isinstance(event, ServiceEventClimatisationCompleted):
+            await self._process_climatisation_event(event)
         elif isinstance(event, ServiceEventAirConditioning):
             await self.refresh_air_conditioning(event.vin)
         elif isinstance(event, ServiceEventDeparture):
@@ -1228,7 +1238,9 @@ class MySkoda:
         elif event.operation == OperationName.UPDATE_DEPARTURE_TIMERS:
             await self.refresh_departure_info(event.vin)
 
-    async def _process_charging_event(self, event: ServiceEventChangeSoc) -> None:
+    async def _process_charging_event(
+        self, event: ServiceEventChangeSoc | ServiceEventChangeChargeMode
+    ) -> None:
         """Update self._vehicles with data from the event.
 
         Start by fully refreshing Vehicle.charging and Vehicle.driving_range as the endpoints
@@ -1241,23 +1253,57 @@ class MySkoda:
 
         vehicle = self._vehicles[event.vin]
         if charging := vehicle.charging:
-            self._process_charging_event_update_charging(
-                charging,
-                event,
-            )
+            self._process_charging_event_update_charging(charging, event)
 
         if driving_range := vehicle.driving_range:
-            self._process_charging_event_update_driving_range(
-                driving_range,
-                event,
-            )
+            self._process_charging_event_update_driving_range(driving_range, event)
+
+        self._notify_callbacks(event.vin)
+
+    async def _process_climatisation_event(self, event: ServiceEventClimatisationCompleted) -> None:
+        """Refresh AC state from REST, then overlay event state if newer."""
+        _LOGGER.debug("Processing climatisation-completed event: %s", event)
+        await self.refresh_air_conditioning(event.vin, notify=False)
+
+        state = self._vehicles[event.vin]
+        if ac := state.air_conditioning:
+            self._process_climatisation_event_update_air_conditioning(ac, event)
 
         self._notify_callbacks(event.vin)
 
     @staticmethod
+    def _process_climatisation_event_update_air_conditioning(
+        ac: AirConditioning,
+        event: ServiceEventClimatisationCompleted,
+    ) -> None:
+        """Update air_conditioning with the event data when the event is newer."""
+        if ac.car_captured_timestamp:
+            threshold = datetime.now(UTC) + timedelta(hours=CACHE_CLOCK_SKEW_TOLERANCE_IN_HOURS)
+            if ac.car_captured_timestamp > threshold:
+                _LOGGER.warning(
+                    "Timestamp %s is more than %sh ahead; possible vehicle clock issue.",
+                    ac.car_captured_timestamp,
+                    CACHE_CLOCK_SKEW_TOLERANCE_IN_HOURS,
+                )
+            elif event.timestamp <= ac.car_captured_timestamp:
+                _LOGGER.debug(
+                    "Ignoring stale climatisation MQTT event: event timestamp %s, AC snapshot %s",
+                    event.timestamp,
+                    ac.car_captured_timestamp,
+                )
+                return
+
+        if event.data.state:
+            ac.state = event.data.state
+        if event.data.time_to_finish:
+            ac.estimated_date_time_to_reach_target_temperature = event.timestamp + timedelta(
+                minutes=event.data.time_to_finish
+            )
+
+    @staticmethod
     def _process_charging_event_update_charging(
         charging: Charging,
-        event: ServiceEventChangeSoc,
+        event: ServiceEventChangeSoc | ServiceEventChangeChargeMode,
     ) -> None:
         """Update charging with the event_data when the event is newer."""
         if charging.car_captured_timestamp:
@@ -1293,7 +1339,7 @@ class MySkoda:
     @staticmethod
     def _process_charging_event_update_driving_range(  # noqa: C901
         driving_range: DrivingRange,
-        event: ServiceEventChangeSoc,
+        event: ServiceEventChangeSoc | ServiceEventChangeChargeMode,
     ) -> None:
         """Update driving_range with the event_data when the event is newer."""
         if not driving_range.car_captured_timestamp:
