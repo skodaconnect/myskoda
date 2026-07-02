@@ -1,0 +1,116 @@
+{
+    "vehicleType": "ELECTRIC",
+    "dailyTrips": [
+        {
+            "date": "2026-06-09",
+            "overallMileage": 85,
+            "trips": [
+                {
+                    "id": "trip-1",
+                    "startTime": "15:09",
+                    "endTime": "20:02",
+                    "startMileageInKm": 15568,
+                    "endMileageInKm": 15613,
+                    "mileageInKm": 45,
+                    "travelTimeInMin": 293,
+                    "drivingTimeInMin": 50,
+                    "averageElectricConsumption": 17.1,
+                    "averageSpeedInKmph": 54,
+                    "electricConsumption": 7.7,
+                    "startBatteryStateOfChargeInPercent": 80,
+                    "endBatteryStateOfChargeInPercent": 70,
+                    "startLocationName": "Start location",
+                    "endLocationName": "End location",
+                    "isShortTrip": false,
+                    "waypoints": [
+                        {
+                            "chargedHere": false,
+                            "coordinates": {
+                                "latitude": 52.0,
+                                "longitude": 13.0
+                            },
+                            "departureStateOfChargeInPercent": 80,
+                            "departureTime": "2026-06-09T13:09:12.644Z",
+                            "distanceToNextWaypointInKm": 45,
+                            "formattedAddress": "Start address",
+                            "locationName": "Start location",
+                            "timeToNextWaypointInMin": 50
+                        },
+                        {
+                            "chargedHere": false,
+                            "arrivalStateOfChargeInPercent": 70,
+                            "arrivalTime": "2026-06-09T18:02:25.801Z",
+                            "coordinates": {
+                                "latitude": 52.1,
+                                "longitude": 13.1
+                            },
+                            "formattedAddress": "End address",
+                            "locationName": "End location"
+                        }
+                    ]
+                },
+                {
+                    "id": "trip-2",
+                    "startTime": "06:15",
+                    "endTime": "06:57",
+                    "startMileageInKm": 15528,
+                    "endMileageInKm": 15568,
+                    "mileageInKm": 40,
+                    "travelTimeInMin": 41,
+                    "drivingTimeInMin": 30,
+                    "averageElectricConsumption": 21.2,
+                    "averageSpeedInKmph": 80,
+                    "electricConsumption": 8.47,
+                    "startBatteryStateOfChargeInPercent": 68,
+                    "endBatteryStateOfChargeInPercent": 57,
+                    "startLocationName": "Start location",
+                    "endLocationName": "End location",
+                    "isShortTrip": false,
+                    "waypoints": [
+                        {
+                            "chargedHere": false,
+                            "coordinates": {
+                                "latitude": 52.2,
+                                "longitude": 13.2
+                            },
+                            "departureStateOfChargeInPercent": 68,
+                            "departureTime": "2026-06-09T04:15:09.438Z",
+                            "distanceToNextWaypointInKm": 3,
+                            "formattedAddress": "Start address",
+                            "locationName": "Start location",
+                            "timeToNextWaypointInMin": 5
+                        },
+                        {
+                            "chargedHere": false,
+                            "arrivalStateOfChargeInPercent": 68,
+                            "arrivalTime": "2026-06-09T04:20:17.102Z",
+                            "coordinates": {
+                                "latitude": 52.3,
+                                "longitude": 13.3
+                            },
+                            "departureStateOfChargeInPercent": 68,
+                            "departureTime": "2026-06-09T04:31:07.365Z",
+                            "distanceToNextWaypointInKm": 37,
+                            "formattedAddress": "Stop address",
+                            "locationName": "Stop location",
+                            "timeToNextWaypointInMin": 25
+                        },
+                        {
+                            "chargedHere": false,
+                            "arrivalStateOfChargeInPercent": 57,
+                            "arrivalTime": "2026-06-09T04:57:00.352Z",
+                            "coordinates": {
+                                "latitude": 52.4,
+                                "longitude": 13.4
+                            },
+                            "formattedAddress": "End address",
+                            "locationName": "End location"
+                        }
+                    ]
+                }
+            ]
+        }
+    ],
+    "shortTripThresholdInKm": 10,
+    "shortTripThresholdInMi": 6
+}

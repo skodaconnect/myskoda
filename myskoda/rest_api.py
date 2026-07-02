@@ -422,6 +422,7 @@ class RestApi:
             anonymization_fn=anonymize_single_trip_statistics,
         )
         result = self._deserialize(raw, SingleTrips.from_json)
+
         url = anonymize_url(url) if anonymize else url
         return GetEndpointResult(url=url, raw=raw, result=result)
 
