@@ -5,12 +5,14 @@ import re
 from datetime import UTC, date, datetime
 from pathlib import Path
 from unittest.mock import patch
+from uuid import UUID
 
 import pytest
 from aiohttp import ClientResponseError
 from aioresponses import aioresponses
 
 from myskoda.anonymize import FORMATTED_ADDRESS, LICENSE_PLATE, LOCATION, VEHICLE_NAME
+from myskoda.models.charging_history import ChargingStatistics
 from myskoda.models.common import OpenState
 from myskoda.models.departure import DepartureInfo
 from myskoda.models.driving_score import DrivingScoreResult
@@ -26,8 +28,6 @@ from myskoda.rest_api import OffsetType, RestApi
 from myskoda.utils import to_iso8601
 
 FIXTURES_DIR = Path(__file__).parent.joinpath("fixtures")
-
-print(f"__file__ = {__file__}")
 
 
 @pytest.fixture(name="vehicle_infos")
@@ -418,10 +418,97 @@ async def test_charging_statistics(
     all_entries = [e for s in result.month_sections for e in s.entries]
     assert len(all_entries) == sum(len(s["entries"]) for s in data["monthSections"])
 
-    first = all_entries[0].details
-    assert str(first.session_id) == "a1b2c3d4-e5f6-7890-abcd-ef1234567890"
-    assert first.charging_start_time == datetime(2026, 5, 15, 8, 30)  # noqa: DTZ001
+    entry = all_entries[0]
+
+    assert entry.id
+    assert entry.title
+    assert entry.primary_value
+    assert entry.secondary_value
+    assert entry.details.charging_start_time == datetime(2026, 6, 10, 5, 14, 55, tzinfo=UTC)
+    assert entry.details.charging_end_time == datetime(2026, 6, 10, 13, 31, 51, tzinfo=UTC)
+
+    fixture_entry = data["monthSections"][0]["entries"][0]
+
+    assert str(entry.details.session_id) == fixture_entry["details"]["sessionId"]
+    assert entry.details.charging_power_type.value == fixture_entry["details"]["chargingPowerType"]
+    assert entry.details.is_curve_available is True
+
+    assert result.missing_elli_consent is False
     assert result.csv_file == data["csvFile"]
+
+
+@pytest.mark.asyncio
+async def test_charging_statistics_na_session_id(
+    charging_statistics_fixture: str,
+    myskoda: MySkoda,
+    responses: aioresponses,
+) -> None:
+    target_vin = "TMBJM0CKV1N12345"
+    start = datetime(2026, 4, 1, tzinfo=UTC)
+    end = datetime(2026, 5, 18, tzinfo=UTC)
+
+    data = json.loads(charging_statistics_fixture)
+    data["monthSections"][0]["entries"][0]["details"]["sessionId"] = "N/A"
+
+    responses.post(
+        url="https://prod.emea.mobile.charging.cariad.digital/charging_statistics",
+        body=json.dumps(data),
+    )
+
+    result = await myskoda.get_charging_statistics(target_vin, start, end)
+
+    entry = result.month_sections[0].entries[0]
+
+    assert entry.details.session_id is None
+
+
+def test_charging_statistics_csv_bytes(
+    charging_statistics_fixture: str,
+) -> None:
+    """Test charging statistics CSV bytes decoding."""
+
+    result = ChargingStatistics.from_json(charging_statistics_fixture)
+
+    assert result.csv_bytes is not None
+    assert b"Session ID" in result.csv_bytes
+
+
+def test_charging_statistics_csv_text(
+    charging_statistics_fixture: str,
+) -> None:
+    """Test charging statistics CSV text decoding."""
+
+    result = ChargingStatistics.from_json(charging_statistics_fixture)
+
+    assert result.csv_text is not None
+    assert "Session ID" in result.csv_text
+
+
+def test_charging_statistics_csv_sessions(
+    charging_statistics_fixture: str,
+) -> None:
+    """Test charging statistics CSV session parsing."""
+
+    result = ChargingStatistics.from_json(charging_statistics_fixture)
+
+    sessions = result.csv_sessions
+
+    expected_session_ids = {
+        UUID("a354fad4-d52d-44a6-badd-76ac76c9926a"),
+        UUID("e3d6b8a4-a2f7-409d-a972-f1a9457a0b0f"),
+    }
+
+    assert set(sessions.keys()) == expected_session_ids
+
+    session = sessions[UUID("a354fad4-d52d-44a6-badd-76ac76c9926a")]
+
+    assert session.started_on == datetime(2026, 6, 10, 5, 14, 55, tzinfo=UTC)
+    assert session.ended_on == datetime(2026, 6, 10, 13, 31, 51, tzinfo=UTC)
+
+    session = sessions[UUID("e3d6b8a4-a2f7-409d-a972-f1a9457a0b0f")]
+
+    assert session.started_on == datetime(2026, 5, 29, 4, 57, 35, tzinfo=UTC)
+    assert session.ended_on == datetime(2026, 5, 29, 10, 42, 5, tzinfo=UTC)
 
 
 @pytest.fixture(name="spin_statuses")

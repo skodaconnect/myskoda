@@ -1,57 +1,56 @@
 {
+    "applicableFilterOptions": [
+        {
+            "filterType": "VEHICLE",
+            "id": "TMBTEST000000001",
+            "label": "TMBTEST000000001"
+        }
+    ],
     "monthSections": [
         {
-            "title": "May 2026",
+            "title": "June 2026",
             "entries": [
                 {
+                    "id": "ruqGssoVwARYaaNHPawhrhAPMOKzzbO-YDHBL6ObgKo",
+                    "title": "Wed 10/06/2026, 05:14",
+                    "primaryValue": "~ 17 kWh",
+                    "secondaryValue": "8h 16min",
                     "details": {
-                        "sessionId": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
-                        "chargingPowerType": "DC",
+                        "sessionId": "a354fad4-d52d-44a6-badd-76ac76c9926a",
+                        "chargingPowerType": "AC",
                         "formattedTotalEnergy": "~ 17 kWh",
-                        "formattedChargingStartTime": "15.05.26 08:30",
-                        "formattedChargingEndTime": "15.05.26 09:05",
-                        "formattedTotalChargingTime": "0h 35min",
-                        "formattedActiveChargingTime": "0h 33min",
-                        "formattedStartSoc": "22%",
-                        "formattedEndSoc": "65%",
-                        "isActiveSession": false
+                        "formattedChargingStartTime": "10/06/2026, 05:14",
+                        "formattedChargingEndTime": "10/06/2026, 13:31",
+                        "formattedTotalChargingTime": "8h 16min",
+                        "formattedActiveChargingTime": "1h 48min",
+                        "formattedStartSoc": "56%",
+                        "formattedEndSoc": "80%",
+                        "isActiveSession": false,
+                        "isCurveAvailable": true
                     }
                 },
                 {
+                    "id": "owGdHzSxhxwfPerQIAaDCawlrZwYmktzZ3ndGa3j8h8",
+                    "title": "Fri 29/05/2026, 04:57",
+                    "primaryValue": "~ 22 kWh",
+                    "secondaryValue": "5h 44min",
                     "details": {
-                        "sessionId": "b2c3d4e5-f6a7-8901-bcde-f12345678901",
+                        "sessionId": "e3d6b8a4-a2f7-409d-a972-f1a9457a0b0f",
                         "chargingPowerType": "AC",
-                        "formattedTotalEnergy": "~ 42 kWh",
-                        "formattedChargingStartTime": "10.05.26 22:15",
-                        "formattedChargingEndTime": "11.05.26 06:30",
-                        "formattedTotalChargingTime": "8h 15min",
-                        "formattedActiveChargingTime": "7h 50min",
-                        "formattedStartSoc": "18%",
+                        "formattedTotalEnergy": "~ 22 kWh",
+                        "formattedChargingStartTime": "29/05/2026, 04:57",
+                        "formattedChargingEndTime": "29/05/2026, 10:42",
+                        "formattedTotalChargingTime": "5h 44min",
+                        "formattedActiveChargingTime": "2h 2min",
+                        "formattedStartSoc": "72%",
                         "formattedEndSoc": "100%",
-                        "isActiveSession": false
-                    }
-                }
-            ]
-        },
-        {
-            "title": "April 2026",
-            "entries": [
-                {
-                    "details": {
-                        "sessionId": "c3d4e5f6-a7b8-9012-cdef-123456789012",
-                        "chargingPowerType": "DC",
-                        "formattedTotalEnergy": "~ 25 kWh",
-                        "formattedChargingStartTime": "28.04.26 14:00",
-                        "formattedChargingEndTime": "28.04.26 14:35",
-                        "formattedTotalChargingTime": "0h 35min",
-                        "formattedActiveChargingTime": "0h 34min",
-                        "formattedStartSoc": "30%",
-                        "formattedEndSoc": "80%",
-                        "isActiveSession": false
+                        "isActiveSession": false,
+                        "isCurveAvailable": true
                     }
                 }
             ]
         }
     ],
-    "csvFile": "c2Vzc2lvbklkLHN0YXJ0VGltZSxlbmRUaW1lLGVuZXJneUluS1dILGN1cnJlbnRUeXBl"
+    "missingElliConsent": false,
+    "csvFile": "IlNlc3Npb24gSUQiLCJTdGFydGVkIG9uIiwiRW5kZWQgb24iDQoiYTM1NGZhZDQtZDUyZC00NGE2LWJhZGQtNzZhYzc2Yzk5MjZhIiwiMjAyNi0wNi0xMFQwNToxNDo1NVoiLCIyMDI2LTA2LTEwVDEzOjMxOjUxWiINCiJlM2Q2YjhhNC1hMmY3LTQwOWQtYTk3Mi1mMWE5NDU3YTBiMGYiLCIyMDI2LTA1LTI5VDA0OjU3OjM1WiIsIjIwMjYtMDUtMjlUMTA6NDI6MDVaIg0K"
 }

@@ -139,6 +139,16 @@ class RestApi:
         anonymized = anonymization_fn(parsed)
         return json.dumps(anonymized)
 
+    async def _charging_headers(self) -> dict[str, str]:
+        token = await self.authorization.get_access_token()
+        return {
+            "Accept-Language": "en-US",
+            "Authorization": f"Bearer {token}",
+            "X-Brand": "skoda",
+            "X-Device-Timezone": "GMT",
+            "X-Api-Version": "1",
+        }
+
     async def _make_request(self, url: str, method: str, json: dict | None = None) -> str:
         try:
             async with asyncio.timeout(REQUEST_TIMEOUT_IN_SECONDS):
@@ -179,12 +189,12 @@ class RestApi:
                 async with self.session.request(
                     method="POST",
                     url=url,
-                    headers=await self._headers(),
+                    headers=await self._charging_headers(),
                     json=json,
                 ) as response:
-                    await response.text()
+                    body = await response.text()
                     response.raise_for_status()
-                    return await response.text()
+                    return body
         except TimeoutError:  # pragma: no cover
             _LOGGER.exception("Timeout while sending POST request to %s", url)
             raise
@@ -275,19 +285,45 @@ class RestApi:
         new sessions after a certain date.
         """
         url = f"{BASE_URL_CHARGING}/charging_statistics"
+
         request = ChargingStatisticsRequest(
             started_after=start.date(),
             started_before=end.date(),
-            selected_filter_options=[ChargingStatisticsFilterOption(filter_type="VEHICLE", id=vin)],
+            selected_filter_options=[
+                ChargingStatisticsFilterOption(
+                    filter_type="VEHICLE",
+                    vin=vin,
+                )
+            ],
         )
+
+        json_data = request.to_dict(by_alias=True, omit_none=True)
+
         raw = self.process_json(
-            data=await self._make_charging_post_request(
-                "charging_statistics", json=request.to_dict()
-            ),
+            data=await self._make_charging_post_request("charging_statistics", json=json_data),
             anonymize=False,
             anonymization_fn=anonymize_info,
         )
+
         result = self._deserialize(raw, ChargingStatistics.from_json)
+
+        csv_sessions = result.csv_sessions
+
+        for section in result.month_sections:
+            for entry in section.entries:
+                session_id = entry.details.session_id
+
+                if session_id is None:
+                    continue
+
+                csv_session = csv_sessions.get(session_id)
+
+                if csv_session is None:
+                    continue
+
+                entry.details.charging_start_time = csv_session.started_on
+                entry.details.charging_end_time = csv_session.ended_on
+
         return GetEndpointResult(url=url, raw=raw, result=result)
 
     async def get_status(self, vin: str, anonymize: bool = False) -> GetEndpointResult[Status]:
