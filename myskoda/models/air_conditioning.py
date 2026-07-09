@@ -153,6 +153,14 @@ class WindowHeating(DataClassORJSONMixin):
 
 
 @dataclass
+class CampingMode(DataClassORJSONMixin):
+    """Camping mode state."""
+
+    enabled: bool
+    ends_at: datetime | None = field(default=None, metadata=field_options(alias="endsAt"))
+
+
+@dataclass
 class AirConditioning(BaseResponse):
     """Information related to air conditioning."""
 
@@ -194,4 +202,7 @@ class AirConditioning(BaseResponse):
     )
     outside_temperature: OutsideTemperature | None = field(
         default=None, metadata=field_options(alias="outsideTemperature")
+    )
+    camping_mode: CampingMode | None = field(
+        default=None, metadata=field_options(alias="campingMode")
     )

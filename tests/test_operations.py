@@ -929,3 +929,41 @@ async def test_set_preferred_charging(  # noqa: PLR0913
             headers={"authorization": f"Bearer {ACCESS_TOKEN}"},
             json=json_data,
         )
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize(("temperature", "expected"), [(21.5, 21.5), (23.2, 23.0), (10.01, 10.0)])
+async def test_start_camping(
+    responses: aioresponses,
+    myskoda: MySkoda,
+    temperature: float,
+    expected: float,
+) -> None:
+    """Camping mode start posts the bare target-temperature body and does not wait for MQTT."""
+    url = f"{BASE_URL_SKODA}/api/v2/air-conditioning/{VIN}/camping/start"
+    responses.post(url=url)
+
+    await myskoda.start_camping(VIN, temperature)
+
+    responses.assert_called_with(
+        url=url,
+        method="POST",
+        headers={"authorization": f"Bearer {ACCESS_TOKEN}"},
+        json={"temperatureValue": expected, "unitInCar": "CELSIUS"},
+    )
+
+
+@pytest.mark.asyncio
+async def test_stop_camping(responses: aioresponses, myskoda: MySkoda) -> None:
+    """Camping mode stop posts no body and does not wait for MQTT."""
+    url = f"{BASE_URL_SKODA}/api/v2/air-conditioning/{VIN}/camping/stop"
+    responses.post(url=url)
+
+    await myskoda.stop_camping(VIN)
+
+    responses.assert_called_with(
+        url=url,
+        method="POST",
+        headers={"authorization": f"Bearer {ACCESS_TOKEN}"},
+        json=None,
+    )

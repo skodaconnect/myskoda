@@ -759,6 +759,22 @@ class MySkoda:
         await self.rest_api.stop_air_conditioning(vin)
         await future
 
+    async def start_camping(self, vin: Vin, temperature: float) -> None:
+        """Start camping mode with the provided target temperature in °C.
+
+        Camping mode does not emit a dedicated operation event, so this returns
+        once the request is accepted; the new state is reflected on the next poll.
+        """
+        await self.rest_api.start_camping(vin, temperature)
+
+    async def stop_camping(self, vin: Vin) -> None:
+        """Stop camping mode.
+
+        Camping mode does not emit a dedicated operation event, so this returns
+        once the request is accepted; the new state is reflected on the next poll.
+        """
+        await self.rest_api.stop_camping(vin)
+
     async def start_ventilation(self, vin: Vin) -> None:
         """Start the ventilation."""
         future = self._wait_for_operation(OperationName.START_ACTIVE_VENTILATION)

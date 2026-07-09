@@ -810,6 +810,21 @@ class RestApi:
             json=json_data,
         )
 
+    async def start_camping(self, vin: str, temperature: float) -> None:
+        """Start camping mode with the provided target temperature in °C."""
+        round_temp = round(temperature * 2) / 2
+        _LOGGER.debug("Starting camping mode for vehicle %s with temperature %.1f", vin, round_temp)
+        json_data = {"temperatureValue": round_temp, "unitInCar": "CELSIUS"}
+        await self._make_post_request(
+            url=f"/v2/air-conditioning/{vin}/camping/start",
+            json=json_data,
+        )
+
+    async def stop_camping(self, vin: str) -> None:
+        """Stop camping mode."""
+        _LOGGER.debug("Stopping camping mode for vehicle %s", vin)
+        await self._make_post_request(url=f"/v2/air-conditioning/{vin}/camping/stop")
+
     async def set_ac_at_unlock(self, vin: str, settings: AirConditioningAtUnlock) -> None:
         """Enable or disable AC at unlock."""
         _LOGGER.debug(
