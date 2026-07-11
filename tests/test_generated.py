@@ -19,6 +19,8 @@ def _strip_injected_fields(d: dict) -> None:
     d.pop("timestamp", None)
     if d.get("car_captured_timestamp") is None:
         d.pop("car_captured_timestamp", None)
+    if d.get("camping_mode") is None:
+        d.pop("camping_mode", None)
     for v in d.values():
         if isinstance(v, dict):
             _strip_injected_fields(v)

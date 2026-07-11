@@ -759,6 +759,26 @@ class MySkoda:
         await self.rest_api.stop_air_conditioning(vin)
         await future
 
+    async def start_camping(self, vin: Vin, temperature: float) -> None:
+        """Start camping mode with the provided target temperature in °C.
+
+        Camping has no dedicated operation event; enabling it drives the climate,
+        so we await the regular start-air-conditioning operation.
+        """
+        future = self._wait_for_operation(OperationName.START_AIR_CONDITIONING)
+        await self.rest_api.start_camping(vin, temperature)
+        await future
+
+    async def stop_camping(self, vin: Vin) -> None:
+        """Stop camping mode.
+
+        Camping has no dedicated operation event; disabling it stops the climate,
+        so we await the regular stop-air-conditioning operation.
+        """
+        future = self._wait_for_operation(OperationName.STOP_AIR_CONDITIONING)
+        await self.rest_api.stop_camping(vin)
+        await future
+
     async def start_ventilation(self, vin: Vin) -> None:
         """Start the ventilation."""
         future = self._wait_for_operation(OperationName.START_ACTIVE_VENTILATION)
