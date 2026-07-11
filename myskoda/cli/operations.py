@@ -54,6 +54,36 @@ async def stop_air_conditioning(ctx: Context, timeout: float, vin: str) -> None:
 
 
 @click.command()
+@click.option("temperature", "--temperature", type=float, required=True)
+@click.option("timeout", "--timeout", type=float, default=300)
+@click.argument("vin")
+@click.pass_context
+@mqtt_required
+async def start_camping(
+    ctx: Context,
+    temperature: float,
+    timeout: float,  # noqa: ASYNC109
+    vin: str,
+) -> None:
+    """Start camping mode with the provided target temperature in °C."""
+    myskoda: MySkoda = ctx.obj["myskoda"]
+    async with asyncio.timeout(timeout):
+        await myskoda.start_camping(vin, temperature)
+
+
+@click.command()
+@click.option("timeout", "--timeout", type=float, default=300)
+@click.argument("vin")
+@click.pass_context
+@mqtt_required
+async def stop_camping(ctx: Context, timeout: float, vin: str) -> None:  # noqa: ASYNC109
+    """Stop camping mode."""
+    myskoda: MySkoda = ctx.obj["myskoda"]
+    async with asyncio.timeout(timeout):
+        await myskoda.stop_camping(vin)
+
+
+@click.command()
 @click.option("timeout", "--timeout", type=float, default=300)
 @click.argument("vin")
 @click.pass_context

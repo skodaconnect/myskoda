@@ -35,10 +35,12 @@ from myskoda.cli.operations import (
     set_windows_heating,
     start_air_conditioning,
     start_auxiliary_heating,
+    start_camping,
     start_ventilation,
     start_window_heating,
     stop_air_conditioning,
     stop_auxiliary_heating,
+    stop_camping,
     stop_ventilation,
     stop_window_heating,
     unlock,
@@ -215,11 +217,13 @@ cli.add_command(single_trip_statistics)
 cli.add_command(software_update_status)
 cli.add_command(start_air_conditioning)
 cli.add_command(start_auxiliary_heating)
+cli.add_command(start_camping)
 cli.add_command(start_ventilation)
 cli.add_command(start_window_heating)
 cli.add_command(status)
 cli.add_command(stop_air_conditioning)
 cli.add_command(stop_auxiliary_heating)
+cli.add_command(stop_camping)
 cli.add_command(stop_ventilation)
 cli.add_command(stop_window_heating)
 cli.add_command(subscribe)
