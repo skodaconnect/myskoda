@@ -936,15 +936,22 @@ async def test_set_preferred_charging(  # noqa: PLR0913
 async def test_start_camping(
     responses: aioresponses,
     myskoda: MySkoda,
+    fake_mqtt_client_wrapper: FakeMqttClientWrapper,
     temperature: float,
     expected: float,
 ) -> None:
-    """Camping mode start posts the bare target-temperature body and does not wait for MQTT."""
+    """Camping mode start posts the bare target-temp body and awaits start-air-conditioning."""
     url = f"{BASE_URL_SKODA}/api/v2/air-conditioning/{VIN}/camping/start"
     responses.post(url=url)
 
-    await myskoda.start_camping(VIN, temperature)
+    future = myskoda.start_camping(VIN, temperature)
 
+    topic = f"{USER_ID}/{VIN}/operation-request/air-conditioning/start-stop-air-conditioning"
+    fake_mqtt_client_wrapper.set_messages(
+        [create_aiomqtt_message(topic=topic, operation="start-air-conditioning")]
+    )
+
+    await future
     responses.assert_called_with(
         url=url,
         method="POST",
@@ -954,13 +961,23 @@ async def test_start_camping(
 
 
 @pytest.mark.asyncio
-async def test_stop_camping(responses: aioresponses, myskoda: MySkoda) -> None:
-    """Camping mode stop posts no body and does not wait for MQTT."""
+async def test_stop_camping(
+    responses: aioresponses,
+    myskoda: MySkoda,
+    fake_mqtt_client_wrapper: FakeMqttClientWrapper,
+) -> None:
+    """Camping mode stop posts no body and awaits stop-air-conditioning."""
     url = f"{BASE_URL_SKODA}/api/v2/air-conditioning/{VIN}/camping/stop"
     responses.post(url=url)
 
-    await myskoda.stop_camping(VIN)
+    future = myskoda.stop_camping(VIN)
 
+    topic = f"{USER_ID}/{VIN}/operation-request/air-conditioning/start-stop-air-conditioning"
+    fake_mqtt_client_wrapper.set_messages(
+        [create_aiomqtt_message(topic=topic, operation="stop-air-conditioning")]
+    )
+
+    await future
     responses.assert_called_with(
         url=url,
         method="POST",
