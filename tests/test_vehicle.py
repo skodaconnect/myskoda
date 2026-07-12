@@ -8,6 +8,7 @@ from pathlib import Path
 from myskoda.models.air_conditioning import AirConditioning
 from myskoda.models.auxiliary_heating import AuxiliaryHeating
 from myskoda.models.charging import Charging
+from myskoda.models.chargingprofiles import ChargingProfiles
 from myskoda.models.common import BaseResponse
 from myskoda.models.departure import DepartureInfo
 from myskoda.models.driving_range import DrivingRange
@@ -27,6 +28,7 @@ def _make_vehicle() -> Vehicle:
     v.status = None
     v.air_conditioning = None
     v.auxiliary_heating = None
+    v.charging_profiles = None
     v.driving_range = None
     v.departure_info = None
     return v
@@ -93,6 +95,33 @@ def test_update_charging_new_timestamp_updates() -> None:
     new = Charging.from_dict(_with_ts(_CHARGING_RAW, "2025-01-01T00:00:00Z"))
     assert v.update_charging(new) is True
     assert v.charging is new
+
+
+# --- update_charging_profiles ---
+
+_CHARGING_PROFILES_RAW = _load("enyaq/charging-profiles.json")
+
+
+def test_update_charging_profiles_when_no_existing_data() -> None:
+    v = _make_vehicle()
+    new = ChargingProfiles.from_dict(_CHARGING_PROFILES_RAW)
+    assert v.update_charging_profiles(new) is True
+    assert v.charging_profiles is new
+
+
+def test_update_charging_profiles_same_timestamp_skips_update() -> None:
+    v = _make_vehicle()
+    v.charging_profiles = ChargingProfiles.from_dict(_CHARGING_PROFILES_RAW)
+    new = ChargingProfiles.from_dict(_CHARGING_PROFILES_RAW)
+    assert v.update_charging_profiles(new) is False
+
+
+def test_update_charging_profiles_new_timestamp_updates() -> None:
+    v = _make_vehicle()
+    v.charging_profiles = ChargingProfiles.from_dict(_CHARGING_PROFILES_RAW)
+    new = ChargingProfiles.from_dict(_with_ts(_CHARGING_PROFILES_RAW, "2025-01-01T00:00:00Z"))
+    assert v.update_charging_profiles(new) is True
+    assert v.charging_profiles is new
 
 
 # --- update_status ---
