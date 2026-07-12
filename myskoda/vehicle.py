@@ -3,6 +3,7 @@
 from .models.air_conditioning import AirConditioning
 from .models.auxiliary_heating import AuxiliaryHeating
 from .models.charging import Charging
+from .models.chargingprofiles import ChargingProfiles
 from .models.common import BaseResponse
 from .models.departure import DepartureInfo
 from .models.driving_range import DrivingRange
@@ -29,6 +30,7 @@ class Vehicle:
     status: Status | None = None
     air_conditioning: AirConditioning | None = None
     auxiliary_heating: AuxiliaryHeating | None = None
+    charging_profiles: ChargingProfiles | None = None
     positions: Positions | None = None
     parking_position: ParkingPositionV3 | None = None
     driving_range: DrivingRange | None = None
@@ -49,6 +51,13 @@ class Vehicle:
         if not _ts_changed(self.charging, new):
             return False
         self.charging = new
+        return True
+
+    def update_charging_profiles(self, new: ChargingProfiles) -> bool:
+        """Update charging profiles if car_captured_timestamp changed; return True if updated."""
+        if not _ts_changed(self.charging_profiles, new):
+            return False
+        self.charging_profiles = new
         return True
 
     def update_status(self, new: Status) -> bool:
