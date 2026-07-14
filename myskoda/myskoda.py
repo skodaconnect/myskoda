@@ -389,7 +389,7 @@ class MySkoda:
 
         request_limit: int = 50
         charging_history = await self.rest_api.get_charging_history(
-            vin, start, end, limit=request_limit
+            vin, start=start, end=end, limit=request_limit
         )
         sessions = extract_sessions(charging_history.result)
         cursor = charging_history.result.next_cursor
