@@ -73,6 +73,11 @@ jobs:
       - uses: astral-sh/setup-uv@v7
 
       - name: Check dependency resolution with HA ${{ matrix.ha-version }}
+        env:
+          # litellm (via hass-nabucasa) vendors PyO3 0.23.5, which refuses to
+          # build on Python 3.14+ unless the stable ABI forward-compat check is
+          # bypassed. Safe for a resolution-only check job.
+          PYO3_USE_ABI3_FORWARD_COMPATIBILITY: "1"
         run: |
           uv venv && \
           uv pip install \
