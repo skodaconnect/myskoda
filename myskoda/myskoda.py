@@ -312,6 +312,7 @@ class MySkoda:
             CapabilityId.AUXILIARY_HEATING,
             CapabilityId.CHARGING,
             CapabilityId.CHARGING_MEB,
+            CapabilityId.CHARGING_PROFILES,
             CapabilityId.PARKING_POSITION,
             CapabilityId.STATE,
             CapabilityId.TRIP_STATISTICS,
