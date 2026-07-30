@@ -1009,7 +1009,7 @@ class RestApi:
         _LOGGER.debug("Locking vehicle %s", vin)
         json_data = {"currentSpin": spin}
         await self._make_post_request(
-            url=f"/v1/vehicle-access/{vin}/lock",
+            url=f"/v2/vehicle-access/{vin}/lock",
             json=json_data,
         )
 
@@ -1018,7 +1018,7 @@ class RestApi:
         _LOGGER.debug("Unlocking vehicle %s", vin)
         json_data = {"currentSpin": spin}
         await self._make_post_request(
-            url=f"/v1/vehicle-access/{vin}/unlock",
+            url=f"/v2/vehicle-access/{vin}/unlock",
             json=json_data,
         )
 
