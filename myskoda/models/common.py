@@ -13,17 +13,22 @@ type Vin = str
 class CaseInsensitiveStrEnum(StrEnum):
     @classmethod
     def _missing_(cls, value: object) -> StrEnum | None:
-        """Ignore the case of the value.
+        """Ignore the case of the value, falling back to UNKNOWN when defined.
 
-        Some endpoints will return values sometimes as uppercase and sometimes as lowercase...
+        Some endpoints will return values sometimes as uppercase and sometimes
+        as lowercase, so match case-insensitively first. When the value is not
+        recognized at all, fall back to the enum's ``UNKNOWN`` member if it
+        defines one, so a newly introduced server-side value degrades
+        gracefully instead of raising and breaking deserialization. Enums
+        without an ``UNKNOWN`` member keep the previous strict behavior.
         """
         if not isinstance(value, str):
             raise TypeError
-        value = value.lower()
+        lowered = value.lower()
         for member in cls:
-            if member.lower() == value:
+            if member.lower() == lowered:
                 return member
-        return None
+        return cls.__members__.get("UNKNOWN")
 
 
 class OnOffState(StrEnum):
