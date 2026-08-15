@@ -1,9 +1,9 @@
 """Unit tests for generated fixtures."""
 
+import json
 import re
 from pathlib import Path
 
-import json
 import pytest
 from aioresponses import aioresponses
 

@@ -3,7 +3,6 @@
 from dataclasses import dataclass, field
 from datetime import time
 from typing import Any
-from tribool import Tribool
 
 from mashumaro import field_options
 from mashumaro.config import (
@@ -12,6 +11,7 @@ from mashumaro.config import (
 )
 from mashumaro.mixins.orjson import DataClassORJSONMixin
 from mashumaro.types import SerializationStrategy
+from tribool import Tribool
 
 from .air_conditioning import TimerMode
 from .charging import MaxChargeCurrent, PlugUnlockMode
@@ -20,12 +20,13 @@ from .common import BaseResponse, Coordinates, Weekday
 
 class FormattedTribool(SerializationStrategy):
     """Tribool serialization strategy for use with mashumaro."""
+
     def serialize(self, value: Tribool) -> bool | None:
-        """Serialize Tribool to True, False, None"""
+        """Serialize Tribool to True, False, None."""
         return value.value
 
     def deserialize(self, value: bool | None) -> Tribool:
-        """Deserialize Tribool from True, False or None"""
+        """Deserialize Tribool from True, False or None."""
         return Tribool(value)
 
 
