@@ -548,6 +548,7 @@ reports:
         - WEDNESDAY
         - THURSDAY
         - FRIDAY
+        start_climatisation: false
         time: 07:00:00
         type: RECURRING
       - enabled: false
@@ -555,6 +556,7 @@ reports:
         recurring_on:
         - SATURDAY
         - SUNDAY
+        start_climatisation: false
         time: 09:00:00
         type: RECURRING
       - enabled: false
@@ -567,6 +569,7 @@ reports:
         - FRIDAY
         - SATURDAY
         - SUNDAY
+        start_climatisation: false
         time: 07:00:00
         type: RECURRING
     current_vehicle_position_profile:
