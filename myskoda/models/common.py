@@ -1,11 +1,15 @@
 """Common models used in multiple responses."""
 
+import logging
 from dataclasses import dataclass, field
 from datetime import UTC, datetime
 from enum import StrEnum
+from typing import cast
 
 from mashumaro import field_options
 from mashumaro.mixins.orjson import DataClassORJSONMixin
+
+_LOGGER = logging.getLogger(__name__)
 
 type Vin = str
 
@@ -24,6 +28,34 @@ class CaseInsensitiveStrEnum(StrEnum):
             if member.lower() == value:
                 return member
         return None
+
+
+class LenientStrEnum(CaseInsensitiveStrEnum):
+    """Case-insensitive enum that preserves unrecognized values.
+
+    Values not matching any known member become singleton pseudo-members
+    carrying the raw string, so deserialization keeps working when the API
+    introduces new values and the original data remains visible. A warning
+    is logged for each new value.
+    """
+
+    @classmethod
+    def _missing_(cls, value: object) -> StrEnum | None:
+        """Return a known member, or a pseudo-member preserving the raw value."""
+        if not isinstance(value, str):
+            raise TypeError
+        member = super()._missing_(value)
+        if member is not None:
+            return member
+        existing = cast("StrEnum | None", cls._value2member_map_.get(value))
+        if existing is not None:
+            return existing
+        pseudo = cast("StrEnum", str.__new__(cls, value))
+        pseudo._name_ = "UNKNOWN_" + value.upper()
+        pseudo._value_ = value
+        cls._value2member_map_.setdefault(value, pseudo)
+        _LOGGER.warning("Unknown %s value %r; preserving raw value", cls.__name__, value)
+        return pseudo
 
 
 class OnOffState(StrEnum):
