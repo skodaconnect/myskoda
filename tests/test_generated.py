@@ -3,6 +3,7 @@
 import re
 from pathlib import Path
 
+import json
 import pytest
 from aioresponses import aioresponses
 
@@ -38,7 +39,8 @@ async def test_report_get(
     responses.get(url=url_pattern, body=report.raw)
 
     result = await myskoda.get_endpoint(VIN, report.endpoint, anonymize=True)
-    result = result.result.to_dict()
+    result_text = result.result.to_json()
+    result = json.loads(result_text)
 
     _strip_injected_fields(result)
     if (res := report.result) is not None:
