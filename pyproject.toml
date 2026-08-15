@@ -17,6 +17,7 @@ dependencies = [
   "mashumaro[orjson] >=3.13",
   "pyjwt >=2.10",
   "pyyaml >=6.0",
+  "tribool",
 ]
 
 [dependency-groups]
