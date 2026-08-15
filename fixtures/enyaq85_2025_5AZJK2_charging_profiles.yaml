@@ -1,0 +1,293 @@
+description: Skoda Enyaq 85, 2025 facelift
+generation_time: '2026-08-08T14:11:24.706658+00:00'
+library_version: 0.0.0
+name: enyaq85_2025_5AZJK2_charging_profiles
+reports:
+- endpoint: charging_profiles
+  error: null
+  raw: '{"chargingProfiles": [{"id": 2, "name": "Example Profile 2", "settings": {"autoUnlockPlugWhenCharged":
+    "PERMANENT", "maxChargingCurrent": "REDUCED", "minBatteryStateOfCharge": {"minimumBatteryStateOfChargeInPercent":
+    10}, "targetStateOfChargeInPercent": 80}, "preferredChargingTimes": [{"id": 5,
+    "enabled": false, "startTime": "12:45", "endTime": "13:00"}, {"id": 6, "enabled":
+    false, "startTime": "22:00", "endTime": "06:00"}, {"id": 7, "enabled": false,
+    "startTime": "22:00", "endTime": "06:00"}, {"id": 8, "enabled": false, "startTime":
+    "22:00", "endTime": "06:00"}], "timers": [{"id": 4, "enabled": false, "type":
+    "RECURRING", "recurringOn": ["MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY"],
+    "startClimatisation": false, "time": "07:00"}, {"id": 5, "enabled": true, "type":
+    "ONE_OFF", "oneOffDay": "SUNDAY", "startClimatisation": true, "time": "09:00"},
+    {"id": 6, "enabled": false, "type": "RECURRING", "recurringOn": ["MONDAY", "TUESDAY",
+    "WEDNESDAY", "THURSDAY", "FRIDAY", "SATURDAY", "SUNDAY"], "startClimatisation":
+    false, "time": "07:00"}], "location": {"latitude": 53.470636, "longitude": 9.689872}},
+    {"id": 1, "name": "Example Profile", "settings": {"autoUnlockPlugWhenCharged":
+    "PERMANENT", "maxChargingCurrent": "MAXIMUM", "minBatteryStateOfCharge": {"minimumBatteryStateOfChargeInPercent":
+    30}, "targetStateOfChargeInPercent": 80}, "preferredChargingTimes": [{"id": 1,
+    "enabled": false, "startTime": "12:45", "endTime": "13:00"}, {"id": 2, "enabled":
+    true, "startTime": "22:00", "endTime": "06:00"}, {"id": 3, "enabled": true, "startTime":
+    "06:00", "endTime": "12:00"}, {"id": 4, "enabled": true, "startTime": "15:15",
+    "endTime": "16:15"}], "timers": [{"id": 1, "enabled": true, "type": "ONE_OFF",
+    "oneOffDay": "TUESDAY", "startClimatisation": true, "time": "07:00"}, {"id": 2,
+    "enabled": true, "type": "RECURRING", "recurringOn": ["WEDNESDAY", "THURSDAY",
+    "FRIDAY"], "startClimatisation": true, "time": "09:00"}, {"id": 3, "enabled":
+    false, "type": "RECURRING", "recurringOn": ["MONDAY", "TUESDAY", "WEDNESDAY",
+    "THURSDAY", "FRIDAY", "SATURDAY", "SUNDAY"], "startClimatisation": false, "time":
+    "07:00"}], "location": {"latitude": 53.470636, "longitude": 9.689872}}], "carCapturedTimestamp":
+    "2026-08-08T14:09:38.516Z", "currentVehiclePositionProfile": {"id": 1, "name":
+    "Example Profile", "nextChargingTime": "07:00", "targetStateOfChargeInPercent":
+    80}}'
+  result:
+    car_captured_timestamp: '2026-08-08T14:09:38.516000+00:00'
+    charging_profiles:
+    - id: 2
+      location:
+        latitude: 53.470636
+        longitude: 9.689872
+      name: Example Profile
+      preferred_charging_times:
+      - enabled: false
+        end_time: '13:00:00'
+        id: 5
+        start_time: '12:45:00'
+      - enabled: false
+        end_time: 06:00:00
+        id: 6
+        start_time: '22:00:00'
+      - enabled: false
+        end_time: 06:00:00
+        id: 7
+        start_time: '22:00:00'
+      - enabled: false
+        end_time: 06:00:00
+        id: 8
+        start_time: '22:00:00'
+      settings:
+        auto_unlock_plug_when_charged: PERMANENT
+        max_charging_current: REDUCED
+        min_battery_state_of_charge:
+          minimum_battery_state_of_charge_in_percent: 10
+        target_state_of_charge_in_percent: 80
+      timers:
+      - enabled: false
+        id: 4
+        recurring_on:
+        - MONDAY
+        - TUESDAY
+        - WEDNESDAY
+        - THURSDAY
+        - FRIDAY
+        start_climatisation: false
+        time: 07:00:00
+        type: RECURRING
+      - enabled: true
+        id: 5
+        one_off_day: SUNDAY
+        start_climatisation: true
+        time: 09:00:00
+        type: ONE_OFF
+      - enabled: false
+        id: 6
+        recurring_on:
+        - MONDAY
+        - TUESDAY
+        - WEDNESDAY
+        - THURSDAY
+        - FRIDAY
+        - SATURDAY
+        - SUNDAY
+        start_climatisation: false
+        time: 07:00:00
+        type: RECURRING
+    - id: 1
+      location:
+        latitude: 53.470636
+        longitude: 9.689872
+      name: Example Profile
+      preferred_charging_times:
+      - enabled: false
+        end_time: '13:00:00'
+        id: 1
+        start_time: '12:45:00'
+      - enabled: true
+        end_time: 06:00:00
+        id: 2
+        start_time: '22:00:00'
+      - enabled: true
+        end_time: '12:00:00'
+        id: 3
+        start_time: 06:00:00
+      - enabled: true
+        end_time: '16:15:00'
+        id: 4
+        start_time: '15:15:00'
+      settings:
+        auto_unlock_plug_when_charged: PERMANENT
+        max_charging_current: MAXIMUM
+        min_battery_state_of_charge:
+          minimum_battery_state_of_charge_in_percent: 30
+        target_state_of_charge_in_percent: 80
+      timers:
+      - enabled: true
+        id: 1
+        one_off_day: TUESDAY
+        start_climatisation: true
+        time: 07:00:00
+        type: ONE_OFF
+      - enabled: true
+        id: 2
+        recurring_on:
+        - WEDNESDAY
+        - THURSDAY
+        - FRIDAY
+        start_climatisation: true
+        time: 09:00:00
+        type: RECURRING
+      - enabled: false
+        id: 3
+        recurring_on:
+        - MONDAY
+        - TUESDAY
+        - WEDNESDAY
+        - THURSDAY
+        - FRIDAY
+        - SATURDAY
+        - SUNDAY
+        start_climatisation: false
+        time: 07:00:00
+        type: RECURRING
+    current_vehicle_position_profile:
+      id: 1
+      name: Example Profile
+      next_charging_time: 07:00:00
+      target_state_of_charge_in_percent: 80
+    timestamp: '2026-08-15T08:17:24.857849+00:00'
+  success: true
+  type: get
+  url: /v1/charging/TMOCKAA0AA000000/profiles
+  vehicle_id: 0
+vehicles:
+- capabilities:
+  - id: ACCESS
+    statuses: []
+  - id: AUTOMATION
+    statuses: []
+  - id: BATTERY_CHARGING_CARE
+    statuses: []
+  - id: BATTERY_SUPPORT
+    statuses: []
+  - id: CHARGING_PROFILES
+    statuses: []
+  - id: CHARGING_STATIONS
+    statuses: []
+  - id: DEALER_APPOINTMENT
+    statuses:
+    - INITIALLY_DISABLED
+  - id: MAP_UPDATE
+    statuses: []
+  - id: MEASUREMENTS
+    statuses: []
+  - id: ONLINE_REMOTE_UPDATE
+    statuses: []
+  - id: PARKING_INFORMATION
+    statuses: []
+  - id: PARKING_POSITION
+    statuses: []
+  - id: PLUG_AND_CHARGE
+    statuses: []
+  - id: POI_SEARCH
+    statuses: []
+  - id: READINESS
+    statuses: []
+  - id: ROADSIDE_ASSISTANT
+    statuses: []
+  - id: ROUTING
+    statuses: []
+  - id: STATE
+    statuses: []
+  - id: TRAFFIC_INFORMATION
+    statuses: []
+  - id: VEHICLE_HEALTH_INSPECTION
+    statuses: []
+  - id: WARNING_LIGHTS
+    statuses: []
+  - id: ACCIDENT_DAMAGE_MANAGEMENT
+    statuses: []
+  - id: AIR_CONDITIONING
+    statuses: []
+  - id: AIR_CONDITIONING_SAVE_AND_ACTIVATE
+    statuses: []
+  - id: AIR_CONDITIONING_SMART_SETTINGS
+    statuses: []
+  - id: AIR_CONDITIONING_TIMERS
+    statuses: []
+  - id: CAMPING_MODE
+    statuses: []
+  - id: CARE_AND_INSURANCE
+    statuses: []
+  - id: CHARGE_MODE_SELECTION
+    statuses: []
+  - id: CHARGING
+    statuses: []
+  - id: CHARGING_MEB
+    statuses: []
+  - id: CHARGING_PROFILES_CREATE
+    statuses: []
+  - id: CUBIC
+    statuses: []
+  - id: DESTINATIONS
+    statuses: []
+  - id: DIGICERT
+    statuses: []
+  - id: DRIVING_SCORE_WITH_BONUS
+    statuses: []
+  - id: E_PRIVACY
+    statuses: []
+  - id: EV_ROUTE_PLANNING
+    statuses: []
+  - id: EV_SERVICE_BOOKING
+    statuses: []
+  - id: EXTENDED_CHARGING_SETTINGS
+    statuses: []
+  - id: FLEET_SUPPORTED
+    statuses: []
+  - id: GUEST_USER_MANAGEMENT
+    statuses: []
+  - id: LAURA_INITIAL_PROMPTS_BEV
+    statuses: []
+  - id: ONLINE_SPEECH_GPS
+    statuses: []
+  - id: OUTSIDE_TEMPERATURE
+    statuses: []
+  - id: PAY_TO_PARK
+    statuses: []
+  - id: POWERPASS_TARIFFS
+    statuses: []
+  - id: PREDICTIVE_MAINTENANCE
+    statuses: []
+  - id: PREDICTIVE_WAKE_UP
+    statuses: []
+  - id: ROUTE_IMPORT
+    statuses: []
+  - id: ROUTE_PLANNING_10_CHARGERS
+    statuses: []
+  - id: SERVICE_PARTNER
+    statuses: []
+  - id: SUBSCRIPTIONS
+    statuses: []
+  - id: TRIP_STATISTICS_MEB
+    statuses: []
+  - id: UNAVAILABILITY_STATUSES
+    statuses: []
+  - id: VEHICLE_HEALTH_WARNINGS
+    statuses: []
+  - id: VEHICLE_SERVICES_BACKUPS
+    statuses: []
+  - id: VEHICLE_WAKE_UP_TRIGGER
+    statuses: []
+  - id: WINDOW_HEATING
+    statuses: []
+  device_platform: WCAR
+  id: 0
+  model: Enyaq
+  model_year: '2026'
+  software_version: '5.6'
+  system_model_id: 5AZJK2
+  trim_level: '85'
