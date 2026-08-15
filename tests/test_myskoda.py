@@ -3,6 +3,7 @@
 import re
 from datetime import UTC, datetime
 from pathlib import Path
+from typing import Any
 from unittest.mock import AsyncMock, patch
 from urllib.parse import unquote
 
@@ -10,7 +11,20 @@ import pytest
 from aiohttp import ClientSession
 from aioresponses import aioresponses
 
+from myskoda.models.event import (
+    EventType,
+    VehicleEvent,
+    VehicleEventAwake,
+    VehicleEventConnectionOffline,
+    VehicleEventConnectionOnline,
+    VehicleEventData,
+    VehicleEventIgnitionStatusChanged,
+    VehicleEventName,
+    VehicleEventVehicleIgnitionStatusData,
+    VehicleEventWarningBatterylevel,
+)
 from myskoda.models.event.operation import OperationEvent, OperationName, OperationStatus
+from myskoda.models.vehicle_ignition_status import IgnitionStatus
 from myskoda.mqtt import MySkodaMqttClient
 from myskoda.myskoda import MySkoda
 from myskoda.utils import to_iso8601
@@ -148,6 +162,57 @@ async def test_process_operation_event_skips_refresh_on_error() -> None:
         await myskoda._process_operation_event(event)  # noqa: SLF001
 
         myskoda.refresh_charging_profiles.assert_not_awaited()
+
+
+def _vehicle_event(vin: str = "TMOCKAA0AA000000", **kwargs: Any) -> dict[str, Any]:  # noqa: ANN401
+    """Common arguments for constructing vehicle events."""
+    return {
+        "vin": vin,
+        "event_type": EventType.VEHICLE_EVENT,
+        "version": 1,
+        "trace_id": "trace-id",
+        "timestamp": datetime.now(UTC),
+        "producer": "SKODA_MHUB",
+        "data": VehicleEventData(user_id="user-id", vin=vin),
+        **kwargs,
+    }
+
+
+VEHICLE_EVENTS = [
+    VehicleEventAwake(**_vehicle_event(name=VehicleEventName.VEHICLE_AWAKE)),
+    VehicleEventConnectionOnline(**_vehicle_event(name=VehicleEventName.VEHICLE_CONNECTION_ONLINE)),
+    VehicleEventConnectionOffline(
+        **_vehicle_event(name=VehicleEventName.VEHICLE_CONNECTION_OFFLINE)
+    ),
+    VehicleEventIgnitionStatusChanged(
+        **_vehicle_event(
+            name=VehicleEventName.VEHICLE_IGNITION_STATUS_CHANGED,
+            data=VehicleEventVehicleIgnitionStatusData(
+                user_id="user-id",
+                vin="TMOCKAA0AA000000",
+                ignition_status=IgnitionStatus.OFF,
+            ),
+        )
+    ),
+    VehicleEventWarningBatterylevel(
+        **_vehicle_event(name=VehicleEventName.VEHICLE_WARNING_BATTEYLEVEL)
+    ),
+]
+
+
+@pytest.mark.parametrize(
+    "event",
+    VEHICLE_EVENTS,
+    ids=[event.__class__.__name__ for event in VEHICLE_EVENTS],
+)
+async def test_vehicle_event_refreshes_vehicle(event: VehicleEvent) -> None:
+    async with ClientSession() as session:
+        myskoda = MySkoda(session, mqtt_enabled=False)
+        myskoda.refresh_vehicle = AsyncMock()
+
+        await myskoda._on_vehicle_event(event)  # noqa: SLF001
+
+        myskoda.refresh_vehicle.assert_awaited_once_with(event.vin)
 
 
 async def test_get_all_charging_sessions_applies_date_filters(
