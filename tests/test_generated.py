@@ -49,6 +49,7 @@ async def test_report_get(
 
 def pytest_generate_tests(metafunc: pytest.Metafunc) -> None:
     parameters = []
+    ids = []
 
     for file in FIXTURES_DIR.glob("**/*.yaml"):
         text = file.read_text(encoding="utf-8")
@@ -59,5 +60,6 @@ def pytest_generate_tests(metafunc: pytest.Metafunc) -> None:
             if not report.success:
                 continue
             parameters.append(report)
+            ids.append(fixture.name + "_" + report.endpoint)
 
-    metafunc.parametrize("report", parameters)
+    metafunc.parametrize("report", parameters, ids=ids)
