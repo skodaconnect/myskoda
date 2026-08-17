@@ -89,6 +89,7 @@ from .models.event import (
     ServiceEventClimatisationCompleted,
     ServiceEventDeparture,
     ServiceEventOdometer,
+    VehicleEvent,
 )
 from .models.health import Health
 from .models.info import CapabilityId, Info
@@ -1206,6 +1207,8 @@ class MySkoda:
             await self._process_operation_event(event)
         elif isinstance(event, ServiceEvent):
             await self._on_service_event(event)
+        elif isinstance(event, VehicleEvent):
+            await self._on_vehicle_event(event)
 
     async def _on_service_event(self, event: ServiceEvent) -> None:
         """Dispatch a service event to the appropriate handler."""
@@ -1223,6 +1226,15 @@ class MySkoda:
             await self.refresh_positions(event.vin)
         elif isinstance(event, ServiceEventOdometer):
             await self.refresh_maintenance_report(event.vin)
+
+    async def _on_vehicle_event(self, event: VehicleEvent) -> None:
+        """Refresh vehicle data when receiving a vehicle event.
+
+        Vehicle events are infrequent and usually arrive in bursts, the refresh is debounced
+        to avoid hammering the API.
+        """
+        _LOGGER.debug("Processing vehicle event: %s", event)
+        await self.refresh_vehicle(event.vin)
 
     async def _process_operation_event(self, event: OperationEvent) -> None:
         """Refresh the appropriate vehicle data based on the operation details."""
