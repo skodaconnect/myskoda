@@ -4,10 +4,10 @@ from dataclasses import dataclass, field
 
 from mashumaro import field_options
 
-from .common import BaseResponse, CaseInsensitiveStrEnum
+from .common import BaseResponse, LenientStrEnum
 
 
-class SoftwareStatus(CaseInsensitiveStrEnum):
+class SoftwareStatus(LenientStrEnum):
     NO_UPDATE_AVAILABLE = "NO_UPDATE_AVAILABLE"
     PRE_UPDATE_AVAILABLE = "PRE_UPDATE_AVAILABLE"
     UPDATE_AVAILABLE = "UPDATE_AVAILABLE"
@@ -23,7 +23,3 @@ class SoftwareUpdateStatus(BaseResponse):
     release_notes_url: str | None = field(
         default=None, metadata=field_options(alias="releaseNotesUrl")
     )
-
-
-class UnexpectedSoftwareUpdateStatusError(Exception):
-    pass
