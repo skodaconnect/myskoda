@@ -95,11 +95,15 @@ class ChargingTimers(DataClassORJSONMixin):
     enabled: bool
     time: time
     type: TimerMode
-    recurring_on: list[Weekday] = field(metadata=field_options(alias="recurringOn"))
+    one_off_day: Weekday | None = field(default=None, metadata=field_options(alias="oneOffDay"))
+    recurring_on: list[Weekday] | None = field(
+        default=None, metadata=field_options(alias="recurringOn")
+    )
 
     class Config(BaseConfig):
         """Configuration for serialization and deserialization.."""
 
+        omit_none = True
         code_generation_options = [  # noqa: RUF012
             TO_DICT_ADD_BY_ALIAS_FLAG
         ]
@@ -109,7 +113,7 @@ class ChargingTimers(DataClassORJSONMixin):
         # Test for a specific member that is named differently when serializing by alias
         # so that we can match the HH:MM send by the Skoda servers then and only then,
         # as by_alias is not passed in the Context if used
-        if self.time and "recurringOn" in d:
+        if self.time and ("recurringOn" in d or "oneOffDay" in d):
             d["time"] = self.time.strftime("%H:%M")  # Format to hh:mm
         return d
 
