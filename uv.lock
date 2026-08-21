@@ -832,6 +832,7 @@ dependencies = [
     { name = "mashumaro", extra = ["orjson"] },
     { name = "pyjwt" },
     { name = "pyyaml" },
+    { name = "tribool" },
 ]
 
 [package.optional-dependencies]
@@ -878,6 +879,7 @@ requires-dist = [
     { name = "python-dateutil", marker = "extra == 'cli'", specifier = "~=2.9" },
     { name = "pyyaml", specifier = ">=6.0" },
     { name = "termcolor", marker = "extra == 'cli'", specifier = "~=3.0" },
+    { name = "tribool" },
 ]
 provides-extras = ["cli", "docs"]
 
@@ -1326,6 +1328,15 @@ source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/46/79/cf31d7a93a8fdc6aa0fbb665be84426a8c5a557d9240b6239e9e11e35fc5/termcolor-3.3.0.tar.gz", hash = "sha256:348871ca648ec6a9a983a13ab626c0acce02f515b9e1983332b17af7979521c5", size = 14434, upload-time = "2025-12-29T12:55:21.882Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/33/d1/8bb87d21e9aeb323cc03034f5eaf2c8f69841e40e4853c2627edf8111ed3/termcolor-3.3.0-py3-none-any.whl", hash = "sha256:cf642efadaf0a8ebbbf4bc7a31cec2f9b5f21a9f726f4ccbb08192c9c26f43a5", size = 7734, upload-time = "2025-12-29T12:55:20.718Z" },
+]
+
+[[package]]
+name = "tribool"
+version = "0.7.3"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/c4/10/9442d674824e0f8b6b895cd5836870afcdda53f09e9120a8a7e5c2bce27e/tribool-0.7.3.tar.gz", hash = "sha256:201ebea42e996c921b10b34f07f76bde0c62d2605b610587a2bc24b134bcdb13", size = 7714, upload-time = "2016-04-03T22:07:59.854Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/aa/32/cd997ace62eafa0d8a1f69d9163447a68ef09b807700948bbb5e2c87770d/tribool-0.7.3-py2.py3-none-any.whl", hash = "sha256:fde13951bf571ee9e1f9136461e11c686f0247d44ce005e49fb32c126ca9a617", size = 11528, upload-time = "2016-04-03T22:07:52.469Z" },
 ]
 
 [[package]]

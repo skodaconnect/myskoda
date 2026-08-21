@@ -53,7 +53,8 @@
             "WEDNESDAY",
             "THURSDAY",
             "FRIDAY"
-          ]
+          ],
+          "startClimatisation" : false
         },
         {
           "id": 2,
@@ -63,7 +64,8 @@
           "recurringOn": [
             "SATURDAY",
             "SUNDAY"
-          ]
+          ],
+          "startClimatisation" : false
         },
         {
           "id": 3,
@@ -78,7 +80,8 @@
             "FRIDAY",
             "SATURDAY",
             "SUNDAY"
-          ]
+          ],
+          "startClimatisation" : false
         }
       ]
     }
