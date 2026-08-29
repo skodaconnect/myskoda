@@ -9,21 +9,35 @@
 
 MySkoda is an async Python library to interact with the Skoda API.
 
+## :warning: END OF LIFE ANNOUNCEMENT :warning:
+
+**This library will stop working in October 2026.**
+
+Škoda has released a [new and official **public** API](https://public.api.connect.skoda-auto.cz/docs). A new Python client library for this API is expected to be release soon as well.
+
+As a result the current API will stop working for unofficial third-party clients such as this library. This is expected to happen later in October.
+
+Below you can find the official Škoda announcement which was posted in the [Škoda EV Lounge group](https://www.facebook.com/groups/skodaevlounge).
+
+![](docs/skoda_announcement.png)
+
+---
+
 MySkoda is primarily developed to be used by the https://github.com/skodaconnect/homeassistant-myskoda project, a Home Assistant integration for Skoda vehicles.
 
 Before updating please review the [release notes](https://github.com/skodaconnect/myskoda/releases).
 
 <!-- TOC -->
 
-- [MySkoda](#myskoda)
-  - [Get In Touch](#get-in-touch)
-  - [Quick Start](#quick-start)
-    - [Basic example](#basic-example)
-  - [Documentation](#documentation)
-  - [As Library](#as-library)
-  - [As CLI](#as-cli)
-  - [Contribute your Fixtures](#contribute-your-fixtures)
-  - [Disclaimer](#disclaimer)
+- [:warning: END OF LIFE ANNOUNCEMENT :warning:](#warning-end-of-life-announcement-warning)
+- [Get In Touch](#get-in-touch)
+- [Quick Start](#quick-start)
+  - [Basic example](#basic-example)
+- [Documentation](#documentation)
+- [As Library](#as-library)
+- [As CLI](#as-cli)
+- [Contribute your Fixtures](#contribute-your-fixtures)
+- [Disclaimer](#disclaimer)
 
 <!-- /TOC -->
 
