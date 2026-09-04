@@ -21,6 +21,8 @@ Below you can find the official Škoda announcement which was posted in the [Šk
 
 ![](docs/skoda_announcement.png)
 
+> **Migration tip:** If you are building a new integration, please track the official API docs above and the upcoming `myskoda` successor. For existing Home Assistant users, no action is needed until October 2026 — this library will continue to receive security and compatibility fixes until EOL. Pin `myskoda<3` if you need a stable API surface during migration.
+
 ---
 
 MySkoda is primarily developed to be used by the https://github.com/skodaconnect/homeassistant-myskoda project, a Home Assistant integration for Skoda vehicles.
