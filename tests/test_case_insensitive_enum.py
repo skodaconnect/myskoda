@@ -5,6 +5,7 @@ import logging
 import pytest
 
 from myskoda.models.charging import ChargingState
+from myskoda.models.info import Render, ViewPoint
 from myskoda.models.software_status import SoftwareStatus, SoftwareUpdateStatus
 
 
@@ -55,3 +56,19 @@ def test_enum_without_lenient_base_stays_strict() -> None:
     """Enums not inheriting LenientStrEnum keep raising on unknown values."""
     with pytest.raises(ValueError, match="is not a valid"):
         ChargingState("NOT_A_REAL_STATE")
+
+
+def test_render_view_point_exterior_side_right() -> None:
+    """Elroq charging renders use the lowercase exterior_side_right view point."""
+    render = Render.from_json(
+        '{"url":"https://example.com/r.png","viewPoint":"exterior_side_right","type":"REAL","order":0}'
+    )
+    assert render.view_point is ViewPoint.EXTERIOR_SIDE_RIGHT
+
+
+def test_render_unknown_view_point_does_not_raise() -> None:
+    """A new view point must not break deserialization of the whole vehicle info."""
+    render = Render.from_json(
+        '{"url":"https://example.com/r.png","viewPoint":"exterior_top","type":"REAL","order":0}'
+    )
+    assert render.view_point.value == "exterior_top"
