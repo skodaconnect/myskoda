@@ -74,7 +74,10 @@ jobs:
 
       - name: Check dependency resolution with HA ${{ matrix.ha-version }}
         run: |
-          uv venv && \
+          PYTHON=$(curl -s "https://pypi.org/pypi/homeassistant/${{ matrix.ha-version }}/json" | \
+            jq -r '.info.requires_python' | grep -oE '[0-9]+\.[0-9]+' | head -1)
+          echo "Using Python $PYTHON"
+          uv venv --python "$PYTHON" && \
           uv pip install \
             "homeassistant==${{ matrix.ha-version }}" \
             "."
