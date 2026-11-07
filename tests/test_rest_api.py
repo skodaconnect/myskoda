@@ -200,6 +200,7 @@ def load_charging() -> list[str]:
     charging = []
     for path in [
         "superb/charging-iV.json",
+        "elroq/charging-error.json",
     ]:
         with FIXTURES_DIR.joinpath(path).open() as file:
             charging.append(file.read())
