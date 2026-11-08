@@ -1,0 +1,25 @@
+{
+  "isVehicleInSavedLocation": false,
+  "carCapturedTimestamp": "2026-11-07T07:28:53Z",
+  "errors": [],
+  "settings": {
+    "autoUnlockPlugWhenCharged": "OFF",
+    "availableChargeModes": ["MANUAL"],
+    "batteryCareModeTargetValueInPercent": 80,
+    "chargingCareMode": "DEACTIVATED",
+    "maxChargeCurrentAc": "MAXIMUM",
+    "preferredChargeMode": "MANUAL",
+    "targetStateOfChargeInPercent": 100
+  },
+  "status": {
+    "battery": {
+      "remainingCruisingRangeInMeters": 248000,
+      "stateOfChargeInPercent": 52
+    },
+    "chargePowerInKw": 0.0,
+    "chargingErrorReason": "ERROR_CHARGING_SYSTEM",
+    "plugConnectionState": "CONNECTED",
+    "plugLockState": "UNLOCKED",
+    "state": "CHARGING_ERROR"
+  }
+}
