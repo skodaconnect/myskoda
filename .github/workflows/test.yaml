@@ -41,6 +41,9 @@ jobs:
 
       - name: Coveralls
         uses: coverallsapp/github-action@v2
+        # fail-on-error does not cover the reporter download, which fails when
+        # GitHub release downloads time out.
+        continue-on-error: true
         with:
           file: coverage.xml
           fail-on-error: false
