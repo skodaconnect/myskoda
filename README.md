@@ -11,15 +11,17 @@ MySkoda is an async Python library to interact with the Skoda API.
 
 ## :warning: END OF LIFE ANNOUNCEMENT :warning:
 
-**This library will stop working in October 2026.**
+**This library will stop working soon!**
 
-Škoda has released a [new and official **public** API](https://public.api.connect.skoda-auto.cz/docs). A new Python client library for this API is expected to be release soon as well.
+Škoda has released a [new and official **public** API](https://public.api.connect.skoda-auto.cz/docs).
 
-As a result the current API will stop working for unofficial third-party clients such as this library. This is expected to happen later in October.
+A new [`skoda-public-api`](https://pypi.org/project/skoda-public-api/) package (GitHub project: https://github.com/mobility-lab-vsb/skoda-public-api) is also available and effectively replaces this library.
 
-Below you can find the official Škoda announcement which was posted in the [Škoda EV Lounge group](https://www.facebook.com/groups/skodaevlounge).
+As a result the current API will stop working for unofficial third-party clients such as this library.
 
-![](docs/skoda_announcement.png)
+Below you can find the latest Škoda announcement which was posted in the [Škoda EV Lounge group](https://www.facebook.com/groups/skodaevlounge).
+
+![](docs/skoda_announcement_2.png)
 
 ---
 
